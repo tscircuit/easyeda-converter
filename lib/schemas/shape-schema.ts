@@ -142,55 +142,55 @@ export const ShapeItemSchema = z
           plated: rest.includes("Y"),
         })
       }
-      // case "ARC": {
-      //   const [width, layer, , arcData] = shape.data.split("~")
-      //   const [, startX, startY, , , endX, endY] = arcData
-      //     .match(
-      //       /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) \d+ \d+ \d+ ([\d.]+) ([\d.]+)/
-      //     )!
-      //     .map(Number)
-      //   const start: [number, number] = [startX, startY]
-      //   const end: [number, number] = [endX, endY]
-      //   const radius = Number(arcData.match(/A ([\d.]+)/)?.[1])
-      //   return ArcSchema.parse({
-      //     type: "ARC",
-      //     width: Number(width),
-      //     layer: Number(layer),
-      //     start,
-      //     end,
-      //     radius,
-      //   })
-      // }
-      // case "CIRCLE": {
-      //   const [centerX, centerY, radius, width, layer, id] =
-      //     shape.data.split("~")
-      //   const center: [number, number] = [Number(centerX), Number(centerY)]
-      //   return CircleSchema.parse({
-      //     type: "CIRCLE",
-      //     center,
-      //     radius: Number(radius),
-      //     width: Number(width),
-      //     layer: Number(layer),
-      //     id,
-      //   })
-      // }
-      // case "SOLIDREGION": {
-      //   const [layermask, , pathData, fillStyle, id] = shape.data.split("~")
-      //   const points = pathData
-      //     .match(/[ML] ([\d.]+ [\d.]+)/g)!
-      //     .map((point) => point.slice(2).split(" ").map(Number))
-      //   return SolidRegionSchema.parse({
-      //     type: "SOLIDREGION",
-      //     layermask: Number(layermask),
-      //     points,
-      //     fillStyle,
-      //     id,
-      //   })
-      // }
-      // case "SVGNODE": {
-      //   const svgData = JSON.parse(shape.data)
-      //   return SVGNodeSchema.parse({ type: "SVGNODE", svgData })
-      // }
+      case "ARC": {
+        const [width, layer, , arcData] = shape.data.split("~")
+        const [, startX, startY, , , endX, endY] = arcData
+          .match(
+            /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) \d+ \d+ \d+ ([\d.]+) ([\d.]+)/
+          )!
+          .map(Number)
+        const start: [number, number] = [startX, startY]
+        const end: [number, number] = [endX, endY]
+        const radius = Number(arcData.match(/A ([\d.]+)/)?.[1])
+        return ArcSchema.parse({
+          type: "ARC",
+          width: Number(width),
+          layer: Number(layer),
+          start,
+          end,
+          radius,
+        })
+      }
+      case "CIRCLE": {
+        const [centerX, centerY, radius, width, layer, id] =
+          shape.data.split("~")
+        const center: [number, number] = [Number(centerX), Number(centerY)]
+        return CircleSchema.parse({
+          type: "CIRCLE",
+          center,
+          radius: Number(radius),
+          width: Number(width),
+          layer: Number(layer),
+          id,
+        })
+      }
+      case "SOLIDREGION": {
+        const [layermask, , pathData, fillStyle, id] = shape.data.split("~")
+        const points = pathData
+          .match(/[ML] ([\d.]+ [\d.]+)/g)!
+          .map((point) => point.slice(2).split(" ").map(Number))
+        return SolidRegionSchema.parse({
+          type: "SOLIDREGION",
+          layermask: Number(layermask),
+          points,
+          fillStyle,
+          id,
+        })
+      }
+      case "SVGNODE": {
+        const svgData = JSON.parse(shape.data)
+        return SVGNodeSchema.parse({ type: "SVGNODE", svgData })
+      }
       default:
         return BaseShapeSchema.parse({ type: shape.type })
     }
