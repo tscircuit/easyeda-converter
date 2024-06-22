@@ -19,11 +19,14 @@ export const TrackSchema = BaseShapeSchema.extend({
 export const PadSchema = BaseShapeSchema.extend({
   type: z.literal("PAD"),
   shape: z.enum(["RECT", "ELLIPSE"]),
-  center: PointSchema,
+  center: z.object({
+    x: z.number(),
+    y: z.number(),
+  }),
   width: z.number(),
   height: z.number(),
   layermask: z.number(),
-  net: z.string().optional(),
+  net: z.union([z.string(), z.number()]).optional(),
   number: z.number(),
   holeRadius: z.number(),
   points: z.array(PointSchema).optional(),
@@ -118,7 +121,7 @@ export const ShapeItemSchema = z
           holeRadius,
           ...rest
         ] = params.map((p) => (isNaN(Number(p)) ? p : Number(p)))
-        const center = PointSchema.parse([centerX, centerY])
+        const center = { x: centerX, y: centerY }
         let points, rotation
         if (padShape === "RECT") {
           points = parsePoints(rest[0] as any)
