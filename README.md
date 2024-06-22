@@ -1,6 +1,6 @@
 # easyeda-converter
 
-> [!WARN]
+> [!WARNING]
 > This library is a work in progress! Not everything works yet!
 
 Convert easyeda JSON PCB footprints into [tscircuit json soup](https://docs.tscircuit.com/api-reference/advanced/soup)
