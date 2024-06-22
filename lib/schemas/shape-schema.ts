@@ -121,7 +121,7 @@ export const ShapeItemSchema = z
         const center = PointSchema.parse([centerX, centerY])
         let points, rotation
         if (padShape === "RECT") {
-          points = parsePoints(rest[0])
+          points = parsePoints(rest[0] as any)
           rotation = Number(rest[1])
         }
         return PadSchema.parse({
