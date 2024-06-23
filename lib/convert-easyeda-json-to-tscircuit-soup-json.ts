@@ -1,4 +1,4 @@
-import { PadSchema, TrackSchema } from "./schemas/shape-schema"
+import { PadSchema, TrackSchema, ArcSchema } from "./schemas/shape-schema"
 import { z } from "zod"
 import type { EasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
@@ -11,6 +11,7 @@ import {
   pcb_smtpad,
   pcb_silkscreen_path,
 } from "@tscircuit/soup"
+import { generateArcPathWithMid } from "./math/arc-utils"
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
@@ -23,6 +24,25 @@ const handleSilkscreenPath = (
     layer: "top", // Assuming all silkscreen is on top layer
     route: track.points.map((point) => ({ x: point.x, y: point.y })),
     stroke_width: track.width,
+  })
+}
+
+const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
+  console.log(arc)
+  const arcPath = generateArcPathWithMid(
+    { x: arc.start.x, y: arc.start.y },
+    { x: (arc.start.x + arc.end.x) / 2, y: (arc.start.y + arc.end.y) / 2 },
+    { x: arc.end.x, y: arc.end.y },
+    20 // Number of points to generate for the arc
+  )
+
+  return pcb_silkscreen_path.parse({
+    type: "pcb_silkscreen_path",
+    pcb_silkscreen_path_id: `pcb_silkscreen_arc_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: "top", // Assuming all silkscreen is on top layer
+    route: arcPath,
+    stroke_width: arc.width,
   })
 }
 
@@ -73,14 +93,14 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
       )
     })
 
-  // Add silkscreen paths
-  easyEdaJson.packageDetail.dataStr.shape
-    .filter(
-      (shape): shape is z.infer<typeof TrackSchema> => shape.type === "TRACK"
-    )
-    .forEach((track, index) => {
-      soupElements.push(handleSilkscreenPath(track, index))
-    })
+  // Add silkscreen paths and arcs
+  easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
+    if (shape.type === "TRACK") {
+      soupElements.push(handleSilkscreenPath(shape, index))
+    } else if (shape.type === "ARC") {
+      soupElements.push(handleSilkscreenArc(shape, index))
+    }
+  })
 
   return soupElements
 }

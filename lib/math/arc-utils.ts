@@ -40,7 +40,7 @@ export const getArcLength = (start: Point, mid: Point, end: Point) => {
   return radius * angleDelta
 }
 
-export function generateArcPath(
+export function generateArcPathWithMid(
   start: Point,
   mid: Point,
   end: Point,
@@ -63,7 +63,16 @@ export function generateArcPath(
     const angle = angleStart + (i / numPoints) * angleDelta
     const x = center.x + radius * Math.cos(angle)
     const y = center.y + radius * Math.sin(angle)
-    path.push({ x, y })
+    console.log(i, angle, x, y)
+    // Check for NaN or Infinity values
+    if (!isNaN(x) && isFinite(x) && !isNaN(y) && isFinite(y)) {
+      path.push({ x, y })
+    }
+  }
+
+  // If the path is empty, add the start and end points
+  if (path.length === 0) {
+    path.push(start, end)
   }
 
   return path

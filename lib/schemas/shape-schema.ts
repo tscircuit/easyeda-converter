@@ -195,5 +195,6 @@ export const ShapeItemSchema = z
         return BaseShapeSchema.parse({ type: shape.type })
     }
   })
+  .pipe(ShapeSchema)
 
 export const ShapesArraySchema = z.array(ShapeItemSchema)
