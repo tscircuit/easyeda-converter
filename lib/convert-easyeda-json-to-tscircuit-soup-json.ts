@@ -38,10 +38,11 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
           type: "pcb_smtpad",
           pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
           shape: pad.shape === "RECT" ? "rect" : "circle",
-          x: `${pad.center.x}mm`,
-          y: `${pad.center.y}mm`,
-          width: `${pad.width}mm`,
-          height: `${pad.height}mm`,
+          x: pad.center.x,
+          y: pad.center.y,
+          ...(pad.shape === "RECT"
+            ? { width: pad.width, height: pad.height }
+            : { radius: Math.min(pad.width, pad.height) / 2 }),
           layer: "top",
           port_hints: [portNumber],
           pcb_component_id: "pcb_component_1",
