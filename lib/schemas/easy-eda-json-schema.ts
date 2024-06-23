@@ -96,7 +96,6 @@ export const PackageDetailDataStrSchema = z.object({
     layers.map((layer) => {
       const [name, color, visible, active, config, transparency] =
         layer.split("~")
-      console.log(layer)
       return LayerItemSchema.parse({
         name,
         color,

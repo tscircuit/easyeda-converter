@@ -7,11 +7,12 @@
     "aider": "aider"
   },
   "devDependencies": {
+    "@tscircuit/log-soup": "^1.0.1",
     "@tscircuit/soup": "^0.0.34",
     "@types/bun": "latest"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.5.2"
   },
   "dependencies": {
     "commander": "^12.1.0",
