@@ -63,7 +63,6 @@ export function generateArcPathWithMid(
     const angle = angleStart + (i / numPoints) * angleDelta
     const x = center.x + radius * Math.cos(angle)
     const y = center.y + radius * Math.sin(angle)
-    console.log(i, angle, x, y)
     // Check for NaN or Infinity values
     if (!isNaN(x) && isFinite(x) && !isNaN(y) && isFinite(y)) {
       path.push({ x, y })

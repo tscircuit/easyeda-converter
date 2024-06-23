@@ -37,7 +37,7 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     arc.start.y,
     arc.end.x,
     arc.end.y,
-    arc.radius,
+    arc.radiusX,
     arc.largeArc,
     arc.sweepDirection === "CW"
   )

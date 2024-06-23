@@ -55,7 +55,8 @@ export const ArcSchema = BaseShapeSchema.extend({
   width: z.number(),
   start: PointSchema,
   end: PointSchema,
-  radius: z.number(),
+  radiusX: z.number(),
+  radiusY: z.number(),
   largeArc: z.boolean(),
   sweepDirection: z.enum(["CW", "CCW"]),
 })
@@ -162,22 +163,32 @@ export const ShapeItemSchema = z
       }
       case "ARC": {
         const [width, layer, , arcData] = shape.data.split("~")
-        const [, startX, startY, , , endX, endY] = arcData
-          .match(
-            /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) \d+ (\d+) (\d+) ([\d.]+) ([\d.]+)/
-          )!
-          .map(Number)
-        const start: [number, number] = [startX, startY]
-        const end: [number, number] = [endX, endY]
-        const radius = Number(arcData.match(/A ([\d.]+)/)?.[1])
-        const [, , , , , largeArcFlag, sweepFlag] = arcData.match(/A ([\d.]+) ([\d.]+) \d+ (\d+) (\d+)/)!
+        // A rx ry x-axis-rotation large-arc-flag sweep-flag x  y
+        // A rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
+        const [
+          ,
+          startX,
+          startY,
+          radiusX,
+          radiusY,
+          xAxisRotation,
+          largeArcFlag,
+          sweepFlag,
+          endX,
+          endY,
+        ] = arcData.match(
+          /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)/
+        )!
+        const start: [number, number] = [Number(startX), Number(startY)]
+        const end: [number, number] = [Number(endX), Number(endY)]
         return ArcSchema.parse({
           type: "ARC",
           width: Number(width),
           layer: Number(layer),
           start,
           end,
-          radius,
+          radiusX: Number(radiusX),
+          radiusY: Number(radiusY),
           largeArc: largeArcFlag === "1",
           sweepDirection: sweepFlag === "1" ? "CW" : "CCW",
         })
