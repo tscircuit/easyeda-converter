@@ -33,11 +33,14 @@ const handleSilkscreenPath = (
 
 const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
   console.log(arc)
-  const arcPath = generateArcPathWithMid(
-    { x: arc.start.x, y: arc.start.y },
-    { x: (arc.start.x + arc.end.x) / 2, y: (arc.start.y + arc.end.y) / 2 },
-    { x: arc.end.x, y: arc.end.y },
-    20 // Number of points to generate for the arc
+  const arcPath = generateArcFromSweep(
+    arc.start.x,
+    arc.start.y,
+    arc.end.x,
+    arc.end.y,
+    arc.radius,
+    arc.largeArc,
+    arc.sweepDirection === "CW"
   )
 
   return pcb_silkscreen_path.parse({

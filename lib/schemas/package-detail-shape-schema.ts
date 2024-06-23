@@ -164,12 +164,13 @@ export const ShapeItemSchema = z
         const [width, layer, , arcData] = shape.data.split("~")
         const [, startX, startY, , , endX, endY] = arcData
           .match(
-            /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) \d+ \d+ \d+ ([\d.]+) ([\d.]+)/
+            /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) \d+ (\d+) (\d+) ([\d.]+) ([\d.]+)/
           )!
           .map(Number)
         const start: [number, number] = [startX, startY]
         const end: [number, number] = [endX, endY]
         const radius = Number(arcData.match(/A ([\d.]+)/)?.[1])
+        const [, , , , , largeArcFlag, sweepFlag] = arcData.match(/A ([\d.]+) ([\d.]+) \d+ (\d+) (\d+)/)!
         return ArcSchema.parse({
           type: "ARC",
           width: Number(width),
@@ -177,6 +178,8 @@ export const ShapeItemSchema = z
           start,
           end,
           radius,
+          largeArc: largeArcFlag === "1",
+          sweepDirection: sweepFlag === "1" ? "CW" : "CCW",
         })
       }
       case "CIRCLE": {
