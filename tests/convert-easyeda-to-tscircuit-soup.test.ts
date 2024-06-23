@@ -1,4 +1,5 @@
 import { it, expect } from "bun:test"
+import { logSoup } from "@tscircuit/log-soup"
 import a555TimerEasyEdaJson from "./a555-timer.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
@@ -40,4 +41,6 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   expect(firstPcbSmtPad.port_hints).toBeDefined()
   expect(firstPcbSmtPad.pcb_component_id).toBeDefined()
   expect(firstPcbSmtPad.pcb_port_id).toBeDefined()
+
+  await logSoup("easyeda to tscircuit soup", soupElements as AnySoupElement[])
 })
