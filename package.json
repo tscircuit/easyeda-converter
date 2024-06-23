@@ -7,6 +7,7 @@
     "aider": "aider"
   },
   "devDependencies": {
+    "@tscircuit/soup": "^0.0.34",
     "@types/bun": "latest"
   },
   "peerDependencies": {
