@@ -17,7 +17,14 @@ const examples = [
 it("parses examples for single letter shape schema", () => {
   examples.forEach((example) => {
     expect(() => {
-      SingleLetterShapeSchema.parse(example)
+      try {
+        SingleLetterShapeSchema.parse(example)
+      } catch (error: any) {
+        console.log(error)
+        throw new Error(
+          `Failed to parse example: ${example}. Error: ${error.message}`
+        )
+      }
     }).not.toThrow()
   })
 })

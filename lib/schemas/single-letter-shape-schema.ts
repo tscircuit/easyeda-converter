@@ -108,63 +108,94 @@ export const EllipseShapeSchema = z
   })
   .pipe(EllipseShapeOutputSchema)
 
+//   type PinDirection = 'left' | 'right';
+
+// interface Pin {
+//   type: 'P';
+//   visibility: string;
+//   id: string;
+//   pin: number;
+//   x: number;
+//   y: number;
+//   rotation: number;
+//   name: string;
+//   color: string;
+//   path: string;
+//   arrow: string;
+//   direction: PinDirection;
+// }
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
+  visibility: z.enum(["show", "hide"]),
   pinNumber: z.number(),
-  position: PointSchema,
-  orientation: z.number(),
+  x: z.number(),
+  y: z.number(),
+  rotation: z.number(),
   id: z.string(),
   label: z.string(),
   labelColor: z.string(),
-  pinShape: z.string(),
+  path: z.string(),
+  arrow: z.string(),
 })
+
+function parsePin(pinString: string): z.infer<typeof PinShapeOutputSchema> {
+  const parts = pinString.split("~")
+  const [_, visibility, __, pinNumber, x, y, rotation, id] = parts
+
+  const nameMatch = pinString.match(/~(\w+)~start~/)
+  const label = nameMatch ? nameMatch[1] : ""
+
+  // TODO: make sure colors are associated properly
+  const colorMatch = pinString.match(/#[0-9A-F]{6}/)
+  const labelColor = colorMatch ? colorMatch[0] : ""
+
+  const pathMatch = pinString.match(/\^\^([^~]+)/)
+  const path = pathMatch ? pathMatch[1] : ""
+
+  const arrowMatch = pinString.match(/\^\^0~(.+)$/)
+  const arrow = arrowMatch ? arrowMatch[1] : ""
+
+  return {
+    type: "PIN",
+    visibility: visibility as "show" | "hide",
+    id,
+    pinNumber: parseInt(pinNumber),
+    x: parseFloat(x),
+    y: parseFloat(y),
+    rotation: parseFloat(rotation),
+    label,
+    labelColor,
+    path,
+    arrow,
+  }
+}
 
 export const PinShapeSchema = z
   .string()
   .startsWith("P~")
   .transform((str): z.infer<typeof PinShapeOutputSchema> => {
-    // TODO there's no way this is correct
-    const [
-      ,
-      ,
-      ,
-      pinNumber,
-      x,
-      y,
-      orientation,
-      id,
-      ,
-      ,
-      ,
-      ,
-      ,
-      ,
-      label,
-      ,
-      ,
-      ,
-      labelColor,
-      ,
-      ,
-      ,
-      ,
-      pinShape,
-    ] = str.split(/~|\^\^/)
-    return {
-      type: "pin",
-      pinNumber: Number(pinNumber),
-      position: { x: Number(x), y: Number(y) },
-      orientation: Number(orientation),
-      id,
-      label,
-      labelColor,
-      pinShape,
-    }
+    return parsePin(str)
   })
   .pipe(PinShapeOutputSchema)
 
-export const SingleLetterShapeSchema = z.union([
-  RectangleShapeSchema,
-  EllipseShapeSchema,
-  PinShapeSchema,
-])
+export const SingleLetterShapeSchema = z
+  .string()
+  .transform((x) => {
+    // We do some discrimination here for better errors
+    if (x.startsWith("R~")) {
+      return RectangleShapeSchema.parse(x)
+    } else if (x.startsWith("E~")) {
+      return EllipseShapeSchema.parse(x)
+    } else if (x.startsWith("P~")) {
+      return PinShapeSchema.parse(x)
+    } else {
+      throw new Error("Invalid shape type: " + x)
+    }
+  })
+  .pipe(
+    z.union([
+      RectangleShapeOutputSchema,
+      EllipseShapeOutputSchema,
+      PinShapeOutputSchema,
+    ])
+  )
