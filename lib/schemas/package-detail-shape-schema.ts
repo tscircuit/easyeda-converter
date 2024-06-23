@@ -68,7 +68,7 @@ export const SVGNodeSchema = BaseShapeSchema.extend({
   }),
 })
 
-export const ShapeSchema = z.discriminatedUnion("type", [
+export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   TrackSchema,
   PadSchema,
   ArcSchema,
@@ -195,6 +195,6 @@ export const ShapeItemSchema = z
         return BaseShapeSchema.parse({ type: shape.type })
     }
   })
-  .pipe(ShapeSchema)
+  .pipe(PackageDetailShapeSchema)
 
 export const ShapesArraySchema = z.array(ShapeItemSchema)

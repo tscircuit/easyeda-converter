@@ -1,4 +1,8 @@
-import { PadSchema, TrackSchema, ArcSchema } from "./schemas/shape-schema"
+import {
+  PadSchema,
+  TrackSchema,
+  ArcSchema,
+} from "./schemas/package-detail-shape-schema"
 import { z } from "zod"
 import type { EasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {

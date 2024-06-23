@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { ShapeItemSchema } from "./shape-schema"
+import { ShapeItemSchema } from "./package-detail-shape-schema"
 
 export const maybeNumber = z
   .any()
