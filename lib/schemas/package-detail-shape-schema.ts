@@ -32,7 +32,7 @@ export const TrackSchema = BaseShapeSchema.extend({
 
 export const PadSchema = BaseShapeSchema.extend({
   type: z.literal("PAD"),
-  shape: z.enum(["RECT", "ELLIPSE"]),
+  shape: z.enum(["RECT", "ELLIPSE", "OVAL"]),
   center: z.object({
     x: z.number(),
     y: z.number(),

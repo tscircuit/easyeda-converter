@@ -13,22 +13,22 @@ export const maybeNumber = z
 export const SzlcscSchema = z.object({
   id: z.number(),
   number: z.string(),
-  step: z.number(),
-  min: z.number(),
-  price: z.number(),
-  stock: z.number(),
-  url: z.string().url(),
-  image: z.string().optional(),
+  step: z.number().optional(),
+  min: z.number().optional(),
+  price: z.number().optional(),
+  stock: z.number().optional(),
+  url: z.string().url().optional(),
+  image: z.string().optional().optional(),
 })
 
 export const LcscSchema = z.object({
   id: z.number(),
   number: z.string(),
-  step: z.number(),
-  min: z.number(),
-  price: z.number(),
-  stock: z.number(),
-  url: z.string().url(),
+  step: z.number().optional(),
+  min: z.number().optional(),
+  price: z.number().optional(),
+  stock: z.number().optional(),
+  url: z.string().url().optional(),
 })
 
 export const OwnerSchema = z.object({
@@ -119,7 +119,7 @@ export const PackageDetailDataStrSchema = z.object({
     })
   ),
   BBox: BBoxSchema,
-  netColors: z.array(z.unknown()),
+  netColors: z.array(z.unknown()).optional(),
 })
 
 export const PackageDetailSchema = z.object({

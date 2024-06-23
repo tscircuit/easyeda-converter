@@ -83,7 +83,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
         name: portNumber,
       })
 
-      if (pad.holeRadius !== undefined) {
+      if (pad.holeRadius !== undefined && pad.holeRadius !== 0) {
         // Add pcb_plated_hole
         soupElements.push(
           pcb_plated_hole.parse({
@@ -102,14 +102,27 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
         )
       } else {
         // Add pcb_smtpad
+        let soupShape: PCBSMTPad["shape"] | undefined
+        if (pad.shape === "RECT") {
+          soupShape = "rect"
+        } else if (pad.shape === "ELLIPSE") {
+          // This is just a bug
+          soupShape = "rect"
+        } else if (pad.shape === "OVAL") {
+          // OVAL is often a rect, especially when holeRadius is 0
+          soupShape = "rect"
+        }
+        if (!soupShape) {
+          throw new Error(`unknown pad.shape: "${pad.shape}"`)
+        }
         soupElements.push(
           pcb_smtpad.parse({
             type: "pcb_smtpad",
             pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
-            shape: pad.shape === "RECT" ? "rect" : "circle",
+            shape: soupShape,
             x: pad.center.x,
             y: pad.center.y,
-            ...(pad.shape === "RECT"
+            ...(soupShape === "rect"
               ? { width: pad.width, height: pad.height }
               : { radius: Math.min(pad.width, pad.height) / 2 }),
             layer: "top",
