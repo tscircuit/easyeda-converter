@@ -60,8 +60,10 @@ const RectangleShapeOutputSchema = z.object({
 })
 export const RectangleShapeSchema = z
   .string()
+  .startsWith("R~")
   .transform((str): z.infer<typeof RectangleShapeOutputSchema> => {
-    // TODO
+    // TODO parse string
+    return { type: "rectangle" }
   })
   .pipe(RectangleShapeOutputSchema)
 
@@ -70,8 +72,10 @@ const EllipseShapeOutputSchema = z.object({
 })
 export const EllipseShapeSchema = z
   .string()
+  .startsWith("E~")
   .transform((str): z.infer<typeof EllipseShapeOutputSchema> => {
-    // TODO
+    // TODO parse string
+    return { type: "ellipse" }
   })
   .pipe(EllipseShapeOutputSchema)
 
