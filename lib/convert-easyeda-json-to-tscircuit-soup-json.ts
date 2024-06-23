@@ -15,7 +15,7 @@ import {
   pcb_smtpad,
   pcb_silkscreen_path,
 } from "@tscircuit/soup"
-import { generateArcPathWithMid } from "./math/arc-utils"
+import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
@@ -32,7 +32,6 @@ const handleSilkscreenPath = (
 }
 
 const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
-  console.log(arc)
   const arcPath = generateArcFromSweep(
     arc.start.x,
     arc.start.y,
