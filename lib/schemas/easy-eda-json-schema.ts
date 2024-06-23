@@ -77,7 +77,7 @@ export const ObjectItemSchema = z.object({
 export const DataStrSchema = z.object({
   head: HeadSchema,
   canvas: z.string(),
-  shape: z.any(), // z.array(SingleLetterShapeSchema),
+  shape: z.array(SingleLetterShapeSchema),
   BBox: BBoxSchema,
   colors: z.array(z.unknown()),
 })
