@@ -48,12 +48,16 @@ export const PadSchema = BaseShapeSchema.extend({
   plated: z.boolean(),
 })
 
+// TODO this should be in "arc sweep" format with the following fields:
+// start, end, radius, largeArc, sweepDirection
 export const ArcSchema = BaseShapeSchema.extend({
   type: z.literal("ARC"),
   width: z.number(),
   start: PointSchema,
   end: PointSchema,
   radius: z.number(),
+  largeArc: z.boolean(),
+  sweepDirection: z.enum(["CW", "CCW"]),
 })
 
 export const CircleSchema = BaseShapeSchema.extend({

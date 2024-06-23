@@ -77,3 +77,95 @@ export function generateArcPathWithMid(
 
   return path
 }
+
+/**
+This syntax describes an SVG path command for drawing an arc. Let's break down each part:
+
+1. "M 3923.0512 2968.5197": 
+   - M: Move to
+   - 3923.0512: X-coordinate
+   - 2968.5197: Y-coordinate
+
+2. "A 2.5 2.5 0 0 0 3923.0512 2963.5197":
+   - A: Arc command
+   - 2.5: X-radius of the ellipse
+   - 2.5: Y-radius of the ellipse
+   - 0: X-axis rotation (in degrees)
+   - 0: Large arc flag (0 for small arc, 1 for large arc)
+   - 0: Sweep flag (0 for counterclockwise, 1 for clockwise)
+   - 3923.0512: End X-coordinate
+   - 2963.5197: End Y-coordinate
+
+This command draws an arc starting at (3923.0512, 2968.5197) and ending at (3923.0512, 2963.5197), using a circular path with a radius of 2.5 units.
+ */
+export function generateArcFromSweep(
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  radius: number,
+  largeArcFlag: boolean,
+  sweepFlag: boolean
+): Point[] {
+  const start: Point = { x: startX, y: startY }
+  const end: Point = { x: endX, y: endY }
+
+  // Calculate the midpoint between start and end
+  const midX = (startX + endX) / 2
+  const midY = (startY + endY) / 2
+
+  // Calculate the distance between start and end
+  const dx = endX - startX
+  const dy = endY - startY
+  const distance = Math.sqrt(dx * dx + dy * dy)
+
+  // If the distance is zero or the radius is too small, return a straight line
+  if (distance === 0 || radius < distance / 2) {
+    return [start, end]
+  }
+
+  // Calculate the center of the arc
+  const h = Math.sqrt(radius * radius - (distance * distance) / 4)
+  const angle = Math.atan2(dy, dx)
+  const centerX = midX + h * Math.sin(angle) * (sweepFlag ? 1 : -1)
+  const centerY = midY - h * Math.cos(angle) * (sweepFlag ? 1 : -1)
+
+  // Calculate start and end angles
+  const startAngle = Math.atan2(startY - centerY, startX - centerX)
+  let endAngle = Math.atan2(endY - centerY, endX - centerX)
+
+  // Adjust end angle based on sweep and large arc flags
+  if (!sweepFlag && endAngle > startAngle) {
+    endAngle -= 2 * Math.PI
+  } else if (sweepFlag && endAngle < startAngle) {
+    endAngle += 2 * Math.PI
+  }
+
+  if (
+    (!largeArcFlag && Math.abs(endAngle - startAngle) > Math.PI) ||
+    (largeArcFlag && Math.abs(endAngle - startAngle) < Math.PI)
+  ) {
+    if (endAngle > startAngle) {
+      endAngle -= 2 * Math.PI
+    } else {
+      endAngle += 2 * Math.PI
+    }
+  }
+
+  // Generate points along the arc
+  const numPoints = Math.max(
+    2,
+    Math.ceil(Math.abs(endAngle - startAngle) * radius)
+  )
+  const path: Point[] = []
+
+  for (let i = 0; i <= numPoints; i++) {
+    const t = i / numPoints
+    const angle = startAngle + t * (endAngle - startAngle)
+    const x = centerX + radius * Math.cos(angle)
+    const y = centerY + radius * Math.sin(angle)
+    path.push({ x, y })
+  }
+
+  return path
+}
