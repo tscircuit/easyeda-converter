@@ -1,8 +1,22 @@
 import { z } from "zod"
 
 export const PointSchema = z
-  .tuple([z.number(), z.number()])
-  .transform(([x, y]) => ({ x, y }))
+  .any()
+  .transform((p) => {
+    if (Array.isArray(p)) {
+      const [x, y] = p
+      return { x, y }
+    } else if (typeof p === "object") {
+      return p
+    }
+    throw new Error(`Invalid point: ${p}`)
+  })
+  .pipe(
+    z.object({
+      x: z.number(),
+      y: z.number(),
+    })
+  )
 
 export const BaseShapeSchema = z.object({
   type: z.string(),

@@ -1,5 +1,9 @@
 import { z } from "zod"
-import { ShapeItemSchema } from "./package-detail-shape-schema"
+import {
+  PackageDetailShapeSchema,
+  ShapeItemSchema,
+} from "./package-detail-shape-schema"
+import { SingleLetterShapeSchema } from "./single-letter-shape-schema"
 
 export const maybeNumber = z
   .any()
@@ -73,12 +77,7 @@ export const ObjectItemSchema = z.object({
 export const DataStrSchema = z.object({
   head: HeadSchema,
   canvas: z.string(),
-  shape: z.array(z.string()).transform((shapes) =>
-    shapes.map((shape) => {
-      const [type, ...data] = shape.split("~")
-      return ShapeItemSchema.parse({ type, data: data.join("~") })
-    })
-  ),
+  shape: z.any(), // z.array(SingleLetterShapeSchema),
   BBox: BBoxSchema,
   colors: z.array(z.unknown()),
 })
@@ -94,7 +93,7 @@ export const PackageDetailDataStrSchema = z.object({
         return ShapeItemSchema.parse({ type, data: data.join("~") })
       })
     )
-    .pipe(z.array(ShapeItemSchema)),
+    .pipe(z.array(PackageDetailShapeSchema)),
   layers: z.array(z.string()).transform((layers) =>
     layers.map((layer) => {
       const [name, color, visible, active, config, transparency] =
