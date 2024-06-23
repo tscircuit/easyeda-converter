@@ -9,11 +9,14 @@ import type {
   AnySoupElement,
   PCBSMTPad,
   PcbSilkscreenPath,
+  PCBPlatedHole,
+  PCBPlatedHoleInput,
 } from "@tscircuit/soup"
 import {
   any_source_component,
   pcb_smtpad,
   pcb_silkscreen_path,
+  pcb_plated_hole,
 } from "@tscircuit/soup"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 
@@ -80,23 +83,42 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
         name: portNumber,
       })
 
-      // Add pcb_smtpad
-      soupElements.push(
-        pcb_smtpad.parse({
-          type: "pcb_smtpad",
-          pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
-          shape: pad.shape === "RECT" ? "rect" : "circle",
-          x: pad.center.x,
-          y: pad.center.y,
-          ...(pad.shape === "RECT"
-            ? { width: pad.width, height: pad.height }
-            : { radius: Math.min(pad.width, pad.height) / 2 }),
-          layer: "top",
-          port_hints: [portNumber],
-          pcb_component_id: "pcb_component_1",
-          pcb_port_id: `pcb_port_${index + 1}`,
-        } as PCBSMTPad)
-      )
+      if (pad.holeRadius !== undefined) {
+        // Add pcb_plated_hole
+        soupElements.push(
+          pcb_plated_hole.parse({
+            type: "pcb_plated_hole",
+            pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+            x: pad.center.x,
+            y: pad.center.y,
+            hole_diameter: pad.holeRadius * 2,
+            outer_diameter: pad.width,
+            radius: pad.holeRadius,
+            port_hints: [portNumber],
+            pcb_component_id: "pcb_component_1",
+            pcb_port_id: `pcb_port_${index + 1}`,
+            layers: ["top"],
+          } as PCBPlatedHoleInput)
+        )
+      } else {
+        // Add pcb_smtpad
+        soupElements.push(
+          pcb_smtpad.parse({
+            type: "pcb_smtpad",
+            pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
+            shape: pad.shape === "RECT" ? "rect" : "circle",
+            x: pad.center.x,
+            y: pad.center.y,
+            ...(pad.shape === "RECT"
+              ? { width: pad.width, height: pad.height }
+              : { radius: Math.min(pad.width, pad.height) / 2 }),
+            layer: "top",
+            port_hints: [portNumber],
+            pcb_component_id: "pcb_component_1",
+            pcb_port_id: `pcb_port_${index + 1}`,
+          } as PCBSMTPad)
+        )
+      }
     })
 
   // Add silkscreen paths and arcs

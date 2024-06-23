@@ -24,23 +24,26 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   const sourcePorts = su(soupElements).source_port.list()
   expect(sourcePorts.length).toBeGreaterThan(0)
 
-  // Check for the presence of pcb_smtpads
+  // Check for the presence of pcb_smtpads and pcb_plated_holes
   const pcbSmtPads = su(soupElements).pcb_smtpad.list()
-  expect(pcbSmtPads.length).toBeGreaterThan(0)
-  expect(pcbSmtPads.length).toBe(sourcePorts.length)
+  const pcbPlatedHoles = su(soupElements).pcb_plated_hole.list()
+  expect(pcbSmtPads.length + pcbPlatedHoles.length).toBeGreaterThan(0)
+  expect(pcbSmtPads.length + pcbPlatedHoles.length).toBe(sourcePorts.length)
 
-  // Check properties of a pcb_smtpad
-  const firstPcbSmtPad = pcbSmtPads[0] as any
-  expect(firstPcbSmtPad.pcb_smtpad_id).toBeDefined()
-  expect(firstPcbSmtPad.shape).toBeDefined()
-  expect(firstPcbSmtPad.x).toBeDefined()
-  expect(firstPcbSmtPad.y).toBeDefined()
-  expect(firstPcbSmtPad.width).toBeDefined()
-  expect(firstPcbSmtPad.height).toBeDefined()
-  expect(firstPcbSmtPad.layer).toBe("top")
-  expect(firstPcbSmtPad.port_hints).toBeDefined()
-  expect(firstPcbSmtPad.pcb_component_id).toBeDefined()
-  expect(firstPcbSmtPad.pcb_port_id).toBeDefined()
+  // Check properties of a pcb_smtpad or pcb_plated_hole
+  const firstPad = pcbSmtPads[0] || pcbPlatedHoles[0]
+  expect(firstPad).toBeDefined()
+  expect(firstPad.x).toBeDefined()
+  expect(firstPad.y).toBeDefined()
+  expect(firstPad.port_hints).toBeDefined()
+  expect(firstPad.pcb_component_id).toBeDefined()
+  expect(firstPad.pcb_port_id).toBeDefined()
+
+  if (firstPad.type === "pcb_smtpad") {
+    expect(firstPad.pcb_smtpad_id).toBeDefined()
+    expect(firstPad.shape).toBeDefined()
+    expect(firstPad.layer).toBe("top")
+  }
 
   await logSoup("easyeda to tscircuit soup", soupElements as AnySoupElement[])
 })
