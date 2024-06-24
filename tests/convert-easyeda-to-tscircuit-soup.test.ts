@@ -1,6 +1,6 @@
 import { it, expect } from "bun:test"
 import { logSoup } from "@tscircuit/log-soup"
-import a555TimerEasyEdaJson from "./a555-timer-dip.json"
+import a555TimerEasyEdaJson from "./a555-timer-dip.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/soup-util"

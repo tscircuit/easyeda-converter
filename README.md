@@ -30,5 +30,13 @@ easyeda-converter convert -i C46749 -o C46749.soup.json
 easyeda-converter convert -i C46749 -o C46749.kicad_mod
 
 # Download the C46749 footprint and schematic and convert to readable JSON
-easyeda-converter download -i C46749 -o C46749.easyeda.json
+easyeda-converter convert -i C46749 -o C46749.bettereasy.json
+
+# Can also convert from files!
+easyeda-converter convert -i ./C46749.raweasy.json -o C46749.soup.json
+
+# Get exactly what is returned from the JLC API
+# The footprint, schematic and some other data is encoded in strings, you
+# probably want to convert to *.bettereasy.json
+easyeda-converter download -i C46749 -o C46749.raweasy.json
 ```
