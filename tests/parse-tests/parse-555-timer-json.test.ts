@@ -1,5 +1,5 @@
 import { it, expect } from "bun:test"
-import a555TimerEasyEdaJson from "./a555-timer-dip.raweasy.json"
+import a555TimerEasyEdaJson from "../assets/a555-timer-dip.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 
 it("should parse easyeda json for a 555 timer", async () => {

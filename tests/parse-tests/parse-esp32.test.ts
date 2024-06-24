@@ -1,5 +1,5 @@
 import { it, expect } from "bun:test"
-import esp32Json from "./esp32.raweasy.json"
+import esp32Json from "../assets/esp32.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 
 it("should parse easyeda json for a 555 timer", async () => {
