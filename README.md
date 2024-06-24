@@ -40,3 +40,13 @@ easyeda-converter convert -i ./C46749.raweasy.json -o C46749.soup.json
 # probably want to convert to *.bettereasy.json
 easyeda-converter download -i C46749 -o C46749.raweasy.json
 ```
+
+## File Formats
+
+| Format              | Description                                                                                              |
+| ------------------- | -------------------------------------------------------------------------------------------------------- |
+| `*.raweasy.json`    | The raw JSON from the EasyEDA API                                                                        |
+| `*.bettereasy.json` | The raw JSON from the EasyEDA API, but with the footprint and schematic data decoded                     |
+| `*.soup.json`       | The tscircuit's easy-to-use JSON format [(docs)](https://docs.tscircuit.com/api-reference/advanced/soup) |
+| `*.kicad_mod`       | A KiCad footprint file                                                                                   |
+| `*.ts`              | A tscircuit component file                                                                               |
