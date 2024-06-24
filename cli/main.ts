@@ -47,8 +47,11 @@ program
   .command("download")
   .description("Download JSON for footprint")
   .requiredOption("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
-  .requiredOption("-o, --output <filename>", "Output filename")
+  .option("-o, --output <filename>", "Output filename")
   .action(async (options) => {
+    if (!options.output) {
+      options.output = `${options.input}.raweasy.json`
+    }
     try {
       const easyEdaJson = await fetchEasyEDAComponent(options.input)
       await fs.writeFile(options.output, JSON.stringify(easyEdaJson, null, 2))
