@@ -29,6 +29,6 @@ easyeda-converter convert -i C46749 -o C46749.soup.json
 # Convert a footprint for JLCPCB part number C46749 (NE555) to KiCad footprint
 easyeda-converter convert -i C46749 -o C46749.kicad_mod
 
-# Download JSON for footprint for JLCPCB part number C46749 (NE555)
-easyeda-converter download -i C46749 -o C46749.footprint.json
+# Download the C46749 footprint and schematic and convert to readable JSON
+easyeda-converter download -i C46749 -o C46749.easyeda.json
 ```
