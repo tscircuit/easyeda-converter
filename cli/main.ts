@@ -53,10 +53,13 @@ program
       options.output = `${options.input}.raweasy.json`
     }
     try {
-      const easyEdaJson = await fetchEasyEDAComponent(options.input)
-      await fs.writeFile(options.output, JSON.stringify(easyEdaJson, null, 2))
+      const easyEdaJsonRes = await fetchEasyEDAComponent(options.input)
+      await fs.writeFile(
+        options.output,
+        JSON.stringify(easyEdaJsonRes.result, null, 2)
+      )
       console.log(`Downloaded JSON footprint: ${options.output}`)
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error.message)
     }
   })
