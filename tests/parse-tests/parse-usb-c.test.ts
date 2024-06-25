@@ -5,5 +5,5 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 it("should parse easyeda json for a mounted usb c plug", async () => {
   const result = EasyEdaJsonSchema.parse(usbCJson)
 
-  expect(result.uuid).toBe("f3fe56761e5d4bb49b034efdb56ea9e7")
+  expect(result.uuid).toBe("04b7d8073e854006b41709a96b7a21a9")
 })

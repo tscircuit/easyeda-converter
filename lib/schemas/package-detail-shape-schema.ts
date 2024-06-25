@@ -87,6 +87,13 @@ export const SVGNodeSchema = BaseShapeSchema.extend({
   }),
 })
 
+// e.g. "HOLE~3999.449~3004.213~1.378~gge152~0"
+export const HoleSchema = BaseShapeSchema.extend({
+  type: z.literal("HOLE"),
+  center: PointSchema,
+  radius: z.number(),
+})
+
 export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   TrackSchema,
   PadSchema,
@@ -94,6 +101,7 @@ export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   CircleSchema,
   SolidRegionSchema,
   SVGNodeSchema,
+  HoleSchema,
 ])
 
 const pairs = <T>(arr: T[]): [T, T][] => {
@@ -206,6 +214,16 @@ export const ShapeItemSchema = z
           id,
         })
       }
+      case "HOLE": {
+        const [centerX, centerY, radius, id] = shape.data.split("~")
+        const center: [number, number] = [Number(centerX), Number(centerY)]
+        return HoleSchema.parse({
+          type: "HOLE",
+          center,
+          radius: Number(radius),
+          id,
+        })
+      }
       case "SOLIDREGION": {
         const [layermask, , pathData, fillStyle, id] = shape.data.split("~")
         const points = pathData
@@ -224,6 +242,7 @@ export const ShapeItemSchema = z
         return SVGNodeSchema.parse({ type: "SVGNODE", svgData })
       }
       default:
+        throw new Error(`Unknown shape type: ${shape.type}`)
         return BaseShapeSchema.parse({ type: shape.type })
     }
   })
