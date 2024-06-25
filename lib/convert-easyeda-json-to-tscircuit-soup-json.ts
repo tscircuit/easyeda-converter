@@ -19,6 +19,8 @@ import {
   pcb_plated_hole,
 } from "@tscircuit/soup"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
+import { transformPCBElements } from "@tscircuit/builder"
+import { scale } from "transformation-matrix"
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
@@ -142,6 +144,9 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
       soupElements.push(handleSilkscreenArc(shape, index))
     }
   })
+
+  // easyeda uses a flipped Y axis ( tscircuit = y+ is up, easyeda = y- is up )
+  transformPCBElements(soupElements, scale(1, -1))
 
   return soupElements
 }

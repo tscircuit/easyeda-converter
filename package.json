@@ -8,6 +8,7 @@
     "aider": "aider"
   },
   "devDependencies": {
+    "@tscircuit/builder": "^1.5.131",
     "@tscircuit/log-soup": "1.0.2",
     "@tscircuit/soup": "^0.0.34",
     "@tscircuit/soup-util": "^0.0.11",
@@ -18,6 +19,7 @@
   },
   "dependencies": {
     "commander": "^12.1.0",
+    "transformation-matrix": "^2.16.1",
     "zod": "^3.23.8"
   }
 }

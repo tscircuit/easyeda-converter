@@ -1,13 +1,13 @@
 import { it, expect } from "bun:test"
 import { logSoup } from "@tscircuit/log-soup"
-import esp32RawEasy from "../assets/esp32.raweasy.json"
+import usbCEasyEdaJson from "../assets/usb-c.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import type { AnySoupElement } from "@tscircuit/soup"
 
-it("should parse easyeda json for a 555 timer (smd) and convert to tscircuit soup", async () => {
-  const parsedJson = EasyEdaJsonSchema.parse(esp32RawEasy)
+it("should convert a usb-c footprint to tscircuit soup json", async () => {
+  const parsedJson = EasyEdaJsonSchema.parse(usbCEasyEdaJson)
   const soupElements = convertEasyEdaJsonToTscircuitSoupJson(parsedJson)
 
-  await logSoup("easyeda esp32 to soup", soupElements as AnySoupElement[])
+  await logSoup("easyeda usb-c to soup", soupElements as AnySoupElement[])
 })
