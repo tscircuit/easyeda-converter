@@ -38,7 +38,7 @@ program
       } else {
         console.error("Unsupported output format")
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error.message)
     }
   })

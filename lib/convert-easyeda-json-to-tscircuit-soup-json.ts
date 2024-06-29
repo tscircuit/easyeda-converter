@@ -59,8 +59,13 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
   })
 }
 
+interface Options {
+  useModelCdn?: boolean
+}
+
 export const convertEasyEdaJsonToTscircuitSoupJson = (
-  easyEdaJson: EasyEdaJson
+  easyEdaJson: EasyEdaJson,
+  { useModelCdn }: Options = {}
 ): AnySoupElement[] => {
   const soupElements: AnySoupElement[] = []
 
@@ -175,8 +180,11 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
     (a): a is z.input<typeof SVGNodeSchema> =>
       Boolean(a.type === "SVGNODE" && a.svgData.attrs?.uuid)
   )?.svgData?.attrs?.uuid
+
   const objFileUrl = objFileUuid
-    ? `https://modules.easyeda.com/3dmodel/${objFileUuid}`
+    ? useModelCdn
+      ? `https://modelcdn.tscircuit.com/easyeda_models/download?uuid=${objFileUuid}&pn=${easyEdaJson.lcsc.number}`
+      : `https://modules.easyeda.com/3dmodel/${objFileUuid}`
     : undefined
 
   if (objFileUrl !== undefined) {

@@ -1,18 +1,24 @@
 {
   "name": "easyeda-converter",
-  "module": "index.ts",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "test": "bun test",
+    "build": "tsup lib/index.ts cli/main.ts --dts --sourcemap",
     "aider": "aider"
+  },
+  "main": "./dist/lib/index.cjs",
+  "bin": {
+    "easyeda-converter": "lib/cli/main.cjs",
+    "easyeda": "lib/cli/main.cjs"
   },
   "devDependencies": {
     "@tscircuit/builder": "^1.5.131",
     "@tscircuit/log-soup": "1.0.2",
     "@tscircuit/soup": "^0.0.37",
     "@tscircuit/soup-util": "^0.0.11",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "tsup": "^8.1.0"
   },
   "peerDependencies": {
     "typescript": "^5.5.2"
