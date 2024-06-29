@@ -10,7 +10,7 @@
   "devDependencies": {
     "@tscircuit/builder": "^1.5.131",
     "@tscircuit/log-soup": "1.0.2",
-    "@tscircuit/soup": "^0.0.34",
+    "@tscircuit/soup": "^0.0.37",
     "@tscircuit/soup-util": "^0.0.11",
     "@types/bun": "latest"
   },
