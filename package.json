@@ -1,7 +1,10 @@
 {
-  "name": "easyeda-converter",
+  "name": "easyeda",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.3",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "bun test",
     "build": "tsup lib/index.ts cli/main.ts --dts --sourcemap",
@@ -9,8 +12,8 @@
   },
   "main": "./dist/lib/index.cjs",
   "bin": {
-    "easyeda-converter": "lib/cli/main.cjs",
-    "easyeda": "lib/cli/main.cjs"
+    "easyeda-converter": "./dist/cli/main.cjs",
+    "easyeda": "./dist/cli/main.cjs"
   },
   "devDependencies": {
     "@tscircuit/builder": "^1.5.131",
