@@ -57,7 +57,7 @@ export async function fetchEasyEDAComponent(
   }
 
   const componentResult = await componentResponse.json()
-  return componentResult
+  return componentResult.result
 }
 
 // Usage example

@@ -19,8 +19,14 @@ program
   .requiredOption("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
   .requiredOption("-o, --output <filename>", "Output filename")
   .action(async (options) => {
+    let easyEdaJson
+    if (options.input.includes(".") || options.input.includes("/")) {
+      easyEdaJson = JSON.parse(await fs.readFile(options.input, "utf-8"))
+    } else {
+      easyEdaJson = await fetchEasyEDAComponent(options.input)
+    }
+
     try {
-      const easyEdaJson = await fetchEasyEDAComponent(options.input)
       const tscircuitSoup = convertEasyEdaJsonToTscircuitSoupJson(easyEdaJson)
 
       if (options.output.endsWith(".ts")) {

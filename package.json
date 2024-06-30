@@ -1,10 +1,14 @@
 {
   "name": "easyeda",
   "type": "module",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tscircuit/easyeda-converter"
+  },
   "scripts": {
     "test": "bun test",
     "build": "tsup lib/index.ts cli/main.ts --dts --sourcemap",
