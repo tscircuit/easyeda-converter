@@ -26,6 +26,12 @@ program
       easyEdaJson = await fetchEasyEDAComponent(options.input)
     }
 
+    if (options.output.endsWith(".raweasy.json")) {
+      await fs.writeFile(options.output, JSON.stringify(easyEdaJson, null, 2))
+      console.log(`Saved raw EasyEDA JSON: ${options.output}`)
+      return
+    }
+
     try {
       const tscircuitSoup = convertEasyEdaJsonToTscircuitSoupJson(easyEdaJson)
 
@@ -62,7 +68,7 @@ program
       const easyEdaJsonRes = await fetchEasyEDAComponent(options.input)
       await fs.writeFile(
         options.output,
-        JSON.stringify(easyEdaJsonRes.result, null, 2)
+        JSON.stringify(easyEdaJsonRes, null, 2)
       )
       console.log(`Downloaded JSON footprint: ${options.output}`)
     } catch (error: any) {
