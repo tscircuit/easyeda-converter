@@ -18,11 +18,11 @@ program
 program
   .command("convert")
   .description("Convert EasyEDA JSON to various formats")
-  .requiredOption("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
+  .option("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
   .option("-o, --output <filename>", "Output filename")
   .option(
     "-t, --type <type>",
-    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, ts"
+    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, tsx"
   )
   .action(async (options) => {
     let easyEdaJson
@@ -31,6 +31,8 @@ program
     } else {
       easyEdaJson = await fetchEasyEDAComponent(options.input)
     }
+
+    if (options.type === "ts") options.type = "tsx"
 
     if (!options.output && options.type) {
       options.output = `${options.input}.${options.type}`
