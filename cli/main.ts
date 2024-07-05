@@ -65,7 +65,10 @@ program
         const betterEasy = EasyEdaJsonSchema.parse(easyEdaJson)
         await fs.writeFile(options.output, JSON.stringify(betterEasy, null, 2))
         console.log(`Saved better EasyEDA JSON: ${options.output}`)
-      } else if (options.output.endsWith(".ts")) {
+      } else if (
+        options.output.endsWith(".tsx") ||
+        options.output.endsWith(".ts")
+      ) {
         const tsComp = convertRawEasyToTs(easyEdaJson)
         await fs.writeFile(options.output, tsComp)
         console.log(`Saved TypeScript component: ${options.output}`)
