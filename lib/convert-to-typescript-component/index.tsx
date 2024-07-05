@@ -19,8 +19,27 @@ export const convertToTypescriptComponent = ({
 
   return soupTypescriptComponentTemplate({
     componentName: pn,
-    pinLabels: {},
-    schPinArrangement: {},
+    // TODO derive the pinLabels using the easyeda json
+    pinLabels: {
+      1: "VCC",
+      2: "GND",
+      // etc.
+    },
+    // TODO derive the schPinArrangement from the easyeda json
+    schPinArrangement: {
+      leftSize: 4,
+      rightSize: 4,
+    },
+    // schPinArrangement: {
+    //   leftSide: {
+    //     direction: "top-to-bottom",
+    //     pins: [1, 2, 3, 4],
+    //   },
+    //   rightSide: {
+    //     direction: "bottom-to-top",
+    //     pins: [5, 6, 7, 8],
+    //   },
+    // },
     objUrl: cad_component.model_obj_url,
   })
 }
