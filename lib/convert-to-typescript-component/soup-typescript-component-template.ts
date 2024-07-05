@@ -1,12 +1,15 @@
 import type { AnySoupElement } from "@tscircuit/soup"
 import type { BugProps } from "@tscircuit/props"
 import { su } from "@tscircuit/soup-util"
+import type { EasyEdaJson } from "../schemas/easy-eda-json-schema"
+import { generateFootprintTsx } from "../generate-footprint-tsx"
 
 interface Params {
   pinLabels: BugProps["pinLabels"]
   componentName: string
   schPinArrangement: BugProps["schPortArrangement"]
   objUrl?: string
+  easyEdaJson: EasyEdaJson
 }
 
 export const soupTypescriptComponentTemplate = ({
@@ -14,7 +17,9 @@ export const soupTypescriptComponentTemplate = ({
   componentName,
   schPinArrangement,
   objUrl,
+  easyEdaJson,
 }: Params) => {
+  const footprintTsx = generateFootprintTsx(easyEdaJson)
   return `
 import { createUseComponent } from "tscircuit"
 import type { CommonLayoutProps } from "@tscircuit/props"
@@ -30,10 +35,7 @@ export const ${componentName} = (props: Props) => {
   return (
     <bug
       {...props}
-      footprint={
-        <footprint>
-        </footprint>
-      }
+      footprint={${footprintTsx}}
       cadModel={{
         objUrl: "${objUrl}"
       }}

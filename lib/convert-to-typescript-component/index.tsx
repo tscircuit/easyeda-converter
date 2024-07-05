@@ -5,12 +5,12 @@ import { soupTypescriptComponentTemplate } from "./soup-typescript-component-tem
 
 export const convertToTypescriptComponent = ({
   soup,
-  easyeda,
+  easyeda: easyEdaJson,
 }: {
   soup: AnySoupElement[]
   easyeda: EasyEdaJson
 }): string => {
-  const pn = easyeda.lcsc.number
+  const pn = easyEdaJson.lcsc.number
   const [cad_component] = su(soup).cad_component.list()
 
   const smtpads = su(soup).pcb_smtpad.list()
@@ -19,14 +19,14 @@ export const convertToTypescriptComponent = ({
 
   // Derive pinLabels from easyeda json
   const pinLabels: Record<string, string> = {}
-  easyeda.dataStr.shape
+  easyEdaJson.dataStr.shape
     .filter((shape) => shape.type === "PIN")
     .forEach((pin) => {
       pinLabels[pin.pinNumber.toString()] = pin.label
     })
 
   // Derive schPinArrangement from easyeda json
-  const pins = easyeda.dataStr.shape.filter((shape) => shape.type === "PIN")
+  const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
   const leftPins = pins.filter((pin) => pin.rotation === 180)
   const rightPins = pins.filter((pin) => pin.rotation === 0)
 
@@ -46,5 +46,6 @@ export const convertToTypescriptComponent = ({
     pinLabels,
     schPinArrangement,
     objUrl: cad_component.model_obj_url,
+    easyEdaJson,
   })
 }
