@@ -31,8 +31,8 @@ export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
           pcbY="${normalizedY.toFixed(2)}mm"
           hole_diameter="${holeRadius * 2}mm"
           outer_diameter="${width}mm"
-          port_hints={["${number}"]}
-        />`.trim()
+          portHints={["${number}"]}
+        />`.replace(/\n/, "")
     } else {
       return `
         <smtpad
@@ -41,8 +41,8 @@ export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
           width="${width}mm"
           height="${height}mm"
           shape="rect"
-          port_hints={["${number}"]}
-        />`.trim()
+          portHints={["${number}"]}
+        />`.replace(/\n/, "")
     }
   })
 
