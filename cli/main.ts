@@ -6,6 +6,7 @@ import { convertEasyEdaJsonToTscircuitSoupJson } from "../lib/convert-easyeda-js
 import fs from "fs/promises"
 import packageJson from "../package.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertRawEasyToTs } from "lib/convert-to-typescript-component"
 
 const program = new Command()
 
@@ -51,6 +52,9 @@ program
       } else if (options.output.endsWith(".bettereasy.json")) {
         const betterEasy = EasyEdaJsonSchema.parse(easyEdaJson)
         await fs.writeFile(options.output, JSON.stringify(betterEasy, null, 2))
+      } else if (options.output.endsWith(".ts")) {
+        const tsComp = convertRawEasyToTs(easyEdaJson)
+        await fs.writeFile(options.output, tsComp)
       } else {
         console.error("Unsupported output format")
       }
