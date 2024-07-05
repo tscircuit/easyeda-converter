@@ -19,13 +19,26 @@ program
   .command("convert")
   .description("Convert EasyEDA JSON to various formats")
   .requiredOption("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
-  .requiredOption("-o, --output <filename>", "Output filename")
+  .option("-o, --output <filename>", "Output filename")
+  .option(
+    "-t, --type <type>",
+    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, ts"
+  )
   .action(async (options) => {
     let easyEdaJson
     if (options.input.includes(".") || options.input.includes("/")) {
       easyEdaJson = JSON.parse(await fs.readFile(options.input, "utf-8"))
     } else {
       easyEdaJson = await fetchEasyEDAComponent(options.input)
+    }
+
+    if (!options.output && options.type) {
+      options.output = `${options.input}.${options.type}`
+    }
+
+    if (!options.output) {
+      console.log("specify --output file (-o) or --type (-t)")
+      process.exit(1)
     }
 
     if (options.output.endsWith(".raweasy.json")) {
@@ -37,10 +50,7 @@ program
     try {
       const tscircuitSoup = convertEasyEdaJsonToTscircuitSoupJson(easyEdaJson)
 
-      if (options.output.endsWith(".ts")) {
-        // TODO: Implement conversion to tscircuit component
-        console.log("Conversion to tscircuit component not yet implemented")
-      } else if (options.output.endsWith(".soup.json")) {
+      if (options.output.endsWith(".soup.json")) {
         await fs.writeFile(
           options.output,
           JSON.stringify(tscircuitSoup, null, 2)
@@ -52,9 +62,11 @@ program
       } else if (options.output.endsWith(".bettereasy.json")) {
         const betterEasy = EasyEdaJsonSchema.parse(easyEdaJson)
         await fs.writeFile(options.output, JSON.stringify(betterEasy, null, 2))
+        console.log(`Saved better EasyEDA JSON: ${options.output}`)
       } else if (options.output.endsWith(".ts")) {
         const tsComp = convertRawEasyToTs(easyEdaJson)
         await fs.writeFile(options.output, tsComp)
+        console.log(`Saved TypeScript component: ${options.output}`)
       } else {
         console.error("Unsupported output format")
       }
