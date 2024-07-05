@@ -5,6 +5,7 @@ import { fetchEasyEDAComponent } from "../lib/fetch-easyeda-json"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "../lib/convert-easyeda-json-to-tscircuit-soup-json"
 import fs from "fs/promises"
 import packageJson from "../package.json"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 
 const program = new Command()
 
@@ -47,6 +48,9 @@ program
       } else if (options.output.endsWith(".kicad_mod")) {
         // TODO: Implement conversion to KiCad footprint
         console.log("Conversion to KiCad footprint not yet implemented")
+      } else if (options.output.endsWith(".bettereasy.json")) {
+        const betterEasy = EasyEdaJsonSchema.parse(easyEdaJson)
+        await fs.writeFile(options.output, JSON.stringify(betterEasy, null, 2))
       } else {
         console.error("Unsupported output format")
       }
