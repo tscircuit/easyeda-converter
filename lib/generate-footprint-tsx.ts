@@ -32,7 +32,7 @@ export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
           hole_diameter="${holeRadius * 2}mm"
           outer_diameter="${width}mm"
           port_hints={["${number}"]}
-        />`
+        />`.trim()
     } else {
       return `
         <smtpad
@@ -42,7 +42,7 @@ export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
           height="${height}mm"
           shape="rect"
           port_hints={["${number}"]}
-        />`
+        />`.trim()
     }
   })
 
