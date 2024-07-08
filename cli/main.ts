@@ -22,14 +22,14 @@ program
   .option("-o, --output <filename>", "Output filename")
   .option(
     "-t, --type <type>",
-    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, tsx",
+    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, tsx"
   )
   .action(async (options) => {
-    let easyEdaJson
+    let rawEasyEdaJson
     if (options.input.includes(".") || options.input.includes("/")) {
-      easyEdaJson = JSON.parse(await fs.readFile(options.input, "utf-8"))
+      rawEasyEdaJson = JSON.parse(await fs.readFile(options.input, "utf-8"))
     } else {
-      easyEdaJson = await fetchEasyEDAComponent(options.input)
+      rawEasyEdaJson = await fetchEasyEDAComponent(options.input)
     }
 
     if (options.type === "ts") options.type = "tsx"
@@ -44,32 +44,35 @@ program
     }
 
     if (options.output.endsWith(".raweasy.json")) {
-      await fs.writeFile(options.output, JSON.stringify(easyEdaJson, null, 2))
+      await fs.writeFile(
+        options.output,
+        JSON.stringify(rawEasyEdaJson, null, 2)
+      )
       console.log(`Saved raw EasyEDA JSON: ${options.output}`)
       return
     }
 
     try {
-      const tscircuitSoup = convertEasyEdaJsonToTscircuitSoupJson(easyEdaJson)
+      const betterEasy = EasyEdaJsonSchema.parse(rawEasyEdaJson)
+      const tscircuitSoup = convertEasyEdaJsonToTscircuitSoupJson(betterEasy)
 
       if (options.output.endsWith(".soup.json")) {
         await fs.writeFile(
           options.output,
-          JSON.stringify(tscircuitSoup, null, 2),
+          JSON.stringify(tscircuitSoup, null, 2)
         )
         console.log(`Converted to tscircuit soup JSON: ${options.output}`)
       } else if (options.output.endsWith(".kicad_mod")) {
         // TODO: Implement conversion to KiCad footprint
         console.log("Conversion to KiCad footprint not yet implemented")
       } else if (options.output.endsWith(".bettereasy.json")) {
-        const betterEasy = EasyEdaJsonSchema.parse(easyEdaJson)
         await fs.writeFile(options.output, JSON.stringify(betterEasy, null, 2))
         console.log(`Saved better EasyEDA JSON: ${options.output}`)
       } else if (
         options.output.endsWith(".tsx") ||
         options.output.endsWith(".ts")
       ) {
-        const tsComp = convertRawEasyToTs(easyEdaJson)
+        const tsComp = convertRawEasyToTs(rawEasyEdaJson)
         await fs.writeFile(options.output, tsComp)
         console.log(`Saved TypeScript component: ${options.output}`)
       } else {
@@ -93,7 +96,7 @@ program
       const easyEdaJsonRes = await fetchEasyEDAComponent(options.input)
       await fs.writeFile(
         options.output,
-        JSON.stringify(easyEdaJsonRes, null, 2),
+        JSON.stringify(easyEdaJsonRes, null, 2)
       )
       console.log(`Downloaded JSON footprint: ${options.output}`)
     } catch (error: any) {
