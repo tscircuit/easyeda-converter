@@ -7,6 +7,7 @@ import fs from "fs/promises"
 import packageJson from "../package.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertRawEasyToTs } from "lib/convert-to-typescript-component"
+import * as path from "path"
 
 const program = new Command()
 
@@ -35,7 +36,9 @@ program
     if (options.type === "ts") options.type = "tsx"
 
     if (!options.output && options.type) {
-      options.output = `${options.input}.${options.type}`
+      options.output = `${path.basename(options.input).split(".")[0]}.${
+        options.type
+      }`
     }
 
     if (!options.output) {
