@@ -197,5 +197,5 @@ export const SingleLetterShapeSchema = z
       RectangleShapeOutputSchema,
       EllipseShapeOutputSchema,
       PinShapeOutputSchema,
-    ])
+    ]),
   )

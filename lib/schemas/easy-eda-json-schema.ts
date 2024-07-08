@@ -91,7 +91,7 @@ export const PackageDetailDataStrSchema = z.object({
       shapes.map((shape) => {
         const [type, ...data] = shape.split("~")
         return ShapeItemSchema.parse({ type, data: data.join("~") })
-      })
+      }),
     )
     .pipe(z.array(PackageDetailShapeSchema)),
   layers: z.array(z.string()).transform((layers) =>
@@ -106,7 +106,7 @@ export const PackageDetailDataStrSchema = z.object({
         config: config === "true",
         transparency: transparency === "true",
       })
-    })
+    }),
   ),
   objects: z.array(z.string()).transform((objects) =>
     objects.map((obj) => {
@@ -116,7 +116,7 @@ export const PackageDetailDataStrSchema = z.object({
         visible: visible === "true",
         locked: locked === "true",
       })
-    })
+    }),
   ),
   BBox: BBoxSchema,
   netColors: z.array(z.unknown()).optional(),
