@@ -13,7 +13,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - name: Use bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
       - run: npm install -g pver
       - run: bun install --frozen-lockfile
       - run: pver release
