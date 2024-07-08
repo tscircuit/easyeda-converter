@@ -1,8 +1,10 @@
 {
   "name": "easyeda",
   "type": "module",
-  "version": "0.0.4",
-  "files": ["dist"],
+  "version": "0.0.5",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/tscircuit/easyeda-converter"
