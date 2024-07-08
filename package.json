@@ -2,9 +2,7 @@
   "name": "easyeda",
   "type": "module",
   "version": "0.0.4",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "https://github.com/tscircuit/easyeda-converter"
@@ -12,7 +10,9 @@
   "scripts": {
     "test": "bun test",
     "build": "tsup lib/index.ts cli/main.ts --dts --sourcemap",
-    "aider": "aider"
+    "aider": "aider",
+    "format:check": "biome format .",
+    "format": "biome format . --write"
   },
   "main": "./dist/lib/index.cjs",
   "bin": {
@@ -20,6 +20,7 @@
     "easyeda": "./dist/cli/main.cjs"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
     "@tscircuit/builder": "^1.5.131",
     "@tscircuit/log-soup": "1.0.2",
     "@tscircuit/soup": "^0.0.37",

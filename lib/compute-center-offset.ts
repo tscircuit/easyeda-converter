@@ -5,7 +5,7 @@ import { mm } from "@tscircuit/mm"
 
 export const computeCenterOffset = (easyeda: EasyEdaJson) => {
   const pads = easyeda.packageDetail.dataStr.shape.filter(
-    (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD"
+    (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
 
   const minX = Math.min(...pads.map((pad) => mm(pad.center.x)))

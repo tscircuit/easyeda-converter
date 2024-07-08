@@ -17,11 +17,11 @@ it("should parse easyeda json for a 555 timer (smd) and convert to tscircuit sou
         width: 10,
         height: 10,
       },
-    ]
+    ],
   )
 
   await logSoup(
     "a555timer smd easyeda to soup",
-    soupElements as AnySoupElement[]
+    soupElements as AnySoupElement[],
   )
 })

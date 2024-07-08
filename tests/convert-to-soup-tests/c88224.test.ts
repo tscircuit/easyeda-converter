@@ -16,7 +16,7 @@ it("should parse easyeda json for a c88224 and convert to tscircuit soup", async
         width: 20,
         height: 20,
       },
-    ]
+    ],
   )
 
   await logSoup("easyeda c88224 to soup", soupElements as AnySoupElement[])

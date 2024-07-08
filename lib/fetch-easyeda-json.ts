@@ -1,5 +1,5 @@
 export async function fetchEasyEDAComponent(
-  jlcpcbPartNumber: string
+  jlcpcbPartNumber: string,
 ): Promise<any> {
   const searchUrl = "https://easyeda.com/api/components/search"
   const componentUrl = (uuid: string) =>

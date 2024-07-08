@@ -44,7 +44,7 @@ export function generateArcPathWithMid(
   start: Point,
   mid: Point,
   end: Point,
-  numPoints: number
+  numPoints: number,
 ): Point[] {
   const center = calculateCenter(start, mid, end)
   const radius = calculateRadius(center, start)
@@ -104,7 +104,7 @@ export function generateArcFromSweep(
   endY: number,
   radius: number,
   largeArcFlag: boolean,
-  sweepFlag: boolean
+  sweepFlag: boolean,
 ): Point[] {
   const start: Point = { x: startX, y: startY }
   const end: Point = { x: endX, y: endY }
@@ -154,7 +154,7 @@ export function generateArcFromSweep(
   // Generate points along the arc
   const numPoints = Math.max(
     2,
-    Math.ceil(Math.abs(endAngle - startAngle) * radius)
+    Math.ceil(Math.abs(endAngle - startAngle) * radius),
   )
   const path: Point[] = []
 

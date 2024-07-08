@@ -7,7 +7,7 @@ const tenthmil = z
   .transform((n) =>
     typeof n === "string" && n.endsWith("mil")
       ? n
-      : `${Number.parseFloat(n as string) * 10}mil`
+      : `${Number.parseFloat(n as string) * 10}mil`,
   )
   .pipe(z.string())
 
@@ -26,7 +26,7 @@ export const PointSchema = z
     z.object({
       x: z.number(),
       y: z.number(),
-    })
+    }),
   )
 
 export const BaseShapeSchema = z.object({
@@ -128,7 +128,7 @@ const parsePoints = (pointsStr: string): number[][] =>
     pointsStr
       .trim()
       .split(" ")
-      .map((n) => Number(n))
+      .map((n) => Number(n)),
   )
 
 export const ShapeItemSchema = z
@@ -198,7 +198,7 @@ export const ShapeItemSchema = z
           endX,
           endY,
         ] = arcData.match(
-          /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)/
+          /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)/,
         )!
         const start: [number, number] = [Number(startX), Number(startY)]
         const end: [number, number] = [Number(endX), Number(endY)]

@@ -13,19 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: 20
+      - name: Use bun
+        uses: oven-sh/setup-bun@v1
 
       - name: Install dependencies
-        run: npm ci
+        run: bun i
 
       - name: Pull kicad footprints
-        run: npm run test:pull-kicad-footprints
-
-      - name: Run tests
-        run: npm run test
-
-      - name: Run benchmarks
-        run: npm run benchmark
+        run: bun test

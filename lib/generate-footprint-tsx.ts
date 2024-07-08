@@ -5,7 +5,7 @@ import { computeCenterOffset } from "./compute-center-offset"
 
 export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
   const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
-    (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD"
+    (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
 
   const centerOffset = computeCenterOffset(easyEdaJson)

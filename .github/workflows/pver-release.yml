@@ -12,8 +12,10 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
+      - name: Use bun
+        uses: oven-sh/setup-bun@v1
       - run: npm install -g pver
-      - run: npm ci
+      - run: bun install --frozen-lockfile
       - run: pver release
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

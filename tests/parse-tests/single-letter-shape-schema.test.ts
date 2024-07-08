@@ -22,7 +22,7 @@ it("parses examples for single letter shape schema", () => {
       } catch (error: any) {
         console.log(error)
         throw new Error(
-          `Failed to parse example: ${example}. Error: ${error.message}`
+          `Failed to parse example: ${example}. Error: ${error.message}`,
         )
       }
     }).not.toThrow()
