@@ -1,20 +1,16 @@
 import { z } from "zod"
 import type { EasyEdaJson } from "./schemas/easy-eda-json-schema"
 import { PadSchema } from "./schemas/package-detail-shape-schema"
+import { computeCenterOffset } from "./compute-center-offset"
 
 export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
   const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD"
   )
 
-  // Calculate the center point of all pads
-  const minX = Math.min(...pads.map((pad) => pad.center.x))
-  const maxX = Math.max(...pads.map((pad) => pad.center.x))
-  const minY = Math.min(...pads.map((pad) => pad.center.y))
-  const maxY = Math.max(...pads.map((pad) => pad.center.y))
-
-  const centerX = (minX + maxX) / 2
-  const centerY = (minY + maxY) / 2
+  const centerOffset = computeCenterOffset(easyEdaJson)
+  const centerX = centerOffset.x
+  const centerY = centerOffset.y
 
   const footprintElements = pads.map((pad) => {
     const { center, width, height, holeRadius, number } = pad

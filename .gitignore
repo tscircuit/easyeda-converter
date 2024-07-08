@@ -1,6 +1,6 @@
 node_modules
 .aider*
 dist
-*.raweasy.json
+/*.raweasy.json
 *.bettereasy.json
 .vscode

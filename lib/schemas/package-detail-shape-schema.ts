@@ -1,4 +1,7 @@
 import { z } from "zod"
+import { mm } from "@tscircuit/mm"
+
+const mil = z.number().transform((n) => mm(`${n}mil`))
 
 export const PointSchema = z
   .any()

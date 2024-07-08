@@ -22,7 +22,8 @@ import {
 import * as Soup from "@tscircuit/soup"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import { transformPCBElements } from "@tscircuit/builder"
-import { scale } from "transformation-matrix"
+import { scale, translate } from "transformation-matrix"
+import { computeCenterOffset } from "./compute-center-offset"
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
@@ -61,13 +62,15 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
 
 interface Options {
   useModelCdn?: boolean
+  shouldRecenter?: boolean
 }
 
 export const convertEasyEdaJsonToTscircuitSoupJson = (
   easyEdaJson: EasyEdaJson,
-  { useModelCdn }: Options = {}
+  { useModelCdn, shouldRecenter = true }: Options = {}
 ): AnySoupElement[] => {
   const soupElements: AnySoupElement[] = []
+  const centerOffset = computeCenterOffset(easyEdaJson)
 
   // Add source component
   const source_component = any_source_component.parse({
@@ -86,7 +89,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
     width: 0, // TODO compute width
     height: 0, // TODO compute height
     rotation: 0,
-    center: { x: 0, y: 0 },
+    center: { x: centerOffset.x, y: centerOffset.y },
     layer: "top",
   } as Soup.PCBComponentInput)
 
@@ -197,6 +200,13 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
         position: { x: 0, y: 0, z: 0 },
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput)
+    )
+  }
+
+  if (shouldRecenter) {
+    transformPCBElements(
+      soupElements,
+      translate(-centerOffset.x, centerOffset.y)
     )
   }
 
