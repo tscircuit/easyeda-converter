@@ -24,6 +24,7 @@ import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import { transformPCBElements } from "@tscircuit/builder"
 import { scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
+import { mm } from "@tscircuit/mm"
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
@@ -109,18 +110,18 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
         name: portNumber,
       })
 
-      if (pad.holeRadius !== undefined && pad.holeRadius !== 0) {
+      if (pad.holeRadius !== undefined && mm(pad.holeRadius) !== 0) {
         // Add pcb_plated_hole
         soupElements.push(
           pcb_plated_hole.parse({
             type: "pcb_plated_hole",
             pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
             shape: "circle",
-            x: pad.center.x,
-            y: pad.center.y,
-            hole_diameter: pad.holeRadius * 2,
-            outer_diameter: pad.width,
-            radius: pad.holeRadius,
+            x: mm(pad.center.x),
+            y: mm(pad.center.y),
+            hole_diameter: mm(pad.holeRadius) * 2,
+            outer_diameter: mm(pad.width),
+            radius: mm(pad.holeRadius),
             port_hints: [portNumber],
             pcb_component_id: "pcb_component_1",
             pcb_port_id: `pcb_port_${index + 1}`,
@@ -147,11 +148,11 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
             type: "pcb_smtpad",
             pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
             shape: soupShape,
-            x: pad.center.x,
-            y: pad.center.y,
+            x: mm(pad.center.x),
+            y: mm(pad.center.y),
             ...(soupShape === "rect"
-              ? { width: pad.width, height: pad.height }
-              : { radius: Math.min(pad.width, pad.height) / 2 }),
+              ? { width: mm(pad.width), height: mm(pad.height) }
+              : { radius: Math.min(mm(pad.width), mm(pad.height)) / 2 }),
             layer: "top",
             port_hints: [portNumber],
             pcb_component_id: "pcb_component_1",

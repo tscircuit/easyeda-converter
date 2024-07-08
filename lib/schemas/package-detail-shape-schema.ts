@@ -1,7 +1,15 @@
 import { z } from "zod"
 import { mm } from "@tscircuit/mm"
 
-const mil = z.number().transform((n) => mm(`${n}mil`))
+const tenthmil = z
+  .union([z.number(), z.string()])
+  .optional()
+  .transform((n) =>
+    typeof n === "string" && n.endsWith("mil")
+      ? n
+      : `${Number.parseFloat(n as string) * 10}mil`
+  )
+  .pipe(z.string())
 
 export const PointSchema = z
   .any()
@@ -37,15 +45,15 @@ export const PadSchema = BaseShapeSchema.extend({
   type: z.literal("PAD"),
   shape: z.enum(["RECT", "ELLIPSE", "OVAL"]),
   center: z.object({
-    x: z.number(),
-    y: z.number(),
+    x: tenthmil,
+    y: tenthmil,
   }),
-  width: z.number(),
-  height: z.number(),
+  width: tenthmil,
+  height: tenthmil,
   layermask: z.number(),
   net: z.union([z.string(), z.number()]).optional(),
   number: z.number(),
-  holeRadius: z.number(),
+  holeRadius: tenthmil,
   points: z.array(PointSchema).optional(),
   rotation: z.number().optional(),
   plated: z.boolean(),
@@ -157,7 +165,7 @@ export const ShapeItemSchema = z
           points = parsePoints(rest[0] as any)
           rotation = Number(rest[1])
         }
-        return PadSchema.parse({
+        const padInputParams = {
           type: "PAD",
           shape: padShape,
           center,
@@ -170,7 +178,9 @@ export const ShapeItemSchema = z
           points,
           rotation,
           plated: rest.includes("Y"),
-        })
+        }
+        const pad = PadSchema.parse(padInputParams)
+        return pad
       }
       case "ARC": {
         const [width, layer, , arcData] = shape.data.split("~")
