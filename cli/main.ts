@@ -23,7 +23,7 @@ program
   .option("-o, --output <filename>", "Output filename")
   .option(
     "-t, --type <type>",
-    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, tsx"
+    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, tsx",
   )
   .action(async (options) => {
     let rawEasyEdaJson
@@ -49,7 +49,7 @@ program
     if (options.output.endsWith(".raweasy.json")) {
       await fs.writeFile(
         options.output,
-        JSON.stringify(rawEasyEdaJson, null, 2)
+        JSON.stringify(rawEasyEdaJson, null, 2),
       )
       console.log(`Saved raw EasyEDA JSON: ${options.output}`)
       return
@@ -62,7 +62,7 @@ program
       if (options.output.endsWith(".soup.json")) {
         await fs.writeFile(
           options.output,
-          JSON.stringify(tscircuitSoup, null, 2)
+          JSON.stringify(tscircuitSoup, null, 2),
         )
         console.log(`Converted to tscircuit soup JSON: ${options.output}`)
       } else if (options.output.endsWith(".kicad_mod")) {
@@ -99,7 +99,7 @@ program
       const easyEdaJsonRes = await fetchEasyEDAComponent(options.input)
       await fs.writeFile(
         options.output,
-        JSON.stringify(easyEdaJsonRes, null, 2)
+        JSON.stringify(easyEdaJsonRes, null, 2),
       )
       console.log(`Downloaded JSON footprint: ${options.output}`)
     } catch (error: any) {
