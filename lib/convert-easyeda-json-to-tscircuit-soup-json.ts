@@ -196,7 +196,6 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
     const [rx, ry, rz] = (svgNode?.svgData.attrs?.c_rotation ?? "0,0,0")
       .split(",")
       .map(Number)
-      .map((n) => (n * Math.PI) / 180)
     soupElements.push(
       Soup.cad_component.parse({
         type: "cad_component",
