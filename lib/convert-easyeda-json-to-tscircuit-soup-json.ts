@@ -180,10 +180,11 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
   // that the center is (0,0)
 
   // Add 3d component
-  const objFileUuid = easyEdaJson.packageDetail.dataStr.shape.find(
-    (a): a is z.input<typeof SVGNodeSchema> =>
+  const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
+    (a): a is z.infer<typeof SVGNodeSchema> =>
       Boolean(a.type === "SVGNODE" && a.svgData.attrs?.uuid),
-  )?.svgData?.attrs?.uuid
+  )
+  const objFileUuid = svgNode?.svgData?.attrs?.uuid
 
   const objFileUrl = objFileUuid
     ? useModelCdn
@@ -192,6 +193,9 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
     : undefined
 
   if (objFileUrl !== undefined) {
+    const [rx, ry, rz] = (svgNode?.svgData.attrs?.c_rotation ?? "0,0,0")
+      .split(",")
+      .map(Number)
     soupElements.push(
       Soup.cad_component.parse({
         type: "cad_component",
@@ -199,6 +203,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
         source_component_id: "source_component_1",
         pcb_component_id: "pcb_component_1",
         position: { x: 0, y: 0, z: 0 },
+        rotation: { x: rx, y: ry, z: rz },
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput),
     )
