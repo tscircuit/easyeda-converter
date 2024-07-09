@@ -27,7 +27,8 @@ the cli with either `easyeda` or `easyeda-converter`.
 
 ```sh
 # Convert a schematic and footprint for JLCPCB part number C46749 (NE555) to tscircuit component
-easyeda convert -i C46749 -o C46749.ts
+easyeda convert -i C46749 -o C46749.tsx
+easyeda convert -i C46749 -t tsx
 
 # Convert a footprint and schematic for JLCPCB part number C46749 (NE555) to tscircuit soup JSON
 # More info: https://docs.tscircuit.com/api-reference/advanced/soup
