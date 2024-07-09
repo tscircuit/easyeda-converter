@@ -2,6 +2,7 @@ import { z } from "zod"
 import type { EasyEdaJson } from "./schemas/easy-eda-json-schema"
 import { PadSchema } from "./schemas/package-detail-shape-schema"
 import { computeCenterOffset } from "./compute-center-offset"
+import { mm } from "@tscircuit/mm"
 
 export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
   const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
@@ -14,19 +15,19 @@ export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
 
   const footprintElements = pads.map((pad) => {
     const { center, width, height, holeRadius, number } = pad
-    const isPlatedHole = holeRadius !== undefined && holeRadius > 0
+    const isPlatedHole = holeRadius !== undefined && mm(holeRadius) > 0
 
     // Normalize the position by subtracting the center point
-    const normalizedX = center.x - centerX
-    const normalizedY = center.y - centerY
+    const normalizedX = mm(center.x) - centerX
+    const normalizedY = mm(center.y) - centerY
 
     if (isPlatedHole) {
       return `
         <platedhole
           pcbX="${normalizedX.toFixed(2)}mm"
           pcbY="${normalizedY.toFixed(2)}mm"
-          hole_diameter="${holeRadius * 2}mm"
-          outer_diameter="${width}mm"
+          hole_diameter="${mm(holeRadius) * 2}mm"
+          outer_diameter="${mm(width)}mm"
           portHints={["${number}"]}
         />`.replace(/\n/, "")
     } else {
@@ -34,8 +35,8 @@ export const generateFootprintTsx = (easyEdaJson: EasyEdaJson): string => {
         <smtpad
           pcbX="${normalizedX.toFixed(2)}mm"
           pcbY="${normalizedY.toFixed(2)}mm"
-          width="${width}mm"
-          height="${height}mm"
+          width="${mm(width)}mm"
+          height="${mm(height)}mm"
           shape="rect"
           portHints={["${number}"]}
         />`.replace(/\n/, "")

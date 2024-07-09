@@ -13,5 +13,9 @@ it("should convert c88224 into typescript file", async () => {
     easyeda,
     soup,
   })
+
   console.log(result)
+
+  expect(result).not.toContain("milmm")
+  expect(result).not.toContain("NaNmm")
 })
