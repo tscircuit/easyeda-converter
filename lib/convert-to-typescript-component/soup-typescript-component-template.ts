@@ -41,7 +41,7 @@ export const ${componentName} = (props: Props) => {
       }}
       pinLabels={pinLabels}
       schPinSpacing={0.75}
-      schPinArrangement={${JSON.stringify(schPinArrangement, null, "  ")}}
+      schPortArrangement={${JSON.stringify(schPinArrangement, null, "  ")}}
     />
   )
 }

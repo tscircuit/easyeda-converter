@@ -28,7 +28,7 @@ import { mm } from "@tscircuit/mm"
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
-  index: number,
+  index: number
 ) => {
   return pcb_silkscreen_path.parse({
     type: "pcb_silkscreen_path",
@@ -48,7 +48,7 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     arc.end.y,
     arc.radiusX,
     arc.largeArc,
-    arc.sweepDirection === "CW",
+    arc.sweepDirection === "CW"
   )
 
   return pcb_silkscreen_path.parse({
@@ -68,7 +68,7 @@ interface Options {
 
 export const convertEasyEdaJsonToTscircuitSoupJson = (
   easyEdaJson: EasyEdaJson,
-  { useModelCdn, shouldRecenter = true }: Options = {},
+  { useModelCdn, shouldRecenter = true }: Options = {}
 ): AnySoupElement[] => {
   const soupElements: AnySoupElement[] = []
   const centerOffset = computeCenterOffset(easyEdaJson)
@@ -126,7 +126,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
             pcb_component_id: "pcb_component_1",
             pcb_port_id: `pcb_port_${index + 1}`,
             layers: ["top"],
-          } as PCBPlatedHoleInput),
+          } as PCBPlatedHoleInput)
         )
       } else {
         // Add pcb_smtpad
@@ -157,7 +157,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
             port_hints: [portNumber],
             pcb_component_id: "pcb_component_1",
             pcb_port_id: `pcb_port_${index + 1}`,
-          } as PCBSMTPad),
+          } as PCBSMTPad)
         )
       }
     })
@@ -182,7 +182,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
   // Add 3d component
   const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
     (a): a is z.infer<typeof SVGNodeSchema> =>
-      Boolean(a.type === "SVGNODE" && a.svgData.attrs?.uuid),
+      Boolean(a.type === "SVGNODE" && a.svgData.attrs?.uuid)
   )
   const objFileUuid = svgNode?.svgData?.attrs?.uuid
 
@@ -205,14 +205,14 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: rx, y: ry, z: rz },
         model_obj_url: objFileUrl,
-      } as Soup.CadComponentInput),
+      } as Soup.CadComponentInput)
     )
   }
 
   if (shouldRecenter) {
     transformPCBElements(
       soupElements,
-      translate(-centerOffset.x, centerOffset.y),
+      translate(-centerOffset.x, centerOffset.y)
     )
   }
 
