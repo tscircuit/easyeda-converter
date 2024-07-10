@@ -178,6 +178,43 @@ export const PinShapeSchema = z
   })
   .pipe(PinShapeOutputSchema)
 
+const PolylineShapeOutputSchema = z.object({
+  type: z.literal("POLYLINE"),
+  points: z.array(PointSchema),
+  color: z.string(),
+  lineWidth: z.number(),
+  id: z.string(),
+})
+
+export const PolylineShapeSchema = z
+  .string()
+  .startsWith("PL~")
+  .transform((str): z.infer<typeof PolylineShapeOutputSchema> => {
+    const [, ...rest] = str.split("~")
+    const [pointsStr, color, lineWidth, , , id] = rest
+
+    const points = pointsStr.split(" ").reduce<Array<{ x: number; y: number }>>(
+      (acc, value, index) => {
+        if (index % 2 === 0) {
+          acc.push({ x: Number(value), y: 0 });
+        } else {
+          acc[acc.length - 1].y = Number(value);
+        }
+        return acc;
+      },
+      []
+    );
+
+    return {
+      type: "POLYLINE",
+      points,
+      color,
+      lineWidth: Number(lineWidth),
+      id,
+    }
+  })
+  .pipe(PolylineShapeOutputSchema)
+
 export const SingleLetterShapeSchema = z
   .string()
   .transform((x) => {
@@ -188,6 +225,8 @@ export const SingleLetterShapeSchema = z
       return EllipseShapeSchema.parse(x)
     } else if (x.startsWith("P~")) {
       return PinShapeSchema.parse(x)
+    } else if (x.startsWith("PL~")) {
+      return PolylineShapeSchema.parse(x)
     } else {
       throw new Error("Invalid shape type: " + x)
     }
@@ -197,5 +236,6 @@ export const SingleLetterShapeSchema = z
       RectangleShapeOutputSchema,
       EllipseShapeOutputSchema,
       PinShapeOutputSchema,
+      PolylineShapeOutputSchema,
     ]),
   )
