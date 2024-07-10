@@ -6,7 +6,7 @@ import { convertEasyEdaJsonToTscircuitSoupJson } from "../lib/convert-easyeda-js
 import fs from "fs/promises"
 import packageJson from "../package.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertRawEasyToTs } from "lib/convert-to-typescript-component"
+import { convertRawEasyEdaToTs } from "lib/convert-to-typescript-component"
 import * as path from "path"
 
 const program = new Command()
@@ -75,7 +75,7 @@ program
         options.output.endsWith(".tsx") ||
         options.output.endsWith(".ts")
       ) {
-        const tsComp = convertRawEasyToTs(rawEasyEdaJson)
+        const tsComp = convertRawEasyEdaToTs(rawEasyEdaJson)
         await fs.writeFile(options.output, tsComp)
         console.log(`Saved TypeScript component: ${options.output}`)
       } else {

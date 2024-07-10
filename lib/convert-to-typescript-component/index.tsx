@@ -7,7 +7,7 @@ import { su } from "@tscircuit/soup-util"
 import { soupTypescriptComponentTemplate } from "./soup-typescript-component-template"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
-export const convertRawEasyToTs = (rawEasy: any) => {
+export const convertRawEasyEdaToTs = (rawEasy: any) => {
   const easyeda = EasyEdaJsonSchema.parse(rawEasy)
   const soup = convertEasyEdaJsonToTscircuitSoupJson(easyeda, {
     useModelCdn: true,
