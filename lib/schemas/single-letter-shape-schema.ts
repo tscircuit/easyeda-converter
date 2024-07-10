@@ -64,21 +64,25 @@ const RectangleShapeOutputSchema = z.object({
   id: z.string(),
 })
 
+const parseRectangle = (
+  str: string,
+): z.infer<typeof RectangleShapeOutputSchema> => {
+  const [, x, y, , , width, height, color, lineWidth, , , id] = str.split("~")
+  return {
+    type: "RECTANGLE",
+    position: { x: Number(x), y: Number(y) },
+    width: Number(width),
+    height: Number(height),
+    color,
+    lineWidth: Number(lineWidth),
+    id,
+  }
+}
+
 export const RectangleShapeSchema = z
   .string()
   .startsWith("R~")
-  .transform((str): z.infer<typeof RectangleShapeOutputSchema> => {
-    const [, x, y, , , width, height, color, lineWidth, , , id] = str.split("~")
-    return {
-      type: "RECTANGLE",
-      position: { x: Number(x), y: Number(y) },
-      width: Number(width),
-      height: Number(height),
-      color,
-      lineWidth: Number(lineWidth),
-      id,
-    }
-  })
+  .transform(parseRectangle)
   .pipe(RectangleShapeOutputSchema)
 
 const EllipseShapeOutputSchema = z.object({
@@ -91,39 +95,27 @@ const EllipseShapeOutputSchema = z.object({
   id: z.string(),
 })
 
+const parseEllipse = (
+  str: string,
+): z.infer<typeof EllipseShapeOutputSchema> => {
+  const [, x, y, radiusX, radiusY, color, lineWidth, , , id] = str.split("~")
+  return {
+    type: "ELLIPSE",
+    center: { x: Number(x), y: Number(y) },
+    radiusX: Number(radiusX),
+    radiusY: Number(radiusY),
+    color,
+    lineWidth: Number(lineWidth),
+    id,
+  }
+}
+
 export const EllipseShapeSchema = z
   .string()
   .startsWith("E~")
-  .transform((str): z.infer<typeof EllipseShapeOutputSchema> => {
-    const [, x, y, radiusX, radiusY, color, lineWidth, , , id] = str.split("~")
-    return {
-      type: "ELLIPSE",
-      center: { x: Number(x), y: Number(y) },
-      radiusX: Number(radiusX),
-      radiusY: Number(radiusY),
-      color,
-      lineWidth: Number(lineWidth),
-      id,
-    }
-  })
+  .transform(parseEllipse)
   .pipe(EllipseShapeOutputSchema)
 
-//   type PinDirection = 'left' | 'right';
-
-// interface Pin {
-//   type: 'P';
-//   visibility: string;
-//   id: string;
-//   pin: number;
-//   x: number;
-//   y: number;
-//   rotation: number;
-//   name: string;
-//   color: string;
-//   path: string;
-//   arrow: string;
-//   direction: PinDirection;
-// }
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide"]),
@@ -138,14 +130,13 @@ const PinShapeOutputSchema = z.object({
   arrow: z.string(),
 })
 
-function parsePin(pinString: string): z.infer<typeof PinShapeOutputSchema> {
+const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const parts = pinString.split("~")
-  const [_, visibility, __, pinNumber, x, y, rotation, id] = parts
+  const [, visibility, , pinNumber, x, y, rotation, id] = parts
 
   const nameMatch = pinString.match(/~(\w+)~start~/)
   const label = nameMatch ? nameMatch[1] : ""
 
-  // TODO: make sure colors are associated properly
   const colorMatch = pinString.match(/#[0-9A-F]{6}/)
   const labelColor = colorMatch ? colorMatch[0] : ""
 
@@ -173,9 +164,7 @@ function parsePin(pinString: string): z.infer<typeof PinShapeOutputSchema> {
 export const PinShapeSchema = z
   .string()
   .startsWith("P~")
-  .transform((str): z.infer<typeof PinShapeOutputSchema> => {
-    return parsePin(str)
-  })
+  .transform(parsePin)
   .pipe(PinShapeOutputSchema)
 
 const PolylineShapeOutputSchema = z.object({
@@ -186,33 +175,38 @@ const PolylineShapeOutputSchema = z.object({
   id: z.string(),
 })
 
+const parsePoints = (pointsStr: string): Array<{ x: number; y: number }> => {
+  return pointsStr
+    .split(" ")
+    .reduce<Array<{ x: number; y: number }>>((acc, value, index) => {
+      if (index % 2 === 0) {
+        acc.push({ x: Number(value), y: 0 })
+      } else {
+        acc[acc.length - 1].y = Number(value)
+      }
+      return acc
+    }, [])
+}
+
+const parsePolyline = (
+  str: string,
+): z.infer<typeof PolylineShapeOutputSchema> => {
+  const [, ...rest] = str.split("~")
+  const [pointsStr, color, lineWidth, , , id] = rest
+
+  return {
+    type: "POLYLINE",
+    points: parsePoints(pointsStr),
+    color,
+    lineWidth: Number(lineWidth),
+    id,
+  }
+}
+
 export const PolylineShapeSchema = z
   .string()
   .startsWith("PL~")
-  .transform((str): z.infer<typeof PolylineShapeOutputSchema> => {
-    const [, ...rest] = str.split("~")
-    const [pointsStr, color, lineWidth, , , id] = rest
-
-    const points = pointsStr.split(" ").reduce<Array<{ x: number; y: number }>>(
-      (acc, value, index) => {
-        if (index % 2 === 0) {
-          acc.push({ x: Number(value), y: 0 });
-        } else {
-          acc[acc.length - 1].y = Number(value);
-        }
-        return acc;
-      },
-      []
-    );
-
-    return {
-      type: "POLYLINE",
-      points,
-      color,
-      lineWidth: Number(lineWidth),
-      id,
-    }
-  })
+  .transform(parsePolyline)
   .pipe(PolylineShapeOutputSchema)
 
 const PolygonShapeOutputSchema = z.object({
@@ -224,53 +218,37 @@ const PolygonShapeOutputSchema = z.object({
   id: z.string(),
 })
 
+const parsePolygon = (
+  str: string,
+): z.infer<typeof PolygonShapeOutputSchema> => {
+  const [, ...rest] = str.split("~")
+  const [pointsStr, fillColor, lineWidth, lineColor, , id] = rest
+
+  return {
+    type: "POLYGON",
+    points: parsePoints(pointsStr),
+    fillColor,
+    lineWidth: Number(lineWidth),
+    lineColor,
+    id,
+  }
+}
+
 export const PolygonShapeSchema = z
   .string()
   .startsWith("PG~")
-  .transform((str): z.infer<typeof PolygonShapeOutputSchema> => {
-    const [, ...rest] = str.split("~")
-    const [pointsStr, fillColor, lineWidth, lineColor, , id] = rest
-
-    const points = pointsStr.split(" ").reduce<Array<{ x: number; y: number }>>(
-      (acc, value, index) => {
-        if (index % 2 === 0) {
-          acc.push({ x: Number(value), y: 0 });
-        } else {
-          acc[acc.length - 1].y = Number(value);
-        }
-        return acc;
-      },
-      []
-    );
-
-    return {
-      type: "POLYGON",
-      points,
-      fillColor,
-      lineWidth: Number(lineWidth),
-      lineColor,
-      id,
-    }
-  })
+  .transform(parsePolygon)
   .pipe(PolygonShapeOutputSchema)
 
 export const SingleLetterShapeSchema = z
   .string()
   .transform((x) => {
-    // We do some discrimination here for better errors
-    if (x.startsWith("R~")) {
-      return RectangleShapeSchema.parse(x)
-    } else if (x.startsWith("E~")) {
-      return EllipseShapeSchema.parse(x)
-    } else if (x.startsWith("P~")) {
-      return PinShapeSchema.parse(x)
-    } else if (x.startsWith("PL~")) {
-      return PolylineShapeSchema.parse(x)
-    } else if (x.startsWith("PG~")) {
-      return PolygonShapeSchema.parse(x)
-    } else {
-      throw new Error("Invalid shape type: " + x)
-    }
+    if (x.startsWith("R~")) return RectangleShapeSchema.parse(x)
+    if (x.startsWith("E~")) return EllipseShapeSchema.parse(x)
+    if (x.startsWith("P~")) return PinShapeSchema.parse(x)
+    if (x.startsWith("PL~")) return PolylineShapeSchema.parse(x)
+    if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
+    throw new Error(`Invalid shape type: ${x}`)
   })
   .pipe(
     z.union([
@@ -281,3 +259,5 @@ export const SingleLetterShapeSchema = z
       PolygonShapeOutputSchema,
     ]),
   )
+
+export type SingleLetterShape = z.infer<typeof SingleLetterShapeSchema>
