@@ -116,6 +116,23 @@ export const EllipseShapeSchema = z
   .transform(parseEllipse)
   .pipe(EllipseShapeOutputSchema)
 
+//   type PinDirection = 'left' | 'right';
+
+// interface Pin {
+//   type: 'P';
+//   visibility: string;
+//   id: string;
+//   pin: number;
+//   x: number;
+//   y: number;
+//   rotation: number;
+//   name: string;
+//   color: string;
+//   path: string;
+//   arrow: string;
+//   direction: PinDirection;
+// }
+
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide"]),
@@ -243,6 +260,7 @@ export const PolygonShapeSchema = z
 export const SingleLetterShapeSchema = z
   .string()
   .transform((x) => {
+    // We do some discrimination here for better errors
     if (x.startsWith("R~")) return RectangleShapeSchema.parse(x)
     if (x.startsWith("E~")) return EllipseShapeSchema.parse(x)
     if (x.startsWith("P~")) return PinShapeSchema.parse(x)
