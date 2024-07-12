@@ -1,9 +1,10 @@
 # easyeda-converter
 
-> [!WARNING]
-> This library is a work in progress! Not everything works yet!
-
 Convert easyeda JSON PCB footprints into [tscircuit json soup](https://docs.tscircuit.com/api-reference/advanced/soup)
+
+```bash
+npm install -g easyeda
+```
 
 ## Library Usage
 
@@ -11,7 +12,7 @@ Convert easyeda JSON PCB footprints into [tscircuit json soup](https://docs.tsci
 import {
   fetchEasyEDAComponent,
   convertEasyEdaJsonToTscircuitSoupJson,
-} from "easyeda-converter"
+} from "easyeda"
 
 // get raweasy json
 const rawEasyJson = await fetchEasyEDAComponent("C46749")
