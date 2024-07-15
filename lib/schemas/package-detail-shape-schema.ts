@@ -123,7 +123,7 @@ export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   SolidRegionSchema,
   SVGNodeSchema,
   HoleSchema,
-  RectSchema
+  RectSchema,
 ])
 
 const pairs = <T>(arr: T[]): [T, T][] => {
@@ -266,7 +266,8 @@ export const ShapeItemSchema = z
         return SVGNodeSchema.parse({ type: "SVGNODE", svgData })
       }
       case "RECT": {
-        const [x, y, width, height, lineWidth, id, rotation, layer, fillStyle] = shape.data.split("~")
+        const [x, y, width, height, lineWidth, id, rotation, layer, fillStyle] =
+          shape.data.split("~")
         return RectSchema.parse({
           type: "RECT",
           x,
