@@ -7,7 +7,6 @@ import type { AnySoupElement } from "@tscircuit/soup"
 
 it("should parse easyeda json for c4355039 and convert to tscircuit soup", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(C4355039EasyEdaJson)
-  console.log("🚀 ~ parsedJson:", parsedJson)
   const soupElements = convertEasyEdaJsonToTscircuitSoupJson(parsedJson)
 
   await logSoup("easyeda c4355039 to soup", soupElements as AnySoupElement[])
