@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { mm } from "@tscircuit/mm"
 
 const tenthmil = z
   .union([z.number(), z.string()])
@@ -105,6 +104,17 @@ export const HoleSchema = BaseShapeSchema.extend({
   radius: z.number(),
 })
 
+export const RectSchema = BaseShapeSchema.extend({
+  type: z.literal("RECT"),
+  x: tenthmil,
+  y: tenthmil,
+  width: tenthmil,
+  height: tenthmil,
+  lineWidth: z.number(),
+  fillStyle: z.string(),
+  rotation: z.number().optional(),
+})
+
 export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   TrackSchema,
   PadSchema,
@@ -113,6 +123,7 @@ export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   SolidRegionSchema,
   SVGNodeSchema,
   HoleSchema,
+  RectSchema
 ])
 
 const pairs = <T>(arr: T[]): [T, T][] => {
@@ -254,6 +265,22 @@ export const ShapeItemSchema = z
         const svgData = JSON.parse(shape.data)
         return SVGNodeSchema.parse({ type: "SVGNODE", svgData })
       }
+      case "RECT": {
+        const [x, y, width, height, lineWidth, id, rotation, layer, fillStyle] = shape.data.split("~")
+        return RectSchema.parse({
+          type: "RECT",
+          x,
+          y,
+          width,
+          height,
+          lineWidth: Number(lineWidth),
+          id,
+          rotation: rotation ? Number(rotation) : undefined,
+          layer: layer ? Number(layer) : undefined,
+          fillStyle: fillStyle || undefined,
+        })
+      }
+
       default:
         throw new Error(`Unknown shape type: ${shape.type}`)
         return BaseShapeSchema.parse({ type: shape.type })
