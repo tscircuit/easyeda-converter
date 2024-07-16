@@ -26,7 +26,8 @@ export const convertToTypescriptComponent = ({
   soup: AnySoupElement[]
   easyeda: EasyEdaJson
 }): string => {
-  const pn = easyEdaJson.lcsc.number
+  const rawPn = easyEdaJson.dataStr.head.c_para["Manufacturer Part"]
+  const pn = normalizeManufacturerPartNumber(rawPn)
   const [cad_component] = su(soup).cad_component.list()
 
   const smtpads = su(soup).pcb_smtpad.list()
@@ -64,4 +65,14 @@ export const convertToTypescriptComponent = ({
     objUrl: cad_component.model_obj_url,
     easyEdaJson,
   })
+}
+
+function normalizeManufacturerPartNumber(partNumber: string): string {
+  let transformed = partNumber.replace(/-/g, "_")
+
+  if (/^\d/.test(transformed)) {
+    transformed = "A" + transformed
+  }
+
+  return transformed
 }
