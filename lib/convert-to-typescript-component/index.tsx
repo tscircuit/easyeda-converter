@@ -68,11 +68,16 @@ export const convertToTypescriptComponent = ({
 }
 
 function normalizeManufacturerPartNumber(partNumber: string): string {
-  let transformed = partNumber.replace(/-/g, "_")
+  // Step 1: Replace dashes with underscores
+  let normalized = partNumber.replace(/-/g, "_")
 
-  if (/^\d/.test(transformed)) {
-    transformed = "A" + transformed
+  // Step 2: Remove all invalid symbols
+  normalized = normalized.replace(/[^a-zA-Z0-9_$]/g, "")
+
+  // Step 3: If the string starts with a number, prepend 'A'
+  if (/^\d/.test(normalized)) {
+    normalized = "A" + normalized
   }
 
-  return transformed
+  return normalized
 }
