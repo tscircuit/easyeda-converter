@@ -251,8 +251,11 @@ export const ShapeItemSchema = z
       case "SOLIDREGION": {
         const [layermask, , pathData, fillStyle, id] = shape.data.split("~")
         const points = pathData
-          .match(/[ML] ?([\d.]+[ ,][\d.]+)/g)!
-          .map((point) => point.slice(2).split(/[ ,]/).map(Number))
+          .match(/[ML] ?(-?[\d.]+)[ ,](-?[\d.]+)/g)
+          ?.map((point) => {
+            const [, x, y] = point.match(/[ML]? ?(-?[\d.]+)[ ,](-?[\d.]+)/) || []
+            return [Number(x), Number(y)]
+          }) || []
         return SolidRegionSchema.parse({
           type: "SOLIDREGION",
           layermask: Number(layermask),
