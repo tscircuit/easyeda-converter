@@ -250,10 +250,10 @@ export const ShapeItemSchema = z
       }
       case "SOLIDREGION": {
         const [layermask, , pathData, fillStyle, id] = shape.data.split("~")
-        const points = pathData
-          .match(/[ML] ?(-?[\d.]+)[ ,](-?[\d.]+)/g)
-          ?.map((point) => {
-            const [, x, y] = point.match(/[ML]? ?(-?[\d.]+)[ ,](-?[\d.]+)/) || []
+        const points =
+          pathData.match(/[ML] ?(-?[\d.]+)[ ,](-?[\d.]+)/g)?.map((point) => {
+            const [, x, y] =
+              point.match(/[ML]? ?(-?[\d.]+)[ ,](-?[\d.]+)/) || []
             return [Number(x), Number(y)]
           }) || []
         return SolidRegionSchema.parse({
