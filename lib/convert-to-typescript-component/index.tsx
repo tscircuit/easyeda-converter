@@ -40,7 +40,10 @@ export const convertToTypescriptComponent = ({
   easyEdaJson.dataStr.shape
     .filter((shape) => shape.type === "PIN")
     .forEach((pin) => {
-      pinLabels[pin.pinNumber.toString()] = pin.label
+      const isPinLabelNumeric = /^\d+$/.test(pin.label)
+      const label = isPinLabelNumeric ? `pin${pin.label}` : pin.label
+
+      pinLabels[pin.pinNumber.toString()] = label
     })
 
   // Derive schPinArrangement from easyeda json
