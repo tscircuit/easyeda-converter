@@ -6,6 +6,7 @@ import {
 import { su } from "@tscircuit/soup-util"
 import { soupTypescriptComponentTemplate } from "./soup-typescript-component-template"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
 
 export const convertRawEasyEdaToTs = (rawEasy: any) => {
   const easyeda = EasyEdaJsonSchema.parse(rawEasy)
@@ -65,19 +66,4 @@ export const convertToTypescriptComponent = ({
     objUrl: cad_component.model_obj_url,
     easyEdaJson,
   })
-}
-
-function normalizeManufacturerPartNumber(partNumber: string): string {
-  // Step 1: Replace dashes with underscores
-  let normalized = partNumber.replace(/-/g, "_")
-
-  // Step 2: Remove all invalid symbols
-  normalized = normalized.replace(/[^a-zA-Z0-9_$]/g, "")
-
-  // Step 3: If the string starts with a number, prepend 'A'
-  if (/^\d/.test(normalized)) {
-    normalized = "A" + normalized
-  }
-
-  return normalized
 }
