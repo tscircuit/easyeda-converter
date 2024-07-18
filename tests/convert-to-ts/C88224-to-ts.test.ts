@@ -18,4 +18,6 @@ it("should convert c88224 into typescript file", async () => {
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
+  expect(result).toContain('"13": "pin13"')
+  expect(result).toContain('"14": "pin14"')
 })
