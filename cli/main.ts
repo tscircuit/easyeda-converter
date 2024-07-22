@@ -75,7 +75,7 @@ program
         options.output.endsWith(".tsx") ||
         options.output.endsWith(".ts")
       ) {
-        const tsComp = convertRawEasyEdaToTs(rawEasyEdaJson)
+        const tsComp = await convertRawEasyEdaToTs(rawEasyEdaJson)
         await fs.writeFile(options.output, tsComp)
         console.log(`Saved TypeScript component: ${options.output}`)
       } else {
