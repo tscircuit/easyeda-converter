@@ -9,7 +9,7 @@ it("should convert 555timer into typescript file", async () => {
   const soup = convertEasyEdaJsonToTscircuitSoupJson(easyeda, {
     useModelCdn: true,
   })
-  const result = convertToTypescriptComponent({
+  const result = await convertToTypescriptComponent({
     easyeda,
     soup,
   })
