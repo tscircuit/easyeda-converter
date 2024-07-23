@@ -8,6 +8,7 @@ import packageJson from "../package.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertRawEasyEdaToTs } from "lib/convert-to-typescript-component"
 import * as path from "path"
+import { normalizeManufacturerPartNumber } from "lib"
 
 const program = new Command()
 
@@ -33,12 +34,25 @@ program
       rawEasyEdaJson = await fetchEasyEDAComponent(options.input)
     }
 
-    if (options.type === "ts") options.type = "tsx"
+    const tsxExtension = "tsx"
+    if (options.type === "ts") options.type = tsxExtension
 
     if (!options.output && options.type) {
-      options.output = `${path.basename(options.input).split(".")[0]}.${
-        options.type
-      }`
+      let filename = path.basename(options.input).split(".")[0]
+
+      if (options.type === tsxExtension) {
+        const {
+          dataStr: {
+            head: {
+              c_para: { "Manufacturer Part": manufacturerPartNumber },
+            },
+          },
+        } = rawEasyEdaJson
+
+        filename = normalizeManufacturerPartNumber(manufacturerPartNumber)
+      }
+
+      options.output = `${filename}.${options.type}`
     }
 
     if (!options.output) {
