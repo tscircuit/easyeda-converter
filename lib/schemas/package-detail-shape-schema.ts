@@ -209,7 +209,7 @@ export const ShapeItemSchema = z
           endX,
           endY,
         ] = arcData.match(
-          /M ([\d.]+) ([\d.]+) A ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)/,
+          /M\s*([\d.]+)(?:\s*,\s*|\s+)([\d.]+)\s*A\s*([\d.]+)(?:\s*,\s*|\s+)([\d.]+)\s*([\d.]+)\s*([01])\s*([01])\s*([\d.]+)(?:\s*,\s*|\s+)([\d.]+)/,
         )!
         const start: [number, number] = [Number(startX), Number(startY)]
         const end: [number, number] = [Number(endX), Number(endY)]
