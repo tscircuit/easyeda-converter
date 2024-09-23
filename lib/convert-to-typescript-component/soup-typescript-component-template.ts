@@ -1,7 +1,7 @@
 import type { AnySoupElement } from "@tscircuit/soup"
 import type { BugProps } from "@tscircuit/props"
 import { su } from "@tscircuit/soup-util"
-import type { EasyEdaJson } from "../schemas/easy-eda-json-schema"
+import type { BetterEasyEdaJson } from "../schemas/easy-eda-json-schema"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 
 interface Params {
@@ -9,7 +9,7 @@ interface Params {
   componentName: string
   schPinArrangement: BugProps["schPortArrangement"]
   objUrl?: string
-  easyEdaJson: EasyEdaJson
+  easyEdaJson: BetterEasyEdaJson
 }
 
 export const soupTypescriptComponentTemplate = ({

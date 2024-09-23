@@ -1,9 +1,9 @@
 import type { z } from "zod"
-import type { EasyEdaJson } from "./schemas/easy-eda-json-schema"
+import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type { PadSchema } from "./schemas/package-detail-shape-schema"
 import { mm } from "@tscircuit/mm"
 
-export const computeCenterOffset = (easyeda: EasyEdaJson) => {
+export const computeCenterOffset = (easyeda: BetterEasyEdaJson) => {
   const pads = easyeda.packageDetail.dataStr.shape.filter(
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
