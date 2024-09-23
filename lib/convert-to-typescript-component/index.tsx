@@ -1,7 +1,7 @@
 import type { AnySoupElement } from "@tscircuit/soup"
 import {
   EasyEdaJsonSchema,
-  type EasyEdaJson,
+  type BetterEasyEdaJson,
 } from "lib/schemas/easy-eda-json-schema"
 import { su } from "@tscircuit/soup-util"
 import { soupTypescriptComponentTemplate } from "./soup-typescript-component-template"
@@ -25,7 +25,7 @@ export const convertToTypescriptComponent = ({
   easyeda: easyEdaJson,
 }: {
   soup: AnySoupElement[]
-  easyeda: EasyEdaJson
+  easyeda: BetterEasyEdaJson
 }): string => {
   const rawPn = easyEdaJson.dataStr.head.c_para["Manufacturer Part"]
   const pn = normalizeManufacturerPartNumber(rawPn)

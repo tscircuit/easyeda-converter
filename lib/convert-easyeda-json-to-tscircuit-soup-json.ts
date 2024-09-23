@@ -5,7 +5,7 @@ import {
   SVGNodeSchema,
 } from "./schemas/package-detail-shape-schema"
 import { z } from "zod"
-import type { EasyEdaJson } from "./schemas/easy-eda-json-schema"
+import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
   AnySoupElement,
   PCBSMTPad,
@@ -67,7 +67,7 @@ interface Options {
 }
 
 export const convertEasyEdaJsonToTscircuitSoupJson = (
-  easyEdaJson: EasyEdaJson,
+  easyEdaJson: BetterEasyEdaJson,
   { useModelCdn, shouldRecenter = true }: Options = {},
 ): AnySoupElement[] => {
   const soupElements: AnySoupElement[] = []

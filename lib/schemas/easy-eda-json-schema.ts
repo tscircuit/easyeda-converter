@@ -155,4 +155,5 @@ export const EasyEdaJsonSchema = z.object({
   packageDetail: PackageDetailSchema,
 })
 
-export type EasyEdaJson = z.infer<typeof EasyEdaJsonSchema>
+export type RawEasyEdaJson = z.input<typeof EasyEdaJsonSchema>
+export type BetterEasyEdaJson = z.infer<typeof EasyEdaJsonSchema>
