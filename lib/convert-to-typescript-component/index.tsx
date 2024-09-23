@@ -8,25 +8,25 @@ import { soupTypescriptComponentTemplate } from "./soup-typescript-component-tem
 import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
 
-export const convertRawEasyEdaToTs = (rawEasy: any) => {
+export const convertRawEasyEdaToTs = async (rawEasy: any) => {
   const easyeda = EasyEdaJsonSchema.parse(rawEasy)
   const soup = convertEasyEdaJsonToTscircuitSoupJson(easyeda, {
     useModelCdn: true,
   })
-  const result = convertToTypescriptComponent({
+  const result = await convertToTypescriptComponent({
     easyeda,
     soup,
   })
   return result
 }
 
-export const convertToTypescriptComponent = ({
+export const convertToTypescriptComponent = async ({
   soup,
   easyeda: easyEdaJson,
 }: {
   soup: AnySoupElement[]
   easyeda: BetterEasyEdaJson
-}): string => {
+}): Promise<string> => {
   const rawPn = easyEdaJson.dataStr.head.c_para["Manufacturer Part"]
   const pn = normalizeManufacturerPartNumber(rawPn)
   const [cad_component] = su(soup).cad_component.list()
@@ -62,11 +62,31 @@ export const convertToTypescriptComponent = ({
     },
   }
 
+  let modelObjUrl: string | undefined
+  if (cad_component.model_obj_url) {
+    const isValidUrl = await checkModelObjUrlValidity(
+      cad_component.model_obj_url,
+    )
+    if (isValidUrl) {
+      modelObjUrl = cad_component.model_obj_url
+    }
+  }
+
   return soupTypescriptComponentTemplate({
     componentName: pn,
     pinLabels,
     schPinArrangement,
-    objUrl: cad_component.model_obj_url,
+    objUrl: modelObjUrl,
     easyEdaJson,
   })
+}
+
+const checkModelObjUrlValidity = async (url: string): Promise<boolean> => {
+  try {
+    const response = await fetch(url, { method: "HEAD" })
+    return response.status === 200
+  } catch (error) {
+    console.error(`Error checking model object URL ${url}:`, error)
+    return false
+  }
 }

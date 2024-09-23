@@ -9,7 +9,7 @@ it("should convert c88224 into typescript file", async () => {
   const soup = convertEasyEdaJsonToTscircuitSoupJson(easyeda, {
     useModelCdn: true,
   })
-  const result = convertToTypescriptComponent({
+  const result = await convertToTypescriptComponent({
     easyeda,
     soup,
   })

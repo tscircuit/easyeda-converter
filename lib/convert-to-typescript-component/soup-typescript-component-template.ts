@@ -36,9 +36,13 @@ export const ${componentName} = (props: Props) => {
     <bug
       {...props}
       footprint={${footprintTsx}}
-      cadModel={{
+      ${
+        objUrl
+          ? `cadModel={{
         objUrl: "${objUrl}"
-      }}
+      }}`
+          : ""
+      }
       pinLabels={pinLabels}
       schPinSpacing={0.75}
       schPortArrangement={${JSON.stringify(schPinArrangement, null, "  ")}}
