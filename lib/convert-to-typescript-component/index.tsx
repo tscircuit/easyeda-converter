@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnyCircuitElement } from "@tscircuit/soup"
 import {
   EasyEdaJsonSchema,
   type BetterEasyEdaJson,
@@ -24,16 +24,12 @@ export const convertToTypescriptComponent = async ({
   soup,
   easyeda: easyEdaJson,
 }: {
-  soup: AnySoupElement[]
+  soup: AnyCircuitElement[]
   easyeda: BetterEasyEdaJson
 }): Promise<string> => {
   const rawPn = easyEdaJson.dataStr.head.c_para["Manufacturer Part"]
   const pn = normalizeManufacturerPartNumber(rawPn)
-  const [cad_component] = su(soup).cad_component.list()
-
-  const smtpads = su(soup).pcb_smtpad.list()
-  const plated_holes = su(soup).pcb_plated_hole.list()
-  const hole = su(soup).pcb_hole.list()
+  const [cad_component] = su(soup as any).cad_component.list()
 
   // Derive pinLabels from easyeda json
   const pinLabels: Record<string, string> = {}
