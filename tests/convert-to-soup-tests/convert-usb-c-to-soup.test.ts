@@ -8,7 +8,7 @@ import { su } from "@tscircuit/soup-util"
 
 it("should convert a usb-c footprint to tscircuit soup json", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(usbCEasyEdaJson)
-  const soupElements = convertEasyEdaJsonToTscircuitSoupJson(parsedJson)
+  const soupElements = convertEasyEdaJsonToTscircuitSoupJson(parsedJson) as any
 
   expect(su(soupElements).pcb_component.list()[0]).toBeTruthy()
 
