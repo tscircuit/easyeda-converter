@@ -20,10 +20,10 @@ const rawEasyJson = await fetchEasyEDAComponent("C46749")
 ### Converting to Circuit JSON
 
 ```ts
-import { convertEasyEdaJsonToTscircuitSoupJson } from "easyeda"
+import { convertEasyEdaJsonToCircuitJson } from "easyeda"
 
 // Convert to tscircuit soup
-const soupJson = convertEasyEdaJsonToTscircuitSoupJson(rawEasyJson)
+const soupJson = convertEasyEdaJsonToCircuitJson(rawEasyJson)
 ```
 
 ### Converting to TypeScript React Component
@@ -82,13 +82,13 @@ easyeda download -i C46749 -o C46749.raweasy.json
 
 ## File Formats
 
-| Format              | Description                                                                                              |
-| ------------------- | -------------------------------------------------------------------------------------------------------- |
-| `*.raweasy.json`    | The raw JSON from the EasyEDA API                                                                        |
-| `*.bettereasy.json` | The raw JSON from the EasyEDA API, but with the footprint and schematic data decoded                     |
-| `*.soup.json`       | The tscircuit's easy-to-use JSON format [(docs)](https://docs.tscircuit.com/api-reference/advanced/soup) |
-| `*.kicad_mod`       | A KiCad footprint file                                                                                   |
-| `*.tsx`             | A TypeScript React component file                                                                        |
+| Format              | Description                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `*.raweasy.json`    | The raw JSON from the EasyEDA API                                                           |
+| `*.bettereasy.json` | The raw JSON from the EasyEDA API, but with the footprint and schematic data decoded        |
+| `*.circuit.json`    | The tscircuit's easy-to-use JSON format [(docs)](https://github.com/tscircuit/circuit-json) |
+| `*.kicad_mod`       | A KiCad footprint file                                                                      |
+| `*.tsx`             | A TypeScript React component file                                                           |
 
 ## Advanced Usage
 
@@ -97,9 +97,9 @@ easyeda download -i C46749 -o C46749.raweasy.json
 When converting EasyEDA JSON to tscircuit soup, you can pass additional options:
 
 ```ts
-import { convertEasyEdaJsonToTscircuitSoupJson } from "easyeda"
+import { convertEasyEdaJsonToCircuitJson } from "easyeda"
 
-const soupJson = convertEasyEdaJsonToTscircuitSoupJson(rawEasyJson, {
+const soupJson = convertEasyEdaJsonToCircuitJson(rawEasyJson, {
   useModelCdn: true, // Use CDN for 3D models
   shouldRecenter: false, // Don't recenter the component
 })

@@ -2,13 +2,13 @@ import { it, expect } from "bun:test"
 import { logSoup } from "@tscircuit/log-soup"
 import usbCEasyEdaJson from "../assets/usb-c.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import type { AnySoupElement } from "@tscircuit/soup"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import type { AnySoupElement } from "circuit-json"
 import { su } from "@tscircuit/soup-util"
 
 it("should convert a usb-c footprint to tscircuit soup json", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(usbCEasyEdaJson)
-  const soupElements = convertEasyEdaJsonToTscircuitSoupJson(parsedJson) as any
+  const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson) as any
 
   expect(su(soupElements).pcb_component.list()[0]).toBeTruthy()
 

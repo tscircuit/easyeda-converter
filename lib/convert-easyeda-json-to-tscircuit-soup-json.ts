@@ -12,16 +12,17 @@ import type {
   PcbSilkscreenPath,
   PCBPlatedHole,
   PCBPlatedHoleInput,
-} from "@tscircuit/soup"
+  PcbComponentInput,
+} from "circuit-json"
 import {
   any_source_component,
   pcb_smtpad,
   pcb_silkscreen_path,
   pcb_plated_hole,
-} from "@tscircuit/soup"
-import * as Soup from "@tscircuit/soup"
+} from "circuit-json"
+import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
-import { transformPCBElements } from "@tscircuit/builder"
+import { transformPCBElements } from "@tscircuit/soup-util"
 import { scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
@@ -66,7 +67,7 @@ interface Options {
   shouldRecenter?: boolean
 }
 
-export const convertEasyEdaJsonToTscircuitSoupJson = (
+export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
   { useModelCdn, shouldRecenter = true }: Options = {},
 ): AnySoupElement[] => {
@@ -92,7 +93,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
     rotation: 0,
     center: { x: centerOffset.x, y: centerOffset.y },
     layer: "top",
-  } as Soup.PCBComponentInput)
+  } as PcbComponentInput)
 
   soupElements.push(source_component, pcb_component)
 
@@ -218,3 +219,7 @@ export const convertEasyEdaJsonToTscircuitSoupJson = (
 
   return soupElements
 }
+
+/** @deprecated Use `convertEasyEdaJsonToCircuitJson` instead. */
+export const convertEasyEdaJsonToTscircuitSoupJson =
+  convertEasyEdaJsonToCircuitJson

@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "circuit-json"
 import type { BugProps } from "@tscircuit/props"
 import { su } from "@tscircuit/soup-util"
 import type { BetterEasyEdaJson } from "../schemas/easy-eda-json-schema"

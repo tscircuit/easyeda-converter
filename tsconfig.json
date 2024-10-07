@@ -8,6 +8,11 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "baseUrl": ".",
+    "paths": {
+      "lib/*": ["lib/*"],
+      "cli/*": ["cli/*"],
+      "tests/*": ["tests/*"]
+    },
 
     // Bundler mode
     "moduleResolution": "bundler",
