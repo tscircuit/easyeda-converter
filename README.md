@@ -1,6 +1,6 @@
 # easyeda-converter
 
-Convert EasyEDA JSON PCB footprints into [tscircuit json soup](https://docs.tscircuit.com/api-reference/advanced/soup) or TypeScript React components.
+Convert EasyEDA JSON PCB footprints into [Circuit JSON](https://github.com/tscircuit/circuit-json) or TypeScript React components.
 
 ```bash
 npm install -g easyeda

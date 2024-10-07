@@ -4,3 +4,4 @@ dist
 /*.raweasy.json
 *.bettereasy.json
 .vscode
+tmp
