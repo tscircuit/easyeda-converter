@@ -11,15 +11,15 @@
   },
   "scripts": {
     "test": "bun test",
-    "build": "tsup lib/index.ts cli/main.ts --dts --sourcemap",
+    "build": "tsup lib/index.ts cli/main.ts --format esm --dts --sourcemap",
     "aider": "aider",
     "format:check": "biome format .",
     "format": "biome format . --write"
   },
-  "main": "./dist/lib/index.cjs",
+  "main": "./dist/lib/index.js",
   "bin": {
-    "easyeda-converter": "./dist/cli/main.cjs",
-    "easyeda": "./dist/cli/main.cjs"
+    "easyeda-converter": "./dist/cli/main.js",
+    "easyeda": "./dist/cli/main.js"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
