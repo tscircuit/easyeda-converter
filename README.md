@@ -1,6 +1,6 @@
 # easyeda-converter
 
-Convert easyeda JSON PCB footprints into [tscircuit json soup](https://docs.tscircuit.com/api-reference/advanced/soup)
+Convert EasyEDA JSON PCB footprints into [Circuit JSON](https://github.com/tscircuit/circuit-json) or TypeScript React components.
 
 ```bash
 npm install -g easyeda
@@ -8,17 +8,47 @@ npm install -g easyeda
 
 ## Library Usage
 
+### Fetching EasyEDA Component Data
+
 ```ts
-import {
-  fetchEasyEDAComponent,
-  convertEasyEdaJsonToTscircuitSoupJson,
-} from "easyeda"
+import { fetchEasyEDAComponent } from "easyeda"
 
-// get raweasy json
+// Get raw EasyEDA JSON for a component
 const rawEasyJson = await fetchEasyEDAComponent("C46749")
+```
 
-// convert to tscircuit soup
-const soupJson = convertEasyEdaJsonToTscircuitSoupJson(rawEasyJson)
+### Converting to Circuit JSON
+
+```ts
+import { convertEasyEdaJsonToCircuitJson } from "easyeda"
+
+// Convert to tscircuit soup
+const soupJson = convertEasyEdaJsonToCircuitJson(rawEasyJson)
+```
+
+### Converting to TypeScript React Component
+
+```ts
+import { convertRawEasyEdaToTs } from "easyeda"
+
+// Convert to TypeScript React component
+const tsxComponent = await convertRawEasyEdaToTs(rawEasyJson)
+```
+
+### Full Example: Fetching and Converting to TSX
+
+```ts
+import { fetchEasyEDAComponent, convertRawEasyEdaToTs } from "easyeda"
+
+async function convertPartNumberToTsx(partNumber: string) {
+  const rawEasyJson = await fetchEasyEDAComponent(partNumber)
+  const tsxComponent = await convertRawEasyEdaToTs(rawEasyJson)
+  return tsxComponent
+}
+
+// Usage
+const ne555TsxComponent = await convertPartNumberToTsx("C46749")
+console.log(ne555TsxComponent)
 ```
 
 ## CLI
@@ -52,10 +82,44 @@ easyeda download -i C46749 -o C46749.raweasy.json
 
 ## File Formats
 
-| Format              | Description                                                                                              |
-| ------------------- | -------------------------------------------------------------------------------------------------------- |
-| `*.raweasy.json`    | The raw JSON from the EasyEDA API                                                                        |
-| `*.bettereasy.json` | The raw JSON from the EasyEDA API, but with the footprint and schematic data decoded                     |
-| `*.soup.json`       | The tscircuit's easy-to-use JSON format [(docs)](https://docs.tscircuit.com/api-reference/advanced/soup) |
-| `*.kicad_mod`       | A KiCad footprint file                                                                                   |
-| `*.ts`              | A tscircuit component file                                                                               |
+| Format              | Description                                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| `*.raweasy.json`    | The raw JSON from the EasyEDA API                                                           |
+| `*.bettereasy.json` | The raw JSON from the EasyEDA API, but with the footprint and schematic data decoded        |
+| `*.circuit.json`    | The tscircuit's easy-to-use JSON format [(docs)](https://github.com/tscircuit/circuit-json) |
+| `*.kicad_mod`       | A KiCad footprint file                                                                      |
+| `*.tsx`             | A TypeScript React component file                                                           |
+
+## Advanced Usage
+
+### Customizing Conversion Options
+
+When converting EasyEDA JSON to tscircuit soup, you can pass additional options:
+
+```ts
+import { convertEasyEdaJsonToCircuitJson } from "easyeda"
+
+const soupJson = convertEasyEdaJsonToCircuitJson(rawEasyJson, {
+  useModelCdn: true, // Use CDN for 3D models
+  shouldRecenter: false, // Don't recenter the component
+})
+```
+
+### Working with Generated TypeScript Components
+
+The generated TypeScript React components can be imported and used in your tscircuit projects:
+
+```tsx
+import { NE555 } from "./NE555"
+
+const MyCircuit = () => {
+  return (
+    <circuit>
+      <NE555 name="U1" />
+      {/* Other components */}
+    </circuit>
+  )
+}
+```
+
+These components include proper typing for props and integrate seamlessly with the tscircuit ecosystem.

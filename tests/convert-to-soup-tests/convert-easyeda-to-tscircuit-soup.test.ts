@@ -2,13 +2,13 @@ import { it, expect } from "bun:test"
 import { logSoup } from "@tscircuit/log-soup"
 import a555TimerEasyEdaJson from "../assets/a555-timer-dip.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/soup-util"
-import type { AnyCircuitElement, AnySoupElement } from "@tscircuit/soup"
+import type { AnyCircuitElement, AnySoupElement } from "circuit-json"
 
 it("should parse easyeda json for a 555 timer and convert to tscircuit soup", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(a555TimerEasyEdaJson)
-  const soupElements = convertEasyEdaJsonToTscircuitSoupJson(parsedJson) as any
+  const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson) as any
 
   // Check if the result is an array and has elements
   expect(Array.isArray(soupElements)).toBe(true)
