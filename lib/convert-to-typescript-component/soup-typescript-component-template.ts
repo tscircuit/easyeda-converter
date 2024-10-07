@@ -1,13 +1,13 @@
 import type { AnySoupElement } from "circuit-json"
-import type { BugProps } from "@tscircuit/props"
+import type { ChipProps } from "@tscircuit/props"
 import { su } from "@tscircuit/soup-util"
 import type { BetterEasyEdaJson } from "../schemas/easy-eda-json-schema"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 
 interface Params {
-  pinLabels: BugProps["pinLabels"]
+  pinLabels: ChipProps["pinLabels"]
   componentName: string
-  schPinArrangement: BugProps["schPortArrangement"]
+  schPinArrangement: ChipProps["schPortArrangement"]
   objUrl?: string
   easyEdaJson: BetterEasyEdaJson
 }
