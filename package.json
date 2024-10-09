@@ -25,7 +25,7 @@
     "@biomejs/biome": "^1.8.3",
     "@tscircuit/log-soup": "1.0.2",
     "@tscircuit/props": "^0.0.68",
-    "@tscircuit/soup-util": "^0.0.33",
+    "@tscircuit/soup-util": "^0.0.36",
     "@types/bun": "latest",
     "circuit-json": "^0.0.83",
     "tsup": "^8.1.0"
