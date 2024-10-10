@@ -51,7 +51,7 @@ export const PadSchema = BaseShapeSchema.extend({
   height: tenthmil,
   layermask: z.number(),
   net: z.union([z.string(), z.number()]).optional(),
-  number: z.number(),
+  number: z.union([z.string(), z.number()]),
   holeRadius: tenthmil,
   points: z.array(PointSchema).optional(),
   rotation: z.number().optional(),

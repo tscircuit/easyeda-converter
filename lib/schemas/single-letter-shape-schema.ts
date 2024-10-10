@@ -136,7 +136,7 @@ export const EllipseShapeSchema = z
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide"]),
-  pinNumber: z.number(),
+  pinNumber: z.union([z.string(), z.number()]),
   x: z.number(),
   y: z.number(),
   rotation: z.number(),
@@ -167,7 +167,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     type: "PIN",
     visibility: visibility as "show" | "hide",
     id,
-    pinNumber: parseInt(pinNumber),
+    pinNumber: isNaN(Number(pinNumber)) ? pinNumber : Number(pinNumber),
     x: parseFloat(x),
     y: parseFloat(y),
     rotation: parseFloat(rotation),
