@@ -50,11 +50,11 @@ export const convertToTypescriptComponent = async ({
   const schPinArrangement = {
     leftSide: {
       direction: "top-to-bottom" as const,
-      pins: leftPins.map((pin) => pin.pinNumber),
+      pins: leftPins.map((pin) => pin.pinNumber) as number[],
     },
     rightSide: {
       direction: "bottom-to-top" as const,
-      pins: rightPins.map((pin) => pin.pinNumber).reverse(),
+      pins: rightPins.map((pin) => pin.pinNumber).reverse() as number[],
     },
   }
 
