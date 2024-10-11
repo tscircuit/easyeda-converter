@@ -21,7 +21,7 @@ export const soupTypescriptComponentTemplate = ({
 }: Params) => {
   const footprintTsx = generateFootprintTsx(easyEdaJson)
   return `
-import { createUseComponent } from "tscircuit"
+import { createUseComponent } from "@tscircuit/core"
 import type { CommonLayoutProps } from "@tscircuit/props"
 
 const pinLabels = ${JSON.stringify(pinLabels, null, "  ")} as const
