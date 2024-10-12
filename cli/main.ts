@@ -10,12 +10,13 @@ import { convertRawEasyEdaToTs } from "lib/convert-to-typescript-component"
 import * as path from "path"
 import { normalizeManufacturerPartNumber } from "lib"
 import { convertEasyEdaJsonToVariousFormats } from "lib/convert-easyeda-json-to-various-formats"
+import { perfectCli } from "perfect-cli"
 
 const program = new Command()
 
 program
-  .name("easyeda-converter")
-  .description("Convert EasyEDA JSON PCB footprints into tscircuit json soup")
+  .name("easyeda")
+  .description("Convert EasyEDA JSON PCB footprints into various formats")
   .version(packageJson.version)
 
 program
@@ -24,14 +25,14 @@ program
   .option("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
   .option("-o, --output <filename>", "Output filename")
   .option(
-    "-t, --type <type>",
-    "Output type: soup.json, kicad_mod, raweasy.json, bettereasy.json, tsx",
+    "-t, --format-type <format>",
+    "Output format (can be inferred from filename)",
   )
   .action(async (options) => {
     await convertEasyEdaJsonToVariousFormats({
       jlcpcbPartNumberOrFilepath: options.input,
       outputFilename: options.output,
-      formatType: options.type,
+      formatType: options.format,
     })
   })
 
@@ -56,4 +57,5 @@ program
     }
   })
 
-program.parse(process.argv)
+// program.parse(process.argv)
+perfectCli(program, process.argv)

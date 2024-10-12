@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "bun test",
+    "cli": "bun cli/main.ts",
     "build": "tsup lib/index.ts cli/main.ts --format esm --dts --sourcemap",
     "aider": "aider",
     "format:check": "biome format .",
@@ -36,6 +37,7 @@
   "dependencies": {
     "@tscircuit/mm": "^0.0.8",
     "commander": "^12.1.0",
+    "perfect-cli": "^1.0.20",
     "transformation-matrix": "^2.16.1",
     "zod": "^3.23.8"
   }
