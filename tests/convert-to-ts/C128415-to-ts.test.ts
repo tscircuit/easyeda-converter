@@ -5,13 +5,9 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib"
 
 it("should convert 555timer into typescript file", async () => {
-  const easyeda = EasyEdaJsonSchema.parse(timerRawEasy)
-  const soup = convertEasyEdaJsonToCircuitJson(easyeda, {
-    useModelCdn: true,
-  })
+  const betterEasy = EasyEdaJsonSchema.parse(timerRawEasy)
   const result = await convertBetterEasyToTsx({
-    easyeda,
-    soup,
+    betterEasy,
   })
-  console.log(result)
+  // TODO snapshot
 })

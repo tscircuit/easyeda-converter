@@ -10,7 +10,6 @@ import { convertRawEasyToTsx } from "lib/convert-to-typescript-component"
 import * as path from "path"
 import { normalizeManufacturerPartNumber } from "lib"
 import { convertEasyEdaJsonToVariousFormats } from "lib/convert-easyeda-json-to-various-formats"
-import { perfectCli } from "perfect-cli"
 
 const program = new Command()
 

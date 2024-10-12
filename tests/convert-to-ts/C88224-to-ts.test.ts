@@ -5,13 +5,9 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib"
 
 it("should convert c88224 into typescript file", async () => {
-  const easyeda = EasyEdaJsonSchema.parse(chipRawEasy)
-  const soup = convertEasyEdaJsonToCircuitJson(easyeda, {
-    useModelCdn: true,
-  })
+  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
-    easyeda,
-    soup,
+    betterEasy,
   })
 
   console.log(result)

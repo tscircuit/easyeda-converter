@@ -24,7 +24,7 @@ async function benchmark() {
       await convertEasyEdaJsonToVariousFormats({
         jlcpcbPartNumberOrFilepath: partnumber,
         outputFilename: "temp.tsx",
-        formatType: "tsx",
+        outputFormat: "tsx",
       })
       successes++
     } catch (error) {
