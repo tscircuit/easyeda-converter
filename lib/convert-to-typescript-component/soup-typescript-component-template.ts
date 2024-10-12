@@ -33,7 +33,7 @@ interface Props extends CommonLayoutProps {
 
 export const ${componentName} = (props: Props) => {
   return (
-    <bug
+    <chip
       {...props}
       footprint={${footprintTsx}}
       ${
