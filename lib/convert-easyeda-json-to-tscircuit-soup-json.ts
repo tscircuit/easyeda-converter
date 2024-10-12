@@ -25,7 +25,7 @@ import {
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import { transformPCBElements } from "@tscircuit/soup-util"
-import { scale, translate } from "transformation-matrix"
+import { compose, scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
 
@@ -257,7 +257,7 @@ export const convertEasyEdaJsonToCircuitJson = (
   if (shouldRecenter) {
     transformPCBElements(
       soupElements,
-      translate(-centerOffset.x, centerOffset.y),
+      compose(translate(-centerOffset.x, centerOffset.y), scale(1, -1)),
     )
   }
 
