@@ -1,17 +1,13 @@
 import { it, expect } from "bun:test"
 import timerRawEasy from "../assets/C128415.raweasy.json"
-import { convertToTypescriptComponent } from "lib/convert-to-typescript-component"
+import { convertBetterEasyToTsx } from "lib/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib"
 
 it("should convert 555timer into typescript file", async () => {
-  const easyeda = EasyEdaJsonSchema.parse(timerRawEasy)
-  const soup = convertEasyEdaJsonToCircuitJson(easyeda, {
-    useModelCdn: true,
+  const betterEasy = EasyEdaJsonSchema.parse(timerRawEasy)
+  const result = await convertBetterEasyToTsx({
+    betterEasy,
   })
-  const result = await convertToTypescriptComponent({
-    easyeda,
-    soup,
-  })
-  console.log(result)
+  // TODO snapshot
 })

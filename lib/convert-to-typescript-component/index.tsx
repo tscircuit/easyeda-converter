@@ -5,35 +5,36 @@ import {
 } from "lib/schemas/easy-eda-json-schema"
 import { su } from "@tscircuit/soup-util"
 import { soupTypescriptComponentTemplate } from "./soup-typescript-component-template"
-import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import {
+  convertEasyEdaJsonToCircuitJson,
+  convertEasyEdaJsonToTscircuitSoupJson,
+} from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
 
-export const convertRawEasyEdaToTs = async (rawEasy: any) => {
-  const easyeda = EasyEdaJsonSchema.parse(rawEasy)
-  const soup = convertEasyEdaJsonToTscircuitSoupJson(easyeda, {
-    useModelCdn: true,
-  })
-  const result = await convertToTypescriptComponent({
-    easyeda,
-    soup,
+export const convertRawEasyToTsx = async (rawEasy: any) => {
+  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+  const result = await convertBetterEasyToTsx({
+    betterEasy,
   })
   return result
 }
 
-export const convertToTypescriptComponent = async ({
-  soup,
-  easyeda: easyEdaJson,
+export const convertBetterEasyToTsx = async ({
+  betterEasy,
 }: {
-  soup: AnyCircuitElement[]
-  easyeda: BetterEasyEdaJson
+  betterEasy: BetterEasyEdaJson
 }): Promise<string> => {
-  const rawPn = easyEdaJson.dataStr.head.c_para["Manufacturer Part"]
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy, {
+    useModelCdn: true,
+    shouldRecenter: true,
+  })
+  const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
   const pn = normalizeManufacturerPartNumber(rawPn)
-  const [cad_component] = su(soup as any).cad_component.list()
+  const [cad_component] = su(circuitJson).cad_component.list()
 
   // Derive pinLabels from easyeda json
   const pinLabels: Record<string, string> = {}
-  easyEdaJson.dataStr.shape
+  betterEasy.dataStr.shape
     .filter((shape) => shape.type === "PIN")
     .forEach((pin) => {
       const isPinLabelNumeric = /^\d+$/.test(pin.label)
@@ -43,7 +44,7 @@ export const convertToTypescriptComponent = async ({
     })
 
   // Derive schPinArrangement from easyeda json
-  const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
+  const pins = betterEasy.dataStr.shape.filter((shape) => shape.type === "PIN")
   const leftPins = pins.filter((pin) => pin.rotation === 180)
   const rightPins = pins.filter((pin) => pin.rotation === 0)
 
@@ -73,7 +74,7 @@ export const convertToTypescriptComponent = async ({
     pinLabels,
     schPinArrangement,
     objUrl: modelObjUrl,
-    easyEdaJson,
+    circuitJson,
   })
 }
 

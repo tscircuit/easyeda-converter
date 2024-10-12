@@ -6,11 +6,10 @@ import { convertEasyEdaJsonToTscircuitSoupJson } from "../lib/convert-easyeda-js
 import fs from "fs/promises"
 import packageJson from "../package.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertRawEasyEdaToTs } from "lib/convert-to-typescript-component"
+import { convertRawEasyToTsx } from "lib/convert-to-typescript-component"
 import * as path from "path"
 import { normalizeManufacturerPartNumber } from "lib"
 import { convertEasyEdaJsonToVariousFormats } from "lib/convert-easyeda-json-to-various-formats"
-import { perfectCli } from "perfect-cli"
 
 const program = new Command()
 
@@ -57,5 +56,5 @@ program
     }
   })
 
-// program.parse(process.argv)
-perfectCli(program, process.argv)
+program.parse(process.argv)
+// perfectCli(program, process.argv)
