@@ -24,7 +24,7 @@ import {
 } from "circuit-json"
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
-import { transformPCBElements } from "@tscircuit/soup-util"
+import { findBoundsAndCenter, transformPCBElements } from "@tscircuit/soup-util"
 import { compose, scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
@@ -123,10 +123,10 @@ export const convertEasyEdaJsonToCircuitJson = (
     source_component_id: "source_component_1",
     name: "U1",
     ftype: "simple_bug",
-    width: 0, // TODO compute width
-    height: 0, // TODO compute height
+    width: 0, // we update this at the end
+    height: 0, // we update this at the end
     rotation: 0,
-    center: { x: centerOffset.x, y: centerOffset.y },
+    center: { x: 0, y: 0 },
     layer: "top",
   } as PcbComponentInput)
 
@@ -255,9 +255,14 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   if (shouldRecenter) {
+    const bounds = findBoundsAndCenter(
+      // exclude the pcb_component because it's center is currently incorrect,
+      // we set it to (0,0)
+      soupElements.filter((e) => e.type !== "pcb_component"),
+    )
     transformPCBElements(
       soupElements,
-      compose(translate(-centerOffset.x, centerOffset.y), scale(1, -1)),
+      compose(translate(-bounds.center.x, bounds.center.y), scale(1, -1)),
     )
   }
 

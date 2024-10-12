@@ -2,7 +2,7 @@ import { fetchEasyEDAComponent } from "../lib/fetch-easyeda-json"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "../lib/convert-easyeda-json-to-tscircuit-soup-json"
 import fs from "fs/promises"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertRawEasyEdaToTs } from "lib/convert-to-typescript-component"
+import { convertRawEasyToTsx } from "lib/convert-to-typescript-component"
 import * as path from "path"
 import { normalizeManufacturerPartNumber } from "lib"
 
@@ -83,7 +83,7 @@ export const convertEasyEdaJsonToVariousFormats = async ({
       outputFilename.endsWith(".tsx") ||
       outputFilename.endsWith(".ts")
     ) {
-      const tsComp = await convertRawEasyEdaToTs(rawEasyEdaJson)
+      const tsComp = await convertRawEasyToTsx(rawEasyEdaJson)
       await fs.writeFile(outputFilename, tsComp)
       console.log(
         `[${jlcpcbPartNumberOrFilepath}] Saved TypeScript component: ${outputFilename}`,

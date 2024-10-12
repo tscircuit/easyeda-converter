@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnyCircuitElement, AnySoupElement } from "circuit-json"
 import type { ChipProps } from "@tscircuit/props"
 import { su } from "@tscircuit/soup-util"
 import type { BetterEasyEdaJson } from "../schemas/easy-eda-json-schema"
@@ -10,7 +10,7 @@ interface Params {
   componentName: string
   schPinArrangement: ChipProps["schPortArrangement"]
   objUrl?: string
-  easyEdaJson: BetterEasyEdaJson
+  circuitJson: AnyCircuitElement[]
 }
 
 export const soupTypescriptComponentTemplate = ({
@@ -18,9 +18,8 @@ export const soupTypescriptComponentTemplate = ({
   componentName,
   schPinArrangement,
   objUrl,
-  easyEdaJson,
+  circuitJson,
 }: Params) => {
-  const circuitJson = convertEasyEdaJsonToCircuitJson(easyEdaJson)
   const footprintTsx = generateFootprintTsx(circuitJson)
   return `
 import { createUseComponent } from "@tscircuit/core"
@@ -41,7 +40,8 @@ export const ${componentName} = (props: Props) => {
       ${
         objUrl
           ? `cadModel={{
-        objUrl: "${objUrl}"
+        objUrl: "${objUrl}",
+        rotationOffset: { x: 0, y: 0, z: 0 }
       }}`
           : ""
       }

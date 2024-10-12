@@ -16,6 +16,7 @@ export const generateFootprintTsx = (
   const holes = su(circuitJson).pcb_hole.list()
   const platedHoles = su(circuitJson).pcb_plated_hole.list()
   const smtPads = su(circuitJson).pcb_smtpad.list()
+  const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
 
   const elementStrings: string[] = []
 
@@ -53,6 +54,12 @@ export const generateFootprintTsx = (
         `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" shape="rect" />`,
       )
     }
+  }
+
+  for (const silkscreenPath of silkscreenPaths) {
+    elementStrings.push(
+      `<silkscreenpath route={${JSON.stringify(silkscreenPath.route)}} />`,
+    )
   }
 
   return `

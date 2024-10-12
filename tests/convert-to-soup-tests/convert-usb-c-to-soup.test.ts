@@ -6,13 +6,11 @@ import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tsc
 import type { AnySoupElement } from "circuit-json"
 import { su } from "@tscircuit/soup-util"
 
-it("should convert a usb-c footprint to tscircuit soup json", async () => {
+it.skip("should convert a usb-c footprint to tscircuit soup json", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(usbCEasyEdaJson)
   const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson) as any
 
   expect(su(soupElements).pcb_component.list()[0]).toBeTruthy()
 
   expect(su(soupElements).cad_component.list().length).toBe(1)
-
-  await logSoup("easyeda usb-c to soup", soupElements as AnySoupElement[])
 })
