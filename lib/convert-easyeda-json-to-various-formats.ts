@@ -9,11 +9,11 @@ import { normalizeManufacturerPartNumber } from "lib"
 export const convertEasyEdaJsonToVariousFormats = async ({
   jlcpcbPartNumberOrFilepath,
   outputFilename,
-  formatType,
+  outputFormat,
 }: {
   jlcpcbPartNumberOrFilepath: string
   outputFilename: string
-  formatType: string
+  outputFormat: string
 }) => {
   let rawEasyEdaJson
   if (
@@ -28,12 +28,12 @@ export const convertEasyEdaJsonToVariousFormats = async ({
   }
 
   const tsxExtension = "tsx"
-  if (formatType === "ts") formatType = tsxExtension
+  if (outputFormat === "ts") outputFormat = tsxExtension
 
-  if (!outputFilename && formatType) {
+  if (!outputFilename && outputFormat) {
     let filename = path.basename(jlcpcbPartNumberOrFilepath).split(".")[0]
 
-    if (formatType === tsxExtension) {
+    if (outputFormat === tsxExtension) {
       const {
         dataStr: {
           head: {
@@ -45,7 +45,7 @@ export const convertEasyEdaJsonToVariousFormats = async ({
       filename = normalizeManufacturerPartNumber(manufacturerPartNumber)
     }
 
-    outputFilename = `${filename}.${formatType}`
+    outputFilename = `${filename}.${outputFormat}`
   }
 
   if (!outputFilename) {

@@ -25,14 +25,14 @@ program
   .option("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
   .option("-o, --output <filename>", "Output filename")
   .option(
-    "-t, --format-type <format>",
+    "--output-format <format>",
     "Output format (can be inferred from filename)",
   )
   .action(async (options) => {
     await convertEasyEdaJsonToVariousFormats({
       jlcpcbPartNumberOrFilepath: options.input,
       outputFilename: options.output,
-      formatType: options.format,
+      outputFormat: options.outputFormat,
     })
   })
 
