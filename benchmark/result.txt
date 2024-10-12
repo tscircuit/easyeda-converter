@@ -1,0 +1,43 @@
+Successes: 11
+Failures: 13
+
+Failure Details:
+Part number: C965808
+Error: Error: Invalid shape type: PT~M 245 303 L 235 310 L 245 317 Z ~#880000~1~0~none~gge49~0~
+
+Part number: C1178474
+Error: Error: Component not found
+
+Part number: C1153543
+Error: Error: Component not found
+
+Part number: C1177579
+Error: Error: Component not found
+
+Part number: C1184469
+Error: Error: Component not found
+
+Part number: C1185108
+Error: Error: Component not found
+
+Part number: C1180645
+Error: Error: Component not found
+
+Part number: C1189664
+Error: Error: Component not found
+
+Part number: C1178711
+Error: Error: Component not found
+
+Part number: C389354
+Error: Error: Invalid shape type: PT~M 405 294 L 395 300 L 405 307 Z ~#880000~1~0~none~gge18~0~
+
+Part number: C516304
+Error: Error: Invalid shape type: PT~M 395 326 L 405 320 L 395 313 Z~#880000~1~0~#880000~gge25~0~
+
+Part number: C2998002
+Error: Error: Invalid shape type: T~L~415~303~0~#0000FF~~5.5pt~~~~comment~TR1~1~start~gge7~0~pinpart
+
+Part number: C2843864
+Error: Error: Invalid shape type: PT~M 420 337 L 430 330 L 420 323 Z ~#880000~1~0~none~gge82~0~
+

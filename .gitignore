@@ -5,3 +5,4 @@ dist
 *.bettereasy.json
 .vscode
 tmp
+temp.tsx
