@@ -22,7 +22,7 @@ export const generateFootprintTsx = (
   for (const hole of holes) {
     if (hole.hole_shape === "circle") {
       elementStrings.push(
-        `<hole pcbX={${mmStr(hole.x)}} pcbY={${mmStr(hole.y)}} diameter={${mmStr(hole.hole_diameter)}} />`,
+        `<hole pcbX="${mmStr(hole.x)}" pcbY="${mmStr(hole.y)}" diameter="${mmStr(hole.hole_diameter)}" />`,
       )
     } else if (hole.hole_shape === "oval") {
       console.warn("Unhandled oval hole in conversion (needs implementation)")
@@ -32,11 +32,11 @@ export const generateFootprintTsx = (
   for (const platedHole of platedHoles) {
     if (platedHole.shape === "oval") {
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX={${mmStr(platedHole.x)}} pcbY={${mmStr(platedHole.y)}} diameter={${mmStr(platedHole.hole_width)}} height={${mmStr(platedHole.hole_height)}} shape="oval" />`,
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" diameter="${mmStr(platedHole.hole_width)}" height="${mmStr(platedHole.hole_height)}" shape="oval" />`,
       )
     } else if (platedHole.shape === "circle") {
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX={${mmStr(platedHole.x)}} pcbY={${mmStr(platedHole.y)}} diameter={${mmStr(platedHole.hole_diameter)}} shape="circle" />`,
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" diameter="${mmStr(platedHole.hole_diameter)}" shape="circle" />`,
       )
     } else if (platedHole.shape === "pill") {
       console.warn("Unhandled pill hole in conversion (needs implementation)")
@@ -46,11 +46,11 @@ export const generateFootprintTsx = (
   for (const smtPad of smtPads) {
     if (smtPad.shape === "circle") {
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX={${mmStr(smtPad.x)}} pcbY={${mmStr(smtPad.y)}} radius={${mmStr(smtPad.radius)}} shape="circle" />`,
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle" />`,
       )
     } else if (smtPad.shape === "rect") {
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX={${mmStr(smtPad.x)}} pcbY={${mmStr(smtPad.y)}} width={${mmStr(smtPad.width)}} height={${mmStr(smtPad.height)}} shape="rect" />`,
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" shape="rect" />`,
       )
     }
   }

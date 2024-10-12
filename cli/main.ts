@@ -57,5 +57,5 @@ program
     }
   })
 
-// program.parse(process.argv)
-perfectCli(program, process.argv)
+program.parse(process.argv)
+// perfectCli(program, process.argv)
