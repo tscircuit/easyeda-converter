@@ -3,6 +3,7 @@ import {
   TrackSchema,
   ArcSchema,
   SVGNodeSchema,
+  HoleSchema,
 } from "./schemas/package-detail-shape-schema"
 import { z } from "zod"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
@@ -19,6 +20,7 @@ import {
   pcb_smtpad,
   pcb_silkscreen_path,
   pcb_plated_hole,
+  pcb_hole,
 } from "circuit-json"
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
@@ -60,6 +62,17 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     route: arcPath,
     stroke_width: arc.width,
   })
+}
+
+const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
+  return pcb_hole.parse({
+    type: "pcb_hole",
+    x: hole.center.x,
+    y: hole.center.y,
+    hole_diameter: hole.radius * 2,
+    hole_shape: "circle",
+    pcb_hole_id: `pcb_hole_${index + 1}`,
+  } as Soup.PcbHole)
 }
 
 interface Options {
@@ -161,6 +174,15 @@ export const convertEasyEdaJsonToCircuitJson = (
           } as PCBSMTPad),
         )
       }
+    })
+
+  // Add holes
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter(
+      (shape): shape is z.infer<typeof HoleSchema> => shape.type === "HOLE",
+    )
+    .forEach((h, index) => {
+      soupElements.push(handleHole(h, index))
     })
 
   // Add silkscreen paths and arcs
