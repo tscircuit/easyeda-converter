@@ -3,6 +3,7 @@ import type { ChipProps } from "@tscircuit/props"
 import { su } from "@tscircuit/soup-util"
 import type { BetterEasyEdaJson } from "../schemas/easy-eda-json-schema"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -19,7 +20,8 @@ export const soupTypescriptComponentTemplate = ({
   objUrl,
   easyEdaJson,
 }: Params) => {
-  const footprintTsx = generateFootprintTsx(easyEdaJson)
+  const circuitJson = convertEasyEdaJsonToCircuitJson(easyEdaJson)
+  const footprintTsx = generateFootprintTsx(circuitJson)
   return `
 import { createUseComponent } from "@tscircuit/core"
 import type { CommonLayoutProps } from "@tscircuit/props"
