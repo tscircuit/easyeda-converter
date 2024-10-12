@@ -32,11 +32,11 @@ export const generateFootprintTsx = (
   for (const platedHole of platedHoles) {
     if (platedHole.shape === "oval") {
       elementStrings.push(
-        `<platedhole pcbX={${mmStr(platedHole.x)}} pcbY={${mmStr(platedHole.y)}} diameter={${mmStr(platedHole.hole_width)}} height={${mmStr(platedHole.hole_height)}} shape="oval" />`,
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX={${mmStr(platedHole.x)}} pcbY={${mmStr(platedHole.y)}} diameter={${mmStr(platedHole.hole_width)}} height={${mmStr(platedHole.hole_height)}} shape="oval" />`,
       )
     } else if (platedHole.shape === "circle") {
       elementStrings.push(
-        `<platedhole pcbX={${mmStr(platedHole.x)}} pcbY={${mmStr(platedHole.y)}} diameter={${mmStr(platedHole.hole_diameter)}} shape="circle" />`,
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX={${mmStr(platedHole.x)}} pcbY={${mmStr(platedHole.y)}} diameter={${mmStr(platedHole.hole_diameter)}} shape="circle" />`,
       )
     } else if (platedHole.shape === "pill") {
       console.warn("Unhandled pill hole in conversion (needs implementation)")
@@ -46,50 +46,15 @@ export const generateFootprintTsx = (
   for (const smtPad of smtPads) {
     if (smtPad.shape === "circle") {
       elementStrings.push(
-        `<smtpad pcbX={${mmStr(smtPad.x)}} pcbY={${mmStr(smtPad.y)}} radius={${mmStr(smtPad.radius)}} shape="circle" />`,
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX={${mmStr(smtPad.x)}} pcbY={${mmStr(smtPad.y)}} radius={${mmStr(smtPad.radius)}} shape="circle" />`,
       )
     } else if (smtPad.shape === "rect") {
       elementStrings.push(
-        `<smtpad pcbX={${mmStr(smtPad.x)}} pcbY={${mmStr(smtPad.y)}} width={${mmStr(smtPad.width)}} height={${mmStr(smtPad.height)}} shape="rect" />`,
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX={${mmStr(smtPad.x)}} pcbY={${mmStr(smtPad.y)}} width={${mmStr(smtPad.width)}} height={${mmStr(smtPad.height)}} shape="rect" />`,
       )
     }
   }
 
-  // const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
-  //   (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
-  // )
-  // const holes = easyEdaJson.packageDetail.dataStr.shape.filter(
-  //   (shape): shape is z.infer<typeof HoleSchema> => shape.type === "HOLE",
-  // )
-  // const centerOffset = computeCenterOffset(easyEdaJson)
-  // const centerX = centerOffset.x
-  // const centerY = centerOffset.y
-  // const footprintElements = pads.map((pad) => {
-  //   const { center, width, height, holeRadius, number } = pad
-  //   const isPlatedHole = holeRadius !== undefined && mm(holeRadius) > 0
-  //   // Normalize the position by subtracting the center point
-  //   const normalizedX = mm(center.x) - centerX
-  //   const normalizedY = mm(center.y) - centerY
-  //   if (isPlatedHole) {
-  //     return `
-  //       <platedhole
-  //         pcbX="${normalizedX.toFixed(2)}mm"
-  //         pcbY="${normalizedY.toFixed(2)}mm"
-  //         hole_diameter="${mm(holeRadius) * 2}mm"
-  //         outer_diameter="${mm(width)}mm"
-  //         portHints={["${number}"]}
-  //       />`.replace(/\n/, "")
-  //   }
-  //   return `
-  //       <smtpad
-  //         pcbX="${normalizedX.toFixed(2)}mm"
-  //         pcbY="${normalizedY.toFixed(2)}mm"
-  //         width="${mm(width)}mm"
-  //         height="${mm(height)}mm"
-  //         shape="rect"
-  //         portHints={["${number}"]}
-  //       />`.replace(/\n/, "")
-  // })
   return `
       <footprint>
         ${elementStrings.join("\n")}
