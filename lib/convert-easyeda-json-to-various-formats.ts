@@ -63,26 +63,36 @@ export const convertEasyEdaJsonToVariousFormats = async ({
     const betterEasy = EasyEdaJsonSchema.parse(rawEasyEdaJson)
     const tscircuitSoup = convertEasyEdaJsonToTscircuitSoupJson(betterEasy)
 
-    if (outputFilename.endsWith(".soup.json")) {
+    if (
+      outputFilename.endsWith(".soup.json") ||
+      outputFilename.endsWith(".circuit.json")
+    ) {
       await fs.writeFile(outputFilename, JSON.stringify(tscircuitSoup, null, 2))
-      console.log(`Converted to tscircuit soup JSON: ${outputFilename}`)
+      console.log(
+        `[${jlcpcbPartNumberOrFilepath}]  Converted to circuit json: ${outputFilename}`,
+      )
     } else if (outputFilename.endsWith(".kicad_mod")) {
       // TODO: Implement conversion to KiCad footprint
       console.log("Conversion to KiCad footprint not yet implemented")
     } else if (outputFilename.endsWith(".bettereasy.json")) {
       await fs.writeFile(outputFilename, JSON.stringify(betterEasy, null, 2))
-      console.log(`Saved better EasyEDA JSON: ${outputFilename}`)
+      console.log(
+        `[${jlcpcbPartNumberOrFilepath}]  Saved better EasyEDA JSON: ${outputFilename}`,
+      )
     } else if (
       outputFilename.endsWith(".tsx") ||
       outputFilename.endsWith(".ts")
     ) {
       const tsComp = await convertRawEasyEdaToTs(rawEasyEdaJson)
       await fs.writeFile(outputFilename, tsComp)
-      console.log(`Saved TypeScript component: ${outputFilename}`)
+      console.log(
+        `[${jlcpcbPartNumberOrFilepath}] Saved TypeScript component: ${outputFilename}`,
+      )
     } else {
       console.error("Unsupported output format")
     }
   } catch (error: any) {
     console.error("Error:", error.message)
+    throw error
   }
 }
