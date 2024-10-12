@@ -1,11 +1,11 @@
-import {
+import type {
   PadSchema,
   TrackSchema,
   ArcSchema,
   SVGNodeSchema,
   HoleSchema,
 } from "./schemas/package-detail-shape-schema"
-import { z } from "zod"
+import type { z } from "zod"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
   AnySoupElement,
@@ -29,6 +29,22 @@ import { scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
 
+const mil2mm = (mil: number | string) => {
+  if (typeof mil === "number") return mm(`${mil}mil`)
+  if (mil.match(/^\d+$/)) return mm(`${mil}mil`)
+  return mm(mil)
+}
+/**
+ * Some components, like paths and "HOLE", seem to use mil*10 as
+ * their unlabeled unit
+ */
+const milx10 = (mil10: number | string) => {
+  if (typeof mil10 === "number") return mil2mm(mil10) * 10
+  if (mil10.match(/^\d+$/)) return mil2mm(mil10) * 10
+  // If it has a unit, return the specified unit ignoring the multiplier
+  return mil2mm(mil10)
+}
+
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
   index: number,
@@ -38,7 +54,10 @@ const handleSilkscreenPath = (
     pcb_silkscreen_path_id: `pcb_silkscreen_path_${index + 1}`,
     pcb_component_id: "pcb_component_1",
     layer: "top", // Assuming all silkscreen is on top layer
-    route: track.points.map((point) => ({ x: point.x, y: point.y })),
+    route: track.points.map((point) => ({
+      x: milx10(point.x),
+      y: milx10(point.y),
+    })),
     stroke_width: track.width,
   })
 }
@@ -59,17 +78,20 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     pcb_silkscreen_path_id: `pcb_silkscreen_arc_${index + 1}`,
     pcb_component_id: "pcb_component_1",
     layer: "top", // Assuming all silkscreen is on top layer
-    route: arcPath,
-    stroke_width: arc.width,
-  })
+    route: arcPath.map((p) => ({
+      x: milx10(p.x),
+      y: milx10(p.y),
+    })),
+    stroke_width: mm(arc.width),
+  } as Soup.PcbSilkscreenPathInput)
 }
 
 const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
   return pcb_hole.parse({
     type: "pcb_hole",
-    x: hole.center.x,
-    y: hole.center.y,
-    hole_diameter: hole.radius * 2,
+    x: milx10(hole.center.x),
+    y: milx10(hole.center.y),
+    hole_diameter: milx10(hole.radius) * 2,
     hole_shape: "circle",
     pcb_hole_id: `pcb_hole_${index + 1}`,
   } as Soup.PcbHole)
@@ -124,18 +146,18 @@ export const convertEasyEdaJsonToCircuitJson = (
         name: portNumber,
       })
 
-      if (pad.holeRadius !== undefined && mm(pad.holeRadius) !== 0) {
+      if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
         // Add pcb_plated_hole
         soupElements.push(
           pcb_plated_hole.parse({
             type: "pcb_plated_hole",
             pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
             shape: "circle",
-            x: mm(pad.center.x),
-            y: mm(pad.center.y),
-            hole_diameter: mm(pad.holeRadius) * 2,
-            outer_diameter: mm(pad.width),
-            radius: mm(pad.holeRadius),
+            x: mil2mm(pad.center.x),
+            y: mil2mm(pad.center.y),
+            hole_diameter: mil2mm(pad.holeRadius) * 2,
+            outer_diameter: mil2mm(pad.width),
+            radius: mil2mm(pad.holeRadius),
             port_hints: [portNumber],
             pcb_component_id: "pcb_component_1",
             pcb_port_id: `pcb_port_${index + 1}`,
@@ -157,22 +179,22 @@ export const convertEasyEdaJsonToCircuitJson = (
         if (!soupShape) {
           throw new Error(`unknown pad.shape: "${pad.shape}"`)
         }
-        soupElements.push(
-          pcb_smtpad.parse({
-            type: "pcb_smtpad",
-            pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
-            shape: soupShape,
-            x: mm(pad.center.x),
-            y: mm(pad.center.y),
-            ...(soupShape === "rect"
-              ? { width: mm(pad.width), height: mm(pad.height) }
-              : { radius: Math.min(mm(pad.width), mm(pad.height)) / 2 }),
-            layer: "top",
-            port_hints: [portNumber],
-            pcb_component_id: "pcb_component_1",
-            pcb_port_id: `pcb_port_${index + 1}`,
-          } as PCBSMTPad),
-        )
+
+        const parsedPcbSmtpad = pcb_smtpad.parse({
+          type: "pcb_smtpad",
+          pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
+          shape: soupShape,
+          x: mil2mm(pad.center.x),
+          y: mil2mm(pad.center.y),
+          ...(soupShape === "rect"
+            ? { width: mil2mm(pad.width), height: mil2mm(pad.height) }
+            : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
+          layer: "top",
+          port_hints: [portNumber],
+          pcb_component_id: "pcb_component_1",
+          pcb_port_id: `pcb_port_${index + 1}`,
+        } as PCBSMTPad)
+        soupElements.push(parsedPcbSmtpad)
       }
     })
 
