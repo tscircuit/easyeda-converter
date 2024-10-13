@@ -41,7 +41,8 @@ export const ${componentName} = (props: Props) => {
         objUrl
           ? `cadModel={{
         objUrl: "${objUrl}",
-        rotationOffset: { x: 0, y: 0, z: 0 }
+        rotationOffset: { x: 0, y: 0, z: 0 },
+        positionOffset: { x: 0, y: 0, z: 0 },
       }}`
           : ""
       }
