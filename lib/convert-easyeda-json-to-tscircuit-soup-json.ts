@@ -216,9 +216,6 @@ export const convertEasyEdaJsonToCircuitJson = (
     }
   })
 
-  // easyeda uses a flipped Y axis ( tscircuit = y+ is up, easyeda = y- is up )
-  transformPCBElements(soupElements, scale(1, -1))
-
   // TODO Change pcb_component width & height
 
   // TODO compute pcb center based on all elements and transform elements such
@@ -262,8 +259,9 @@ export const convertEasyEdaJsonToCircuitJson = (
     )
     transformPCBElements(
       soupElements,
-      compose(translate(-bounds.center.x, bounds.center.y)),
+      compose(translate(-bounds.center.x, bounds.center.y), scale(1, -1)),
     )
+    pcb_component.center = { x: 0, y: 0 }
   }
 
   return soupElements
