@@ -262,7 +262,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     )
     transformPCBElements(
       soupElements,
-      compose(translate(-bounds.center.x, bounds.center.y), scale(1, -1)),
+      compose(translate(-bounds.center.x, bounds.center.y)),
     )
   }
 
