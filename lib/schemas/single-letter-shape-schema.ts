@@ -257,6 +257,33 @@ export const PolygonShapeSchema = z
   .transform(parsePolygon)
   .pipe(PolygonShapeOutputSchema)
 
+const PathShapeOutputSchema = z.object({
+  type: z.literal("PATH"),
+  pathData: z.string(),
+  fillColor: z.string(),
+  strokeWidth: z.number(),
+  strokeColor: z.string(),
+  id: z.string(),
+})
+
+const parsePath = (str: string): z.infer<typeof PathShapeOutputSchema> => {
+  const [, pathData, fillColor, strokeWidth, strokeColor, , id] = str.split("~")
+  return {
+    type: "PATH",
+    pathData,
+    fillColor,
+    strokeWidth: Number(strokeWidth),
+    strokeColor,
+    id,
+  }
+}
+
+export const PathShapeSchema = z
+  .string()
+  .startsWith("PT~")
+  .transform(parsePath)
+  .pipe(PathShapeOutputSchema)
+
 export const SingleLetterShapeSchema = z
   .string()
   .transform((x) => {
@@ -266,6 +293,7 @@ export const SingleLetterShapeSchema = z
     if (x.startsWith("P~")) return PinShapeSchema.parse(x)
     if (x.startsWith("PL~")) return PolylineShapeSchema.parse(x)
     if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
+    if (x.startsWith("PT~")) return PathShapeSchema.parse(x)
     throw new Error(`Invalid shape type: ${x}`)
   })
   .pipe(
@@ -275,6 +303,7 @@ export const SingleLetterShapeSchema = z
       PinShapeOutputSchema,
       PolylineShapeOutputSchema,
       PolygonShapeOutputSchema,
+      PathShapeOutputSchema,
     ]),
   )
 
