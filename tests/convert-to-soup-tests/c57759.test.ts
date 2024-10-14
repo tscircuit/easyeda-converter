@@ -15,7 +15,9 @@ test("C57759 should generate Circuit Json without errors", () => {
 // Add a new test to specifically check the parsing of the PT shape
 test("C57759 should parse PT shape correctly", () => {
   const bettereasy = EasyEdaJsonSchema.parse(c57759)
-  const ptShape = bettereasy.dataStr.shape.find(shape => shape.type === "PATH")
+  const ptShape = bettereasy.dataStr.shape.find(
+    (shape) => shape.type === "PATH",
+  )
   expect(ptShape).toBeDefined()
   expect(ptShape?.type).toBe("PATH")
   expect(ptShape?.pathData).toBe("M 5 -6 L -5 0 L 5 6 Z")
