@@ -34,14 +34,14 @@ export const convertBetterEasyToTsx = async ({
 
   // Derive pinLabels from easyeda json
   const pinLabels: Record<string, string> = {}
-  betterEasy.dataStr.shape
-    .filter((shape) => shape.type === "PIN")
-    .forEach((pin) => {
-      const isPinLabelNumeric = /^\d+$/.test(pin.label)
-      const label = isPinLabelNumeric ? `pin${pin.label}` : pin.label
+  for (const shape of betterEasy.dataStr.shape) {
+    if (shape.type === "PIN") {
+      const isPinLabelNumeric = /^\d+$/.test(shape.label)
+      const label = isPinLabelNumeric ? `pin${shape.label}` : shape.label
 
-      pinLabels[pin.pinNumber.toString()] = label
-    })
+      pinLabels[shape.pinNumber.toString()] = label
+    }
+  }
 
   // Derive schPinArrangement from easyeda json
   const pins = betterEasy.dataStr.shape.filter((shape) => shape.type === "PIN")
@@ -69,12 +69,17 @@ export const convertBetterEasyToTsx = async ({
     }
   }
 
+  const supplierPartNumbers: Record<string, string[]> = {
+    lcsc: [betterEasy.lcsc.number],
+  }
+
   return soupTypescriptComponentTemplate({
     componentName: pn,
     pinLabels,
     schPinArrangement,
     objUrl: modelObjUrl,
     circuitJson,
+    supplierPartNumbers,
   })
 }
 
