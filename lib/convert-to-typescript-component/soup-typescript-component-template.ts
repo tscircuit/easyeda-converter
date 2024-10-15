@@ -11,6 +11,7 @@ interface Params {
   schPinArrangement: ChipProps["schPortArrangement"]
   objUrl?: string
   circuitJson: AnyCircuitElement[]
+  supplierPartNumbers: Record<string, string[]>
 }
 
 export const soupTypescriptComponentTemplate = ({
@@ -19,6 +20,7 @@ export const soupTypescriptComponentTemplate = ({
   schPinArrangement,
   objUrl,
   circuitJson,
+  supplierPartNumbers,
 }: Params) => {
   const footprintTsx = generateFootprintTsx(circuitJson)
   return `
@@ -36,7 +38,6 @@ export const ${componentName} = (props: Props) => {
   return (
     <chip
       {...props}
-      footprint={${footprintTsx}}
       ${
         objUrl
           ? `cadModel={{
@@ -49,6 +50,8 @@ export const ${componentName} = (props: Props) => {
       pinLabels={pinLabels}
       schPinSpacing={0.75}
       schPortArrangement={${JSON.stringify(schPinArrangement, null, "  ")}}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      footprint={${footprintTsx}}
     />
   )
 }
