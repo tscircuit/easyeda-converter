@@ -200,7 +200,7 @@ export const ShapeItemSchema = z
         const match = arcData.match(
           /M\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*A\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)/,
         )
-        
+
         if (!match) {
           throw new Error(`Invalid arc data: ${arcData}`)
         }

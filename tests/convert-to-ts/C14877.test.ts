@@ -9,6 +9,5 @@ it("should convert atmega328p into typescript file", async () => {
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })
-  console.log(result)
   // TODO snapshot
 })
