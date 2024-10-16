@@ -197,6 +197,14 @@ export const ShapeItemSchema = z
         const [width, layer, , arcData] = shape.data.split("~")
         // A rx ry x-axis-rotation large-arc-flag sweep-flag x  y
         // A rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
+        const match = arcData.match(
+          /M\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*A\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)/,
+        )
+        
+        if (!match) {
+          throw new Error(`Invalid arc data: ${arcData}`)
+        }
+
         const [
           ,
           startX,
@@ -208,9 +216,7 @@ export const ShapeItemSchema = z
           sweepFlag,
           endX,
           endY,
-        ] = arcData.match(
-          /M\s*([\d.]+)(?:\s*,\s*|\s+)([\d.]+)\s*A\s*([\d.]+)(?:\s*,\s*|\s+)([\d.]+)\s*([\d.]+)\s*([01])\s*([01])\s*([\d.]+)(?:\s*,\s*|\s+)([\d.]+)/,
-        )!
+        ] = match
         const start: [number, number] = [Number(startX), Number(startY)]
         const end: [number, number] = [Number(endX), Number(endY)]
         return ArcSchema.parse({
