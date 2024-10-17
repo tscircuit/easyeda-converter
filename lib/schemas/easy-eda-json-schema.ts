@@ -47,7 +47,7 @@ export const HeadSchema = z.object({
   puuid: z.string().optional(),
   uuid: z.string(),
   utime: z.number(),
-  importFlag: z.number(),
+  importFlag: z.number().optional(),
   c_spiceCmd: z.any().optional(),
   hasIdFlag: z.boolean(),
 })
