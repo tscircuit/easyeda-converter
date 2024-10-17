@@ -8,7 +8,13 @@ const addTestForPart = async (jlcpcbPartNumber: string) => {
     const rawEasyEdaJson = await fetchEasyEDAComponent(jlcpcbPartNumber)
 
     // Write the raw JSON to the assets directory
-    const assetPath = path.join(__dirname, "..", "tests", "assets", `${jlcpcbPartNumber}.raweasy.json`)
+    const assetPath = path.join(
+      __dirname,
+      "..",
+      "tests",
+      "assets",
+      `${jlcpcbPartNumber}.raweasy.json`,
+    )
     await fs.writeFile(assetPath, JSON.stringify(rawEasyEdaJson, null, 2))
 
     // Create the test file content
@@ -31,7 +37,13 @@ it("should convert ${jlcpcbPartNumber} into typescript file", async () => {
 `
 
     // Write the test file
-    const testPath = path.join(__dirname, "..", "tests", "convert-to-ts", `${jlcpcbPartNumber}-to-ts.test.ts`)
+    const testPath = path.join(
+      __dirname,
+      "..",
+      "tests",
+      "convert-to-ts",
+      `${jlcpcbPartNumber}-to-ts.test.ts`,
+    )
     await fs.writeFile(testPath, testContent)
 
     console.log(`Test file created: ${testPath}`)

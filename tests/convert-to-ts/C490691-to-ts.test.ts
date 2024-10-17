@@ -1,4 +1,3 @@
-
 import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C490691.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/convert-to-typescript-component"
