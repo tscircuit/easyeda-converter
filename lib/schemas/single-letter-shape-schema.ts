@@ -284,6 +284,53 @@ export const PathShapeSchema = z
   .transform(parsePath)
   .pipe(PathShapeOutputSchema)
 
+const TextShapeOutputSchema = z.object({
+  type: z.literal("TEXT"),
+  alignment: z.enum(["L", "C", "R"]),
+  x: z.number(),
+  y: z.number(),
+  rotation: z.number(),
+  fontColor: z.string(),
+  backgroundColor: z.string().optional(),
+  fontSize: z.string(),
+  fontWeight: z.enum(["normal", "bold"]).optional().default("normal"),
+  fontStyle: z.enum(["normal", "italic"]).optional().default("normal"),
+  fontDecoration: z.enum(["", "underline"]),
+  content: z.string(),
+  textType: z.string(),
+  visibility: z.enum(["0", "1"]),
+  mirror: z.string(),
+  id: z.string(),
+})
+
+const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
+  const [, alignment, x, y, rotation, fontColor, backgroundColor, fontSize, fontWeight, fontStyle, fontDecoration, content, textType, visibility, mirror, id] = str.split("~")
+  return {
+    type: "TEXT",
+    alignment: alignment as "L" | "C" | "R",
+    x: Number(x),
+    y: Number(y),
+    rotation: Number(rotation),
+    fontColor,
+    backgroundColor: backgroundColor || undefined,
+    fontSize,
+    fontWeight: (fontWeight || "normal") as "normal" | "bold",
+    fontStyle: (fontStyle || "normal") as "normal" | "italic",
+    fontDecoration: fontDecoration as "" | "underline",
+    content,
+    textType,
+    visibility: visibility as "0" | "1",
+    mirror,
+    id,
+  }
+}
+
+export const TextShapeSchema = z
+  .string()
+  .startsWith("T~")
+  .transform(parseText)
+  .pipe(TextShapeOutputSchema)
+
 export const SingleLetterShapeSchema = z
   .string()
   .transform((x) => {
@@ -294,6 +341,7 @@ export const SingleLetterShapeSchema = z
     if (x.startsWith("PL~")) return PolylineShapeSchema.parse(x)
     if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
     if (x.startsWith("PT~")) return PathShapeSchema.parse(x)
+    if (x.startsWith("T~")) return TextShapeSchema.parse(x)
     throw new Error(`Invalid shape type: ${x}`)
   })
   .pipe(
@@ -304,6 +352,7 @@ export const SingleLetterShapeSchema = z
       PolylineShapeOutputSchema,
       PolygonShapeOutputSchema,
       PathShapeOutputSchema,
+      TextShapeOutputSchema,
     ]),
   )
 
