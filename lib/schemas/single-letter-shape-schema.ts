@@ -304,7 +304,24 @@ const TextShapeOutputSchema = z.object({
 })
 
 const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
-  const [, alignment, x, y, rotation, fontColor, backgroundColor, fontSize, fontWeight, fontStyle, fontDecoration, content, textType, visibility, mirror, id] = str.split("~")
+  const [
+    ,
+    alignment,
+    x,
+    y,
+    rotation,
+    fontColor,
+    backgroundColor,
+    fontSize,
+    fontWeight,
+    fontStyle,
+    fontDecoration,
+    content,
+    textType,
+    visibility,
+    mirror,
+    id,
+  ] = str.split("~")
   return {
     type: "TEXT",
     alignment: alignment as "L" | "C" | "R",
