@@ -49,7 +49,7 @@ export const convertEasyEdaJsonToVariousFormats = async ({
   }
 
   if (!outputFilename) {
-    console.log("specify --output file (-o) or --type (-t)")
+    console.log("specify --output file (-o) or --output-format")
     process.exit(1)
   }
 
