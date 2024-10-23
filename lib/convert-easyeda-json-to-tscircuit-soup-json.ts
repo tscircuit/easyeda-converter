@@ -28,6 +28,7 @@ import { findBoundsAndCenter, transformPCBElements } from "@tscircuit/soup-util"
 import { compose, scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
+import {easyEdaUnitToMm} from "./utils/easyeda-unit-to-mm"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -58,7 +59,7 @@ const handleSilkscreenPath = (
       x: milx10(point.x),
       y: milx10(point.y),
     })),
-    stroke_width: track.width,
+    stroke_width: easyEdaUnitToMm(track.width),
   })
 }
 
@@ -82,7 +83,7 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
       x: milx10(p.x),
       y: milx10(p.y),
     })),
-    stroke_width: mm(arc.width),
+    stroke_width: easyEdaUnitToMm(arc.width),
   } as Soup.PcbSilkscreenPathInput)
 }
 

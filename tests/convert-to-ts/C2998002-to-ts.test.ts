@@ -20,6 +20,7 @@ it("should convert C2998002 into typescript file", async () => {
 test("C57759 should generate Circuit Json without errors", () => {
   const betterEasy = EasyEdaJsonSchema.parse(c2998002)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  console.log("🚀 ~ circuitJson:", circuitJson)
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
