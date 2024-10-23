@@ -12,7 +12,7 @@ import type {
   PCBSMTPad,
   PcbSilkscreenPath,
   PCBPlatedHole,
-  PCBPlatedHoleInput,
+  PcbPlatedHoleInput,
   PcbComponentInput,
 } from "circuit-json"
 import {
@@ -148,21 +148,40 @@ export const convertEasyEdaJsonToCircuitJson = (
 
       if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
         // Add pcb_plated_hole
-        soupElements.push(
-          pcb_plated_hole.parse({
-            type: "pcb_plated_hole",
-            pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+        const commonPlatedHoleProps = {
+          type: "pcb_plated_hole",
+          pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+          x: mil2mm(pad.center.x),
+          y: mil2mm(pad.center.y),
+          layers: ["top"],
+          port_hints: [portNumber],
+          pcb_component_id: "pcb_component_1",
+          pcb_port_id: `pcb_port_${index + 1}`,
+        }
+        let additionalPlatedHoleProps
+
+        if (pad.shape === "OVAL") {
+          additionalPlatedHoleProps = {
+            shape: "pill",
+            outer_width: mil2mm(pad.width),
+            outer_height: mil2mm(pad.height),
+            hole_width: mil2mm(pad.holeRadius) * 2,
+            hole_height: mil2mm(pad.holeRadius) * 2,
+          }
+        } else {
+          additionalPlatedHoleProps = {
             shape: "circle",
-            x: mil2mm(pad.center.x),
-            y: mil2mm(pad.center.y),
             hole_diameter: mil2mm(pad.holeRadius) * 2,
             outer_diameter: mil2mm(pad.width),
             radius: mil2mm(pad.holeRadius),
-            port_hints: [portNumber],
-            pcb_component_id: "pcb_component_1",
-            pcb_port_id: `pcb_port_${index + 1}`,
-            layers: ["top"],
-          } as PCBPlatedHoleInput),
+          }
+        }
+
+        soupElements.push(
+          pcb_plated_hole.parse({
+            ...commonPlatedHoleProps,
+            ...additionalPlatedHoleProps,
+          }),
         )
       } else {
         // Add pcb_smtpad
