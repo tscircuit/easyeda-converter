@@ -6,4 +6,4 @@
  * 1 inch = 25.4 mm
  * 1 mil = 25.4/1000 = 0.0254 mm
  */
-export const easyEdaUnitToMm = (value: number): number => value * 10 * 0.0254
+export const mil10ToMm = (value: number): number => value * 10 * 0.0254

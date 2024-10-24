@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { mm } from "@tscircuit/mm"
-import { easyEdaUnitToMm } from "lib/utils/easyeda-unit-to-mm"
+import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
 
 /**
  I'll break down the elements in the `dataStr.head.shape` array and explain what they represent. This array contains instructions for drawing the schematic symbol of the component.
@@ -274,7 +274,7 @@ const parsePath = (str: string): z.infer<typeof PathShapeOutputSchema> => {
     type: "PATH",
     pathData,
     fillColor,
-    strokeWidth: easyEdaUnitToMm(Number(strokeWidth)),
+    strokeWidth: mil10ToMm(Number(strokeWidth)),
     strokeColor,
     id,
   }
