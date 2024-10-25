@@ -32,31 +32,54 @@ export const convertBetterEasyToTsx = async ({
   const pn = normalizeManufacturerPartNumber(rawPn)
   const [cad_component] = su(circuitJson).cad_component.list()
 
-  // Derive pinLabels from easyeda json
-  const pinLabels: Record<string, string> = {}
-  for (const shape of betterEasy.dataStr.shape) {
-    if (shape.type === "PIN") {
-      const isPinLabelNumeric = /^\d+$/.test(shape.label)
-      const label = isPinLabelNumeric ? `pin${shape.label}` : shape.label
-
-      pinLabels[shape.pinNumber.toString()] = label
-    }
-  }
-
   // Derive schPinArrangement from easyeda json
   const pins = betterEasy.dataStr.shape.filter((shape) => shape.type === "PIN")
-  const leftPins = pins.filter((pin) => pin.rotation === 180)
-  const rightPins = pins.filter((pin) => pin.rotation === 0)
+
+  const hasStringPinNumbers = pins.some(
+    (pin) => typeof pin.pinNumber === "string",
+  )
+  let modifiedPins = pins
+  if (hasStringPinNumbers) {
+    modifiedPins = pins.map((pin, idx) => {
+      const originalPinNumber = pin.pinNumber.toString()
+
+      const newPinNumber = idx + 1
+
+      // If label is different from original pin number, create array with both pin number and label
+      // const newLabel =
+      //   originalPinNumber === pin.label
+      //     ? [pin.label]
+      //     : [originalPinNumber, pin.label]
+
+      return {
+        ...pin,
+        pinNumber: newPinNumber,
+        label: pin.label,
+      }
+    })
+  }
+
+  const leftPins = modifiedPins.filter((pin) => pin.rotation === 180)
+  const rightPins = modifiedPins.filter((pin) => pin.rotation === 0)
 
   const schPinArrangement = {
     leftSide: {
       direction: "top-to-bottom" as const,
-      pins: leftPins.map((pin) => pin.pinNumber) as number[],
+      pins: leftPins.map((pin) => Number(pin.pinNumber)),
     },
     rightSide: {
       direction: "bottom-to-top" as const,
-      pins: rightPins.map((pin) => pin.pinNumber).reverse() as number[],
+      pins: rightPins.map((pin) => Number(pin.pinNumber)).reverse(),
     },
+  }
+
+  // Derive pinLabels from easyeda json
+  const pinLabels: Record<string, string> = {}
+  for (const pin of modifiedPins) {
+    const isPinLabelNumeric = /^\d+$/.test(pin.label)
+    const label = isPinLabelNumeric ? `pin${pin.label}` : pin.label
+
+    pinLabels[pin.pinNumber] = label
   }
 
   let modelObjUrl: string | undefined
