@@ -159,15 +159,51 @@ export const convertEasyEdaJsonToCircuitJson = (
           pcb_component_id: "pcb_component_1",
           pcb_port_id: `pcb_port_${index + 1}`,
         }
-        let additionalPlatedHoleProps
+        let additionalPlatedHoleProps: any
 
         if (pad.shape === "OVAL") {
+          // A JLCPCB Oval is actually a Pill, and it's a bit tricky to compute
+          // the correct dimensions, but we can use the following process:
+          // 1. Find the smallest outer dimensions
+          // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
+          // 3. Calculate the largest "inner dimension" (which is either the
+          //    holeWidth or holeHeight) by subtracting the distanceFromOuterPlatingToHole * 2
+          //    from the largest outer dimensions
+
+          const largestOuterDimensionName: "width" | "height" =
+            mil2mm(pad.width) > mil2mm(pad.height) ? "width" : "height"
+
+          const smallestOuterDimension = Math.min(
+            mil2mm(pad.width),
+            mil2mm(pad.height),
+          )
+          const largestOuterDimension = Math.max(
+            mil2mm(pad.width),
+            mil2mm(pad.height),
+          )
+
+          const distanceFromOuterPlatingToHole =
+            smallestOuterDimension / 2 - mil2mm(pad.holeRadius)
+
+          const largestInnerDimension =
+            largestOuterDimension - distanceFromOuterPlatingToHole * 2
+          const smallestInnerDimension = mil2mm(pad.holeRadius) * 2
+
+          const innerWidth =
+            largestOuterDimensionName === "width"
+              ? largestInnerDimension
+              : smallestInnerDimension
+          const innerHeight =
+            largestOuterDimensionName === "height"
+              ? largestInnerDimension
+              : smallestInnerDimension
+
           additionalPlatedHoleProps = {
             shape: "pill",
             outer_width: mil2mm(pad.width),
             outer_height: mil2mm(pad.height),
-            hole_width: mil2mm(pad.holeRadius) * 2,
-            hole_height: mil2mm(pad.holeRadius) * 2,
+            hole_width: innerWidth,
+            hole_height: innerHeight,
           }
         } else {
           additionalPlatedHoleProps = {

@@ -13,7 +13,7 @@ it("should convert C165948 into typescript file", async () => {
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-  // Add more specific assertions here based on the component
+  expect(result).toContain('shape="pill"')
 })
 
 it("C165948 should generate Circuit Json without errors", () => {
