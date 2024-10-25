@@ -12,7 +12,7 @@ import type {
   PCBSMTPad,
   PcbSilkscreenPath,
   PCBPlatedHole,
-  PCBPlatedHoleInput,
+  PcbPlatedHoleInput,
   PcbComponentInput,
 } from "circuit-json"
 import {
@@ -149,21 +149,76 @@ export const convertEasyEdaJsonToCircuitJson = (
 
       if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
         // Add pcb_plated_hole
-        soupElements.push(
-          pcb_plated_hole.parse({
-            type: "pcb_plated_hole",
-            pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+        const commonPlatedHoleProps = {
+          type: "pcb_plated_hole",
+          pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+          x: mil2mm(pad.center.x),
+          y: mil2mm(pad.center.y),
+          layers: ["top"],
+          port_hints: [portNumber],
+          pcb_component_id: "pcb_component_1",
+          pcb_port_id: `pcb_port_${index + 1}`,
+        }
+        let additionalPlatedHoleProps: any
+
+        if (pad.shape === "OVAL") {
+          // A JLCPCB Oval is actually a Pill, and it's a bit tricky to compute
+          // the correct dimensions, but we can use the following process:
+          // 1. Find the smallest outer dimensions
+          // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
+          // 3. Calculate the largest "inner dimension" (which is either the
+          //    holeWidth or holeHeight) by subtracting the distanceFromOuterPlatingToHole * 2
+          //    from the largest outer dimensions
+
+          const largestOuterDimensionName: "width" | "height" =
+            mil2mm(pad.width) > mil2mm(pad.height) ? "width" : "height"
+
+          const smallestOuterDimension = Math.min(
+            mil2mm(pad.width),
+            mil2mm(pad.height),
+          )
+          const largestOuterDimension = Math.max(
+            mil2mm(pad.width),
+            mil2mm(pad.height),
+          )
+
+          const distanceFromOuterPlatingToHole =
+            smallestOuterDimension / 2 - mil2mm(pad.holeRadius)
+
+          const largestInnerDimension =
+            largestOuterDimension - distanceFromOuterPlatingToHole * 2
+          const smallestInnerDimension = mil2mm(pad.holeRadius) * 2
+
+          const innerWidth =
+            largestOuterDimensionName === "width"
+              ? largestInnerDimension
+              : smallestInnerDimension
+          const innerHeight =
+            largestOuterDimensionName === "height"
+              ? largestInnerDimension
+              : smallestInnerDimension
+
+          additionalPlatedHoleProps = {
+            shape: "pill",
+            outer_width: mil2mm(pad.width),
+            outer_height: mil2mm(pad.height),
+            hole_width: innerWidth,
+            hole_height: innerHeight,
+          }
+        } else {
+          additionalPlatedHoleProps = {
             shape: "circle",
-            x: mil2mm(pad.center.x),
-            y: mil2mm(pad.center.y),
             hole_diameter: mil2mm(pad.holeRadius) * 2,
             outer_diameter: mil2mm(pad.width),
             radius: mil2mm(pad.holeRadius),
-            port_hints: [portNumber],
-            pcb_component_id: "pcb_component_1",
-            pcb_port_id: `pcb_port_${index + 1}`,
-            layers: ["top"],
-          } as PCBPlatedHoleInput),
+          }
+        }
+
+        soupElements.push(
+          pcb_plated_hole.parse({
+            ...commonPlatedHoleProps,
+            ...additionalPlatedHoleProps,
+          }),
         )
       } else {
         // Add pcb_smtpad
