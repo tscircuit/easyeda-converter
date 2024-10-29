@@ -143,11 +143,13 @@ export const convertEasyEdaJsonToCircuitJson = (
       const matchingPin = pins.find(
         (pin) => pin.pinNumber === pad.number || pad.number === pin.label,
       )
-      const portHints = Array.from(new Set(
-        [matchingPin?.pinNumber, matchingPin?.label, pad.number]
-          .filter(Boolean)
-          .map(String),
-      ))
+      const portHints = Array.from(
+        new Set(
+          [matchingPin?.pinNumber, matchingPin?.label, pad.number]
+            .filter(Boolean)
+            .map(String),
+        ),
+      )
 
       // Add source port
       soupElements.push({
