@@ -10,7 +10,7 @@ describe("normalizePinLabels", () => {
       ["pin2", "GND2"],
       ["pin3", "VCC"],
       ["pin5", "pin3_alt1"],
-      ["pin4", ""],
+      ["pin4"],
     ])
   })
 

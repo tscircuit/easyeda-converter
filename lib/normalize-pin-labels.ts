@@ -17,13 +17,15 @@
  *   ["pin2", "GND2"],
  *   ["pin3", "VCC"],
  *   ["pin5", "pin3_alt1"],
- *   ["pin4", ""]
+ *   ["pin4"]
  * ]
  */
 export const normalizePinLabels = (pinLabels: string[][]): string[][] => {
   if (pinLabels.length === 0) return []
 
-  const result: string[][] = Array(pinLabels.length).fill([])
+  const result: string[][] = Array(pinLabels.length)
+    .fill(null)
+    .map(() => [])
   const labelCounts: Record<string, number> = {}
   const usedLabels = new Set<string>()
 
@@ -67,26 +69,22 @@ export const normalizePinLabels = (pinLabels: string[][]): string[][] => {
     }
   }
 
-  // Third pass: Handle numeric labels
-  const seenNumbers = new Set<string>()
+  // Third pass: Handle numeric labels and duplicates
+  const seenNumbers = new Map<string, number>() // Maps number to its first occurrence index
 
   for (let pinIndex = 0; pinIndex < pinLabels.length; pinIndex++) {
     const labels = pinLabels[pinIndex]
+    const numericLabels = labels.filter((label) => /^\d+$/.test(label))
 
-    for (const label of labels) {
-      if (!label || !/^\d+$/.test(label)) continue // Only process numeric labels
-
-      // If the number matches the pin position, we don't need to do anything
-      if (label === (pinIndex + 1).toString()) continue
-
-      // If we've seen this number before, this is an alternate reference
+    for (const label of numericLabels) {
       if (seenNumbers.has(label)) {
-        if (result[pinIndex].length === 1) {
-          result[pinIndex].push(`pin${label}_alt1`)
-        }
+        // This is a duplicate number - mark it as an alternate of the first occurrence
+        const firstIndex = seenNumbers.get(label)!
+        result[pinIndex] = [`pin${pinIndex + 1}`, `pin${label}_alt1`]
+      } else {
+        // First time seeing this number
+        seenNumbers.set(label, pinIndex)
       }
-
-      seenNumbers.add(label)
     }
   }
 
