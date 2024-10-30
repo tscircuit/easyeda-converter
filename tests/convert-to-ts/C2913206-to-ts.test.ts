@@ -14,6 +14,4 @@ it("should convert C2913206 into typescript file", async () => {
 
   const pinLabelString = result.match(/const pinLabels = \{[\s\S]*?\}/gm)?.[0]
   expect(pinLabelString).toMatchSnapshot()
-
-  Bun.write("C2913206.tsx", result)
 })
