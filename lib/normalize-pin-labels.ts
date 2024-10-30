@@ -21,15 +21,18 @@
  * ]
  */
 export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
-  const result: string[][] = inputPinLabels.map(() => [])
+  // Remove duplicates inside input
+  const unqInputPinLabels = inputPinLabels.map((labels) => [...new Set(labels)])
+
+  const result: string[][] = unqInputPinLabels.map(() => [])
 
   /**
    * If the set has a desired number inside of it, we'll put that number in this
    * array without reference to other sets
    */
-  const desiredNumbers: (number | null)[] = inputPinLabels.map(() => null)
-  for (let i = 0; i < inputPinLabels.length; i++) {
-    for (const label of inputPinLabels[i]) {
+  const desiredNumbers: (number | null)[] = unqInputPinLabels.map(() => null)
+  for (let i = 0; i < unqInputPinLabels.length; i++) {
+    for (const label of unqInputPinLabels[i]) {
       if (/^\d+$/.test(label)) {
         desiredNumbers[i] = Number.parseInt(label)
         break
@@ -89,7 +92,7 @@ export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
    * designations
    */
   const totalLabelCounts: Record<string, number> = {}
-  for (const inputLabels of inputPinLabels) {
+  for (const inputLabels of unqInputPinLabels) {
     for (const label of inputLabels) {
       if (/^\d+$/.test(label)) {
         continue
@@ -100,8 +103,8 @@ export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
   }
 
   const incrementalLabelCounts: Record<string, number> = {}
-  for (let i = 0; i < inputPinLabels.length; i++) {
-    const inputLabels = inputPinLabels[i]
+  for (let i = 0; i < unqInputPinLabels.length; i++) {
+    const inputLabels = unqInputPinLabels[i]
     for (const label of inputLabels) {
       if (/^\d+$/.test(label)) {
         continue

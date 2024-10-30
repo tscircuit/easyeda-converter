@@ -33,72 +33,12 @@ export const convertBetterEasyToTsx = async ({
   const pn = normalizeManufacturerPartNumber(rawPn)
   const [cad_component] = su(circuitJson).cad_component.list()
 
-  // Derive schPinArrangement from easyeda json
-  const pins = betterEasy.dataStr.shape.filter((shape) => shape.type === "PIN")
+  const sourcePorts = su(circuitJson).source_port.list()
 
-  const hasStringPinNumbers = pins.some(
-    (pin) => typeof pin.pinNumber === "string",
-  )
-  let modifiedPins = pins
-  if (hasStringPinNumbers) {
-    modifiedPins = pins.map((pin, idx) => {
-      const originalPinNumber = pin.pinNumber.toString()
-
-      const newPinNumber = idx + 1
-
-      // If label is different from original pin number, create array with both pin number and label
-      // const newLabel =
-      //   originalPinNumber === pin.label
-      //     ? [pin.label]
-      //     : [originalPinNumber, pin.label]
-
-      return {
-        ...pin,
-        pinNumber: newPinNumber,
-        label: pin.label,
-      }
-    })
-  }
-
-  const leftPins = modifiedPins.filter((pin) => pin.rotation === 180)
-  const rightPins = modifiedPins.filter((pin) => pin.rotation === 0)
-
-  const schPinArrangement = {
-    leftSide: {
-      direction: "top-to-bottom" as const,
-      pins: leftPins.map((pin) => Number(pin.pinNumber)),
-    },
-    rightSide: {
-      direction: "bottom-to-top" as const,
-      pins: rightPins.map((pin) => Number(pin.pinNumber)).reverse(),
-    },
-  }
-
-  // Derive pinLabels from easyeda json
-  // Convert pins to format needed by normalizePinLabels
-  const pinLabelSets = modifiedPins.map((pin) => {
-    const labels = []
-    // Always include pin number as first label if it exists
-    if (pin.pinNumber) {
-      labels.push(pin.pinNumber.toString())
-    }
-    // Add pin label if different from pin number
-    if (pin.label && pin.label !== pin.pinNumber.toString()) {
-      labels.push(pin.label)
-    }
-    return labels
-  })
-
-  // TODO we need to convert these pin labels early, this needs to basically be
-  // done when converting to circuit json
-  const normalizedPinLabels = normalizePinLabels(pinLabelSets)
-
-  // Convert back to Record format expected by chip component
   const pinLabels: Record<string, string[]> = {}
-  modifiedPins.forEach((pin, index) => {
-    // Use first normalized label for each pin
-    pinLabels[pin.pinNumber] = normalizedPinLabels[index]
-  })
+  for (const sourcePort of sourcePorts) {
+    pinLabels[sourcePort.name] = sourcePort.port_hints ?? []
+  }
 
   let modelObjUrl: string | undefined
   if (cad_component.model_obj_url) {
@@ -117,7 +57,7 @@ export const convertBetterEasyToTsx = async ({
   return soupTypescriptComponentTemplate({
     componentName: pn,
     pinLabels,
-    schPinArrangement,
+
     objUrl: modelObjUrl,
     circuitJson,
     supplierPartNumbers,

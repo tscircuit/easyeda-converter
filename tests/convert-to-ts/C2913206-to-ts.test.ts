@@ -8,10 +8,6 @@ import { su } from "@tscircuit/soup-util"
 it("should convert C2913206 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
 
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-
-  console.log(su(circuitJson).source_port.list())
-
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })
