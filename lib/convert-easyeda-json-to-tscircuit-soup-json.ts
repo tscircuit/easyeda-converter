@@ -29,6 +29,7 @@ import { compose, scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { normalizePinLabels } from "./normalize-pin-labels"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -133,18 +134,36 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   soupElements.push(source_component, pcb_component)
 
+  const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
+    (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
+  )
+
+  // Prepare pin labels for normalization
+  const pinLabelSets = pads.map((pad) => {
+    const labels = []
+    if (pad.number) labels.push(pad.number.toString())
+    return labels
+  })
+
+  const normalizedPinLabels = normalizePinLabels(pinLabelSets)
+
   // Add source ports and pcb_smtpads
-  easyEdaJson.packageDetail.dataStr.shape
-    .filter((shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD")
+  pads
+    //
     .forEach((pad, index) => {
-      const portNumber = pad.number.toString()
+      const portHints = normalizedPinLabels[index]
+      const pinNumber = Number.parseInt(
+        portHints.find((hint) => hint.match(/pin\d+/))!.replace("pin", ""),
+      )
 
       // Add source port
       soupElements.push({
         type: "source_port",
         source_port_id: `source_port_${index + 1}`,
         source_component_id: "source_component_1",
-        name: portNumber,
+        name: `pin${pinNumber}`,
+        pin_number: pinNumber,
+        port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
       })
 
       if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
@@ -155,7 +174,7 @@ export const convertEasyEdaJsonToCircuitJson = (
           x: mil2mm(pad.center.x),
           y: mil2mm(pad.center.y),
           layers: ["top"],
-          port_hints: [portNumber],
+          port_hints: [pinNumber],
           pcb_component_id: "pcb_component_1",
           pcb_port_id: `pcb_port_${index + 1}`,
         }
@@ -246,7 +265,7 @@ export const convertEasyEdaJsonToCircuitJson = (
             ? { width: mil2mm(pad.width), height: mil2mm(pad.height) }
             : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
           layer: "top",
-          port_hints: [portNumber],
+          port_hints: [`pin${pinNumber}`],
           pcb_component_id: "pcb_component_1",
           pcb_port_id: `pcb_port_${index + 1}`,
         } as PCBSMTPad)

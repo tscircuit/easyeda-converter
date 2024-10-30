@@ -2,9 +2,16 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C2913206.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { su } from "@tscircuit/soup-util"
 
 it("should convert C2913206 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
+
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+
+  console.log(su(circuitJson).source_port.list())
+
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })
