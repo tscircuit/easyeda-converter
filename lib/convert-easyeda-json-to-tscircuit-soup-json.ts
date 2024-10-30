@@ -177,7 +177,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
         layers: ["top"],
-        port_hints: [pinNumber],
+        port_hints: [`pin${pinNumber}`],
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
       }
