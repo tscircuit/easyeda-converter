@@ -9,3 +9,4 @@ temp.tsx
 tmp.json
 tmp*
 *.diff.png
+.env
