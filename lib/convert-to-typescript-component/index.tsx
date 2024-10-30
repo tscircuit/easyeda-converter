@@ -89,6 +89,8 @@ export const convertBetterEasyToTsx = async ({
     return labels
   })
 
+  // TODO we need to convert these pin labels early, this needs to basically be
+  // done when converting to circuit json
   const normalizedPinLabels = normalizePinLabels(pinLabelSets)
 
   // Convert back to Record format expected by chip component
