@@ -29,6 +29,7 @@ import { compose, scale, translate } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { normalizePinLabels } from "./normalize-pin-labels"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -133,126 +134,154 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   soupElements.push(source_component, pcb_component)
 
+  const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
+    (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
+  )
+  const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
+
+  // Prepare pin labels for normalization
+  const pinLabelSets = pads.map((pad) => {
+    const labels = []
+    if (pad.number) labels.push(pad.number.toString())
+
+    const pin = pins.find((p) => p.pinNumber === pad.number)
+    if (pin) labels.push(pin.label)
+
+    return labels
+  })
+
+  const normalizedPinLabels = normalizePinLabels(pinLabelSets)
+
   // Add source ports and pcb_smtpads
-  easyEdaJson.packageDetail.dataStr.shape
-    .filter((shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD")
-    .forEach((pad, index) => {
-      const portNumber = pad.number.toString()
+  pads.forEach((pad, index) => {
+    const portHints = normalizedPinLabels[index]
+    const pinNumber = Number.parseInt(
+      portHints.find((hint) => hint.match(/pin\d+/))!.replace("pin", ""),
+    )
 
-      // Add source port
-      soupElements.push({
-        type: "source_port",
-        source_port_id: `source_port_${index + 1}`,
-        source_component_id: "source_component_1",
-        name: portNumber,
-      })
-
-      if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
-        // Add pcb_plated_hole
-        const commonPlatedHoleProps = {
-          type: "pcb_plated_hole",
-          pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
-          x: mil2mm(pad.center.x),
-          y: mil2mm(pad.center.y),
-          layers: ["top"],
-          port_hints: [portNumber],
-          pcb_component_id: "pcb_component_1",
-          pcb_port_id: `pcb_port_${index + 1}`,
-        }
-        let additionalPlatedHoleProps: any
-
-        if (pad.shape === "OVAL") {
-          // A JLCPCB Oval is actually a Pill, and it's a bit tricky to compute
-          // the correct dimensions, but we can use the following process:
-          // 1. Find the smallest outer dimensions
-          // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
-          // 3. Calculate the largest "inner dimension" (which is either the
-          //    holeWidth or holeHeight) by subtracting the distanceFromOuterPlatingToHole * 2
-          //    from the largest outer dimensions
-
-          const largestOuterDimensionName: "width" | "height" =
-            mil2mm(pad.width) > mil2mm(pad.height) ? "width" : "height"
-
-          const smallestOuterDimension = Math.min(
-            mil2mm(pad.width),
-            mil2mm(pad.height),
-          )
-          const largestOuterDimension = Math.max(
-            mil2mm(pad.width),
-            mil2mm(pad.height),
-          )
-
-          const distanceFromOuterPlatingToHole =
-            smallestOuterDimension / 2 - mil2mm(pad.holeRadius)
-
-          const largestInnerDimension =
-            largestOuterDimension - distanceFromOuterPlatingToHole * 2
-          const smallestInnerDimension = mil2mm(pad.holeRadius) * 2
-
-          const innerWidth =
-            largestOuterDimensionName === "width"
-              ? largestInnerDimension
-              : smallestInnerDimension
-          const innerHeight =
-            largestOuterDimensionName === "height"
-              ? largestInnerDimension
-              : smallestInnerDimension
-
-          additionalPlatedHoleProps = {
-            shape: "pill",
-            outer_width: mil2mm(pad.width),
-            outer_height: mil2mm(pad.height),
-            hole_width: innerWidth,
-            hole_height: innerHeight,
-          }
-        } else {
-          additionalPlatedHoleProps = {
-            shape: "circle",
-            hole_diameter: mil2mm(pad.holeRadius) * 2,
-            outer_diameter: mil2mm(pad.width),
-            radius: mil2mm(pad.holeRadius),
-          }
-        }
-
-        soupElements.push(
-          pcb_plated_hole.parse({
-            ...commonPlatedHoleProps,
-            ...additionalPlatedHoleProps,
-          }),
-        )
-      } else {
-        // Add pcb_smtpad
-        let soupShape: PCBSMTPad["shape"] | undefined
-        if (pad.shape === "RECT") {
-          soupShape = "rect"
-        } else if (pad.shape === "ELLIPSE") {
-          // This is just a bug
-          soupShape = "rect"
-        } else if (pad.shape === "OVAL") {
-          // OVAL is often a rect, especially when holeRadius is 0
-          soupShape = "rect"
-        }
-        if (!soupShape) {
-          throw new Error(`unknown pad.shape: "${pad.shape}"`)
-        }
-
-        const parsedPcbSmtpad = pcb_smtpad.parse({
-          type: "pcb_smtpad",
-          pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
-          shape: soupShape,
-          x: mil2mm(pad.center.x),
-          y: mil2mm(pad.center.y),
-          ...(soupShape === "rect"
-            ? { width: mil2mm(pad.width), height: mil2mm(pad.height) }
-            : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
-          layer: "top",
-          port_hints: [portNumber],
-          pcb_component_id: "pcb_component_1",
-          pcb_port_id: `pcb_port_${index + 1}`,
-        } as PCBSMTPad)
-        soupElements.push(parsedPcbSmtpad)
-      }
+    // Add source port
+    soupElements.push({
+      type: "source_port",
+      source_port_id: `source_port_${index + 1}`,
+      source_component_id: "source_component_1",
+      name: `pin${pinNumber}`,
+      pin_number: pinNumber,
+      port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
     })
+
+    if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
+      // Add pcb_plated_hole
+      const commonPlatedHoleProps = {
+        type: "pcb_plated_hole",
+        pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+        x: mil2mm(pad.center.x),
+        y: mil2mm(pad.center.y),
+        layers: ["top"],
+        port_hints: [`pin${pinNumber}`],
+        pcb_component_id: "pcb_component_1",
+        pcb_port_id: `pcb_port_${index + 1}`,
+      }
+      let additionalPlatedHoleProps: any
+
+      if (pad.shape === "OVAL") {
+        // A JLCPCB Oval is actually a Pill, and it's a bit tricky to compute
+        // the correct dimensions, but we can use the following process:
+        // 1. Find the smallest outer dimensions
+        // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
+        // 3. Calculate the largest "inner dimension" (which is either the
+        //    holeWidth or holeHeight) by subtracting the distanceFromOuterPlatingToHole * 2
+        //    from the largest outer dimensions
+
+        const largestOuterDimensionName: "width" | "height" =
+          mil2mm(pad.width) > mil2mm(pad.height) ? "width" : "height"
+
+        const smallestOuterDimension = Math.min(
+          mil2mm(pad.width),
+          mil2mm(pad.height),
+        )
+        const largestOuterDimension = Math.max(
+          mil2mm(pad.width),
+          mil2mm(pad.height),
+        )
+
+        const distanceFromOuterPlatingToHole =
+          smallestOuterDimension / 2 - mil2mm(pad.holeRadius)
+
+        const largestInnerDimension =
+          largestOuterDimension - distanceFromOuterPlatingToHole * 2
+        const smallestInnerDimension = mil2mm(pad.holeRadius) * 2
+
+        const innerWidth =
+          largestOuterDimensionName === "width"
+            ? largestInnerDimension
+            : smallestInnerDimension
+        const innerHeight =
+          largestOuterDimensionName === "height"
+            ? largestInnerDimension
+            : smallestInnerDimension
+
+        additionalPlatedHoleProps = {
+          shape: "pill",
+          outer_width: mil2mm(pad.width),
+          outer_height: mil2mm(pad.height),
+          hole_width: innerWidth,
+          hole_height: innerHeight,
+        }
+      } else {
+        additionalPlatedHoleProps = {
+          shape: "circle",
+          hole_diameter: mil2mm(pad.holeRadius) * 2,
+          outer_diameter: mil2mm(pad.width),
+          radius: mil2mm(pad.holeRadius),
+        }
+      }
+
+      soupElements.push(
+        pcb_plated_hole.parse({
+          ...commonPlatedHoleProps,
+          ...additionalPlatedHoleProps,
+        }),
+      )
+    } else {
+      // Add pcb_smtpad
+      let soupShape: PCBSMTPad["shape"] | undefined
+      if (pad.shape === "RECT") {
+        soupShape = "rect"
+      } else if (pad.shape === "ELLIPSE") {
+        // This is just a bug
+        soupShape = "rect"
+      } else if (pad.shape === "OVAL") {
+        // OVAL is often a rect, especially when holeRadius is 0
+        soupShape = "rect"
+      }
+      if (!soupShape) {
+        throw new Error(`unknown pad.shape: "${pad.shape}"`)
+      }
+
+      const rectSize = { width: mil2mm(pad.width), height: mil2mm(pad.height) }
+      if (pad.rotation === 90 || pad.rotation === 270) {
+        // Swap width and height
+        rectSize.width = mil2mm(pad.height)
+        rectSize.height = mil2mm(pad.width)
+      }
+
+      const parsedPcbSmtpad = pcb_smtpad.parse({
+        type: "pcb_smtpad",
+        pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
+        shape: soupShape,
+        x: mil2mm(pad.center.x),
+        y: mil2mm(pad.center.y),
+        ...(soupShape === "rect"
+          ? rectSize
+          : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
+        layer: "top",
+        port_hints: [`pin${pinNumber}`],
+        pcb_component_id: "pcb_component_1",
+        pcb_port_id: `pcb_port_${index + 1}`,
+      } as PCBSMTPad)
+      soupElements.push(parsedPcbSmtpad)
+    }
+  })
 
   // Add holes
   easyEdaJson.packageDetail.dataStr.shape

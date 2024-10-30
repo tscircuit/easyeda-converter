@@ -10,6 +10,7 @@ import {
   convertEasyEdaJsonToTscircuitSoupJson,
 } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
+import { normalizePinLabels } from "lib/normalize-pin-labels"
 
 export const convertRawEasyToTsx = async (rawEasy: any) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
@@ -32,54 +33,11 @@ export const convertBetterEasyToTsx = async ({
   const pn = normalizeManufacturerPartNumber(rawPn)
   const [cad_component] = su(circuitJson).cad_component.list()
 
-  // Derive schPinArrangement from easyeda json
-  const pins = betterEasy.dataStr.shape.filter((shape) => shape.type === "PIN")
+  const sourcePorts = su(circuitJson).source_port.list()
 
-  const hasStringPinNumbers = pins.some(
-    (pin) => typeof pin.pinNumber === "string",
-  )
-  let modifiedPins = pins
-  if (hasStringPinNumbers) {
-    modifiedPins = pins.map((pin, idx) => {
-      const originalPinNumber = pin.pinNumber.toString()
-
-      const newPinNumber = idx + 1
-
-      // If label is different from original pin number, create array with both pin number and label
-      // const newLabel =
-      //   originalPinNumber === pin.label
-      //     ? [pin.label]
-      //     : [originalPinNumber, pin.label]
-
-      return {
-        ...pin,
-        pinNumber: newPinNumber,
-        label: pin.label,
-      }
-    })
-  }
-
-  const leftPins = modifiedPins.filter((pin) => pin.rotation === 180)
-  const rightPins = modifiedPins.filter((pin) => pin.rotation === 0)
-
-  const schPinArrangement = {
-    leftSide: {
-      direction: "top-to-bottom" as const,
-      pins: leftPins.map((pin) => Number(pin.pinNumber)),
-    },
-    rightSide: {
-      direction: "bottom-to-top" as const,
-      pins: rightPins.map((pin) => Number(pin.pinNumber)).reverse(),
-    },
-  }
-
-  // Derive pinLabels from easyeda json
-  const pinLabels: Record<string, string> = {}
-  for (const pin of modifiedPins) {
-    const isPinLabelNumeric = /^\d+$/.test(pin.label)
-    const label = isPinLabelNumeric ? `pin${pin.label}` : pin.label
-
-    pinLabels[pin.pinNumber] = label
+  const pinLabels: Record<string, string[]> = {}
+  for (const sourcePort of sourcePorts) {
+    pinLabels[sourcePort.name] = sourcePort.port_hints ?? []
   }
 
   let modelObjUrl: string | undefined
@@ -99,7 +57,7 @@ export const convertBetterEasyToTsx = async ({
   return soupTypescriptComponentTemplate({
     componentName: pn,
     pinLabels,
-    schPinArrangement,
+
     objUrl: modelObjUrl,
     circuitJson,
     supplierPartNumbers,

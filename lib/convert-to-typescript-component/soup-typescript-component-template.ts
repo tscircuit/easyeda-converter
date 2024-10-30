@@ -6,9 +6,8 @@ import { generateFootprintTsx } from "../generate-footprint-tsx"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
 interface Params {
-  pinLabels: ChipProps["pinLabels"]
+  pinLabels: Record<string, string[]> | Record<string, string> // ChipProps["pinLabels"]
   componentName: string
-  schPinArrangement: ChipProps["schPortArrangement"]
   objUrl?: string
   circuitJson: AnyCircuitElement[]
   supplierPartNumbers: Record<string, string[]>
@@ -17,7 +16,6 @@ interface Params {
 export const soupTypescriptComponentTemplate = ({
   pinLabels,
   componentName,
-  schPinArrangement,
   objUrl,
   circuitJson,
   supplierPartNumbers,
@@ -49,7 +47,6 @@ export const ${componentName} = (props: Props) => {
       }
       pinLabels={pinLabels}
       schPinSpacing={0.75}
-      schPortArrangement={${JSON.stringify(schPinArrangement, null, "  ")}}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       footprint={${footprintTsx}}
     />

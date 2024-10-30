@@ -29,8 +29,8 @@
     "@tscircuit/soup-util": "^0.0.38",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
-    "circuit-json": "^0.0.83",
-    "circuit-to-svg": "^0.0.40",
+    "circuit-json": "^0.0.92",
+    "circuit-to-svg": "^0.0.56",
     "tsup": "^8.1.0"
   },
   "peerDependencies": {
