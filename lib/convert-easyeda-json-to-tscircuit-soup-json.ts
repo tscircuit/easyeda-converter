@@ -258,6 +258,13 @@ export const convertEasyEdaJsonToCircuitJson = (
         throw new Error(`unknown pad.shape: "${pad.shape}"`)
       }
 
+      const rectSize = { width: mil2mm(pad.width), height: mil2mm(pad.height) }
+      if (pad.rotation === 90 || pad.rotation === 270) {
+        // Swap width and height
+        rectSize.width = mil2mm(pad.height)
+        rectSize.height = mil2mm(pad.width)
+      }
+
       const parsedPcbSmtpad = pcb_smtpad.parse({
         type: "pcb_smtpad",
         pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
@@ -265,7 +272,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
         ...(soupShape === "rect"
-          ? { width: mil2mm(pad.width), height: mil2mm(pad.height) }
+          ? rectSize
           : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
