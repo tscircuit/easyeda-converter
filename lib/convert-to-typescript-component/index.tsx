@@ -10,6 +10,7 @@ import {
   convertEasyEdaJsonToTscircuitSoupJson,
 } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
+import { normalizePinLabels } from "lib/normalize-pin-labels"
 
 export const convertRawEasyToTsx = async (rawEasy: any) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
@@ -74,13 +75,28 @@ export const convertBetterEasyToTsx = async ({
   }
 
   // Derive pinLabels from easyeda json
-  const pinLabels: Record<string, string> = {}
-  for (const pin of modifiedPins) {
-    const isPinLabelNumeric = /^\d+$/.test(pin.label)
-    const label = isPinLabelNumeric ? `pin${pin.label}` : pin.label
+  // Convert pins to format needed by normalizePinLabels
+  const pinLabelSets = modifiedPins.map((pin) => {
+    const labels = []
+    // Always include pin number as first label if it exists
+    if (pin.pinNumber) {
+      labels.push(pin.pinNumber.toString())
+    }
+    // Add pin label if different from pin number
+    if (pin.label && pin.label !== pin.pinNumber.toString()) {
+      labels.push(pin.label)
+    }
+    return labels
+  })
 
-    pinLabels[pin.pinNumber] = label
-  }
+  const normalizedPinLabels = normalizePinLabels(pinLabelSets)
+
+  // Convert back to Record format expected by chip component
+  const pinLabels: Record<string, string[]> = {}
+  modifiedPins.forEach((pin, index) => {
+    // Use first normalized label for each pin
+    pinLabels[pin.pinNumber] = normalizedPinLabels[index]
+  })
 
   let modelObjUrl: string | undefined
   if (cad_component.model_obj_url) {

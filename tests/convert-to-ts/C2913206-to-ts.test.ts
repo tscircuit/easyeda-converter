@@ -13,7 +13,7 @@ it("should convert C2913206 into typescript file", async () => {
   expect(result).not.toContain("NaNmm")
 
   const pinLabelString = result.match(/const pinLabels = \{[\s\S]*?\}/gm)?.[0]
-  console.log(pinLabelString)
   expect(pinLabelString).toMatchSnapshot()
-  // Add more specific assertions here based on the component
+
+  Bun.write("C2913206.tsx", result)
 })
