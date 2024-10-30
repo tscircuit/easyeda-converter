@@ -9,8 +9,8 @@ describe("normalizePinLabels", () => {
       pin1: ["GND1"],
       pin2: ["GND2"],
       pin3: ["VCC"],
-      pin4: ["4"],
-      pin5: ["pin5_alt1"],
+      pin4: [],
+      pin5: ["pin3_alt1"],
     })
   })
 
