@@ -20,70 +20,90 @@
  *   ["pin4"]
  * ]
  */
-export const normalizePinLabels = (pinLabels: string[][]): string[][] => {
-  if (pinLabels.length === 0) return []
+export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
+  const result: string[][] = inputPinLabels.map(() => [])
 
-  const result: string[][] = Array(pinLabels.length)
-    .fill(null)
-    .map(() => [])
-  const labelCounts: Record<string, number> = {}
-  const usedLabels = new Set<string>()
-
-  // Initialize result array with pin numbers
-  for (let i = 0; i < pinLabels.length; i++) {
-    result[i] = [`pin${i + 1}`]
-  }
-
-  // First pass: Count occurrences of each label
-  for (const labels of pinLabels) {
-    for (const label of labels) {
-      if (label !== "") {
-        labelCounts[label] = (labelCounts[label] || 0) + 1
+  /**
+   * If the set has a desired number inside of it, we'll put that number in this
+   * array without reference to other sets
+   */
+  const desiredNumbers: (number | null)[] = inputPinLabels.map(() => null)
+  for (let i = 0; i < inputPinLabels.length; i++) {
+    for (const label of inputPinLabels[i]) {
+      if (/^\d+$/.test(label)) {
+        desiredNumbers[i] = Number.parseInt(label)
+        break
       }
     }
   }
 
-  // Second pass: Process non-numeric labels first
-  for (let pinIndex = 0; pinIndex < pinLabels.length; pinIndex++) {
-    const labels = pinLabels[pinIndex]
-    const normalizedLabels: string[] = []
+  /**
+   * Where a set desires a number, if that number isn't taken, assign it the
+   * number. If it is taken, assign it an "alt" prefix
+   */
+  let highestPinNumber = 0
+  const alreadyAcceptedDesiredNumbers: Set<number> = new Set()
+  for (let i = 0; i < desiredNumbers.length; i++) {
+    const desiredNumber = desiredNumbers[i]
 
-    for (const label of labels) {
-      if (!label || /^\d+$/.test(label)) continue // Skip empty and numeric labels for now
+    if (desiredNumber === null || desiredNumber < 1) {
+      continue
+    }
 
-      if (labelCounts[label] > 1) {
-        // If label appears multiple times, append number
-        const count = usedLabels.has(label) ? 2 : 1
-        const numberedLabel = `${label}${count}`
-        normalizedLabels.push(numberedLabel)
-        usedLabels.add(label)
-      } else {
-        // Unique label, use as-is
-        normalizedLabels.push(label)
-        usedLabels.add(label)
+    if (!alreadyAcceptedDesiredNumbers.has(desiredNumber)) {
+      alreadyAcceptedDesiredNumbers.add(desiredNumber)
+      result[i].push(`pin${desiredNumber}`)
+      highestPinNumber = Math.max(highestPinNumber, desiredNumber)
+      continue
+    }
+
+    let existingAltsForPin = 0
+    for (const label of result[i]) {
+      if (label.startsWith(`pin${desiredNumber}_alt`)) {
+        existingAltsForPin++
       }
     }
 
-    if (normalizedLabels.length > 0) {
-      result[pinIndex] = [result[pinIndex][0], ...normalizedLabels]
+    result[i].push(`pin${desiredNumber}_alt${existingAltsForPin + 1}`)
+  }
+
+  // Assign pin numbers to alternate labels
+  for (let i = 0; i < result.length; i++) {
+    const firstLabel = result[i][0]
+    if (firstLabel?.includes("_alt")) {
+      highestPinNumber++
+      result[i].unshift(`pin${highestPinNumber}`)
     }
   }
 
-  // Third pass: Handle numeric labels and duplicates
-  const seenNumbers = new Map<string, number>() // Maps number to its first occurrence index
+  /**
+   * Number of items that have a given label, not including pin number
+   * designations
+   */
+  const totalLabelCounts: Record<string, number> = {}
+  for (const inputLabels of inputPinLabels) {
+    for (const label of inputLabels) {
+      if (/^\d+$/.test(label)) {
+        continue
+      }
 
-  for (let pinIndex = 0; pinIndex < pinLabels.length; pinIndex++) {
-    const labels = pinLabels[pinIndex]
-    const numericLabels = labels.filter((label) => /^\d+$/.test(label))
+      totalLabelCounts[label] = (totalLabelCounts[label] ?? 0) + 1
+    }
+  }
 
-    for (const label of numericLabels) {
-      if (seenNumbers.has(label)) {
-        // This is a duplicate number - mark it as an alternate of the first occurrence
-        const firstIndex = seenNumbers.get(label)!
-        result[pinIndex] = [`pin${pinIndex + 1}`, `pin${label}_alt1`]
+  const incrementalLabelCounts: Record<string, number> = {}
+  for (let i = 0; i < inputPinLabels.length; i++) {
+    const inputLabels = inputPinLabels[i]
+    for (const label of inputLabels) {
+      if (/^\d+$/.test(label)) {
+        continue
+      }
+
+      if (totalLabelCounts[label] === 1) {
+        result[i].push(label)
       } else {
-        // First time seeing this number
-        seenNumbers.set(label, pinIndex)
+        incrementalLabelCounts[label] = (incrementalLabelCounts[label] ?? 0) + 1
+        result[i].push(`${label}${incrementalLabelCounts[label]}`)
       }
     }
   }
