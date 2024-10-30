@@ -12,79 +12,83 @@
  * ]
  *
  * Example output:
- * {
- *   pin1: ["GND1"],
- *   pin2: ["GND2"],
- *   pin3: ["VCC"],
- *   pin4: [],
- *   pin5: ["pin3_alt1"]
- * }
+ * [
+ *   ["pin1", "GND1"],
+ *   ["pin2", "GND2"],
+ *   ["pin3", "VCC"],
+ *   ["pin5", "pin3_alt1"],
+ *   ["pin4", ""]
+ * ]
  */
-export const normalizePinLabels = (
-  pinLabels: string[][],
-): Record<string, string[]> => {
-  if (pinLabels.length === 0) return {}
+export const normalizePinLabels = (pinLabels: string[][]): string[][] => {
+  if (pinLabels.length === 0) return []
 
-  const result: Record<string, string[]> = {}
+  const result: string[][] = Array(pinLabels.length).fill([])
   const labelCounts: Record<string, number> = {}
   const usedLabels = new Set<string>()
 
-  // Initialize result object with empty arrays
-  pinLabels.forEach((_, index) => {
-    result[`pin${index + 1}`] = []
-  })
+  // Initialize result array with pin numbers
+  for (let i = 0; i < pinLabels.length; i++) {
+    result[i] = [`pin${i + 1}`]
+  }
 
-  // Process each pin's labels
-  pinLabels.forEach((labels, pinIndex) => {
-    const pinKey = `pin${pinIndex + 1}`
-
-    // Skip empty label arrays
-    if (labels.length === 0) {
-      return
+  // First pass: Count occurrences of each label
+  for (const labels of pinLabels) {
+    for (const label of labels) {
+      if (label !== "") {
+        labelCounts[label] = (labelCounts[label] || 0) + 1
+      }
     }
+  }
 
-    // Check if pin number matches current position
-    const hasMatchingNumber = labels.some(
-      (label) => label === (pinIndex + 1).toString(),
-    )
-    if (hasMatchingNumber) {
-      // Don't add the number to result if it matches the pin position
-      return
-    }
-
+  // Second pass: Process non-numeric labels first
+  for (let pinIndex = 0; pinIndex < pinLabels.length; pinIndex++) {
+    const labels = pinLabels[pinIndex]
     const normalizedLabels: string[] = []
 
     for (const label of labels) {
-      // Skip if label is a number that matches another pin position
-      if (/^\d+$/.test(label) && Number.parseInt(label) <= pinLabels.length) {
-        continue
-      }
+      if (!label || /^\d+$/.test(label)) continue // Skip empty and numeric labels for now
 
-      // Handle duplicate labels
-      if (/^\d+$/.test(label)) {
-        // For numeric labels that don't match positions, create alt label
-        const altLabel = `pin${label}_alt${labelCounts[label] || 1}`
-        labelCounts[label] = (labelCounts[label] || 1) + 1
-        if (!usedLabels.has(altLabel)) {
-          normalizedLabels.push(altLabel)
-          usedLabels.add(altLabel)
-        }
+      if (labelCounts[label] > 1) {
+        // If label appears multiple times, append number
+        const count = usedLabels.has(label) ? 2 : 1
+        const numberedLabel = `${label}${count}`
+        normalizedLabels.push(numberedLabel)
+        usedLabels.add(label)
       } else {
-        // For non-numeric labels
-        let finalLabel = label
-        if (usedLabels.has(label)) {
-          labelCounts[label] = (labelCounts[label] || 1) + 1
-          finalLabel = `${label}${labelCounts[label] - 1}`
-        }
-        normalizedLabels.push(finalLabel)
-        usedLabels.add(finalLabel)
+        // Unique label, use as-is
+        normalizedLabels.push(label)
+        usedLabels.add(label)
       }
     }
 
     if (normalizedLabels.length > 0) {
-      result[pinKey] = normalizedLabels
+      result[pinIndex] = [result[pinIndex][0], ...normalizedLabels]
     }
-  })
+  }
+
+  // Third pass: Handle numeric labels
+  const seenNumbers = new Set<string>()
+
+  for (let pinIndex = 0; pinIndex < pinLabels.length; pinIndex++) {
+    const labels = pinLabels[pinIndex]
+
+    for (const label of labels) {
+      if (!label || !/^\d+$/.test(label)) continue // Only process numeric labels
+
+      // If the number matches the pin position, we don't need to do anything
+      if (label === (pinIndex + 1).toString()) continue
+
+      // If we've seen this number before, this is an alternate reference
+      if (seenNumbers.has(label)) {
+        if (result[pinIndex].length === 1) {
+          result[pinIndex].push(`pin${label}_alt1`)
+        }
+      }
+
+      seenNumbers.add(label)
+    }
+  }
 
   return result
 }
