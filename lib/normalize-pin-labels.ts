@@ -76,6 +76,14 @@ export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
     }
   }
 
+  // Assign pin numbers to unlabeled pins
+  for (let i = 0; i < result.length; i++) {
+    if (result[i].length === 0) {
+      highestPinNumber++
+      result[i].push(`pin${highestPinNumber}`)
+    }
+  }
+
   /**
    * Number of items that have a given label, not including pin number
    * designations

@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { normalizePinLabels } from "../lib/normalize-pin-labels"
 
 describe("normalizePinLabels", () => {
-  test.only("handles the documentation example correctly", () => {
+  test("handles the documentation example correctly", () => {
     const input = [["1", "GND"], ["2", "GND"], ["3", "VCC"], ["3"], ["4"]]
 
     expect(normalizePinLabels(input)).toEqual([
