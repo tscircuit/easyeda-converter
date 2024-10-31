@@ -36,7 +36,12 @@ export const convertBetterEasyToTsx = async ({
   const sourcePorts = su(circuitJson).source_port.list()
 
   const pinLabels: Record<string, string[]> = {}
-  for (const sourcePort of sourcePorts) {
+  const sortedPorts = sourcePorts.sort((a, b) => {
+    const aNum = parseInt(a.name.replace('pin', ''))
+    const bNum = parseInt(b.name.replace('pin', ''))
+    return aNum - bNum
+  })
+  for (const sourcePort of sortedPorts) {
     pinLabels[sourcePort.name] = [
       sourcePort.name,
       ...(sourcePort.port_hints ?? []),
