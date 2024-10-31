@@ -26,7 +26,6 @@ import { createUseComponent } from "@tscircuit/core"
 import type { CommonLayoutProps } from "@tscircuit/props"
 
 const pinLabels = ${JSON.stringify(pinLabels, null, "  ")} as const
-const pinNames = Object.values(pinLabels)
 
 interface Props extends CommonLayoutProps {
   name: string
@@ -53,7 +52,7 @@ export const ${componentName} = (props: Props) => {
   )
 }
 
-export const use${componentName} = createUseComponent(${componentName}, pinNames)
+export const use${componentName} = createUseComponent(${componentName}, pinLabels)
 
 `.trim()
 }
