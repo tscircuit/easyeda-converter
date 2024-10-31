@@ -37,7 +37,10 @@ export const convertBetterEasyToTsx = async ({
 
   const pinLabels: Record<string, string[]> = {}
   for (const sourcePort of sourcePorts) {
-    pinLabels[sourcePort.name] = sourcePort.port_hints ?? []
+    pinLabels[sourcePort.name] = [
+      sourcePort.name,
+      ...(sourcePort.port_hints ?? []),
+    ]
   }
 
   let modelObjUrl: string | undefined
