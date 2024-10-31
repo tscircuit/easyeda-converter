@@ -123,146 +123,176 @@ exports[`should convert C2913206 into typescript file 1`] = `
     "IO48"
   ],
   "pin31": [
-    "pin31"
+    "pin31",
+    "IO35"
   ],
   "pin32": [
-    "pin32"
+    "pin32",
+    "IO36"
   ],
   "pin33": [
-    "pin33"
+    "pin33",
+    "IO37"
   ],
   "pin34": [
-    "pin34"
+    "pin34",
+    "IO38"
   ],
   "pin35": [
-    "pin35"
+    "pin35",
+    "IO39"
   ],
   "pin36": [
-    "pin36"
+    "pin36",
+    "IO40"
   ],
   "pin37": [
-    "pin37"
+    "pin37",
+    "IO41"
   ],
   "pin38": [
-    "pin38"
+    "pin38",
+    "IO42"
   ],
   "pin39": [
-    "pin39"
+    "pin39",
+    "TXD0"
   ],
   "pin40": [
-    "pin40"
+    "pin40",
+    "RXD0"
   ],
   "pin41": [
-    "pin41"
+    "pin41",
+    "IO45"
   ],
   "pin42": [
-    "pin42"
+    "pin42",
+    "GND3"
   ],
   "pin43": [
-    "pin43"
+    "pin43",
+    "GND4"
   ],
   "pin44": [
-    "pin44"
+    "pin44",
+    "IO46"
   ],
   "pin45": [
-    "pin45"
+    "pin45",
+    "EN"
   ],
   "pin46": [
-    "pin46"
+    "pin46",
+    "GND5"
   ],
   "pin47": [
-    "pin47"
+    "pin47",
+    "GND6"
   ],
   "pin48": [
-    "pin48"
+    "pin48",
+    "GND7"
   ],
   "pin49": [
-    "pin49"
+    "pin49",
+    "GND8"
   ],
   "pin50": [
-    "pin50"
+    "pin50",
+    "GND9"
   ],
   "pin51": [
-    "pin51"
+    "pin51",
+    "GND10"
   ],
   "pin52": [
-    "pin52"
+    "pin52",
+    "GND11"
   ],
   "pin53": [
-    "pin53"
+    "pin53",
+    "GND12"
   ],
   "pin54": [
-    "pin54"
+    "pin54",
+    "GND13"
   ],
   "pin55": [
-    "pin55"
+    "pin55",
+    "GND14"
   ],
   "pin56": [
-    "pin56"
+    "pin56",
+    "GND15"
   ],
   "pin57": [
-    "pin57"
+    "pin57",
+    "GND16"
   ],
   "pin58": [
-    "pin58"
+    "pin58",
+    "GND17"
   ],
   "pin59": [
-    "pin59"
+    "pin59",
+    "GND18"
   ],
   "pin60": [
-    "pin60"
+    "pin60",
+    "GND19"
   ],
   "pin61": [
     "pin61",
-    "GND3"
+    "GND20"
   ],
   "pin62": [
     "pin62",
-    "GND4"
+    "GND21"
   ],
   "pin63": [
     "pin63",
-    "GND5"
+    "GND22"
   ],
   "pin64": [
     "pin64",
-    "GND6"
+    "GND23"
   ],
   "pin65": [
     "pin65",
-    "GND7"
+    "GND24"
   ],
   "pin66": [
     "pin66",
-    "GND8"
+    "GND25"
   ],
   "pin67": [
     "pin67",
-    "GND9"
+    "GND26"
   ],
   "pin68": [
     "pin68",
-    "GND10"
+    "GND27"
   ],
   "pin69": [
     "pin69",
-    "GND11"
+    "GND28"
   ],
   "pin70": [
     "pin70",
-    "GND12"
+    "GND29"
   ],
   "pin71": [
     "pin71",
-    "GND13"
+    "GND30"
   ],
   "pin72": [
     "pin72",
-    "GND14"
+    "GND31"
   ],
   "pin73": [
     "pin73",
-    "GND15"
+    "GND32"
   ]
 }"
 `;
