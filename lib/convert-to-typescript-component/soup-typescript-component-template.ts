@@ -45,7 +45,6 @@ export const ${componentName} = (props: Props) => {
           : ""
       }
       pinLabels={pinLabels}
-      schPinSpacing={0.75}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       footprint={${footprintTsx}}
     />
