@@ -59,7 +59,7 @@ export const convertBetterEasyToTsx = async ({
   }
 
   const supplierPartNumbers: Record<string, string[]> = {
-    lcsc: [betterEasy.lcsc.number],
+    jlcpcb: [betterEasy.lcsc.number],
   }
 
   return soupTypescriptComponentTemplate({
