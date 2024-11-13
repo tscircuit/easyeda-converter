@@ -64,6 +64,7 @@ export const convertBetterEasyToTsx = async ({
 
   return soupTypescriptComponentTemplate({
     componentName: pn,
+    manufacturerPartNumber: pn,
     pinLabels,
 
     objUrl: modelObjUrl,

@@ -11,6 +11,7 @@ interface Params {
   objUrl?: string
   circuitJson: AnyCircuitElement[]
   supplierPartNumbers: Record<string, string[]>
+  manufacturerPartNumber: string
 }
 
 export const soupTypescriptComponentTemplate = ({
@@ -19,6 +20,7 @@ export const soupTypescriptComponentTemplate = ({
   objUrl,
   circuitJson,
   supplierPartNumbers,
+  manufacturerPartNumber,
 }: Params) => {
   const footprintTsx = generateFootprintTsx(circuitJson)
   return `
@@ -46,6 +48,7 @@ export const ${componentName} = (props: Props) => {
       }
       pinLabels={pinLabels}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
     />
   )
