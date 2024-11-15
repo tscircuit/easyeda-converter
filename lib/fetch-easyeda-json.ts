@@ -43,7 +43,13 @@ export async function fetchEasyEDAComponent(
     throw new Error("Component not found")
   }
 
-  const componentUUID = searchResult.result.lists.lcsc[0].uuid
+  const bestMatchComponent =
+    searchResult.result.lists.lcsc.find(
+      (component: any) =>
+        component.dataStr.head.c_para["Supplier Part"] === jlcpcbPartNumber,
+    ) ?? searchResult.result.lists.lcsc[0]
+
+  const componentUUID = bestMatchComponent.uuid
 
   // Perform the component fetch request
   const componentResponse = await fetch(componentUrl(componentUUID), {

@@ -10,3 +10,5 @@ tmp.json
 tmp*
 *.diff.png
 .env
+.DS_Store
+search-result.json
