@@ -352,6 +352,7 @@ export const TextShapeSchema = z
 
   const AngleShapeOutputSchema = z.object({
     type: z.literal("ANGLE"),
+    angleData: z.string(),
     position: PointSchema,
     radius: z.number(),
     angle: z.number(), // the angle of the arc or the direction in degrees
@@ -363,9 +364,10 @@ export const TextShapeSchema = z
   const parseAngle = (
     str: string,
   ): z.infer<typeof AngleShapeOutputSchema> => {
-    const [, x, y, radius, angle, color, lineWidth, , id] = str.split("~")
+    const [,angleData, x, y, radius, angle, color, lineWidth, , id] = str.split("~")
     return {
       type: "ANGLE",
+      angleData,
       position: { x: Number(x), y: Number(y) },
       radius: Number(radius),
       angle: Number(angle),
