@@ -92,7 +92,13 @@ export const convertEasyEdaJsonToVariousFormats = async ({
       console.error("Unsupported output format")
     }
   } catch (error: any) {
-    console.error("Error:", error.message)
+    if (error.message.includes("duplicate key")) {
+      console.error(
+        "Error: The component you are trying to import  is already imported in the system. Please check the existing components before importing.",
+      )
+    } else {
+      console.error("Error:", error.message)
+    }
     throw error
   }
 }
