@@ -45,5 +45,10 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
     expect(firstPad.layer).toBe("top")
   }
 
+  // New check for cad_component rotation
+  const cadComponent = su(soupElements).cad_component.list()[0]!
+  expect(cadComponent).toBeDefined()
+  expect(cadComponent.rotation?.z).toBe(0) // Ensure the rotation is corrected
+
   await logSoup("easyeda to tscircuit soup", soupElements as AnySoupElement[])
 })
