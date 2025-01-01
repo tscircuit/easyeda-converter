@@ -36,7 +36,10 @@ it("should convert ${jlcpcbPartNumber} into typescript file", async () => {
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
+
   // Add more specific assertions here based on the component
+  
+  expect(result).toMatchInlineSnapshot()
 })
 `
 
