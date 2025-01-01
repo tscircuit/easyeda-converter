@@ -123,3 +123,16 @@ const MyCircuit = () => {
 ```
 
 These components include proper typing for props and integrate seamlessly with the tscircuit ecosystem.
+
+## Development
+
+### Adding a test for a new part
+
+Just run the following command. Use `git status` to see the files it introduces.
+
+```bash
+bun run add-test-for-part C46749
+```
+
+You can then run the test with `bun test path/to/file.test.ts` until you can
+successfully get the part working!

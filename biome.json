@@ -8,7 +8,7 @@
     "indentStyle": "space"
   },
   "files": {
-    "ignore": ["dist", "package.json"]
+    "ignore": ["dist", "package.json", "*.raweasy.json"]
   },
   "javascript": {
     "formatter": {

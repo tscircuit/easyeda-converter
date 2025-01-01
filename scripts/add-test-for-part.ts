@@ -1,7 +1,7 @@
 import { fetchEasyEDAComponent } from "../lib/fetch-easyeda-json"
-import fs from "fs/promises"
-import path from "path"
-import { fileURLToPath } from "url"
+import fs from "node:fs/promises"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -36,7 +36,10 @@ it("should convert ${jlcpcbPartNumber} into typescript file", async () => {
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
+
   // Add more specific assertions here based on the component
+  
+  expect(result).toMatchInlineSnapshot()
 })
 `
 
