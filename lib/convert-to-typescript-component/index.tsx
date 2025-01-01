@@ -31,8 +31,6 @@ export const convertBetterEasyToTsx = async ({
   })
   const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
   const pn = normalizeManufacturerPartNumber(rawPn)
-  const [cad_component] = su(circuitJson).cad_component.list()
-
   const sourcePorts = su(circuitJson).source_port.list()
 
   const pinLabels: Record<string, string[]> = {}
@@ -48,13 +46,14 @@ export const convertBetterEasyToTsx = async ({
     ]
   }
 
+  const [cadComponent] = su(circuitJson).cad_component.list()
   let modelObjUrl: string | undefined
-  if (cad_component.model_obj_url) {
+  if (cadComponent?.model_obj_url) {
     const isValidUrl = await checkModelObjUrlValidity(
-      cad_component.model_obj_url,
+      cadComponent.model_obj_url,
     )
     if (isValidUrl) {
-      modelObjUrl = cad_component.model_obj_url
+      modelObjUrl = cadComponent.model_obj_url
     }
   }
 
