@@ -292,12 +292,28 @@ export const convertEasyEdaJsonToCircuitJson = (
       soupElements.push(handleHole(h, index))
     })
 
-  // Add silkscreen paths and arcs
+  // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
       soupElements.push(handleSilkscreenPath(shape, index))
     } else if (shape.type === "ARC") {
       soupElements.push(handleSilkscreenArc(shape, index))
+    } else if (shape.type === "TEXT") {
+      soupElements.push(
+        Soup.pcb_silkscreen_text.parse({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
+          pcb_component_id: "pcb_component_1",
+          text: shape.text,
+          anchor_position: {
+            x: mil2mm(shape.x),
+            y: mil2mm(shape.y),
+          },
+          anchor_alignment: shape.textAnchor || "bottom_left",
+          font_size: shape.size ? mil2mm(shape.size) : undefined,
+          layer: "top",
+        } as Soup.PcbSilkscreenTextInput),
+      )
     }
   })
 

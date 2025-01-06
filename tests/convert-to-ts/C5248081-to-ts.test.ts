@@ -63,6 +63,7 @@ export const HS91L02W2C01 = (props: Props) => {
 <platedhole  portHints={["pin3"]} pcbX="0mm" pcbY="1.2699999999999818mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9999979999999999mm" shape="circle" />
 <platedhole  portHints={["pin4"]} pcbX="0mm" pcbY="3.810000000000059mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9999979999999999mm" shape="circle" />
 <silkscreenpath route={[{"x":-1.4999970000000076,"y":5.999987999999917},{"x":36.49992699999984,"y":5.999987999999917},{"x":36.49992699999984,"y":-5.999987999999917},{"x":-1.4999970000000076,"y":-5.999987999999917},{"x":-1.4999970000000076,"y":5.999987999999917}]} />
+<silkscreentext text="L" pcbX="1.659127999999896mm" pcbY="-5.676899999999932mm" anchorAlignment="bottom_left" fontSize="0.02032mm" />
       </footprint>}
     />
   )
