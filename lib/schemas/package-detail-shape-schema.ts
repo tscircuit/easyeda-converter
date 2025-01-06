@@ -115,6 +115,10 @@ export const RectSchema = BaseShapeSchema.extend({
   rotation: z.number().optional(),
 })
 
+export const TextSchema = BaseShapeSchema.extend({
+  // TODO
+})
+
 export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   TrackSchema,
   PadSchema,
@@ -289,6 +293,9 @@ export const ShapeItemSchema = z
           layer: layer ? Number(layer) : undefined,
           fillStyle: fillStyle || undefined,
         })
+      }
+      case "TEXT": {
+        // TODO
       }
 
       default:
