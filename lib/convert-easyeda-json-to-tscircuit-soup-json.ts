@@ -309,8 +309,12 @@ export const convertEasyEdaJsonToCircuitJson = (
             x: mil2mm(shape.x),
             y: mil2mm(shape.y),
           },
-          anchor_alignment: shape.textAnchor || "bottom_left",
-          font_size: shape.size ? mil2mm(shape.size) : undefined,
+          anchor_alignment: {
+            L: "bottom_left",
+            C: "center",
+            R: "bottom_right",
+          }[shape.textAnchor ?? "L"],
+          font_size: shape.size_mm ? shape.size_mm : undefined,
           layer: "top",
         } as Soup.PcbSilkscreenTextInput),
       )
