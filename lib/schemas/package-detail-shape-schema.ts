@@ -116,7 +116,18 @@ export const RectSchema = BaseShapeSchema.extend({
 })
 
 export const TextSchema = BaseShapeSchema.extend({
-  // TODO
+  type: z.literal("TEXT"),
+  text: z.string(),
+  x: tenthmil,
+  y: tenthmil,
+  size: z.number(),
+  rotation: z.number().optional(),
+  layer: z.number().optional(),
+  textAnchor: z
+    .enum(["start", "middle", "end", ""])
+    .optional()
+    .transform((val) => (val === "" ? undefined : val)),
+  font: z.string().optional(),
 })
 
 export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
@@ -128,6 +139,7 @@ export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   SVGNodeSchema,
   HoleSchema,
   RectSchema,
+  TextSchema,
 ])
 
 const pairs = <T>(arr: T[]): [T, T][] => {
@@ -295,7 +307,20 @@ export const ShapeItemSchema = z
         })
       }
       case "TEXT": {
-        // TODO
+        const [text, x, y, size, layer, id, rotation, textAnchor, font] =
+          shape.data.split("~")
+        return TextSchema.parse({
+          type: "TEXT",
+          text,
+          x,
+          y,
+          size: Number(size),
+          layer: layer ? Number(layer) : undefined,
+          id,
+          rotation: rotation ? Number(rotation) : undefined,
+          textAnchor: textAnchor as "start" | "middle" | "end" | undefined,
+          font: font || undefined,
+        })
       }
 
       default:
