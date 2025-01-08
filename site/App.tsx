@@ -45,6 +45,7 @@ export default () => {
   return (
     <div>
       <RunFrame
+        defaultActiveTab="cad"
         entrypoint="entrypoint.tsx"
         fsMap={{
           "entrypoint.tsx": `
@@ -60,7 +61,10 @@ circuit.add(<board width="10mm" height="10mm"><Component name="U1" /></board>)
           "snippet.tsx": tscircuitCode,
         }}
       />
-      <pre className="bg-gray-100 p-4 rounded-lg overflow-x-auto">
+      <pre
+        id="code-content"
+        className="bg-gray-100 p-4 rounded-lg overflow-x-auto"
+      >
         <code className="text-sm font-mono">{tscircuitCode}</code>
       </pre>
     </div>
