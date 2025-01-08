@@ -10,6 +10,7 @@
     "url": "https://github.com/tscircuit/easyeda-converter"
   },
   "scripts": {
+    "start": "vite",
     "test": "bun test",
     "cli": "bun cli/main.ts",
     "build": "tsup lib/index.ts cli/main.ts --format esm --dts --sourcemap",
@@ -25,14 +26,25 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
+    "@playwright/test": "^1.49.1",
     "@tscircuit/log-soup": "1.0.2",
     "@tscircuit/props": "^0.0.128",
+    "@tscircuit/runframe": "^0.0.72",
     "@tscircuit/soup-util": "^0.0.41",
     "@types/bun": "latest",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
     "bun-match-svg": "^0.0.6",
-    "circuit-json": "^0.0.92",
-    "circuit-to-svg": "^0.0.56",
-    "tsup": "^8.1.0"
+    "circuit-json": "^0.0.129",
+    "circuit-to-svg": "^0.0.99",
+    "class-variance-authority": "^0.7.1",
+    "playwright": "^1.49.1",
+    "react": "18",
+    "react-dom": "18",
+    "tsup": "^8.1.0",
+    "vite": "^6.0.7",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "peerDependencies": {
     "typescript": "^5.5.2"
