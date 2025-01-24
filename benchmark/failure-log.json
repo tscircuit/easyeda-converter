@@ -1,0 +1,38 @@
+[
+  {
+    "partnumber": "C1178474",
+    "error": "Component not found for part number: C1178474"
+  },
+  {
+    "partnumber": "C1153543",
+    "error": "Component not found for part number: C1153543"
+  },
+  {
+    "partnumber": "C1177579",
+    "error": "Component not found for part number: C1177579"
+  },
+  {
+    "partnumber": "C1184469",
+    "error": "Component not found for part number: C1184469"
+  },
+  {
+    "partnumber": "C1185108",
+    "error": "Component not found for part number: C1185108"
+  },
+  {
+    "partnumber": "C1180645",
+    "error": "Component not found for part number: C1180645"
+  },
+  {
+    "partnumber": "C1189664",
+    "error": "Component not found for part number: C1189664"
+  },
+  {
+    "partnumber": "C1178711",
+    "error": "Component not found for part number: C1178711"
+  },
+  {
+    "partnumber": "C2040",
+    "error": "Retry Error: [\n  {\n    \"received\": \"0.1\",\n    \"code\": \"invalid_enum_value\",\n    \"options\": [\n      \"normal\",\n      \"bold\"\n    ],\n    \"path\": [\n      \"fontWeight\"\n    ],\n    \"message\": \"Invalid enum value. Expected 'normal' | 'bold', received '0.1'\"\n  },\n  {\n    \"received\": \"middle\",\n    \"code\": \"invalid_enum_value\",\n    \"options\": [\n      \"\",\n      \"underline\"\n    ],\n    \"path\": [\n      \"fontDecoration\"\n    ],\n    \"message\": \"Invalid enum value. Expected '' | 'underline', received 'middle'\"\n  }\n]"
+  }
+]

@@ -29,6 +29,7 @@ export const convertBetterEasyToTsx = async ({
     useModelCdn: true,
     shouldRecenter: true,
   })
+
   const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
   const pn = normalizeManufacturerPartNumber(rawPn)
   const sourcePorts = su(circuitJson).source_port.list()
@@ -47,13 +48,28 @@ export const convertBetterEasyToTsx = async ({
   }
 
   const [cadComponent] = su(circuitJson).cad_component.list()
+  console.log("cadComponent", cadComponent)
+
   let modelObjUrl: string | undefined
-  if (cadComponent?.model_obj_url) {
-    const isValidUrl = await checkModelObjUrlValidity(
-      cadComponent.model_obj_url,
-    )
-    if (isValidUrl) {
-      modelObjUrl = cadComponent.model_obj_url
+  let position = { x: 0, y: 0, z: 0 }
+  let rotation = { x: 0, y: 0, z: 0 }
+
+  if (cadComponent) {
+    if (cadComponent.model_obj_url) {
+      const isValidUrl = await checkModelObjUrlValidity(
+        cadComponent.model_obj_url,
+      )
+      if (isValidUrl) {
+        modelObjUrl = cadComponent.model_obj_url
+      }
+    }
+
+    if (cadComponent.position) {
+      position = cadComponent.position
+    }
+
+    if (cadComponent.rotation) {
+      rotation = cadComponent.rotation
     }
   }
 
@@ -65,10 +81,11 @@ export const convertBetterEasyToTsx = async ({
     componentName: pn,
     manufacturerPartNumber: pn,
     pinLabels,
-
     objUrl: modelObjUrl,
     circuitJson,
     supplierPartNumbers,
+    positionOffset: position,
+    rotationOffset: rotation,
   })
 }
 
