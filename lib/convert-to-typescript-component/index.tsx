@@ -48,7 +48,6 @@ export const convertBetterEasyToTsx = async ({
   }
 
   const [cadComponent] = su(circuitJson).cad_component.list()
-  console.log("cadComponent", cadComponent)
 
   let modelObjUrl: string | undefined
   let position = { x: 0, y: 0, z: 0 }
