@@ -10,14 +10,33 @@ interface Params {
   componentName: string
   objUrl?: string
   circuitJson: AnyCircuitElement[]
+  positionOffset: { x: number; y: number; z: number }
+  rotationOffset: { x: number; y: number; z: number }
   supplierPartNumbers: Record<string, string[]>
   manufacturerPartNumber: string
+}
+function formatPositionOffset(positionOffset: {
+  x: number
+  y: number
+  z: number
+}) {
+  return `{ x: ${positionOffset.x}, y: ${positionOffset.y}, z: ${positionOffset.z} }`
+}
+
+function formatRotationOffset(rotationOffset: {
+  x: number
+  y: number
+  z: number
+}) {
+  return `{ x: ${rotationOffset.x}, y: ${rotationOffset.y}, z: ${rotationOffset.z} }`
 }
 
 export const soupTypescriptComponentTemplate = ({
   pinLabels,
   componentName,
   objUrl,
+  positionOffset,
+  rotationOffset,
   circuitJson,
   supplierPartNumbers,
   manufacturerPartNumber,
@@ -41,8 +60,8 @@ export const ${componentName} = (props: Props) => {
         objUrl
           ? `cadModel={{
         objUrl: "${objUrl}",
-        rotationOffset: { x: 0, y: 0, z: 0 },
-        positionOffset: { x: 0, y: 0, z: 0 },
+        rotationOffset: ${formatRotationOffset(rotationOffset)},
+        positionOffset: ${formatPositionOffset(positionOffset)},
       }}`
           : ""
       }
