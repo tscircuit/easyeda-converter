@@ -48,7 +48,7 @@ export const HS91L02W2C01 = (props: Props) => {
       cadModel={{
         objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=9018832d564840e08b96db89bf75c8cc&pn=C5248081",
         rotationOffset: { x: 0, y: 0, z: 0 },
-        positionOffset: { x: 0, y: 0, z: 0 },
+        positionOffset: { x: -1016, y: 763.27, z: 0 },
       }}
       pinLabels={pinLabels}
       supplierPartNumbers={{
