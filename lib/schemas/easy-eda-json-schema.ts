@@ -11,7 +11,7 @@ export const maybeNumber = z
   .pipe(z.number().nullable().optional())
 
 export const SzlcscSchema = z.object({
-  id: z.number(),
+  id: z.union([z.string(), z.number()]),
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),
