@@ -2,18 +2,15 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C388629.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 it("should convert C388629 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-  const result = await convertBetterEasyToTsx({
-    betterEasy,
-  })
-
+  const result = await convertBetterEasyToTsx({ betterEasy })
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-
-  // Add more specific assertions here based on the component
-
+  // Add more specific assertions based on the component's expected output
   expect(result).toMatchInlineSnapshot(`
     "import { createUseComponent } from "@tscircuit/core"
     import type { CommonLayoutProps } from "@tscircuit/props"
@@ -76,4 +73,11 @@ it("should convert C388629 into typescript file", async () => {
 
     export const useDC_C300_5_5A_2_0 = createUseComponent(DC_C300_5_5A_2_0, pinLabels)"
   `)
+})
+
+it("C388629 should generate Circuit Json without errors", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const svgOutput = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgOutput).toMatchSvgSnapshot(import.meta.path)
 })
