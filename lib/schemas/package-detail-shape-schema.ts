@@ -115,6 +115,21 @@ export const RectSchema = BaseShapeSchema.extend({
   rotation: z.number().optional(),
 })
 
+export const TextSchema = BaseShapeSchema.extend({
+  type: z.literal("TEXT"),
+  text: z.string(),
+  x: tenthmil,
+  y: tenthmil,
+  size_mm: z.number(),
+  rotation: z.number().optional(),
+  layer: z.number().optional(),
+  textAnchor: z
+    .enum(["L", "C", "R", ""])
+    .optional()
+    .transform((val) => (val === "" ? undefined : val)),
+  font: z.string().optional(),
+})
+
 export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   TrackSchema,
   PadSchema,
@@ -124,6 +139,7 @@ export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   SVGNodeSchema,
   HoleSchema,
   RectSchema,
+  TextSchema,
 ])
 
 const pairs = <T>(arr: T[]): [T, T][] => {
@@ -288,6 +304,22 @@ export const ShapeItemSchema = z
           rotation: rotation ? Number(rotation) : undefined,
           layer: layer ? Number(layer) : undefined,
           fillStyle: fillStyle || undefined,
+        })
+      }
+      case "TEXT": {
+        const [textAnchor, x, y, size, layer, id, rotation, , font, text] =
+          shape.data.split("~")
+        return TextSchema.parse({
+          type: "TEXT",
+          text,
+          x,
+          y,
+          size_mm: Number(size) * 2.54, // empirically this seems to match, C5248081 is a good test case
+          layer: layer ? Number(layer) : undefined,
+          id,
+          rotation: rotation ? Number(rotation) : undefined,
+          textAnchor: textAnchor as "L" | "C" | "R" | undefined,
+          font: font || undefined,
         })
       }
 
