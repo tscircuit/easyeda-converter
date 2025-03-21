@@ -6,11 +6,11 @@ import { generateFootprintTsx } from "../generate-footprint-tsx"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
 interface Params {
-  pinLabels: Record<string, string[]> | Record<string, string> // ChipProps["pinLabels"]
+  pinLabels: ChipProps["pinLabels"]
   componentName: string
   objUrl?: string
   circuitJson: AnyCircuitElement[]
-  supplierPartNumbers: Record<string, string[]>
+  supplierPartNumbers: ChipProps["supplierPartNumbers"]
   manufacturerPartNumber: string
 }
 
@@ -22,21 +22,40 @@ export const soupTypescriptComponentTemplate = ({
   supplierPartNumbers,
   manufacturerPartNumber,
 }: Params) => {
+  // Ensure pinLabels is defined
+  const safePinLabels = pinLabels ?? {}
+
   const footprintTsx = generateFootprintTsx(circuitJson)
+
+  // Simplify pin labels to include only the second element
+  const simplifiedPinLabels = Object.fromEntries(
+    Object.entries(safePinLabels).map(([pin, labels]) => {
+      // Ensure labels is an array and has a second element
+      if (Array.isArray(labels) && labels.length > 1) {
+        return [pin, [labels[1]]]
+      }
+      return [pin, labels] // Fallback to original if not an array or missing second element
+    }),
+  )
+
+  const pinLabelsString = Object.entries(simplifiedPinLabels)
+    .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
+    .join(",\n")
+
   return `
-import { createUseComponent } from "@tscircuit/core"
-import type { CommonLayoutProps } from "@tscircuit/props"
+import type { ChipProps } from "@tscircuit/props"
 
-const pinLabels = ${JSON.stringify(pinLabels, null, "  ")} as const
+const pinLabels = {
+${pinLabelsString}
+} as const
 
-interface Props extends CommonLayoutProps {
-  name: string
-}
-
-export const ${componentName} = (props: Props) => {
+export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
-      {...props}
+      pinLabels={pinLabels}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
       ${
         objUrl
           ? `cadModel={{
@@ -46,15 +65,9 @@ export const ${componentName} = (props: Props) => {
       }}`
           : ""
       }
-      pinLabels={pinLabels}
-      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
-      footprint={${footprintTsx}}
+      {...props}
     />
   )
 }
-
-export const use${componentName} = createUseComponent(${componentName}, pinLabels)
-
 `.trim()
 }
