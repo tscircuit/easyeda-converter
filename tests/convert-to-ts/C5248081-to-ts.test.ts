@@ -18,22 +18,10 @@ it("should convert C5248081 into typescript file", async () => {
     "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
-      "pin1": [
-        "pin1",
-        "GND"
-      ],
-      "pin2": [
-        "pin2",
-        "VCC"
-      ],
-      "pin3": [
-        "pin3",
-        "SCL"
-      ],
-      "pin4": [
-        "pin4",
-        "SDA"
-      ]
+      pin1: ["GND"],
+      pin2: ["VCC"],
+      pin3: ["SCL"],
+      pin4: ["SDA"]
     } as const
 
     export const HS91L02W2C01 = (props: ChipProps<typeof pinLabels>) => {

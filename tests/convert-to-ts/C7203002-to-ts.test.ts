@@ -18,201 +18,55 @@ it("should convert C7203002 into typescript file", async () => {
     "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
-      "pin1": [
-        "pin1",
-        "GP0"
-      ],
-      "pin2": [
-        "pin2",
-        "GP1"
-      ],
-      "pin3": [
-        "pin3",
-        "GND8"
-      ],
-      "pin4": [
-        "pin4",
-        "GP2"
-      ],
-      "pin5": [
-        "pin5",
-        "GP3"
-      ],
-      "pin6": [
-        "pin6",
-        "GP4"
-      ],
-      "pin7": [
-        "pin7",
-        "GP5"
-      ],
-      "pin8": [
-        "pin8",
-        "GND6"
-      ],
-      "pin9": [
-        "pin9",
-        "GP6"
-      ],
-      "pin10": [
-        "pin10",
-        "GP7"
-      ],
-      "pin11": [
-        "pin11",
-        "GP8"
-      ],
-      "pin12": [
-        "pin12",
-        "GP9"
-      ],
-      "pin13": [
-        "pin13",
-        "GND4"
-      ],
-      "pin14": [
-        "pin14",
-        "GP10"
-      ],
-      "pin15": [
-        "pin15",
-        "GP11"
-      ],
-      "pin16": [
-        "pin16",
-        "GP12"
-      ],
-      "pin17": [
-        "pin17",
-        "GP13"
-      ],
-      "pin18": [
-        "pin18",
-        "GND2"
-      ],
-      "pin19": [
-        "pin19",
-        "GP14"
-      ],
-      "pin20": [
-        "pin20",
-        "GP15"
-      ],
-      "pin21": [
-        "pin21",
-        "GP16"
-      ],
-      "pin22": [
-        "pin22",
-        "GP17"
-      ],
-      "pin23": [
-        "pin23",
-        "GND1"
-      ],
-      "pin24": [
-        "pin24",
-        "GP18"
-      ],
-      "pin25": [
-        "pin25",
-        "GP19"
-      ],
-      "pin26": [
-        "pin26",
-        "GP20"
-      ],
-      "pin27": [
-        "pin27",
-        "GP21"
-      ],
-      "pin28": [
-        "pin28",
-        "GND3"
-      ],
-      "pin29": [
-        "pin29",
-        "GP22"
-      ],
-      "pin30": [
-        "pin30",
-        "RUN"
-      ],
-      "pin31": [
-        "pin31",
-        "GP26"
-      ],
-      "pin32": [
-        "pin32",
-        "GP27"
-      ],
-      "pin33": [
-        "pin33",
-        "GND5"
-      ],
-      "pin34": [
-        "pin34",
-        "GP28"
-      ],
-      "pin35": [
-        "pin35",
-        "ADC_VREF"
-      ],
-      "pin36": [
-        "pin36"
-      ],
-      "pin37": [
-        "pin37",
-        "3V3_EN"
-      ],
-      "pin38": [
-        "pin38",
-        "GND7"
-      ],
-      "pin39": [
-        "pin39",
-        "VSYS"
-      ],
-      "pin40": [
-        "pin40",
-        "VBUS"
-      ],
-      "pin41": [
-        "pin41",
-        "SWCLK"
-      ],
-      "pin42": [
-        "pin42",
-        "GND9"
-      ],
-      "pin43": [
-        "pin43",
-        "SWDIO"
-      ],
-      "pin44": [
-        "pin44",
-        "TP1"
-      ],
-      "pin45": [
-        "pin45",
-        "TP2"
-      ],
-      "pin46": [
-        "pin46",
-        "TP3"
-      ],
-      "pin47": [
-        "pin47",
-        "TP4"
-      ],
-      "pin48": [
-        "pin48",
-        "TP5"
-      ],
-      "pin49": [
-        "pin49",
-        "TP6"
-      ]
+      pin1: ["GP0"],
+      pin2: ["GP1"],
+      pin3: ["GND8"],
+      pin4: ["GP2"],
+      pin5: ["GP3"],
+      pin6: ["GP4"],
+      pin7: ["GP5"],
+      pin8: ["GND6"],
+      pin9: ["GP6"],
+      pin10: ["GP7"],
+      pin11: ["GP8"],
+      pin12: ["GP9"],
+      pin13: ["GND4"],
+      pin14: ["GP10"],
+      pin15: ["GP11"],
+      pin16: ["GP12"],
+      pin17: ["GP13"],
+      pin18: ["GND2"],
+      pin19: ["GP14"],
+      pin20: ["GP15"],
+      pin21: ["GP16"],
+      pin22: ["GP17"],
+      pin23: ["GND1"],
+      pin24: ["GP18"],
+      pin25: ["GP19"],
+      pin26: ["GP20"],
+      pin27: ["GP21"],
+      pin28: ["GND3"],
+      pin29: ["GP22"],
+      pin30: ["RUN"],
+      pin31: ["GP26"],
+      pin32: ["GP27"],
+      pin33: ["GND5"],
+      pin34: ["GP28"],
+      pin35: ["ADC_VREF"],
+      pin36: ["pin36"],
+      pin37: ["3V3_EN"],
+      pin38: ["GND7"],
+      pin39: ["VSYS"],
+      pin40: ["VBUS"],
+      pin41: ["SWCLK"],
+      pin42: ["GND9"],
+      pin43: ["SWDIO"],
+      pin44: ["TP1"],
+      pin45: ["TP2"],
+      pin46: ["TP3"],
+      pin47: ["TP4"],
+      pin48: ["TP5"],
+      pin49: ["TP6"]
     } as const
 
     export const PICO = (props: ChipProps<typeof pinLabels>) => {
