@@ -15,8 +15,7 @@ it("should convert C7203002 into typescript file", async () => {
   // Add more specific assertions here based on the component
 
   expect(result).toMatchInlineSnapshot(`
-    "import { createUseComponent } from "@tscircuit/core"
-    import type { ChipProps } from "@tscircuit/props"
+    "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
       "pin1": [
@@ -329,8 +328,6 @@ it("should convert C7203002 into typescript file", async () => {
           </footprint>}
         />
       )
-    }
-
-    export const usePICO = createUseComponent(PICO, pinLabels)"
+    }"
   `)
 })

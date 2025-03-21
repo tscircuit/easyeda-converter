@@ -24,7 +24,6 @@ export const soupTypescriptComponentTemplate = ({
 }: Params) => {
   const footprintTsx = generateFootprintTsx(circuitJson)
   return `
-import { createUseComponent } from "@tscircuit/core"
 import type { ChipProps } from "@tscircuit/props"
 
 const pinLabels = ${JSON.stringify(pinLabels, null, "  ")} as const
@@ -49,8 +48,5 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
     />
   )
 }
-
-export const use${componentName} = createUseComponent(${componentName}, pinLabels)
-
 `.trim()
 }
