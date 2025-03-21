@@ -52,7 +52,10 @@ ${pinLabelsString}
 export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
-      {...props}
+      pinLabels={pinLabels}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
       ${
         objUrl
           ? `cadModel={{
@@ -62,10 +65,7 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
       }}`
           : ""
       }
-      pinLabels={pinLabels}
-      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
-      footprint={${footprintTsx}}
+      {...props}
     />
   )
 }

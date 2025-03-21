@@ -27,12 +27,6 @@ it("should convert C5248081 into typescript file", async () => {
     export const HS91L02W2C01 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
-          {...props}
-          cadModel={{
-            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=9018832d564840e08b96db89bf75c8cc&pn=C5248081",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: 0, y: 0, z: 0 },
-          }}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [
@@ -48,6 +42,12 @@ it("should convert C5248081 into typescript file", async () => {
     <silkscreenpath route={[{"x":-1.4999970000000076,"y":5.999987999999917},{"x":36.49992699999984,"y":5.999987999999917},{"x":36.49992699999984,"y":-5.999987999999917},{"x":-1.4999970000000076,"y":-5.999987999999917},{"x":-1.4999970000000076,"y":5.999987999999917}]} />
     <silkscreentext text="1" pcbX="1.659127999999896mm" pcbY="-5.676899999999932mm" anchorAlignment="bottom_left" fontSize="2.032mm" />
           </footprint>}
+          cadModel={{
+            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=9018832d564840e08b96db89bf75c8cc&pn=C5248081",
+            rotationOffset: { x: 0, y: 0, z: 0 },
+            positionOffset: { x: 0, y: 0, z: 0 },
+          }}
+          {...props}
         />
       )
     }"

@@ -72,8 +72,6 @@ it("should convert C7203002 into typescript file", async () => {
     export const PICO = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
-          {...props}
-          
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [
@@ -180,6 +178,8 @@ it("should convert C7203002 into typescript file", async () => {
     <silkscreenpath route={[{"x":-21.298909649999928,"y":-10.49997899999994},{"x":-20.821161049999887,"y":-10.49997899999994}]} />
     <silkscreenpath route={[{"x":-23.838909649999778,"y":-10.49997899999994},{"x":-23.361161049999964,"y":-10.49997899999994}]} />
           </footprint>}
+          
+          {...props}
         />
       )
     }"

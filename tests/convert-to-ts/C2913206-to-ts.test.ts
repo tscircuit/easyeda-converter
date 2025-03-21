@@ -108,12 +108,6 @@ it("should convert C2913206 into typescript file", async () => {
     export const ESP32_S3_MINI_1_N8 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
-          {...props}
-          cadModel={{
-            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=1270b5cf7aa247fc9d0ae79a19686940&pn=C2913206",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: 0, y: 0, z: 0 },
-          }}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [
@@ -200,6 +194,12 @@ it("should convert C2913206 into typescript file", async () => {
     <silkscreenpath route={[{"x":-7.70001000000002,"y":7.749743199999898},{"x":7.800009799999998,"y":7.749743199999898},{"x":7.800009799999998,"y":7.786014399999885}]} />
     <silkscreenpath route={[{"x":-7.70001000000002,"y":12.800126800000044},{"x":7.800009799999998,"y":12.800126800000044},{"x":7.800009799999998,"y":-7.6998830000001135},{"x":-7.70001000000002,"y":-7.6998830000001135},{"x":-7.70001000000002,"y":12.800126800000044}]} />
           </footprint>}
+          cadModel={{
+            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=1270b5cf7aa247fc9d0ae79a19686940&pn=C2913206",
+            rotationOffset: { x: 0, y: 0, z: 0 },
+            positionOffset: { x: 0, y: 0, z: 0 },
+          }}
+          {...props}
         />
       )
     }"
