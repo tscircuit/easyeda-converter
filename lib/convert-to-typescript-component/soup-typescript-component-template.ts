@@ -28,13 +28,15 @@ const pinLabels = ${JSON.stringify(pinLabels, null, "  ")} as const
 const ${componentName} = (props: ChipProps<typeof pinLabels>) => (
   <chip
     {...props}
-    ${objUrl
-      ? `cadModel={{
+    ${
+      objUrl
+        ? `cadModel={{
       objUrl: "${objUrl}",
       rotationOffset: { x: 0, y: 0, z: 0 },
       positionOffset: { x: 0, y: 0, z: 0 },
     }}`
-      : ""}
+        : ""
+    }
     pinLabels={pinLabels}
     supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
     manufacturerPartNumber="${manufacturerPartNumber}"
