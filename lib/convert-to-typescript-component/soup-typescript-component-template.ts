@@ -1,9 +1,6 @@
-import type { AnyCircuitElement, AnySoupElement } from "circuit-json"
-import type { ChipProps } from "@tscircuit/props"
-import { su } from "@tscircuit/soup-util"
+import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "../schemas/easy-eda-json-schema"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
 interface Params {
   pinLabels: Record<string, string[]> | Record<string, string> // ChipProps["pinLabels"]
@@ -24,37 +21,27 @@ export const soupTypescriptComponentTemplate = ({
 }: Params) => {
   const footprintTsx = generateFootprintTsx(circuitJson)
   return `
-import { createUseComponent } from "@tscircuit/core"
-import type { CommonLayoutProps } from "@tscircuit/props"
+import { ChipProps } from "@tscircuit/props"
 
 const pinLabels = ${JSON.stringify(pinLabels, null, "  ")} as const
 
-interface Props extends CommonLayoutProps {
-  name: string
-}
+const ${componentName} = (props: ChipProps<typeof pinLabels>) => (
+  <chip
+    {...props}
+    ${objUrl
+      ? `cadModel={{
+      objUrl: "${objUrl}",
+      rotationOffset: { x: 0, y: 0, z: 0 },
+      positionOffset: { x: 0, y: 0, z: 0 },
+    }}`
+      : ""}
+    pinLabels={pinLabels}
+    supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+    manufacturerPartNumber="${manufacturerPartNumber}"
+    footprint={${footprintTsx}}
+  />
+)
 
-export const ${componentName} = (props: Props) => {
-  return (
-    <chip
-      {...props}
-      ${
-        objUrl
-          ? `cadModel={{
-        objUrl: "${objUrl}",
-        rotationOffset: { x: 0, y: 0, z: 0 },
-        positionOffset: { x: 0, y: 0, z: 0 },
-      }}`
-          : ""
-      }
-      pinLabels={pinLabels}
-      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
-      footprint={${footprintTsx}}
-    />
-  )
-}
-
-export const use${componentName} = createUseComponent(${componentName}, pinLabels)
-
+export default ${componentName}
 `.trim()
 }
