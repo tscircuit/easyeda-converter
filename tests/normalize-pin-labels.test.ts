@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { normalizePinLabels } from "../lib/normalize-pin-labels"
+import { normalizePinLabels } from "../lib/websafe/normalize-pin-labels"
 
 describe("normalizePinLabels", () => {
   test("handles the documentation example correctly", () => {

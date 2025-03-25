@@ -1,4 +1,4 @@
-import type { RawEasyEdaJson } from "./schemas/easy-eda-json-schema"
+import type { RawEasyEdaJson } from "../schemas/easy-eda-json-schema"
 
 export async function fetchEasyEDAComponent(
   jlcpcbPartNumber: string,

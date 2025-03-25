@@ -1,9 +1,6 @@
-import type { AnyCircuitElement, AnySoupElement } from "circuit-json"
+import type { AnyCircuitElement } from "circuit-json"
 import type { ChipProps } from "@tscircuit/props"
-import { su } from "@tscircuit/soup-util"
-import type { BetterEasyEdaJson } from "../schemas/easy-eda-json-schema"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -14,7 +11,7 @@ interface Params {
   manufacturerPartNumber: string
 }
 
-export const soupTypescriptComponentTemplate = ({
+export const generateTypescriptComponent = ({
   pinLabels,
   componentName,
   objUrl,

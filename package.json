@@ -12,13 +12,19 @@
   "scripts": {
     "test": "bun test",
     "cli": "bun cli/main.ts",
-    "build": "tsup lib/index.ts cli/main.ts --format esm --dts --sourcemap",
+    "build": "bun build:node && bun build:web",
+    "build:node": "tsup lib/index.ts cli/main.ts --platform node --format esm --dts --sourcemap",
+    "build:web": "tsup lib/websafe/index.ts --platform browser --format esm --dts --sourcemap -d dist/browser",
     "aider": "aider",
     "format:check": "biome format .",
     "format": "biome format . --write",
     "add-test-for-part": "bun run scripts/add-test-for-part.ts"
   },
   "main": "./dist/lib/index.js",
+  "exports": {
+    ".": "./dist/lib/index.js",
+    "./browser": "./dist/browser/index.js"
+  },
   "bin": {
     "easyeda-converter": "./dist/cli/main.js",
     "easyeda": "./dist/cli/main.js"
@@ -30,7 +36,7 @@
     "@tscircuit/soup-util": "^0.0.41",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
-    "circuit-json": "^0.0.92",
+    "circuit-json": "^0.0.153",
     "circuit-to-svg": "^0.0.56",
     "tsup": "^8.4.0"
   },

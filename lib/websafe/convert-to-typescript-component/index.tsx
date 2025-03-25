@@ -1,16 +1,11 @@
-import type { AnyCircuitElement } from "circuit-json"
 import {
   EasyEdaJsonSchema,
   type BetterEasyEdaJson,
 } from "lib/schemas/easy-eda-json-schema"
 import { su } from "@tscircuit/soup-util"
-import { soupTypescriptComponentTemplate } from "./soup-typescript-component-template"
-import {
-  convertEasyEdaJsonToCircuitJson,
-  convertEasyEdaJsonToTscircuitSoupJson,
-} from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { generateTypescriptComponent } from "./generate-typescript-component"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
-import { normalizePinLabels } from "lib/normalize-pin-labels"
 
 export const convertRawEasyToTsx = async (rawEasy: any) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
@@ -61,7 +56,7 @@ export const convertBetterEasyToTsx = async ({
     jlcpcb: [betterEasy.lcsc.number],
   }
 
-  return soupTypescriptComponentTemplate({
+  return generateTypescriptComponent({
     componentName: pn,
     manufacturerPartNumber: pn,
     pinLabels,
