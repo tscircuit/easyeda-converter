@@ -21,6 +21,10 @@
     "add-test-for-part": "bun run scripts/add-test-for-part.ts"
   },
   "main": "./dist/lib/index.js",
+  "exports": {
+    ".": "./dist/lib/index.js",
+    "./browser": "./dist/browser/index.js"
+  },
   "bin": {
     "easyeda-converter": "./dist/cli/main.js",
     "easyeda": "./dist/cli/main.js"
