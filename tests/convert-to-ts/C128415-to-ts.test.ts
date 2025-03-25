@@ -1,6 +1,6 @@
 import { it, expect } from "bun:test"
 import timerRawEasy from "../assets/C128415.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/convert-to-typescript-component"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib"
 

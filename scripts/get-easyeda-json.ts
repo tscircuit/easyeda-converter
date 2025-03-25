@@ -1,4 +1,4 @@
-import { fetchEasyEDAComponent } from "../lib/fetch-easyeda-json"
+import { fetchEasyEDAComponent } from "../lib/websafe/fetch-easyeda-json"
 import * as fs from "node:fs"
 
 // "C46749" // NE555P - DIP8

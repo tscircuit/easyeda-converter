@@ -1,12 +1,4 @@
-import { z } from "zod"
-import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
-import type {
-  HoleSchema,
-  PadSchema,
-} from "./schemas/package-detail-shape-schema"
-import { computeCenterOffset } from "./compute-center-offset"
-import { mm, mmStr } from "@tscircuit/mm"
-import { convertEasyEdaJsonToTscircuitSoupJson } from "./convert-easyeda-json-to-tscircuit-soup-json"
+import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
 import { su } from "@tscircuit/soup-util"
 
