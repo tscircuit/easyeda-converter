@@ -211,10 +211,13 @@ export const ShapeItemSchema = z
       }
       case "ARC": {
         const [width, layer, , arcData] = shape.data.split("~")
-        // A rx ry x-axis-rotation large-arc-flag sweep-flag x  y
-        // A rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
+        // Handle both formats:
+        // 1. M x,y A rx ry x-axis-rotation large-arc-flag sweep-flag x  y
+        // 2. A~M x y A rx ry x-axis-rotation large-arc-flag sweep-flag x y
         const match = arcData.match(
           /M\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*A\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)/,
+        ) || arcData.match(
+          /M\s*([\d.-]+)\s+([\d.-]+)\s+A\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)/
         )
 
         if (!match) {

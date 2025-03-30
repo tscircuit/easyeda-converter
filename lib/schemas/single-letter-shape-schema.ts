@@ -27,6 +27,15 @@ import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
    - Label (e.g., GND, TRIG, OUT)
    - Color
    - Drawing instructions for the pin shape
+4. `"A~M 400 300 A 3 3 0 1 0 400 300.01~#880000~1~0~none~gge3~0~"`
+   This represents an arc:
+   - Start point: (400, 300)
+   - End point: (400, 300.01)
+   - Radius X: 3
+   - Radius Y: 3
+   - Color: #880000 (dark red)
+   - Line width: 1
+   - Other parameters are for internal use
 To parse this data:
 1. Split the string by `~` to get individual parameters.
 2. For rectangles (R), use parameters 2-7 for position, size, and color.
@@ -37,12 +46,14 @@ To parse this data:
    - Third section: line drawing instruction
    - Fourth and Fifth sections: label position and text
    - Sixth section: additional drawing instruction for pin shape
+5. For arcs (A), parse the arc data in the format "M <startX> <startY> A <radiusX> <radiusY> <xAxisRotation> <largeArcFlag> <sweepFlag> <endX> <endY>~<color>~<lineWidth>~<id>"
 This data structure allows for a compact representation of the schematic symbol, which can be rendered by CAD software to display the component in circuit diagrams.
  */
 // Examples
 // "R~365~275~2~2~70~50~#880000~1~0~none~gge1~0~",
 // "E~370~280~1.5~1.5~#880000~1~0~#880000~gge2~0",
 // "P~show~0~1~355~285~180~gge5~0^^355~285^^M355,285h10~#000000^^1~368.7~289~0~GND~start~~~#000000^^1~364.5~284~0~1~end~~~#000000^^0~362~285^^0~M 365 288 L 368 285 L 365 282",
+// "A~M 400 300 A 3 3 0 1 0 400 300.01~#880000~1~0~none~gge3~0~",
 // "P~show~0~2~355~295~180~gge6~0^^355~295^^M355,295h10~#880000^^1~368.7~299~0~TRIG~start~~~#0000FF^^1~364.5~294~0~2~end~~~#0000FF^^0~362~295^^0~M 365 298 L 368 295 L 365 292",
 // "P~show~0~3~355~305~180~gge7~0^^355~305^^M355,305h10~#880000^^1~368.7~309~0~OUT~start~~~#0000FF^^1~364.5~304~0~3~end~~~#0000FF^^0~362~305^^0~M 365 308 L 368 305 L 365 302",
 // "P~show~0~4~355~315~180~gge8~0^^355~315^^M355,315h10~#880000^^1~368.7~319~0~RESET~start~~~#0000FF^^1~364.5~314~0~4~end~~~#0000FF^^0~362~315^^0~M 365 318 L 368 315 L 365 312",
@@ -118,22 +129,58 @@ export const EllipseShapeSchema = z
   .transform(parseEllipse)
   .pipe(EllipseShapeOutputSchema)
 
-//   type PinDirection = 'left' | 'right';
+const ArcShapeOutputSchema = z.object({
+  type: z.literal("ARC"),
+  start: PointSchema,
+  end: PointSchema,
+  radiusX: z.number(),
+  radiusY: z.number(),
+  color: z.string(),
+  lineWidth: z.number(),
+  id: z.string(),
+})
 
-// interface Pin {
-//   type: 'P';
-//   visibility: string;
-//   id: string;
-//   pin: number;
-//   x: number;
-//   y: number;
-//   rotation: number;
-//   name: string;
-//   color: string;
-//   path: string;
-//   arrow: string;
-//   direction: PinDirection;
-// }
+const parseArc = (arcString: string): z.infer<typeof ArcShapeOutputSchema> => {
+  const parts = arcString.split("~")
+  const [, arcData, lineWidth, color, , , id] = parts
+  
+  // Parse "M 400 300 A 3 3 0 1 0 400 300.01" format
+  const match = arcData.match(/M\s*([\d.-]+)\s+([\d.-]+)\s+A\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)/)
+  
+  if (!match) {
+    throw new Error(`Invalid arc data: ${arcData}`)
+  }
+
+  const [
+    ,
+    startX,
+    startY,
+    radiusX,
+    radiusY,
+    xAxisRotation,
+    largeArcFlag,
+    sweepFlag,
+    endX,
+    endY
+  ] = match.map(Number)
+
+  return {
+    type: "ARC",
+    start: { x: startX, y: startY },
+    end: { x: endX, y: endY },
+    radiusX,
+    radiusY,
+    color: color || "#000000",
+    lineWidth: Number(lineWidth || 1),
+    id: id || "gge1",
+  }
+}
+
+export const ArcShapeSchema = z
+  .string()
+  .startsWith("A~")
+  .transform(parseArc)
+  .pipe(ArcShapeOutputSchema)
 
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
@@ -361,6 +408,7 @@ export const SingleLetterShapeSchema = z
     if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
     if (x.startsWith("PT~")) return PathShapeSchema.parse(x)
     if (x.startsWith("T~")) return TextShapeSchema.parse(x)
+    if (x.startsWith("A~")) return ArcShapeSchema.parse(x)
     throw new Error(`Invalid shape type: ${x}`)
   })
   .pipe(
@@ -372,6 +420,7 @@ export const SingleLetterShapeSchema = z
       PolygonShapeOutputSchema,
       PathShapeOutputSchema,
       TextShapeOutputSchema,
+      ArcShapeOutputSchema,
     ]),
   )
 
