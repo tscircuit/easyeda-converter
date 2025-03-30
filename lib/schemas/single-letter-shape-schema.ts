@@ -143,10 +143,12 @@ const ArcShapeOutputSchema = z.object({
 const parseArc = (arcString: string): z.infer<typeof ArcShapeOutputSchema> => {
   const parts = arcString.split("~")
   const [, arcData, lineWidth, color, , , id] = parts
-  
+
   // Parse "M 400 300 A 3 3 0 1 0 400 300.01" format
-  const match = arcData.match(/M\s*([\d.-]+)\s+([\d.-]+)\s+A\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)/)
-  
+  const match = arcData.match(
+    /M\s*([\d.-]+)\s+([\d.-]+)\s+A\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)/,
+  )
+
   if (!match) {
     throw new Error(`Invalid arc data: ${arcData}`)
   }
@@ -161,7 +163,7 @@ const parseArc = (arcString: string): z.infer<typeof ArcShapeOutputSchema> => {
     largeArcFlag,
     sweepFlag,
     endX,
-    endY
+    endY,
   ] = match.map(Number)
 
   return {
