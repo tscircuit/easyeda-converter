@@ -146,19 +146,19 @@ const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
   // Format: A~M x1 y1 A radius radius 0 1 0 x2 y2~#880000~1~0~none~gge49~0
   const [, pathData, color, lineWidth, , , id] = str.split("~")
   const parts = pathData.split(" ")
-  
+
   // Handle potential NaN values by defaulting to 0
   const x1 = Number(parts[1]) || 0
   const y1 = Number(parts[2]) || 0
   const radius = Number(parts[4]) || 0
-  const sweepFlag = parts[7] === "1"  // The sweep flag is the 8th parameter
+  const sweepFlag = parts[7] === "1" // The sweep flag is the 8th parameter
   const x2 = Number(parts[8]) || 0
   const y2 = Number(parts[9]) || 0
-  
+
   // Handle empty or invalid line width
   const parsedLineWidth = Number(lineWidth)
   const finalLineWidth = isNaN(parsedLineWidth) ? 1 : parsedLineWidth
-  
+
   return {
     type: "ARC",
     start: { x: x1, y: y1 },
