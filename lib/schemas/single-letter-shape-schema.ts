@@ -27,15 +27,15 @@ import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
    - Label (e.g., GND, TRIG, OUT)
    - Color
    - Drawing instructions for the pin shape
-4. `"A~M 400 300 A 3 3 0 1 0 400 300.01~#880000~1~0~none~gge3~0~"`
+4. `"A~M x1 y1 A radius radius 0 1 0 x2 y2"`
    This represents an arc:
-   - Start point: (400, 300)
-   - End point: (400, 300.01)
-   - Radius X: 3
-   - Radius Y: 3
-   - Color: #880000 (dark red)
-   - Line width: 1
-   - Other parameters are for internal use
+   - Start point: (x1, y1)
+   - End point: (x2, y2)
+   - Radius
+   - Direction (CW or CCW)
+   - Color
+   - Line width
+   - ID
 To parse this data:
 1. Split the string by `~` to get individual parameters.
 2. For rectangles (R), use parameters 2-7 for position, size, and color.
@@ -46,14 +46,15 @@ To parse this data:
    - Third section: line drawing instruction
    - Fourth and Fifth sections: label position and text
    - Sixth section: additional drawing instruction for pin shape
-5. For arcs (A), parse the arc data in the format "M <startX> <startY> A <radiusX> <radiusY> <xAxisRotation> <largeArcFlag> <sweepFlag> <endX> <endY>~<color>~<lineWidth>~<id>"
+5. For arcs (A), split by `~M ` to get the path data.
+   - Format: A~M x1 y1 A radius radius 0 1 0 x2 y2
+   - Parse the start and end points, radius, direction, color, line width, and ID.
 This data structure allows for a compact representation of the schematic symbol, which can be rendered by CAD software to display the component in circuit diagrams.
  */
 // Examples
 // "R~365~275~2~2~70~50~#880000~1~0~none~gge1~0~",
 // "E~370~280~1.5~1.5~#880000~1~0~#880000~gge2~0",
 // "P~show~0~1~355~285~180~gge5~0^^355~285^^M355,285h10~#000000^^1~368.7~289~0~GND~start~~~#000000^^1~364.5~284~0~1~end~~~#000000^^0~362~285^^0~M 365 288 L 368 285 L 365 282",
-// "A~M 400 300 A 3 3 0 1 0 400 300.01~#880000~1~0~none~gge3~0~",
 // "P~show~0~2~355~295~180~gge6~0^^355~295^^M355,295h10~#880000^^1~368.7~299~0~TRIG~start~~~#0000FF^^1~364.5~294~0~2~end~~~#0000FF^^0~362~295^^0~M 365 298 L 368 295 L 365 292",
 // "P~show~0~3~355~305~180~gge7~0^^355~305^^M355,305h10~#880000^^1~368.7~309~0~OUT~start~~~#0000FF^^1~364.5~304~0~3~end~~~#0000FF^^0~362~305^^0~M 365 308 L 368 305 L 365 302",
 // "P~show~0~4~355~315~180~gge8~0^^355~315^^M355,315h10~#880000^^1~368.7~319~0~RESET~start~~~#0000FF^^1~364.5~314~0~4~end~~~#0000FF^^0~362~315^^0~M 365 318 L 368 315 L 365 312",
@@ -61,6 +62,7 @@ This data structure allows for a compact representation of the schematic symbol,
 // "P~show~0~6~445~305~0~gge10~0^^445~305^^M445,305h-10~#880000^^1~431.3~309~0~THRES~end~~~#0000FF^^1~435.5~304~0~6~start~~~#0000FF^^0~438~305^^0~M 435 302 L 432 305 L 435 308",
 // "P~show~0~7~445~295~0~gge11~0^^445~295^^M445,295h-10~#880000^^1~431.3~299~0~DISCH~end~~~#0000FF^^1~435.5~294~0~7~start~~~#0000FF^^0~438~295^^0~M 435 292 L 432 295 L 435 298",
 // "P~show~0~8~445~285~0~gge12~0^^445~285^^M445,285h-10~#FF0000^^1~431.3~289~0~VCC~end~~~#FF0000^^1~435.5~284~0~8~start~~~#FF0000^^0~438~285^^0~M 435 282 L 432 285 L 435 288",
+// "A~M x1 y1 A radius radius 0 1 0 x2 y2"
 
 const PointSchema = z.object({
   x: z.number(),
@@ -133,47 +135,38 @@ const ArcShapeOutputSchema = z.object({
   type: z.literal("ARC"),
   start: PointSchema,
   end: PointSchema,
-  radiusX: z.number(),
-  radiusY: z.number(),
+  radius: z.number(),
+  sweepFlag: z.boolean(),
   color: z.string(),
   lineWidth: z.number(),
   id: z.string(),
 })
 
-const parseArc = (arcString: string): z.infer<typeof ArcShapeOutputSchema> => {
-  const parts = arcString.split("~")
-  const [, arcData, lineWidth, color, , , id] = parts
-
-  // Parse "M 400 300 A 3 3 0 1 0 400 300.01" format
-  const match = arcData.match(
-    /M\s*([\d.-]+)\s+([\d.-]+)\s+A\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)/,
-  )
-
-  if (!match) {
-    throw new Error(`Invalid arc data: ${arcData}`)
-  }
-
-  const [
-    ,
-    startX,
-    startY,
-    radiusX,
-    radiusY,
-    xAxisRotation,
-    largeArcFlag,
-    sweepFlag,
-    endX,
-    endY,
-  ] = match.map(Number)
-
+const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
+  // Format: A~M x1 y1 A radius radius 0 1 0 x2 y2~#880000~1~0~none~gge49~0
+  const [, pathData, color, lineWidth, , , id] = str.split("~")
+  const parts = pathData.split(" ")
+  
+  // Handle potential NaN values by defaulting to 0
+  const x1 = Number(parts[1]) || 0
+  const y1 = Number(parts[2]) || 0
+  const radius = Number(parts[4]) || 0
+  const sweepFlag = parts[7] === "1"  // The sweep flag is the 8th parameter
+  const x2 = Number(parts[8]) || 0
+  const y2 = Number(parts[9]) || 0
+  
+  // Handle empty or invalid line width
+  const parsedLineWidth = Number(lineWidth)
+  const finalLineWidth = isNaN(parsedLineWidth) ? 1 : parsedLineWidth
+  
   return {
     type: "ARC",
-    start: { x: startX, y: startY },
-    end: { x: endX, y: endY },
-    radiusX,
-    radiusY,
-    color: color || "#000000",
-    lineWidth: Number(lineWidth || 1),
+    start: { x: x1, y: y1 },
+    end: { x: x2, y: y2 },
+    radius,
+    sweepFlag,
+    color: color || "#880000", // Default color
+    lineWidth: finalLineWidth,
     id: id || "gge1",
   }
 }

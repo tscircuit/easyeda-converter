@@ -126,17 +126,17 @@ export function generateArcFromSweep(
   // Calculate the center of the arc
   const h = Math.sqrt(radius * radius - (distance * distance) / 4)
   const angle = Math.atan2(dy, dx)
-  const centerX = midX + h * Math.sin(angle) * (sweepFlag ? 1 : -1)
-  const centerY = midY - h * Math.cos(angle) * (sweepFlag ? 1 : -1)
+  const centerX = midX + h * Math.sin(angle) * (sweepFlag ? -1 : 1)
+  const centerY = midY - h * Math.cos(angle) * (sweepFlag ? -1 : 1)
 
   // Calculate start and end angles
   const startAngle = Math.atan2(startY - centerY, startX - centerX)
   let endAngle = Math.atan2(endY - centerY, endX - centerX)
 
   // Adjust end angle based on sweep and large arc flags
-  if (!sweepFlag && endAngle > startAngle) {
+  if (sweepFlag && endAngle > startAngle) {
     endAngle -= 2 * Math.PI
-  } else if (sweepFlag && endAngle < startAngle) {
+  } else if (!sweepFlag && endAngle < startAngle) {
     endAngle += 2 * Math.PI
   }
 

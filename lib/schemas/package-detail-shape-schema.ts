@@ -211,16 +211,11 @@ export const ShapeItemSchema = z
       }
       case "ARC": {
         const [width, layer, , arcData] = shape.data.split("~")
-        // Handle both formats:
-        // 1. M x,y A rx ry x-axis-rotation large-arc-flag sweep-flag x  y
-        // 2. A~M x y A rx ry x-axis-rotation large-arc-flag sweep-flag x y
-        const match =
-          arcData.match(
-            /M\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*A\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)/,
-          ) ||
-          arcData.match(
-            /M\s*([\d.-]+)\s+([\d.-]+)\s+A\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)/,
-          )
+        // A rx ry x-axis-rotation large-arc-flag sweep-flag x  y
+        // A rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
+        const match = arcData.match(
+          /M\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*A\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)/,
+        )
 
         if (!match) {
           throw new Error(`Invalid arc data: ${arcData}`)
@@ -249,6 +244,7 @@ export const ShapeItemSchema = z
           radiusX: Number(radiusX),
           radiusY: Number(radiusY),
           largeArc: largeArcFlag === "1",
+          // sweepFlag=1 means clockwise (CW), sweepFlag=0 means counter-clockwise (CCW)
           sweepDirection: sweepFlag === "1" ? "CW" : "CCW",
         })
       }
