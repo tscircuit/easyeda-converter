@@ -244,6 +244,7 @@ export const ShapeItemSchema = z
           radiusX: Number(radiusX),
           radiusY: Number(radiusY),
           largeArc: largeArcFlag === "1",
+          // sweepFlag=1 means clockwise (CW), sweepFlag=0 means counter-clockwise (CCW)
           sweepDirection: sweepFlag === "1" ? "CW" : "CCW",
         })
       }

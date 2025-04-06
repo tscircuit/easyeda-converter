@@ -27,6 +27,15 @@ import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
    - Label (e.g., GND, TRIG, OUT)
    - Color
    - Drawing instructions for the pin shape
+4. `"A~M x1 y1 A radius radius 0 1 0 x2 y2"`
+   This represents an arc:
+   - Start point: (x1, y1)
+   - End point: (x2, y2)
+   - Radius
+   - Direction (CW or CCW)
+   - Color
+   - Line width
+   - ID
 To parse this data:
 1. Split the string by `~` to get individual parameters.
 2. For rectangles (R), use parameters 2-7 for position, size, and color.
@@ -37,6 +46,9 @@ To parse this data:
    - Third section: line drawing instruction
    - Fourth and Fifth sections: label position and text
    - Sixth section: additional drawing instruction for pin shape
+5. For arcs (A), split by `~M ` to get the path data.
+   - Format: A~M x1 y1 A radius radius 0 1 0 x2 y2
+   - Parse the start and end points, radius, direction, color, line width, and ID.
 This data structure allows for a compact representation of the schematic symbol, which can be rendered by CAD software to display the component in circuit diagrams.
  */
 // Examples
@@ -50,6 +62,7 @@ This data structure allows for a compact representation of the schematic symbol,
 // "P~show~0~6~445~305~0~gge10~0^^445~305^^M445,305h-10~#880000^^1~431.3~309~0~THRES~end~~~#0000FF^^1~435.5~304~0~6~start~~~#0000FF^^0~438~305^^0~M 435 302 L 432 305 L 435 308",
 // "P~show~0~7~445~295~0~gge11~0^^445~295^^M445,295h-10~#880000^^1~431.3~299~0~DISCH~end~~~#0000FF^^1~435.5~294~0~7~start~~~#0000FF^^0~438~295^^0~M 435 292 L 432 295 L 435 298",
 // "P~show~0~8~445~285~0~gge12~0^^445~285^^M445,285h-10~#FF0000^^1~431.3~289~0~VCC~end~~~#FF0000^^1~435.5~284~0~8~start~~~#FF0000^^0~438~285^^0~M 435 282 L 432 285 L 435 288",
+// "A~M x1 y1 A radius radius 0 1 0 x2 y2"
 
 const PointSchema = z.object({
   x: z.number(),
@@ -118,22 +131,51 @@ export const EllipseShapeSchema = z
   .transform(parseEllipse)
   .pipe(EllipseShapeOutputSchema)
 
-//   type PinDirection = 'left' | 'right';
+const ArcShapeOutputSchema = z.object({
+  type: z.literal("ARC"),
+  start: PointSchema,
+  end: PointSchema,
+  radius: z.number(),
+  sweepFlag: z.boolean(),
+  color: z.string(),
+  lineWidth: z.number(),
+  id: z.string(),
+})
 
-// interface Pin {
-//   type: 'P';
-//   visibility: string;
-//   id: string;
-//   pin: number;
-//   x: number;
-//   y: number;
-//   rotation: number;
-//   name: string;
-//   color: string;
-//   path: string;
-//   arrow: string;
-//   direction: PinDirection;
-// }
+const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
+  // Format: A~M x1 y1 A radius radius 0 1 0 x2 y2~#880000~1~0~none~gge49~0
+  const [, pathData, color, lineWidth, , , id] = str.split("~")
+  const parts = pathData.split(" ")
+
+  // Handle potential NaN values by defaulting to 0
+  const x1 = Number(parts[1]) || 0
+  const y1 = Number(parts[2]) || 0
+  const radius = Number(parts[4]) || 0
+  const sweepFlag = parts[7] === "1" // The sweep flag is the 8th parameter
+  const x2 = Number(parts[8]) || 0
+  const y2 = Number(parts[9]) || 0
+
+  // Handle empty or invalid line width
+  const parsedLineWidth = Number(lineWidth)
+  const finalLineWidth = isNaN(parsedLineWidth) ? 1 : parsedLineWidth
+
+  return {
+    type: "ARC",
+    start: { x: x1, y: y1 },
+    end: { x: x2, y: y2 },
+    radius,
+    sweepFlag,
+    color: color || "#880000", // Default color
+    lineWidth: finalLineWidth,
+    id: id || "gge1",
+  }
+}
+
+export const ArcShapeSchema = z
+  .string()
+  .startsWith("A~")
+  .transform(parseArc)
+  .pipe(ArcShapeOutputSchema)
 
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
@@ -361,6 +403,7 @@ export const SingleLetterShapeSchema = z
     if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
     if (x.startsWith("PT~")) return PathShapeSchema.parse(x)
     if (x.startsWith("T~")) return TextShapeSchema.parse(x)
+    if (x.startsWith("A~")) return ArcShapeSchema.parse(x)
     throw new Error(`Invalid shape type: ${x}`)
   })
   .pipe(
@@ -372,6 +415,7 @@ export const SingleLetterShapeSchema = z
       PolygonShapeOutputSchema,
       PathShapeOutputSchema,
       TextShapeOutputSchema,
+      ArcShapeOutputSchema,
     ]),
   )
 
