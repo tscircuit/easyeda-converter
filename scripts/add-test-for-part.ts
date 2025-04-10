@@ -25,7 +25,7 @@ const addTestForPart = async (jlcpcbPartNumber: string) => {
     const testContent = `
 import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/${jlcpcbPartNumber}.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/convert-to-typescript-component"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 
 it("should convert ${jlcpcbPartNumber} into typescript file", async () => {
