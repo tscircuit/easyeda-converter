@@ -1,12 +1,4 @@
-import { z } from "zod"
-import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
-import type {
-  HoleSchema,
-  PadSchema,
-} from "./schemas/package-detail-shape-schema"
-import { computeCenterOffset } from "./compute-center-offset"
-import { mm, mmStr } from "@tscircuit/mm"
-import { convertEasyEdaJsonToTscircuitSoupJson } from "./convert-easyeda-json-to-tscircuit-soup-json"
+import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
 import { su } from "@tscircuit/soup-util"
 
@@ -34,7 +26,7 @@ export const generateFootprintTsx = (
   for (const platedHole of platedHoles) {
     if (platedHole.shape === "oval" || platedHole.shape === "pill") {
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerHeight="${mmStr(platedHole.outer_height)}" outerWidth="${mmStr(platedHole.outer_width)}" holeHeight="${mmStr(platedHole.hole_height)}" holeWidth="${mmStr(platedHole.hole_width)}" height="${mmStr(platedHole.hole_height)}" shape="${platedHole.shape}" />`,
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerHeight="${mmStr(platedHole.outer_height)}" outerWidth="${mmStr(platedHole.outer_width)}" holeHeight="${mmStr(platedHole.hole_height)}" holeWidth="${mmStr(platedHole.hole_width)}" shape="${platedHole.shape}" />`,
       )
     } else if (platedHole.shape === "circle") {
       elementStrings.push(

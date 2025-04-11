@@ -12,3 +12,5 @@ tmp*
 .env
 .DS_Store
 search-result.json
+playwright-report
+test-results

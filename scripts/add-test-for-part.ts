@@ -1,4 +1,4 @@
-import { fetchEasyEDAComponent } from "../lib/fetch-easyeda-json"
+import { fetchEasyEDAComponent } from "../lib/websafe/fetch-easyeda-json"
 import fs from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
