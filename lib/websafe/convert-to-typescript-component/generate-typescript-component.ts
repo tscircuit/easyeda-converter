@@ -21,7 +21,7 @@ export const generateTypescriptComponent = ({
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
-
+  const cadComponent = circuitJson.find((item) => item.type === "cad_component")
   const footprintTsx = generateFootprintTsx(circuitJson)
 
   // Simplify pin labels to include only the second element
@@ -57,7 +57,7 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
         objUrl
           ? `cadModel={{
         objUrl: "${objUrl}",
-        rotationOffset: { x: 0, y: 0, z: 0 },
+        rotationOffset: { x: 0, y: 0, z: ${cadComponent?.rotation?.z ?? 0} },
         positionOffset: { x: 0, y: 0, z: 0 },
       }}`
           : ""
