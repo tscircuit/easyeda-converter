@@ -207,6 +207,9 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const arrowMatch = pinString.match(/\^\^0~(.+)$/)
   const arrow = arrowMatch ? arrowMatch[1] : ""
 
+  // Ensure rotation is a valid number with default of 0
+  const rotationValue = Number(rotation)
+
   return {
     type: "PIN",
     visibility: visibility as "show" | "hide",
@@ -214,7 +217,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     pinNumber: isNaN(Number(pinNumber)) ? pinNumber : Number(pinNumber),
     x: parseFloat(x),
     y: parseFloat(y),
-    rotation: parseFloat(rotation),
+    rotation: isNaN(rotationValue) ? 0 : rotationValue,
     label,
     labelColor,
     path,
@@ -366,12 +369,16 @@ const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
     mirror,
     id,
   ] = str.split("~")
+
+  // Ensure rotation is a valid number
+  const rotationValue = Number(rotation)
+
   return {
     type: "TEXT",
     alignment: alignment as "L" | "C" | "R",
     x: Number(x),
     y: Number(y),
-    rotation: Number(rotation),
+    rotation: isNaN(rotationValue) ? 0 : rotationValue,
     fontColor,
     backgroundColor: backgroundColor || undefined,
     fontSize,
@@ -391,6 +398,37 @@ export const TextShapeSchema = z
   .startsWith("T~")
   .transform(parseText)
   .pipe(TextShapeOutputSchema)
+
+const ArcShapeOutputSchema = z.object({
+  type: z.literal("ARC"),
+  pathData: z.string(),
+  strokeColor: z.string(),
+  strokeWidth: z.number(),
+  id: z.string(),
+})
+
+const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
+  const parts = str.split("~")
+  // Extract the SVG path data, color, line width, and ID
+  const pathData = parts[1]
+  const strokeColor = parts[3]
+  const strokeWidth = Number(parts[4])
+  const id = parts[8]
+
+  return {
+    type: "ARC",
+    pathData,
+    strokeColor,
+    strokeWidth,
+    id,
+  }
+}
+
+export const ArcShapeSchema = z
+  .string()
+  .startsWith("A~")
+  .transform(parseArc)
+  .pipe(ArcShapeOutputSchema)
 
 export const SingleLetterShapeSchema = z
   .string()
