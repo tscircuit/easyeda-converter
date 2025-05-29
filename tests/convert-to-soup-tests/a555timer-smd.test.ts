@@ -18,6 +18,7 @@ it("should parse easyeda json for a 555 timer (smd) and convert to tscircuit sou
       pcb_board_id: "main_board",
       thickness: 1.6,
       num_layers: 2,
+      material: "fr4",
     },
   ])
 

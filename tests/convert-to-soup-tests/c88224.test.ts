@@ -17,6 +17,7 @@ it("should parse easyeda json for a c88224 and convert to tscircuit soup", async
       pcb_board_id: "main_board",
       thickness: 1.6,
       num_layers: 2,
+      material: "fr4",
     },
   ])
 
