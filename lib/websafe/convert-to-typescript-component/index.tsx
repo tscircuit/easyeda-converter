@@ -25,7 +25,7 @@ export const convertBetterEasyToTsx = async ({
     shouldRecenter: true,
   })
   const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
-  const pn = normalizeManufacturerPartNumber(rawPn)
+  const pn = rawPn ? normalizeManufacturerPartNumber(rawPn) : "unknown"
   const sourcePorts = su(circuitJson).source_port.list()
 
   const pinLabels: Record<string, string[]> = {}
