@@ -44,7 +44,7 @@
     "typescript": "^5.5.2"
   },
   "dependencies": {
-    "@tscircuit/core": "^0.0.426",
+    "@tscircuit/core": "^0.0.428",
     "@tscircuit/mm": "^0.0.8",
     "commander": "^12.1.0",
     "transformation-matrix": "^2.16.1",
