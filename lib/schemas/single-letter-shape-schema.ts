@@ -207,6 +207,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const arrowMatch = pinString.match(/\^\^0~(.+)$/)
   const arrow = arrowMatch ? arrowMatch[1] : ""
 
+  const r = parseFloat(rotation)
   return {
     type: "PIN",
     visibility: visibility as "show" | "hide",
@@ -214,7 +215,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     pinNumber: isNaN(Number(pinNumber)) ? pinNumber : Number(pinNumber),
     x: parseFloat(x),
     y: parseFloat(y),
-    rotation: parseFloat(rotation),
+    rotation: Number.isNaN(r) ? 0 : r,
     label,
     labelColor,
     path,
