@@ -190,7 +190,8 @@ export const ShapeItemSchema = z
         let points, rotation
         if (padShape === "RECT") {
           points = parsePoints(rest[0] as any)
-          rotation = Number(rest[1])
+          const r = Number(rest[1])
+          rotation = Number.isNaN(r) ? undefined : r
         }
         const padInputParams = {
           type: "PAD",
@@ -294,6 +295,7 @@ export const ShapeItemSchema = z
       case "RECT": {
         const [x, y, width, height, lineWidth, id, rotation, layer, fillStyle] =
           shape.data.split("~")
+        const r = rotation ? Number(rotation) : undefined
         return RectSchema.parse({
           type: "RECT",
           x,
@@ -302,7 +304,7 @@ export const ShapeItemSchema = z
           height,
           lineWidth: Number(lineWidth),
           id,
-          rotation: rotation ? Number(rotation) : undefined,
+          rotation: Number.isNaN(r as number) ? undefined : r,
           layer: layer ? Number(layer) : undefined,
           fillStyle: fillStyle || undefined,
         })
@@ -310,6 +312,7 @@ export const ShapeItemSchema = z
       case "TEXT": {
         const [textAnchor, x, y, size, layer, id, rotation, , font, text] =
           shape.data.split("~")
+        const r = rotation ? Number(rotation) : undefined
         return TextSchema.parse({
           type: "TEXT",
           text,
@@ -318,7 +321,7 @@ export const ShapeItemSchema = z
           size_mm: Number(size) * 2.54, // empirically this seems to match, C5248081 is a good test case
           layer: layer ? Number(layer) : undefined,
           id,
-          rotation: rotation ? Number(rotation) : undefined,
+          rotation: Number.isNaN(r as number) ? undefined : r,
           textAnchor: textAnchor as "L" | "C" | "R" | undefined,
           font: font || undefined,
         })
