@@ -167,7 +167,6 @@ export const convertEasyEdaJsonToCircuitJson = (
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
-  console.log(pads)
   // Prepare pin labels for normalization
   const pinLabelSets = pads.map((pad) => {
     const labels = []
@@ -392,7 +391,6 @@ export const convertEasyEdaJsonToCircuitJson = (
       ",",
     )
     const ozStr = svgNode?.svgData.attrs?.z ?? "0"
-    console.log(svgNode?.svgData)
     const origin = {
       x: milx10(Number(oxStr)),
       y: milx10(Number(oyStr)),
