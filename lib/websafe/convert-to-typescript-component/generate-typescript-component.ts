@@ -49,6 +49,7 @@ ${pinLabelsString}
 export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
+      name={props.name ?? "U1"}
       pinLabels={pinLabels}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
