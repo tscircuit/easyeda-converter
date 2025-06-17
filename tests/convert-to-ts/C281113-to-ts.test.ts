@@ -27,6 +27,7 @@ it("should convert C281113 into typescript file", async () => {
     export const MGFL2012F100MT_LF = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
+          name={props.name ?? "U1"}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [

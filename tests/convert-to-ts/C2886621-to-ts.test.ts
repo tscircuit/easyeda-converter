@@ -58,6 +58,7 @@ it("should convert C2886621 into typescript file", async () => {
     export const SSI2130 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
+          name={props.name ?? "U1"}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [

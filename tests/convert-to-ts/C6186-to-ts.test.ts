@@ -29,6 +29,7 @@ const pinLabels = {
 export const AMS1117_3_3 = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
+      name={props.name ?? "U1"}
       pinLabels={pinLabels}
       supplierPartNumbers={{
   "jlcpcb": [

@@ -72,6 +72,7 @@ it("should convert C7203002 into typescript file", async () => {
     export const PICO = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
+          name={props.name ?? "U1"}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [

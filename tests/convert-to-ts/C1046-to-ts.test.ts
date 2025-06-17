@@ -27,6 +27,7 @@ it("should convert C1046 into typescript file", async () => {
     export const SDFL2012S100KTF = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
+          name={props.name ?? "U1"}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [

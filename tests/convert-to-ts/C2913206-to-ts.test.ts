@@ -108,6 +108,7 @@ it("should convert C2913206 into typescript file", async () => {
     export const ESP32_S3_MINI_1_N8 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
+          name={props.name ?? "U1"}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [

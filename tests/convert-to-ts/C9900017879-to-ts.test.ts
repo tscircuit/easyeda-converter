@@ -55,6 +55,7 @@ it("should convert C9900017879 into typescript file", async () => {
     export const ARDUINO_NANO = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
+          name={props.name ?? "U1"}
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [
