@@ -4,6 +4,7 @@ import type {
   ArcSchema,
   SVGNodeSchema,
   HoleSchema,
+  SolidRegionSchema,
 } from "./schemas/package-detail-shape-schema"
 import type { z } from "zod"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
@@ -14,6 +15,8 @@ import type {
   PCBPlatedHole,
   PcbPlatedHoleInput,
   PcbComponentInput,
+  PcbCutoutPolygonInput,
+  PcbCutoutCircleInput,
 } from "circuit-json"
 import {
   any_source_component,
@@ -25,7 +28,7 @@ import {
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import { findBoundsAndCenter, transformPCBElements } from "@tscircuit/soup-util"
-import { compose, scale, translate } from "transformation-matrix"
+import { compose, scale, translate, applyToPoint } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
@@ -97,6 +100,31 @@ const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
     hole_shape: "circle",
     pcb_hole_id: `pcb_hole_${index + 1}`,
   } as Soup.PcbHole)
+}
+
+const handleHoleCutout = (hole: z.infer<typeof HoleSchema>, index: number) => {
+  return Soup.pcb_cutout.parse({
+    type: "pcb_cutout",
+    pcb_cutout_id: `pcb_cutout_from_hole_${index + 1}`,
+    shape: "circle",
+    center: { x: milx10(hole.center.x), y: milx10(hole.center.y) },
+    radius: milx10(hole.radius),
+  } as Soup.PcbCutoutCircleInput)
+}
+
+const handleCutout = (
+  solidRegion: z.infer<typeof SolidRegionSchema>,
+  index: number,
+) => {
+  return Soup.pcb_cutout.parse({
+    type: "pcb_cutout",
+    pcb_cutout_id: `pcb_cutout_${index + 1}`,
+    shape: "polygon",
+    points: solidRegion.points.map((p) => ({
+      x: milx10(p.x),
+      y: milx10(p.y),
+    })),
+  } as Soup.PcbCutoutPolygonInput)
 }
 
 interface Options {
@@ -290,6 +318,17 @@ export const convertEasyEdaJsonToCircuitJson = (
     )
     .forEach((h, index) => {
       soupElements.push(handleHole(h, index))
+      soupElements.push(handleHoleCutout(h, index))
+    })
+
+  // Add pcb cutouts from solid regions marked as cutout
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter(
+      (shape): shape is z.infer<typeof SolidRegionSchema> =>
+        shape.type === "SOLIDREGION" && shape.fillStyle === "cutout",
+    )
+    .forEach((sr, index) => {
+      soupElements.push(handleCutout(sr, index))
     })
 
   // Add silkscreen paths, arcs and text
@@ -362,10 +401,20 @@ export const convertEasyEdaJsonToCircuitJson = (
       // we set it to (0,0)
       soupElements.filter((e) => e.type !== "pcb_component"),
     )
-    transformPCBElements(
-      soupElements,
-      compose(translate(-bounds.center.x, bounds.center.y), scale(1, -1)),
+    const matrix = compose(
+      translate(-bounds.center.x, bounds.center.y),
+      scale(1, -1),
     )
+    transformPCBElements(soupElements, matrix)
+    soupElements.forEach((e) => {
+      if (e.type === "pcb_cutout") {
+        if (e.shape === "polygon") {
+          e.points = e.points.map((p) => applyToPoint(matrix, p))
+        } else {
+          e.center = applyToPoint(matrix, e.center)
+        }
+      }
+    })
     pcb_component.center = { x: 0, y: 0 }
   }
 
