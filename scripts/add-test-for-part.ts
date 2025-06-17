@@ -61,7 +61,7 @@ it("should convert ${jlcpcbPartNumber} into typescript file", async () => {
 }
 
 // Check if a part number was provided as a command-line argument
-const partNumber = process.argv[2]
+const partNumber = "C19795120"
 if (!partNumber) {
   console.error("Please provide a JLCPCB part number as an argument.")
   process.exit(1)

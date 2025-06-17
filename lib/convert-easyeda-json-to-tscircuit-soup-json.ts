@@ -33,6 +33,7 @@ import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
+import { az } from "zod/v4/locales"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -166,7 +167,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
-
+  console.log(pads)
   // Prepare pin labels for normalization
   const pinLabelSets = pads.map((pad) => {
     const labels = []
@@ -390,10 +391,12 @@ export const convertEasyEdaJsonToCircuitJson = (
     const [oxStr, oyStr] = (svgNode?.svgData.attrs?.c_origin ?? "0,0").split(
       ",",
     )
+    const ozStr = svgNode?.svgData.attrs?.z ?? "0"
+    console.log(oxStr, oyStr, ozStr)
     const origin = {
       x: milx10(Number(oxStr)),
       y: milx10(Number(oyStr)),
-      z: 0,
+      z: -milx10(Number(ozStr)),
     }
 
     const cad_component = Soup.cad_component.parse({
@@ -425,6 +428,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         if (!hasPlatedHole) {
           e.position.x = 0
           e.position.y = 0
+          e.position.z = 0
         }
       }
     })
