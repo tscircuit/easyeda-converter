@@ -382,17 +382,26 @@ export const convertEasyEdaJsonToCircuitJson = (
     const [rx, ry, rz] = (svgNode?.svgData.attrs?.c_rotation ?? "0,0,0")
       .split(",")
       .map(Number)
-    soupElements.push(
-      Soup.cad_component.parse({
-        type: "cad_component",
-        cad_component_id: "cad_component_1",
-        source_component_id: "source_component_1",
-        pcb_component_id: "pcb_component_1",
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: rx, y: ry, z: rz },
-        model_obj_url: objFileUrl,
-      } as Soup.CadComponentInput),
+    const [oxStr, oyStr] = (svgNode?.svgData.attrs?.c_origin ?? "0,0").split(
+      ",",
     )
+    const origin = {
+      x: milx10(Number(oxStr)),
+      y: milx10(Number(oyStr)),
+      z: 0,
+    }
+
+    const cad_component = Soup.cad_component.parse({
+      type: "cad_component",
+      cad_component_id: "cad_component_1",
+      source_component_id: "source_component_1",
+      pcb_component_id: "pcb_component_1",
+      position: origin,
+      rotation: { x: rx, y: ry, z: rz },
+      model_obj_url: objFileUrl,
+    } as Soup.CadComponentInput)
+
+    soupElements.push(cad_component)
   }
 
   if (shouldRecenter) {
