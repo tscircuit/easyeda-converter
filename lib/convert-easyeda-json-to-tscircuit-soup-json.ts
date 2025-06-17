@@ -392,7 +392,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       ",",
     )
     const ozStr = svgNode?.svgData.attrs?.z ?? "0"
-    console.log(oxStr, oyStr, ozStr)
+    console.log(svgNode?.svgData)
     const origin = {
       x: milx10(Number(oxStr)),
       y: milx10(Number(oyStr)),
