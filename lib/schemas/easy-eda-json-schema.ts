@@ -39,16 +39,18 @@ export const OwnerSchema = z.object({
 })
 
 export const HeadSchema = z.object({
-  docType: z.union([z.string(), z.number()]).transform((val) => val.toString()),
+  docType: z.preprocess((val) => (val == null ? val : String(val)), z.string()),
   editorVersion: z.string(),
   c_para: z.record(z.string(), z.union([z.string(), z.null()])),
   x: z.number(),
   y: z.number(),
   puuid: z.string().optional(),
   uuid: z.string(),
-  utime: z
-    .union([z.string(), z.number()])
-    .transform((val) => (val === "" ? 0 : Number(val))),
+  utime: z.preprocess((val) => {
+    if (val === "") return 0
+    if (typeof val === "string") return Number(val)
+    return val
+  }, z.number()),
   importFlag: z.number().optional(),
   c_spiceCmd: z.any().optional(),
   hasIdFlag: z.boolean(),
