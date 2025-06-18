@@ -41,7 +41,7 @@ export const OwnerSchema = z.object({
 export const HeadSchema = z.object({
   docType: z.union([z.string(), z.number()]).transform((val) => val.toString()),
   editorVersion: z.string(),
-  c_para: z.record(z.string(), z.union([z.string(), z.null()])),
+  c_para: z.record(z.string(), z.string().nullable()),
   x: z.number(),
   y: z.number(),
   puuid: z.string().optional(),
