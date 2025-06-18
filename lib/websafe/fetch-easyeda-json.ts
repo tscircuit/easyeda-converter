@@ -66,16 +66,6 @@ export async function fetchEasyEDAComponent(
   }
 
   const componentResult = await componentResponse.json()
-  // Normalize null strings in c_para to empty strings to satisfy schema
-  const cPara = componentResult.result?.dataStr?.head?.c_para
-  if (cPara && typeof cPara === "object") {
-    for (const key of Object.keys(cPara)) {
-      if (cPara[key] === null) {
-        cPara[key] = ""
-      }
-    }
-  }
-
   return componentResult.result
 }
 
