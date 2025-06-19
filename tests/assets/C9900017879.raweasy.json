@@ -21,7 +21,7 @@
   },
   "tags": [],
   "updateTime": 1714241276,
-  "updated_at": "2025-05-29 07:14:19",
+  "updated_at": "2025-06-16 21:20:36",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -35,7 +35,7 @@
         "Contributor": "lcsc",
         "Supplier": "LCSC",
         "Supplier Part": "C9900017879",
-        "Manufacturer": null,
+        "Manufacturer": "",
         "Manufacturer Part": "ARDUINO_NANO",
         "JLCPCB Part Class": "Extended Part"
       },
