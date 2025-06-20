@@ -27,7 +27,10 @@ import {
 } from "circuit-json"
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
-import { findBoundsAndCenter, transformPCBElements } from "@tscircuit/soup-util"
+import {
+  findBoundsAndCenter,
+  transformPCBElements,
+} from "@tscircuit/circuit-json-util"
 import { compose, scale, translate, applyToPoint } from "transformation-matrix"
 import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"

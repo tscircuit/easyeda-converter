@@ -2,7 +2,7 @@ import {
   EasyEdaJsonSchema,
   type BetterEasyEdaJson,
 } from "lib/schemas/easy-eda-json-schema"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"

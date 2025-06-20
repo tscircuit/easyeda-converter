@@ -1,6 +1,6 @@
 import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
