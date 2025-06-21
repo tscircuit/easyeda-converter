@@ -66,26 +66,7 @@ export async function fetchEasyEDAComponent(
   }
 
   const componentResult = await componentResponse.json()
-  const result = componentResult.result as RawEasyEdaJson
-
-  // Normalize a few fields that often swap types between
-  // EasyEDA API versions. This keeps our zod schema happy
-  if (result.dataStr?.head) {
-    const head: any = result.dataStr.head
-    if (typeof head.docType !== "string") head.docType = String(head.docType)
-    if (typeof head.utime === "string")
-      head.utime = head.utime === "" ? 0 : Number(head.utime)
-  }
-
-  if (result.packageDetail?.dataStr?.head) {
-    const pkgHead: any = result.packageDetail.dataStr.head
-    if (typeof pkgHead.docType !== "string")
-      pkgHead.docType = String(pkgHead.docType)
-    if (typeof pkgHead.utime === "string")
-      pkgHead.utime = pkgHead.utime === "" ? 0 : Number(pkgHead.utime)
-  }
-
-  return result
+  return componentResult.result
 }
 
 // Usage example
