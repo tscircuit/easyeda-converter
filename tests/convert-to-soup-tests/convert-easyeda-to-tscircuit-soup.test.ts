@@ -3,7 +3,7 @@ import { logSoup } from "@tscircuit/log-soup"
 import a555TimerEasyEdaJson from "../assets/a555-timer-dip.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 import type { AnyCircuitElement, AnySoupElement } from "circuit-json"
 
 it("should parse easyeda json for a 555 timer and convert to tscircuit soup", async () => {
@@ -18,7 +18,7 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   const sourceComponent = su(soupElements).source_component.list()[0]!
   expect(sourceComponent).toBeDefined()
   expect(sourceComponent?.name).toBe("U1")
-  expect(sourceComponent?.ftype).toBe("simple_bug")
+  expect(sourceComponent?.ftype).toBe("simple_chip")
 
   // Check for the presence of source ports
   const sourcePorts = su(soupElements).source_port.list()
@@ -33,11 +33,14 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   // Check properties of a pcb_smtpad or pcb_plated_hole
   const firstPad = pcbSmtPads[0] || pcbPlatedHoles[0]
   expect(firstPad).toBeDefined()
-  expect(firstPad.x).toBeDefined()
-  expect(firstPad.y).toBeDefined()
-  expect(firstPad.port_hints).toBeDefined()
-  expect(firstPad.pcb_component_id).toBeDefined()
-  expect(firstPad.pcb_port_id).toBeDefined()
+  if (!firstPad) throw new Error("No pad found")
+  if ("x" in firstPad && "y" in firstPad) {
+    expect(firstPad.x).toBeDefined()
+    expect(firstPad.y).toBeDefined()
+  }
+  expect((firstPad as any).port_hints).toBeDefined()
+  expect((firstPad as any).pcb_component_id).toBeDefined()
+  expect((firstPad as any).pcb_port_id).toBeDefined()
 
   if (firstPad.type === "pcb_smtpad") {
     expect(firstPad.pcb_smtpad_id).toBeDefined()

@@ -4,7 +4,7 @@ import usbCEasyEdaJson from "../assets/usb-c.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import type { AnySoupElement } from "circuit-json"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 
 it.skip("should convert a usb-c footprint to tscircuit soup json", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(usbCEasyEdaJson)

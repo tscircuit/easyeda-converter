@@ -3,7 +3,7 @@ import { logSoup } from "@tscircuit/log-soup"
 import c88224RawEasy from "../assets/C88224.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 import type { AnySoupElement } from "circuit-json"
 
 it("should parse easyeda json for a c88224 and convert to tscircuit soup", async () => {
