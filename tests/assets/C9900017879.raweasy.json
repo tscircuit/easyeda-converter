@@ -35,7 +35,7 @@
         "Contributor": "lcsc",
         "Supplier": "LCSC",
         "Supplier Part": "C9900017879",
-        "Manufacturer": null,
+        "Manufacturer": "",
         "Manufacturer Part": "ARDUINO_NANO",
         "JLCPCB Part Class": "Extended Part"
       },

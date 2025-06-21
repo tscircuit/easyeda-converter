@@ -2,7 +2,8 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C5830143.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 it("should convert C5830143 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
@@ -51,5 +52,10 @@ it("should convert C5830143 into typescript file", async () => {
         />
       )
     }"
-  `)
+`)
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+  )
 })
