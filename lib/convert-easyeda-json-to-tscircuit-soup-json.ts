@@ -4,6 +4,7 @@ import type {
   ArcSchema,
   SVGNodeSchema,
   HoleSchema,
+  ViaSchema,
   SolidRegionSchema,
 } from "./schemas/package-detail-shape-schema"
 import type { z } from "zod"
@@ -14,6 +15,7 @@ import type {
   PcbSilkscreenPath,
   PCBPlatedHole,
   PcbPlatedHoleInput,
+  PcbViaInput,
   PcbComponentInput,
   PcbCutoutPolygonInput,
   PcbCutoutCircleInput,
@@ -24,6 +26,7 @@ import {
   pcb_silkscreen_path,
   pcb_plated_hole,
   pcb_hole,
+  pcb_via,
 } from "circuit-json"
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
@@ -110,6 +113,18 @@ const handleHoleCutout = (hole: z.infer<typeof HoleSchema>, index: number) => {
     center: { x: milx10(hole.center.x), y: milx10(hole.center.y) },
     radius: milx10(hole.radius),
   } as Soup.PcbCutoutCircleInput)
+}
+
+const handleVia = (via: z.infer<typeof ViaSchema>, index: number) => {
+  return pcb_via.parse({
+    type: "pcb_via",
+    pcb_via_id: `pcb_via_${index + 1}`,
+    x: milx10(via.center.x),
+    y: milx10(via.center.y),
+    outer_diameter: milx10(via.outerDiameter),
+    hole_diameter: milx10(via.holeDiameter),
+    layers: ["top", "bottom"],
+  } as PcbViaInput)
 }
 
 const handleCutout = (
@@ -319,6 +334,13 @@ export const convertEasyEdaJsonToCircuitJson = (
     .forEach((h, index) => {
       soupElements.push(handleHole(h, index))
       soupElements.push(handleHoleCutout(h, index))
+    })
+
+  // Add vias
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter((shape): shape is z.infer<typeof ViaSchema> => shape.type === "VIA")
+    .forEach((v, index) => {
+      soupElements.push(handleVia(v, index))
     })
 
   // Add pcb cutouts from solid regions marked as cutout
