@@ -25,7 +25,10 @@ import {
 } from "circuit-json"
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
-import { findBoundsAndCenter, transformPCBElements } from "@tscircuit/circuit-json-util"
+import {
+  findBoundsAndCenter,
+  transformPCBElements,
+} from "@tscircuit/circuit-json-util"
 import { compose, scale, translate, applyToPoint } from "transformation-matrix"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
