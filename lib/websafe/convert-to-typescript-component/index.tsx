@@ -30,8 +30,8 @@ export const convertBetterEasyToTsx = async ({
 
   const pinLabels: Record<string, string[]> = {}
   const sortedPorts = sourcePorts.sort((a, b) => {
-    const aNum = parseInt(a.name.replace("pin", ""))
-    const bNum = parseInt(b.name.replace("pin", ""))
+    const aNum = Number.parseInt(a.name.replace("pin", ""))
+    const bNum = Number.parseInt(b.name.replace("pin", ""))
     return aNum - bNum
   })
   for (const sourcePort of sortedPorts) {
