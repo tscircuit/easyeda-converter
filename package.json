@@ -33,19 +33,16 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/circuit-json-util": "^0.0.50",
+    "@tscircuit/mm": "^0.0.8",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
     "circuit-to-svg": "^0.0.164",
-    "commander": "^12.1.0",
+    "transformation-matrix": "^2.16.1",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
     "tscircuit": "*",
     "zod": "*"
-  },
-  "dependencies": {
-    "@tscircuit/mm": "^0.0.8",
-    "transformation-matrix": "^2.16.1"
   }
 }
