@@ -21,10 +21,17 @@
     "format": "biome format . --write",
     "add-test-for-part": "bun run scripts/add-test-for-part.ts"
   },
-  "main": "./dist/lib/index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/lib/index.js",
-    "./browser": "./dist/browser/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/browser/index.d.ts",
+      "default": "./dist/browser/index.js"
+    }
   },
   "bin": {
     "easyeda-converter": "./dist/main.cjs",
