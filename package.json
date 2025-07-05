@@ -43,7 +43,7 @@
     "typescript": "^5.5.2"
   },
   "dependencies": {
-    "@tscircuit/core": "^0.0.541",
+    "@tscircuit/core": "^0.0.542",
     "@tscircuit/mm": "^0.0.8",
     "commander": "^12.1.0",
     "graphics-debug": "^0.0.60",
