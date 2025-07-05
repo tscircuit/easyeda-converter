@@ -155,7 +155,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     type: "source_component",
     source_component_id: "source_component_1",
     name: "U1",
-    ftype: "simple_bug",
+    ftype: "simple_chip",
   })
 
   const pcb_component = Soup.pcb_component.parse({
@@ -163,7 +163,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     pcb_component_id: "pcb_component_1",
     source_component_id: "source_component_1",
     name: "U1",
-    ftype: "simple_bug",
+    ftype: "simple_chip",
     width: 0, // we update this at the end
     height: 0, // we update this at the end
     rotation: 0,
