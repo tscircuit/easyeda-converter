@@ -10,15 +10,10 @@ import type {
 import type { z } from "zod"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
-  AnySoupElement,
-  PCBSMTPad,
-  PcbSilkscreenPath,
-  PCBPlatedHole,
-  PcbPlatedHoleInput,
+  AnyCircuitElement,
+  PcbSmtPad,
   PcbViaInput,
   PcbComponentInput,
-  PcbCutoutPolygonInput,
-  PcbCutoutCircleInput,
 } from "circuit-json"
 import {
   any_source_component,
@@ -150,9 +145,8 @@ interface Options {
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
   { useModelCdn, shouldRecenter = true }: Options = {},
-): AnySoupElement[] => {
-  const soupElements: AnySoupElement[] = []
-  const centerOffset = computeCenterOffset(easyEdaJson)
+): AnyCircuitElement[] => {
+  const circuitElements: AnyCircuitElement[] = []
 
   // Add source component
   const source_component = any_source_component.parse({
@@ -175,7 +169,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     layer: "top",
   } as PcbComponentInput)
 
-  soupElements.push(source_component, pcb_component)
+  circuitElements.push(source_component, pcb_component)
 
   const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
@@ -203,7 +197,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     )
 
     // Add source port
-    soupElements.push({
+    circuitElements.push({
       type: "source_port",
       source_port_id: `source_port_${index + 1}`,
       source_component_id: "source_component_1",
@@ -279,7 +273,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         }
       }
 
-      soupElements.push(
+      circuitElements.push(
         pcb_plated_hole.parse({
           ...commonPlatedHoleProps,
           ...additionalPlatedHoleProps,
@@ -287,7 +281,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       )
     } else {
       // Add pcb_smtpad
-      let soupShape: PCBSMTPad["shape"] | undefined
+      let soupShape: PcbSmtPad["shape"] | undefined
       if (pad.shape === "RECT") {
         soupShape = "rect"
       } else if (pad.shape === "ELLIPSE") {
@@ -321,8 +315,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         port_hints: [`pin${pinNumber}`],
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
-      } as PCBSMTPad)
-      soupElements.push(parsedPcbSmtpad)
+      } as PcbSmtPad)
+      circuitElements.push(parsedPcbSmtpad)
     }
   })
 
@@ -332,15 +326,15 @@ export const convertEasyEdaJsonToCircuitJson = (
       (shape): shape is z.infer<typeof HoleSchema> => shape.type === "HOLE",
     )
     .forEach((h, index) => {
-      soupElements.push(handleHole(h, index))
-      soupElements.push(handleHoleCutout(h, index))
+      circuitElements.push(handleHole(h, index))
+      circuitElements.push(handleHoleCutout(h, index))
     })
 
   // Add vias
   easyEdaJson.packageDetail.dataStr.shape
     .filter((shape): shape is z.infer<typeof ViaSchema> => shape.type === "VIA")
     .forEach((v, index) => {
-      soupElements.push(handleVia(v, index))
+      circuitElements.push(handleVia(v, index))
     })
 
   // Add pcb cutouts from solid regions marked as cutout
@@ -350,17 +344,17 @@ export const convertEasyEdaJsonToCircuitJson = (
         shape.type === "SOLIDREGION" && shape.fillStyle === "cutout",
     )
     .forEach((sr, index) => {
-      soupElements.push(handleCutout(sr, index))
+      circuitElements.push(handleCutout(sr, index))
     })
 
   // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
-      soupElements.push(handleSilkscreenPath(shape, index))
+      circuitElements.push(handleSilkscreenPath(shape, index))
     } else if (shape.type === "ARC") {
-      soupElements.push(handleSilkscreenArc(shape, index))
+      circuitElements.push(handleSilkscreenArc(shape, index))
     } else if (shape.type === "TEXT") {
-      soupElements.push(
+      circuitElements.push(
         Soup.pcb_silkscreen_text.parse({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
@@ -404,7 +398,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     const [rx, ry, rz] = (svgNode?.svgData.attrs?.c_rotation ?? "0,0,0")
       .split(",")
       .map(Number)
-    soupElements.push(
+    circuitElements.push(
       Soup.cad_component.parse({
         type: "cad_component",
         cad_component_id: "cad_component_1",
@@ -421,14 +415,14 @@ export const convertEasyEdaJsonToCircuitJson = (
     const bounds = findBoundsAndCenter(
       // exclude the pcb_component because it's center is currently incorrect,
       // we set it to (0,0)
-      soupElements.filter((e) => e.type !== "pcb_component"),
+      circuitElements.filter((e) => e.type !== "pcb_component"),
     )
     const matrix = compose(
       translate(-bounds.center.x, bounds.center.y),
       scale(1, -1),
     )
-    transformPCBElements(soupElements, matrix)
-    soupElements.forEach((e) => {
+    transformPCBElements(circuitElements, matrix)
+    for (const e of circuitElements) {
       if (e.type === "pcb_cutout") {
         if (e.shape === "polygon") {
           e.points = e.points.map((p) => applyToPoint(matrix, p))
@@ -436,11 +430,11 @@ export const convertEasyEdaJsonToCircuitJson = (
           e.center = applyToPoint(matrix, e.center)
         }
       }
-    })
+    }
     pcb_component.center = { x: 0, y: 0 }
   }
 
-  return soupElements
+  return circuitElements
 }
 
 /** @deprecated Use `convertEasyEdaJsonToCircuitJson` instead. */
