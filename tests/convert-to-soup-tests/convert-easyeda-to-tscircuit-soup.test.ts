@@ -1,10 +1,9 @@
 import { it, expect } from "bun:test"
-import { logSoup } from "@tscircuit/log-soup"
 import a555TimerEasyEdaJson from "../assets/a555-timer-dip.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/circuit-json-util"
-import type { AnyCircuitElement, PcbPlatedHole, PcbSmtPad } from "circuit-json"
+import type { PcbPlatedHole, PcbSmtPad } from "circuit-json"
 
 it("should parse easyeda json for a 555 timer and convert to tscircuit soup", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(a555TimerEasyEdaJson)
@@ -44,9 +43,4 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
     expect(firstPad.shape).toBeDefined()
     expect(firstPad.layer).toBe("top")
   }
-
-  await logSoup(
-    "easyeda to tscircuit soup",
-    soupElements as AnyCircuitElement[],
-  )
 })
