@@ -12,8 +12,9 @@
   "scripts": {
     "test": "bun test",
     "cli": "bun cli/main.ts",
-    "build": "bun build:node && bun build:web",
-    "build:node": "tsup lib/index.ts cli/main.ts --platform node --format esm --dts --sourcemap",
+    "build": "bun build:lib && bun build:cli && bun build:web",
+    "build:lib": "tsup lib/index.ts --platform node --format esm --dts --sourcemap",
+    "build:cli": "tsup cli/main.ts --platform node --format cjs --dts --sourcemap",
     "build:web": "tsup lib/websafe/index.ts --platform browser --format esm --dts --sourcemap -d dist/browser",
     "aider": "aider",
     "format:check": "biome format .",
@@ -26,8 +27,8 @@
     "./browser": "./dist/browser/index.js"
   },
   "bin": {
-    "easyeda-converter": "./dist/cli/main.js",
-    "easyeda": "./dist/cli/main.js"
+    "easyeda-converter": "./dist/main.cjs",
+    "easyeda": "./dist/main.cjs"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -35,16 +36,16 @@
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
     "circuit-to-svg": "^0.0.164",
+    "commander": "^12.1.0",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
-    "tscircuit": "*"
+    "tscircuit": "*",
+    "zod": "*"
   },
   "dependencies": {
     "@tscircuit/mm": "^0.0.8",
-    "commander": "^12.1.0",
-    "transformation-matrix": "^2.16.1",
-    "zod": "^3.25.36"
+    "transformation-matrix": "^2.16.1"
   }
 }
