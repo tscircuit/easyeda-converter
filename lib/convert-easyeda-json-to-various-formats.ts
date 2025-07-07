@@ -1,6 +1,6 @@
 import { fetchEasyEDAComponent } from "lib/websafe/fetch-easyeda-json"
 import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import fs from "node:fs/promises"
+import fs from "fs/promises"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertRawEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import * as path from "path"
