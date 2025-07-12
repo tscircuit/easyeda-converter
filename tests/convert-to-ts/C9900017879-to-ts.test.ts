@@ -46,7 +46,7 @@ it("should convert C9900017879 into typescript file", async () => {
       pin24: ["A5"],
       pin25: ["A6"],
       pin26: ["A7"],
-      pin27: ["+5V"],
+      pin27: ["V5"],
       pin28: ["RESET2"],
       pin29: ["GND1"],
       pin30: ["VIN"]
