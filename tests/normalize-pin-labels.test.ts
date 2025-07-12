@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test"
-import { normalizePinLabels } from "@tscircuit/core"
+import { normalizePinLabels } from "lib"
 
 describe("normalizePinLabels", () => {
   test("handles the documentation example correctly", () => {
