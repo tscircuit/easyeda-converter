@@ -315,8 +315,13 @@ export const convertEasyEdaJsonToCircuitJson = (
         ...(soupShape === "rect"
           ? rectSize
           : soupShape === "polygon" && pad.points
-          ? { points: pad.points.map((p) => ({ x: mil2mm(p.x), y: mil2mm(p.y) })) }
-          : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
+            ? {
+                points: pad.points.map((p) => ({
+                  x: mil2mm(p.x),
+                  y: mil2mm(p.y),
+                })),
+              }
+            : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
         pcb_component_id: "pcb_component_1",
