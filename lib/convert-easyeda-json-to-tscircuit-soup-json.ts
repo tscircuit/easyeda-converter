@@ -292,6 +292,8 @@ export const convertEasyEdaJsonToCircuitJson = (
       } else if (pad.shape === "OVAL") {
         // OVAL is often a rect, especially when holeRadius is 0
         soupShape = "rect"
+      } else if (pad.shape === "POLYGON") {
+        soupShape = "polygon"
       }
       if (!soupShape) {
         throw new Error(`unknown pad.shape: "${pad.shape}"`)
@@ -312,6 +314,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         y: mil2mm(pad.center.y),
         ...(soupShape === "rect"
           ? rectSize
+          : soupShape === "polygon" && pad.points
+          ? { points: pad.points.map((p) => ({ x: mil2mm(p.x), y: mil2mm(p.y) })) }
           : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
