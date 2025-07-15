@@ -11,7 +11,7 @@ it("should parse easyeda json for c3178291 and convert to tscircuit soup", async
   // Test that polygon pads are handled correctly
   const smtPads = circuitJson.filter((element) => element.type === "pcb_smtpad")
   expect(smtPads.length).toBeGreaterThan(0)
-  
+
   // Test that no unknown pad shapes cause errors
   expect(() => convertEasyEdaJsonToCircuitJson(parsedJson)).not.toThrow()
 
