@@ -43,7 +43,7 @@ export const TrackSchema = BaseShapeSchema.extend({
 
 export const PadSchema = BaseShapeSchema.extend({
   type: z.literal("PAD"),
-  shape: z.enum(["RECT", "ELLIPSE", "OVAL"]),
+  shape: z.enum(["RECT", "ELLIPSE", "OVAL", "POLYGON"]),
   center: z.object({
     x: tenthmil,
     y: tenthmil,
@@ -195,7 +195,7 @@ export const ShapeItemSchema = z
         const center = { x: centerX, y: centerY }
         let points: number[][] | undefined
 
-        if (padShape === "RECT") {
+        if (padShape === "RECT" || padShape === "POLYGON") {
           points = parsePoints(rest[0] as any)
         }
 

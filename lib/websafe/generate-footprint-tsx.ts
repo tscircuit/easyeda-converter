@@ -45,6 +45,13 @@ export const generateFootprintTsx = (
       elementStrings.push(
         `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" shape="rect" />`,
       )
+    } else if (smtPad.shape === "polygon") {
+      const pointsStr = smtPad.points
+        .map((p) => `{x: "${mmStr(p.x)}", y: "${mmStr(p.y)}"}`)
+        .join(", ")
+      elementStrings.push(
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} points={[${pointsStr}]} shape="polygon" />`,
+      )
     }
   }
 
