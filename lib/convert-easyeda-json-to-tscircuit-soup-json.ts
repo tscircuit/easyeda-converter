@@ -310,15 +310,17 @@ export const convertEasyEdaJsonToCircuitJson = (
         type: "pcb_smtpad",
         pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
         shape: soupShape,
-        x: mil2mm(pad.center.x),
-        y: mil2mm(pad.center.y),
+        ...(soupShape !== "polygon" && {
+          x: mil2mm(pad.center.x),
+          y: mil2mm(pad.center.y),
+        }),
         ...(soupShape === "rect"
           ? rectSize
           : soupShape === "polygon" && pad.points
             ? {
                 points: pad.points.map((p) => ({
-                  x: mil2mm(p.x),
-                  y: mil2mm(p.y),
+                  x: milx10(p.x),
+                  y: milx10(p.y),
                 })),
               }
             : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
@@ -440,6 +442,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         } else {
           e.center = applyToPoint(matrix, e.center)
         }
+      } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
+        e.points = e.points.map((p) => applyToPoint(matrix, p))
       }
     }
     pcb_component.center = { x: 0, y: 0 }
