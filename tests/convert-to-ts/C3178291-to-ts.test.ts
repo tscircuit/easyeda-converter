@@ -52,6 +52,7 @@ it("should convert C3178291 into typescript file", async () => {
     <smtpad portHints={["pin7"]} pcbX="-1.6000730000000658mm" pcbY="0.7999730000000227mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin5"]} pcbX="-1.6000730000000658mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin4"]} pcbX="-0.7999730000000227mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin1"]} points={[{x: "1.282471399999963mm", y: "-0.5460238000000572mm"}, {x: "1.9174713999998403mm", y: "-0.5460238000000572mm"}, {x: "1.9174713999998403mm", y: "-0.8000237999999626mm"}, {x: "1.7904713999998876mm", y: "-0.8000237999999626mm"}, {x: "1.7904713999998876mm", y: "-1.0540237999999817mm"}, {x: "1.282471399999963mm", y: "-1.0540237999999817mm"}, {x: "1.282471399999963mm", y: "-0.5460238000000572mm"}]} shape="polygon" />
     <smtpad portHints={["pin2"]} pcbX="0.799972999999909mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin3"]} pcbX="-0.00012700000013410317mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
           </footprint>}

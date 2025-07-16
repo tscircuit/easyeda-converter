@@ -25,6 +25,11 @@ it("should parse easyeda json for c3178291 and convert to tscircuit soup", async
     }
   }
 
+  // Verify pcb_component has proper bounds (not zero)
+  const pcbComponent = circuitJson.find((e) => e.type === "pcb_component")
+  expect(pcbComponent?.width).toBeGreaterThan(0)
+  expect(pcbComponent?.height).toBeGreaterThan(0)
+
   // Test that no unknown pad shapes cause errors
   expect(() => convertEasyEdaJsonToCircuitJson(parsedJson)).not.toThrow()
 

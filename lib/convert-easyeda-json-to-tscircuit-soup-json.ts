@@ -389,10 +389,22 @@ export const convertEasyEdaJsonToCircuitJson = (
     }
   })
 
-  // TODO Change pcb_component width & height
+  // Calculate pcb_component bounds from all PCB elements
+  const pcbElements = circuitElements.filter(
+    (e) =>
+      e.type === "pcb_smtpad" ||
+      e.type === "pcb_plated_hole" ||
+      e.type === "pcb_hole" ||
+      e.type === "pcb_via" ||
+      e.type === "pcb_silkscreen_path" ||
+      e.type === "pcb_silkscreen_text",
+  )
 
-  // TODO compute pcb center based on all elements and transform elements such
-  // that the center is (0,0)
+  if (pcbElements.length > 0) {
+    const bounds = findBoundsAndCenter(pcbElements)
+    pcb_component.width = bounds.width
+    pcb_component.height = bounds.height
+  }
 
   // Add 3d component
   const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
