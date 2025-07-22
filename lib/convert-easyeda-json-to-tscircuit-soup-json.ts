@@ -437,6 +437,8 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   if (shouldRecenter) {
+    // exclude the pcb_component because it's center is currently incorrect,
+    // we set it to (0,0)
     const elementsForBounds = circuitElements.filter(
       (e) => e.type !== "pcb_component",
     )
