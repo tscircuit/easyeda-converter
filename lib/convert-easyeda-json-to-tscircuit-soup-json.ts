@@ -437,27 +437,32 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   if (shouldRecenter) {
-    const bounds = findBoundsAndCenter(
-      // exclude the pcb_component because it's center is currently incorrect,
-      // we set it to (0,0)
-      circuitElements.filter((e) => e.type !== "pcb_component"),
-    )
-    const matrix = compose(
-      translate(-bounds.center.x, bounds.center.y),
-      scale(1, -1),
-    )
-    transformPCBElements(circuitElements, matrix)
-    for (const e of circuitElements) {
-      if (e.type === "pcb_cutout") {
-        if (e.shape === "polygon") {
-          e.points = e.points.map((p) => applyToPoint(matrix, p))
-        } else {
-          e.center = applyToPoint(matrix, e.center)
+    const elementsForBounds = circuitElements.filter((e) => e.type !== "pcb_component")
+    
+    const bounds = findBoundsAndCenter(elementsForBounds)
+      
+      if (Number.isFinite(bounds.center.x) && Number.isFinite(bounds.center.y)) {
+        const matrix = compose(
+          translate(-bounds.center.x, bounds.center.y),
+          scale(1, -1),
+        )
+        // Filter out polygon SMT pads from general transformation since they don't have x,y coordinates
+        const elementsForTransform = circuitElements.filter(
+          e => !(e.type === "pcb_smtpad" && e.shape === "polygon")
+        )
+        transformPCBElements(elementsForTransform, matrix)
+        for (const e of circuitElements) {
+          if (e.type === "pcb_cutout") {
+            if (e.shape === "polygon") {
+              e.points = e.points.map((p) => applyToPoint(matrix, p))
+            } else {
+              e.center = applyToPoint(matrix, e.center)
+            }
+          } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
+            e.points = e.points.map((p) => applyToPoint(matrix, p))
+          }
         }
-      } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
-        e.points = e.points.map((p) => applyToPoint(matrix, p))
       }
-    }
     pcb_component.center = { x: 0, y: 0 }
   }
 
