@@ -43,18 +43,18 @@ it("should convert C3178291 into typescript file", async () => {
     }}
           manufacturerPartNumber="VL53L4CDV0DH_1"
           footprint={<footprint>
-            <smtpad portHints={["pin10"]} pcbX="0.799972999999909mm" pcbY="0.7999730000000227mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin11"]} pcbX="1.6000730000000658mm" pcbY="0.7999730000000227mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin12"]} pcbX="1.6000730000000658mm" pcbY="-0.00012700000002041634mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin9"]} pcbX="-0.00012700000013410317mm" pcbY="0.7999730000000227mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin8"]} pcbX="-0.7999730000000227mm" pcbY="0.7999730000000227mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin6"]} pcbX="-1.6000730000000658mm" pcbY="-0.00012700000002041634mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin7"]} pcbX="-1.6000730000000658mm" pcbY="0.7999730000000227mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin5"]} pcbX="-1.6000730000000658mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin4"]} pcbX="-0.7999730000000227mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin1"]} points={[{x: "1.282471399999963mm", y: "-0.5460238000000572mm"}, {x: "1.9174713999998403mm", y: "-0.5460238000000572mm"}, {x: "1.9174713999998403mm", y: "-0.8000237999999626mm"}, {x: "1.7904713999998876mm", y: "-0.8000237999999626mm"}, {x: "1.7904713999998876mm", y: "-1.0540237999999817mm"}, {x: "1.282471399999963mm", y: "-1.0540237999999817mm"}, {x: "1.282471399999963mm", y: "-0.5460238000000572mm"}]} shape="polygon" />
-    <smtpad portHints={["pin2"]} pcbX="0.799972999999909mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin3"]} pcbX="-0.00012700000013410317mm" pcbY="-0.799972999999909mm" width="0.508mm" height="0.508mm" shape="rect" />
+            <smtpad portHints={["pin10"]} pcbX="0.7682738000000882mm" pcbY="0.7999983999999358mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin11"]} pcbX="1.568373800000245mm" pcbY="0.7999983999999358mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin12"]} pcbX="1.568373800000245mm" pcbY="-0.00010160000010728254mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin9"]} pcbX="-0.03182619999995495mm" pcbY="0.7999983999999358mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin8"]} pcbX="-0.8316721999998435mm" pcbY="0.7999983999999358mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin6"]} pcbX="-1.6317721999998867mm" pcbY="-0.00010160000010728254mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin7"]} pcbX="-1.6317721999998867mm" pcbY="0.7999983999999358mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin5"]} pcbX="-1.6317721999998867mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin4"]} pcbX="-0.8316721999998435mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin1"]} points={[{x: "1.2507722000001422mm", y: "-0.5459984000001441mm"}, {x: "1.8857722000000194mm", y: "-0.5459984000001441mm"}, {x: "1.8857722000000194mm", y: "-0.7999984000000495mm"}, {x: "1.7587722000000667mm", y: "-0.7999984000000495mm"}, {x: "1.7587722000000667mm", y: "-1.0539984000000686mm"}, {x: "1.2507722000001422mm", y: "-1.0539984000000686mm"}, {x: "1.2507722000001422mm", y: "-0.5459984000001441mm"}]} shape="polygon" />
+    <smtpad portHints={["pin2"]} pcbX="0.7682738000000882mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
+    <smtpad portHints={["pin3"]} pcbX="-0.03182619999995495mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=f3ceff5efad3481c85905821fe6f8192&pn=C3178291",
