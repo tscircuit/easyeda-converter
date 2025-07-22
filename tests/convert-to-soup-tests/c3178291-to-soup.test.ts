@@ -9,9 +9,11 @@ it("should convert c3178291 with polygon pads", async () => {
   const circuitJson = convertEasyEdaJsonToCircuitJson(parsedJson)
 
   // Test polygon pad coordinates are valid (not NaN)
-  const polygonPads = circuitJson.filter((e) => e.type === "pcb_smtpad" && e.shape === "polygon")
+  const polygonPads = circuitJson.filter(
+    (e) => e.type === "pcb_smtpad" && e.shape === "polygon",
+  )
   expect(polygonPads.length).toBeGreaterThan(0)
-  
+
   for (const pad of polygonPads) {
     expect(pad.points).toBeDefined()
     expect(pad.points.length).toBeGreaterThan(0)
@@ -21,5 +23,7 @@ it("should convert c3178291 with polygon pads", async () => {
     }
   }
 
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(import.meta.path)
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+  )
 })
