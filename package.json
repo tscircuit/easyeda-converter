@@ -1,7 +1,7 @@
 {
   "name": "easyeda",
   "type": "module",
-  "version": "0.0.206",
+  "version": "0.0.207",
   "files": [
     "dist"
   ],
@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@tscircuit/circuit-json-util": "^0.0.52",
+    "@tscircuit/circuit-json-util": "^0.0.53",
     "@tscircuit/mm": "^0.0.8",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
