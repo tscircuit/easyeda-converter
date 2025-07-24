@@ -43,7 +43,7 @@
     "@tscircuit/mm": "^0.0.8",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
-    "circuit-to-svg": "^0.0.164",
+    "circuit-to-svg": "^0.0.173",
     "transformation-matrix": "^2.16.1",
     "tsup": "^8.5.0"
   },

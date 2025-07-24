@@ -292,6 +292,8 @@ export const convertEasyEdaJsonToCircuitJson = (
       } else if (pad.shape === "OVAL") {
         // OVAL is often a rect, especially when holeRadius is 0
         soupShape = "rect"
+      } else if (pad.shape === "POLYGON") {
+        soupShape = "polygon"
       }
       if (!soupShape) {
         throw new Error(`unknown pad.shape: "${pad.shape}"`)
@@ -308,11 +310,20 @@ export const convertEasyEdaJsonToCircuitJson = (
         type: "pcb_smtpad",
         pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
         shape: soupShape,
-        x: mil2mm(pad.center.x),
-        y: mil2mm(pad.center.y),
+        ...(soupShape !== "polygon" && {
+          x: mil2mm(pad.center.x),
+          y: mil2mm(pad.center.y),
+        }),
         ...(soupShape === "rect"
           ? rectSize
-          : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
+          : soupShape === "polygon" && pad.points
+            ? {
+                points: pad.points.map((p) => ({
+                  x: milx10(p.x),
+                  y: milx10(p.y),
+                })),
+              }
+            : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
         pcb_component_id: "pcb_component_1",
@@ -378,10 +389,22 @@ export const convertEasyEdaJsonToCircuitJson = (
     }
   })
 
-  // TODO Change pcb_component width & height
+  // Calculate pcb_component bounds from all PCB elements
+  const pcbElements = circuitElements.filter(
+    (e) =>
+      e.type === "pcb_smtpad" ||
+      e.type === "pcb_plated_hole" ||
+      e.type === "pcb_hole" ||
+      e.type === "pcb_via" ||
+      e.type === "pcb_silkscreen_path" ||
+      e.type === "pcb_silkscreen_text",
+  )
 
-  // TODO compute pcb center based on all elements and transform elements such
-  // that the center is (0,0)
+  if (pcbElements.length > 0) {
+    const bounds = findBoundsAndCenter(pcbElements)
+    pcb_component.width = bounds.width
+    pcb_component.height = bounds.height
+  }
 
   // Add 3d component
   const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
@@ -414,22 +437,33 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   if (shouldRecenter) {
-    const bounds = findBoundsAndCenter(
-      // exclude the pcb_component because it's center is currently incorrect,
-      // we set it to (0,0)
-      circuitElements.filter((e) => e.type !== "pcb_component"),
+    // exclude the pcb_component because it's center is currently incorrect,
+    // we set it to (0,0)
+    const elementsForBounds = circuitElements.filter(
+      (e) => e.type !== "pcb_component",
     )
-    const matrix = compose(
-      translate(-bounds.center.x, bounds.center.y),
-      scale(1, -1),
-    )
-    transformPCBElements(circuitElements, matrix)
-    for (const e of circuitElements) {
-      if (e.type === "pcb_cutout") {
-        if (e.shape === "polygon") {
+
+    const bounds = findBoundsAndCenter(elementsForBounds)
+
+    if (Number.isFinite(bounds.center.x) && Number.isFinite(bounds.center.y)) {
+      const matrix = compose(
+        translate(-bounds.center.x, bounds.center.y),
+        scale(1, -1),
+      )
+      // Filter out polygon SMT pads from general transformation since they don't have x,y coordinates
+      const elementsForTransform = circuitElements.filter(
+        (e) => !(e.type === "pcb_smtpad" && e.shape === "polygon"),
+      )
+      transformPCBElements(elementsForTransform, matrix)
+      for (const e of circuitElements) {
+        if (e.type === "pcb_cutout") {
+          if (e.shape === "polygon") {
+            e.points = e.points.map((p) => applyToPoint(matrix, p))
+          } else {
+            e.center = applyToPoint(matrix, e.center)
+          }
+        } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
           e.points = e.points.map((p) => applyToPoint(matrix, p))
-        } else {
-          e.center = applyToPoint(matrix, e.center)
         }
       }
     }
