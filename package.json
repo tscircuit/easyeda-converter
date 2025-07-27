@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@tscircuit/circuit-json-util": "^0.0.57",
+    "@tscircuit/circuit-json-util": "^0.0.59",
     "@tscircuit/mm": "^0.0.8",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
