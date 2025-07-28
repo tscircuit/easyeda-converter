@@ -4,9 +4,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { convertCircuitJsonToSimple3dSvg } from "circuit-json-to-simple-3d"
 import { runTscircuitCode } from "tscircuit"
-import sharp from "sharp"
 
 it("should convert C9900017879 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -216,21 +214,5 @@ it("should convert C9900017879 into typescript file", async () => {
     }
   `)
 
-  const svg3d = await convertCircuitJsonToSimple3dSvg(
-    circuitJson.concat({
-      type: "pcb_board",
-      width: 50,
-      height: 50,
-      center: { x: 0, y: 0 },
-      pcb_board_id: "board1",
-      thickness: 1.6,
-      num_layers: 2,
-      material: "fr4",
-    }),
-  )
-  // Render svg to png using sharp
-  const png3d = await sharp(Buffer.from(svg3d)).toFormat("png").toBuffer()
-  expect(png3d).toMatchPngSnapshot(
-    `${import.meta.path.replace(".test.ts", "")}`,
-  )
-})
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+}, 20000)
