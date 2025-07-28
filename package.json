@@ -41,6 +41,7 @@
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/circuit-json-util": "^0.0.60",
     "@tscircuit/mm": "^0.0.8",
+    "@tscircuit/simple-3d-svg": "^0.0.38",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
     "circuit-json-to-simple-3d": "^0.0.6",
@@ -50,7 +51,7 @@
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
-    "tscircuit": "*",
-    "zod": "*"
+    "tscircuit": "^0.0.566",
+    "zod": "3"
   }
 }
