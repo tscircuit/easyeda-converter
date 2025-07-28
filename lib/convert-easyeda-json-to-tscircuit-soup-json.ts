@@ -430,7 +430,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         source_component_id: "source_component_1",
         pcb_component_id: "pcb_component_1",
         position: { x: 0, y: 0, z: 0 },
-        rotation: { x: rx, y: ry, z: rz },
+        rotation: { x: rx, y: ry, z: (rz + 180) % 360 },
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput),
     )

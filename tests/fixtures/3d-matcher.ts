@@ -12,8 +12,8 @@ async function toMatch3dSnapshot(
   const svg = await convertCircuitJsonToSimple3dSvg(
     circuitJson.concat({
       type: "pcb_board",
-      width: 50,
-      height: 50,
+      width: 25,
+      height: 25,
       center: { x: 0, y: 0 },
       pcb_board_id: "board1",
       thickness: 1.6,
