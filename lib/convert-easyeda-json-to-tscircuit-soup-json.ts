@@ -275,6 +275,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         const padWidth = mil2mm(pad.width)
         const padHeight = mil2mm(pad.height)
         const holeRadius = mil2mm(pad.holeRadius)
+        const holeDiameter = holeRadius * 2 // Use normal diameter
 
         // Check if the pad is significantly rectangular (not square)
         const aspectRatio =
@@ -283,12 +284,34 @@ export const convertEasyEdaJsonToCircuitJson = (
 
         if (isSignificantlyRectangular) {
           // Handle rectangular plated holes with pill holes
-          // Create a pill-shaped hole that fits within the rectangular pad
-          const holeDiameter = holeRadius * 2
+          // Create a pill-shaped hole that provides good coverage while leaving adequate plating margin
+
+          // Use smaller plating margins to allow larger holes that better fill the pads
+          const platingMargin = 0.15 // Reduced margin for better pad coverage
+
+          const minDimension = Math.min(padWidth, padHeight)
+          const maxDimension = Math.max(padWidth, padHeight)
+
+          // Make holes slimmer in the narrow dimension for more elegant appearance
+          // The smaller dimension should be quite conservative for refined pill shape
+          const smallerHoleDimension = Math.max(
+            holeDiameter, // Use original hole diameter as base
+            minDimension * 0.65, // Use only 65% of the smaller pad dimension for slimmer appearance
+          )
+
+          // For the larger dimension, create an elongated pill that extends well into the pad
+          const largerHoleDimension = Math.max(
+            holeDiameter * 2.5, // Much more elongated than before
+            Math.min(
+              maxDimension * 0.75, // Use 75% of the larger pad dimension
+              smallerHoleDimension * 3.0, // Allow up to 3:1 aspect ratio for more elongated pills
+            ),
+          )
+
           const holeWidth =
-            padWidth > padHeight ? holeDiameter * 1.5 : holeDiameter
+            padWidth > padHeight ? largerHoleDimension : smallerHoleDimension
           const holeHeight =
-            padHeight > padWidth ? holeDiameter * 1.5 : holeDiameter
+            padHeight > padWidth ? largerHoleDimension : smallerHoleDimension
 
           additionalPlatedHoleProps = {
             shape: "rotated_pill_hole_with_rect_pad",
@@ -305,9 +328,9 @@ export const convertEasyEdaJsonToCircuitJson = (
           // For square or nearly square pads, use circular holes
           additionalPlatedHoleProps = {
             shape: "circle",
-            hole_diameter: holeRadius * 2,
+            hole_diameter: holeDiameter,
             outer_diameter: Math.max(padWidth, padHeight),
-            radius: holeRadius,
+            radius: holeDiameter / 2,
           }
         }
       } else {
