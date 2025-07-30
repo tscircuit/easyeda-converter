@@ -274,11 +274,13 @@ export const convertEasyEdaJsonToCircuitJson = (
       } else if (pad.shape === "RECT") {
         // Handle rectangular plated holes with pill holes
         additionalPlatedHoleProps = {
-          shape: "pill_hole_with_rect_pad",
-          hole_shape: "pill",
+          shape: "rotated_pill_hole_with_rect_pad",
+          hole_shape: "rotated_pill",
           pad_shape: "rect",
           hole_width: mil2mm(pad.holeRadius) * 2,
           hole_height: mil2mm(pad.holeRadius) * 2,
+          hole_ccw_rotation: pad.rotation || 0,
+          rect_ccw_rotation: pad.rotation || 0,
           rect_pad_width: mil2mm(pad.width),
           rect_pad_height: mil2mm(pad.height),
         }
