@@ -277,7 +277,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         const holeRadius = mil2mm(pad.holeRadius)
 
         // Check if the pad is significantly rectangular (not square)
-        const aspectRatio = Math.max(padWidth, padHeight) / Math.min(padWidth, padHeight)
+        const aspectRatio =
+          Math.max(padWidth, padHeight) / Math.min(padWidth, padHeight)
         const isSignificantlyRectangular = aspectRatio > 1.5 // Only use pill holes for aspect ratios > 1.5
 
         if (isSignificantlyRectangular) {
