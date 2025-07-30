@@ -273,16 +273,29 @@ export const convertEasyEdaJsonToCircuitJson = (
         }
       } else if (pad.shape === "RECT") {
         // Handle rectangular plated holes with pill holes
+        // Create a pill-shaped hole that fits within the rectangular pad
+        const padWidth = mil2mm(pad.width)
+        const padHeight = mil2mm(pad.height)
+        const holeRadius = mil2mm(pad.holeRadius)
+
+        // For pill holes, make the hole follow the pad orientation
+        // Use a smaller dimension for the minor axis to create pill shape
+        const holeDiameter = holeRadius * 2
+        const holeWidth =
+          padWidth > padHeight ? holeDiameter * 1.5 : holeDiameter
+        const holeHeight =
+          padHeight > padWidth ? holeDiameter * 1.5 : holeDiameter
+
         additionalPlatedHoleProps = {
           shape: "rotated_pill_hole_with_rect_pad",
           hole_shape: "rotated_pill",
           pad_shape: "rect",
-          hole_width: mil2mm(pad.holeRadius) * 2,
-          hole_height: mil2mm(pad.holeRadius) * 2,
+          hole_width: holeWidth,
+          hole_height: holeHeight,
           hole_ccw_rotation: pad.rotation || 0,
           rect_ccw_rotation: pad.rotation || 0,
-          rect_pad_width: mil2mm(pad.width),
-          rect_pad_height: mil2mm(pad.height),
+          rect_pad_width: padWidth,
+          rect_pad_height: padHeight,
         }
       } else {
         additionalPlatedHoleProps = {
