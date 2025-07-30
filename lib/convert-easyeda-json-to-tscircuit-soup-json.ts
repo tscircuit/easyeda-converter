@@ -266,6 +266,25 @@ export const convertEasyEdaJsonToCircuitJson = (
           hole_width: innerWidth,
           hole_height: innerHeight,
         }
+      } else if (pad.shape === "RECT") {
+        // Handle rectangular plated holes with circular holes
+        let rectPadWidth = mil2mm(pad.width)
+        let rectPadHeight = mil2mm(pad.height)
+        
+        // Handle rotation by swapping width/height if rotated 90 or 270 degrees
+        if (pad.rotation === 90 || pad.rotation === 270) {
+          rectPadWidth = mil2mm(pad.height)
+          rectPadHeight = mil2mm(pad.width)
+        }
+
+        additionalPlatedHoleProps = {
+          shape: "circular_hole_with_rect_pad",
+          hole_shape: "circle",
+          pad_shape: "rect",
+          hole_diameter: mil2mm(pad.holeRadius) * 2,
+          rect_pad_width: rectPadWidth,
+          rect_pad_height: rectPadHeight,
+        }
       } else {
         additionalPlatedHoleProps = {
           shape: "circle",

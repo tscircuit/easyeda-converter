@@ -33,6 +33,10 @@ export const generateFootprintTsx = (
       elementStrings.push(
         `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerDiameter="${mmStr(platedHole.outer_diameter)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" shape="circle" />`,
       )
+    } else if (platedHole.shape === "circular_hole_with_rect_pad") {
+      elementStrings.push(
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" rectPadWidth="${mmStr(platedHole.rect_pad_width)}" rectPadHeight="${mmStr(platedHole.rect_pad_height)}" shape="circular_hole_with_rect_pad" />`,
+      )
     }
   }
 
