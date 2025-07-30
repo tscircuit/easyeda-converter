@@ -210,9 +210,14 @@ export const convertEasyEdaJsonToCircuitJson = (
 
     if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
       // Add pcb_plated_hole
+      const platedHoleId =
+        pad.shape === "RECT" && pad.rotation !== undefined
+          ? `pcb_plated_hole_${index + 1}_rot${pad.rotation}`
+          : `pcb_plated_hole_${index + 1}`
+
       const commonPlatedHoleProps = {
         type: "pcb_plated_hole",
-        pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+        pcb_plated_hole_id: platedHoleId,
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
         layers: ["top"],
@@ -267,23 +272,15 @@ export const convertEasyEdaJsonToCircuitJson = (
           hole_height: innerHeight,
         }
       } else if (pad.shape === "RECT") {
-        // Handle rectangular plated holes with circular holes
-        let rectPadWidth = mil2mm(pad.width)
-        let rectPadHeight = mil2mm(pad.height)
-        
-        // Handle rotation by swapping width/height if rotated 90 or 270 degrees
-        if (pad.rotation === 90 || pad.rotation === 270) {
-          rectPadWidth = mil2mm(pad.height)
-          rectPadHeight = mil2mm(pad.width)
-        }
-
+        // Handle rectangular plated holes with pill holes
         additionalPlatedHoleProps = {
-          shape: "circular_hole_with_rect_pad",
-          hole_shape: "circle",
+          shape: "pill_hole_with_rect_pad",
+          hole_shape: "pill",
           pad_shape: "rect",
-          hole_diameter: mil2mm(pad.holeRadius) * 2,
-          rect_pad_width: rectPadWidth,
-          rect_pad_height: rectPadHeight,
+          hole_width: mil2mm(pad.holeRadius) * 2,
+          hole_height: mil2mm(pad.holeRadius) * 2,
+          rect_pad_width: mil2mm(pad.width),
+          rect_pad_height: mil2mm(pad.height),
         }
       } else {
         additionalPlatedHoleProps = {

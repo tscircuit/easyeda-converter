@@ -33,9 +33,13 @@ export const generateFootprintTsx = (
       elementStrings.push(
         `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerDiameter="${mmStr(platedHole.outer_diameter)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" shape="circle" />`,
       )
-    } else if (platedHole.shape === "circular_hole_with_rect_pad") {
+    } else if (platedHole.shape === "pill_hole_with_rect_pad") {
+      // Extract rotation from the plated hole ID if it exists
+      const rotationMatch = platedHole.pcb_plated_hole_id?.match(/_rot(\d+)$/)
+      const rotation = rotationMatch ? parseInt(rotationMatch[1]) : 0
+
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" rectPadWidth="${mmStr(platedHole.rect_pad_width)}" rectPadHeight="${mmStr(platedHole.rect_pad_height)}" shape="circular_hole_with_rect_pad" />`,
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" rectPad={{ width: "${mmStr(platedHole.rect_pad_width)}", height: "${mmStr(platedHole.rect_pad_height)}" }} pcbRotation="${rotation}deg" shape="pill" />`,
       )
     }
   }
