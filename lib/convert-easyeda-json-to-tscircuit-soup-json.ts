@@ -283,35 +283,13 @@ export const convertEasyEdaJsonToCircuitJson = (
         const isSignificantlyRectangular = aspectRatio > 1.5 // Only use pill holes for aspect ratios > 1.5
 
         if (isSignificantlyRectangular) {
-          // Handle rectangular plated holes with pill holes
-          // Create a pill-shaped hole that provides good coverage while leaving adequate plating margin
+          // Simple approach: create slim pill holes with consistent proportions
+          // Width = original hole diameter, Height = 2.6x width for good pill shape
+          const baseWidth = holeDiameter
+          const pillHeight = baseWidth * 2.6 // 2.6:1 aspect ratio for elegant pills
 
-          // Use smaller plating margins to allow larger holes that better fill the pads
-          const platingMargin = 0.15 // Reduced margin for better pad coverage
-
-          const minDimension = Math.min(padWidth, padHeight)
-          const maxDimension = Math.max(padWidth, padHeight)
-
-          // Make holes slimmer in the narrow dimension for more elegant appearance
-          // The smaller dimension should be quite conservative for refined pill shape
-          const smallerHoleDimension = Math.max(
-            holeDiameter, // Use original hole diameter as base
-            minDimension * 0.65, // Use only 65% of the smaller pad dimension for slimmer appearance
-          )
-
-          // For the larger dimension, create an elongated pill that extends well into the pad
-          const largerHoleDimension = Math.max(
-            holeDiameter * 2.5, // Much more elongated than before
-            Math.min(
-              maxDimension * 0.75, // Use 75% of the larger pad dimension
-              smallerHoleDimension * 3.0, // Allow up to 3:1 aspect ratio for more elongated pills
-            ),
-          )
-
-          const holeWidth =
-            padWidth > padHeight ? largerHoleDimension : smallerHoleDimension
-          const holeHeight =
-            padHeight > padWidth ? largerHoleDimension : smallerHoleDimension
+          const holeWidth = padWidth > padHeight ? pillHeight : baseWidth
+          const holeHeight = padHeight > padWidth ? pillHeight : baseWidth
 
           additionalPlatedHoleProps = {
             shape: "rotated_pill_hole_with_rect_pad",
