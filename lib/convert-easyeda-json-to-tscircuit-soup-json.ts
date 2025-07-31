@@ -210,9 +210,14 @@ export const convertEasyEdaJsonToCircuitJson = (
 
     if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
       // Add pcb_plated_hole
+      const platedHoleId =
+        pad.shape === "RECT" && pad.rotation !== undefined
+          ? `pcb_plated_hole_${index + 1}_rot${pad.rotation}`
+          : `pcb_plated_hole_${index + 1}`
+
       const commonPlatedHoleProps = {
         type: "pcb_plated_hole",
-        pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+        pcb_plated_hole_id: platedHoleId,
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
         layers: ["top"],
@@ -265,6 +270,46 @@ export const convertEasyEdaJsonToCircuitJson = (
           outer_height: mil2mm(pad.height),
           hole_width: innerWidth,
           hole_height: innerHeight,
+        }
+      } else if (pad.shape === "RECT") {
+        const padWidth = mil2mm(pad.width)
+        const padHeight = mil2mm(pad.height)
+        const holeRadius = mil2mm(pad.holeRadius)
+        const holeDiameter = holeRadius * 2 // Use normal diameter
+
+        // Check if the pad is significantly rectangular (not square)
+        const aspectRatio =
+          Math.max(padWidth, padHeight) / Math.min(padWidth, padHeight)
+        const isSignificantlyRectangular = aspectRatio > 1.5 // Only use pill holes for aspect ratios > 1.5
+
+        if (isSignificantlyRectangular) {
+          // Simple approach: create slim pill holes with consistent proportions
+          // Width = original hole diameter, Height = 2.6x width for good pill shape
+          const baseWidth = holeDiameter
+          const pillHeight = baseWidth * 2.6 // 2.6:1 aspect ratio for elegant pills
+
+          const holeWidth = padWidth > padHeight ? pillHeight : baseWidth
+          const holeHeight = padHeight > padWidth ? pillHeight : baseWidth
+
+          additionalPlatedHoleProps = {
+            shape: "rotated_pill_hole_with_rect_pad",
+            hole_shape: "rotated_pill",
+            pad_shape: "rect",
+            hole_width: holeWidth,
+            hole_height: holeHeight,
+            hole_ccw_rotation: pad.rotation || 0,
+            rect_ccw_rotation: pad.rotation || 0,
+            rect_pad_width: padWidth,
+            rect_pad_height: padHeight,
+          }
+        } else {
+          // For square or nearly square pads, use circular holes
+          additionalPlatedHoleProps = {
+            shape: "circle",
+            hole_diameter: holeDiameter,
+            outer_diameter: Math.max(padWidth, padHeight),
+            radius: holeDiameter / 2,
+          }
         }
       } else {
         additionalPlatedHoleProps = {

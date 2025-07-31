@@ -45,13 +45,13 @@
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.6",
     "circuit-json-to-simple-3d": "^0.0.6",
-    "circuit-to-svg": "^0.0.173",
+    "circuit-to-svg": "^0.0.174",
     "transformation-matrix": "^2.16.1",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
-    "tscircuit": "^0.0.566",
+    "tscircuit": "^0.0.571",
     "zod": "3"
   }
 }
