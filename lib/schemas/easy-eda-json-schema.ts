@@ -83,7 +83,7 @@ export const DataStrSchema = z.object({
   canvas: z.string(),
   shape: z.array(SingleLetterShapeSchema),
   BBox: BBoxSchema,
-  colors: z.array(z.unknown()),
+  colors: z.array(z.unknown()).or(z.record(z.unknown())),
 })
 
 export const PackageDetailDataStrSchema = z.object({
