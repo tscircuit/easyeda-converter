@@ -3,7 +3,7 @@ import chipRawEasy from "../assets/C2913206.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 import type { PcbSmtPadRect } from "circuit-json"
 
 it("should convert C2913206 into typescript file", async () => {

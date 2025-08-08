@@ -4,19 +4,16 @@ import type {
   ArcSchema,
   SVGNodeSchema,
   HoleSchema,
+  ViaSchema,
   SolidRegionSchema,
 } from "./schemas/package-detail-shape-schema"
 import type { z } from "zod"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
-  AnySoupElement,
-  PCBSMTPad,
-  PcbSilkscreenPath,
-  PCBPlatedHole,
-  PcbPlatedHoleInput,
+  AnyCircuitElement,
+  PcbSmtPad,
+  PcbViaInput,
   PcbComponentInput,
-  PcbCutoutPolygonInput,
-  PcbCutoutCircleInput,
 } from "circuit-json"
 import {
   any_source_component,
@@ -24,12 +21,15 @@ import {
   pcb_silkscreen_path,
   pcb_plated_hole,
   pcb_hole,
+  pcb_via,
 } from "circuit-json"
 import * as Soup from "circuit-json"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
-import { findBoundsAndCenter, transformPCBElements } from "@tscircuit/soup-util"
+import {
+  findBoundsAndCenter,
+  transformPCBElements,
+} from "@tscircuit/circuit-json-util"
 import { compose, scale, translate, applyToPoint } from "transformation-matrix"
-import { computeCenterOffset } from "./compute-center-offset"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
@@ -112,6 +112,18 @@ const handleHoleCutout = (hole: z.infer<typeof HoleSchema>, index: number) => {
   } as Soup.PcbCutoutCircleInput)
 }
 
+const handleVia = (via: z.infer<typeof ViaSchema>, index: number) => {
+  return pcb_via.parse({
+    type: "pcb_via",
+    pcb_via_id: `pcb_via_${index + 1}`,
+    x: milx10(via.center.x),
+    y: milx10(via.center.y),
+    outer_diameter: milx10(via.outerDiameter),
+    hole_diameter: milx10(via.holeDiameter),
+    layers: ["top", "bottom"],
+  } as PcbViaInput)
+}
+
 const handleCutout = (
   solidRegion: z.infer<typeof SolidRegionSchema>,
   index: number,
@@ -135,16 +147,15 @@ interface Options {
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
   { useModelCdn, shouldRecenter = true }: Options = {},
-): AnySoupElement[] => {
-  const soupElements: AnySoupElement[] = []
-  const centerOffset = computeCenterOffset(easyEdaJson)
+): AnyCircuitElement[] => {
+  const circuitElements: AnyCircuitElement[] = []
 
   // Add source component
   const source_component = any_source_component.parse({
     type: "source_component",
     source_component_id: "source_component_1",
     name: "U1",
-    ftype: "simple_bug",
+    ftype: "simple_chip",
   })
 
   const pcb_component = Soup.pcb_component.parse({
@@ -152,7 +163,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     pcb_component_id: "pcb_component_1",
     source_component_id: "source_component_1",
     name: "U1",
-    ftype: "simple_bug",
+    ftype: "simple_chip",
     width: 0, // we update this at the end
     height: 0, // we update this at the end
     rotation: 0,
@@ -160,7 +171,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     layer: "top",
   } as PcbComponentInput)
 
-  soupElements.push(source_component, pcb_component)
+  circuitElements.push(source_component, pcb_component)
 
   const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
@@ -187,7 +198,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     )
 
     // Add source port
-    soupElements.push({
+    circuitElements.push({
       type: "source_port",
       source_port_id: `source_port_${index + 1}`,
       source_component_id: "source_component_1",
@@ -198,9 +209,14 @@ export const convertEasyEdaJsonToCircuitJson = (
 
     if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
       // Add pcb_plated_hole
+      const platedHoleId =
+        pad.shape === "RECT" && pad.rotation !== undefined
+          ? `pcb_plated_hole_${index + 1}_rot${pad.rotation}`
+          : `pcb_plated_hole_${index + 1}`
+
       const commonPlatedHoleProps = {
         type: "pcb_plated_hole",
-        pcb_plated_hole_id: `pcb_plated_hole_${index + 1}`,
+        pcb_plated_hole_id: platedHoleId,
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
         layers: ["top"],
@@ -254,6 +270,46 @@ export const convertEasyEdaJsonToCircuitJson = (
           hole_width: innerWidth,
           hole_height: innerHeight,
         }
+      } else if (pad.shape === "RECT") {
+        const padWidth = mil2mm(pad.width)
+        const padHeight = mil2mm(pad.height)
+        const holeRadius = mil2mm(pad.holeRadius)
+        const holeDiameter = holeRadius * 2 // Use normal diameter
+
+        // Check if the pad is significantly rectangular (not square)
+        const aspectRatio =
+          Math.max(padWidth, padHeight) / Math.min(padWidth, padHeight)
+        const isSignificantlyRectangular = aspectRatio > 1.5 // Only use pill holes for aspect ratios > 1.5
+
+        if (isSignificantlyRectangular) {
+          // Simple approach: create slim pill holes with consistent proportions
+          // Width = original hole diameter, Height = 2.6x width for good pill shape
+          const baseWidth = holeDiameter
+          const pillHeight = baseWidth * 2.6 // 2.6:1 aspect ratio for elegant pills
+
+          const holeWidth = padWidth > padHeight ? pillHeight : baseWidth
+          const holeHeight = padHeight > padWidth ? pillHeight : baseWidth
+
+          additionalPlatedHoleProps = {
+            shape: "rotated_pill_hole_with_rect_pad",
+            hole_shape: "rotated_pill",
+            pad_shape: "rect",
+            hole_width: holeWidth,
+            hole_height: holeHeight,
+            hole_ccw_rotation: pad.rotation || 0,
+            rect_ccw_rotation: pad.rotation || 0,
+            rect_pad_width: padWidth,
+            rect_pad_height: padHeight,
+          }
+        } else {
+          // For square or nearly square pads, use circular holes
+          additionalPlatedHoleProps = {
+            shape: "circle",
+            hole_diameter: holeDiameter,
+            outer_diameter: Math.max(padWidth, padHeight),
+            radius: holeDiameter / 2,
+          }
+        }
       } else {
         additionalPlatedHoleProps = {
           shape: "circle",
@@ -263,7 +319,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         }
       }
 
-      soupElements.push(
+      circuitElements.push(
         pcb_plated_hole.parse({
           ...commonPlatedHoleProps,
           ...additionalPlatedHoleProps,
@@ -271,7 +327,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       )
     } else {
       // Add pcb_smtpad
-      let soupShape: PCBSMTPad["shape"] | undefined
+      let soupShape: PcbSmtPad["shape"] | undefined
       if (pad.shape === "RECT") {
         soupShape = "rect"
       } else if (pad.shape === "ELLIPSE") {
@@ -280,6 +336,8 @@ export const convertEasyEdaJsonToCircuitJson = (
       } else if (pad.shape === "OVAL") {
         // OVAL is often a rect, especially when holeRadius is 0
         soupShape = "rect"
+      } else if (pad.shape === "POLYGON") {
+        soupShape = "polygon"
       }
       if (!soupShape) {
         throw new Error(`unknown pad.shape: "${pad.shape}"`)
@@ -296,17 +354,26 @@ export const convertEasyEdaJsonToCircuitJson = (
         type: "pcb_smtpad",
         pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
         shape: soupShape,
-        x: mil2mm(pad.center.x),
-        y: mil2mm(pad.center.y),
+        ...(soupShape !== "polygon" && {
+          x: mil2mm(pad.center.x),
+          y: mil2mm(pad.center.y),
+        }),
         ...(soupShape === "rect"
           ? rectSize
-          : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
+          : soupShape === "polygon" && pad.points
+            ? {
+                points: pad.points.map((p) => ({
+                  x: milx10(p.x),
+                  y: milx10(p.y),
+                })),
+              }
+            : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
-      } as PCBSMTPad)
-      soupElements.push(parsedPcbSmtpad)
+      } as PcbSmtPad)
+      circuitElements.push(parsedPcbSmtpad)
     }
   })
 
@@ -316,8 +383,15 @@ export const convertEasyEdaJsonToCircuitJson = (
       (shape): shape is z.infer<typeof HoleSchema> => shape.type === "HOLE",
     )
     .forEach((h, index) => {
-      soupElements.push(handleHole(h, index))
-      soupElements.push(handleHoleCutout(h, index))
+      circuitElements.push(handleHole(h, index))
+      circuitElements.push(handleHoleCutout(h, index))
+    })
+
+  // Add vias
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter((shape): shape is z.infer<typeof ViaSchema> => shape.type === "VIA")
+    .forEach((v, index) => {
+      circuitElements.push(handleVia(v, index))
     })
 
   // Add pcb cutouts from solid regions marked as cutout
@@ -327,17 +401,17 @@ export const convertEasyEdaJsonToCircuitJson = (
         shape.type === "SOLIDREGION" && shape.fillStyle === "cutout",
     )
     .forEach((sr, index) => {
-      soupElements.push(handleCutout(sr, index))
+      circuitElements.push(handleCutout(sr, index))
     })
 
   // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
-      soupElements.push(handleSilkscreenPath(shape, index))
+      circuitElements.push(handleSilkscreenPath(shape, index))
     } else if (shape.type === "ARC") {
-      soupElements.push(handleSilkscreenArc(shape, index))
+      circuitElements.push(handleSilkscreenArc(shape, index))
     } else if (shape.type === "TEXT") {
-      soupElements.push(
+      circuitElements.push(
         Soup.pcb_silkscreen_text.parse({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
@@ -359,16 +433,23 @@ export const convertEasyEdaJsonToCircuitJson = (
     }
   })
 
-  // TODO Change pcb_component width & height
-
-  // TODO compute pcb center based on all elements and transform elements such
-  // that the center is (0,0)
-  const hasPlatedHole = pads.some(
-    (pad) =>
-      pad.plated &&
-      pad.holeRadius !== undefined &&
-      mil2mm(pad.holeRadius) !== 0,
+  // Calculate pcb_component bounds from all PCB elements
+  const pcbElements = circuitElements.filter(
+    (e) =>
+      e.type === "pcb_smtpad" ||
+      e.type === "pcb_plated_hole" ||
+      e.type === "pcb_hole" ||
+      e.type === "pcb_via" ||
+      e.type === "pcb_silkscreen_path" ||
+      e.type === "pcb_silkscreen_text",
   )
+
+  if (pcbElements.length > 0) {
+    const bounds = findBoundsAndCenter(pcbElements)
+    pcb_component.width = bounds.width
+    pcb_component.height = bounds.height
+  }
+
   // Add 3d component
   const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
     (a): a is z.infer<typeof SVGNodeSchema> =>
@@ -386,8 +467,16 @@ export const convertEasyEdaJsonToCircuitJson = (
     const [rx, ry, rz] = (svgNode?.svgData.attrs?.c_rotation ?? "0,0,0")
       .split(",")
       .map(Number)
-    const [oxStr, oyStr] = (svgNode?.svgData.attrs?.c_origin ?? "0,0").split(
-      ",",
+    circuitElements.push(
+      Soup.cad_component.parse({
+        type: "cad_component",
+        cad_component_id: "cad_component_1",
+        source_component_id: "source_component_1",
+        pcb_component_id: "pcb_component_1",
+        position: { x: 0, y: 0, z: 0 },
+        rotation: { x: rx, y: ry, z: rz },
+        model_obj_url: objFileUrl,
+      } as Soup.CadComponentInput),
     )
     const ozStr = svgNode?.svgData.attrs?.z ?? "0"
     const origin = {
@@ -410,38 +499,39 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   if (shouldRecenter) {
-    const bounds = findBoundsAndCenter(
-      // exclude the pcb_component because it's center is currently incorrect,
-      // we set it to (0,0)
-      soupElements.filter((e) => e.type !== "pcb_component"),
+    // exclude the pcb_component because it's center is currently incorrect,
+    // we set it to (0,0)
+    const elementsForBounds = circuitElements.filter(
+      (e) => e.type !== "pcb_component",
     )
-    const matrix = compose(
-      translate(-bounds.center.x, bounds.center.y),
-      scale(1, -1),
-    )
-    transformPCBElements(soupElements, matrix)
-    soupElements.forEach((e) => {
-      if (e.type === "cad_component") {
-        if (!hasPlatedHole) {
-          e.position.x = 0
-          e.position.y = 0
-          e.position.z = 0
-        }
-      }
-    })
-    soupElements.forEach((e) => {
-      if (e.type === "pcb_cutout") {
-        if (e.shape === "polygon") {
+    const bounds = findBoundsAndCenter(elementsForBounds)
+
+    if (Number.isFinite(bounds.center.x) && Number.isFinite(bounds.center.y)) {
+      const matrix = compose(
+        translate(-bounds.center.x, bounds.center.y),
+        scale(1, -1),
+      )
+      // Filter out polygon SMT pads from general transformation since they don't have x,y coordinates
+      const elementsForTransform = circuitElements.filter(
+        (e) => !(e.type === "pcb_smtpad" && e.shape === "polygon"),
+      )
+      transformPCBElements(elementsForTransform, matrix)
+      for (const e of circuitElements) {
+        if (e.type === "pcb_cutout") {
+          if (e.shape === "polygon") {
+            e.points = e.points.map((p) => applyToPoint(matrix, p))
+          } else {
+            e.center = applyToPoint(matrix, e.center)
+          }
+        } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
           e.points = e.points.map((p) => applyToPoint(matrix, p))
-        } else {
-          e.center = applyToPoint(matrix, e.center)
         }
       }
-    })
+    }
     pcb_component.center = { x: 0, y: 0 }
   }
 
-  return soupElements
+  return circuitElements
 }
 
 /** @deprecated Use `convertEasyEdaJsonToCircuitJson` instead. */

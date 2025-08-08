@@ -1,6 +1,6 @@
 import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
@@ -8,6 +8,7 @@ export const generateFootprintTsx = (
   const holes = su(circuitJson).pcb_hole.list()
   const platedHoles = su(circuitJson).pcb_plated_hole.list()
   const smtPads = su(circuitJson).pcb_smtpad.list()
+  const vias = su(circuitJson).pcb_via.list()
   const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
   const silkscreenTexts = su(circuitJson).pcb_silkscreen_text.list()
 
@@ -32,6 +33,12 @@ export const generateFootprintTsx = (
       elementStrings.push(
         `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerDiameter="${mmStr(platedHole.outer_diameter)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" shape="circle" />`,
       )
+    } else if (platedHole.shape === "rotated_pill_hole_with_rect_pad") {
+      const rotation = platedHole.hole_ccw_rotation || 0
+
+      elementStrings.push(
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" rectPad={true} pcbRotation="${rotation}deg" shape="pill" />`,
+      )
     }
   }
 
@@ -44,7 +51,20 @@ export const generateFootprintTsx = (
       elementStrings.push(
         `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" shape="rect" />`,
       )
+    } else if (smtPad.shape === "polygon") {
+      const pointsStr = smtPad.points
+        .map((p) => `{x: "${mmStr(p.x)}", y: "${mmStr(p.y)}"}`)
+        .join(", ")
+      elementStrings.push(
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} points={[${pointsStr}]} shape="polygon" />`,
+      )
     }
+  }
+
+  for (const via of vias) {
+    elementStrings.push(
+      `<via pcbX="${mmStr(via.x)}" pcbY="${mmStr(via.y)}" outerDiameter="${mmStr(via.outer_diameter)}" holeDiameter="${mmStr(via.hole_diameter)}" layers={${JSON.stringify(via.layers)}} />`,
+    )
   }
 
   for (const silkscreenPath of silkscreenPaths) {

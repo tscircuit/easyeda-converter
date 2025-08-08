@@ -4,19 +4,20 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { runTscircuitCode } from "tscircuit"
 
 it("should convert C9900017879 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-  const result = await convertBetterEasyToTsx({
+  const tsxResult = await convertBetterEasyToTsx({
     betterEasy,
   })
 
-  expect(result).not.toContain("milmm")
-  expect(result).not.toContain("NaNmm")
+  expect(tsxResult).not.toContain("milmm")
+  expect(tsxResult).not.toContain("NaNmm")
 
   // Add more specific assertions here based on the component
 
-  expect(result).toMatchInlineSnapshot(`
+  expect(tsxResult).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
@@ -46,7 +47,7 @@ it("should convert C9900017879 into typescript file", async () => {
       pin24: ["A5"],
       pin25: ["A6"],
       pin26: ["A7"],
-      pin27: ["pin27"],
+      pin27: ["V5"],
       pin28: ["RESET2"],
       pin29: ["GND1"],
       pin30: ["VIN"]
@@ -182,9 +183,36 @@ it("should convert C9900017879 into typescript file", async () => {
       )
     }"
   `)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  // const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const circuitJson = await runTscircuitCode(tsxResult)
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
-})
+  expect(
+    circuitJson.find((a) => a.type === "cad_component"),
+  ).toMatchInlineSnapshot(`
+    {
+      "cad_component_id": "cad_component_0",
+      "footprinter_string": undefined,
+      "model_jscad": undefined,
+      "model_obj_url": "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=4e90b6d8552a4e058d9ebe9d82e11f3a&pn=C9900017879&cachebust_origin=",
+      "model_stl_url": undefined,
+      "pcb_component_id": "pcb_component_0",
+      "position": {
+        "x": 0,
+        "y": 0.000000000000010658141036401503,
+        "z": 0,
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 270,
+      },
+      "source_component_id": "source_component_0",
+      "type": "cad_component",
+    }
+  `)
+
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+}, 20000)

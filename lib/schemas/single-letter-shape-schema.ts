@@ -1,5 +1,4 @@
 import { z } from "zod"
-import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
 
 /**
@@ -157,7 +156,7 @@ const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
 
   // Handle empty or invalid line width
   const parsedLineWidth = Number(lineWidth)
-  const finalLineWidth = isNaN(parsedLineWidth) ? 1 : parsedLineWidth
+  const finalLineWidth = Number.isNaN(parsedLineWidth) ? 1 : parsedLineWidth
 
   return {
     type: "ARC",
@@ -195,8 +194,11 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const parts = pinString.split("~")
   const [, visibility, , pinNumber, x, y, rotation, id] = parts
 
-  const nameMatch = pinString.match(/~(\w+)~(start|end)~/)
-  const label = nameMatch ? nameMatch[1] : ""
+  const nameMatch = pinString.match(/~([\w+-]+)~(start|end)~/)
+  let label = nameMatch ? nameMatch[1] : ""
+  if (label.endsWith("+")) label = label.slice(0, -1) + "_POS"
+  if (label.endsWith("-")) label = label.slice(0, -1) + "_NEG"
+  if (/^\+\d+(?:\.\d+)?V$/i.test(label)) label = `V${label.slice(1, -1)}`
 
   const colorMatch = pinString.match(/#[0-9A-F]{6}/)
   const labelColor = colorMatch ? colorMatch[0] : ""
@@ -207,14 +209,14 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const arrowMatch = pinString.match(/\^\^0~(.+)$/)
   const arrow = arrowMatch ? arrowMatch[1] : ""
 
-  const r = parseFloat(rotation)
+  const r = Number.parseFloat(rotation)
   return {
     type: "PIN",
     visibility: visibility as "show" | "hide",
     id,
-    pinNumber: isNaN(Number(pinNumber)) ? pinNumber : Number(pinNumber),
-    x: parseFloat(x),
-    y: parseFloat(y),
+    pinNumber: Number.isNaN(Number(pinNumber)) ? pinNumber : Number(pinNumber),
+    x: Number.parseFloat(x),
+    y: Number.parseFloat(y),
     rotation: Number.isNaN(r) ? 0 : r,
     label,
     labelColor,

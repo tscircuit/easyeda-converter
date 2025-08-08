@@ -16,7 +16,8 @@ export const PointSchema = z
     if (Array.isArray(p)) {
       const [x, y] = p
       return { x, y }
-    } else if (typeof p === "object") {
+    }
+    if (typeof p === "object") {
       return p
     }
     throw new Error(`Invalid point: ${p}`)
@@ -42,7 +43,7 @@ export const TrackSchema = BaseShapeSchema.extend({
 
 export const PadSchema = BaseShapeSchema.extend({
   type: z.literal("PAD"),
-  shape: z.enum(["RECT", "ELLIPSE", "OVAL"]),
+  shape: z.enum(["RECT", "ELLIPSE", "OVAL", "POLYGON"]),
   center: z.object({
     x: tenthmil,
     y: tenthmil,
@@ -104,6 +105,13 @@ export const HoleSchema = BaseShapeSchema.extend({
   radius: z.number(),
 })
 
+export const ViaSchema = BaseShapeSchema.extend({
+  type: z.literal("VIA"),
+  center: PointSchema,
+  outerDiameter: z.number(),
+  holeDiameter: z.number(),
+})
+
 export const RectSchema = BaseShapeSchema.extend({
   type: z.literal("RECT"),
   x: tenthmil,
@@ -138,6 +146,7 @@ export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
   SolidRegionSchema,
   SVGNodeSchema,
   HoleSchema,
+  ViaSchema,
   RectSchema,
   TextSchema,
 ])
@@ -164,9 +173,6 @@ export const ShapeItemSchema = z
     data: z.string(),
   })
   .transform((shape) => {
-    const [firstParam, ...restParams] = shape.data.split("~")
-    const lastParam = restParams.pop()
-
     switch (shape.type) {
       case "TRACK": {
         const [width, layer, _, pointsStr, id, _n] = shape.data.split("~")
@@ -185,14 +191,18 @@ export const ShapeItemSchema = z
           number,
           holeRadius,
           ...rest
-        ] = params.map((p) => (isNaN(Number(p)) ? p : Number(p)))
+        ] = params.map((p) => (Number.isNaN(Number(p)) ? p : Number(p)))
         const center = { x: centerX, y: centerY }
-        let points, rotation
-        if (padShape === "RECT") {
+        let points: number[][] | undefined
+
+        if (padShape === "RECT" || padShape === "POLYGON") {
           points = parsePoints(rest[0] as any)
-          const r = Number(rest[1])
-          rotation = Number.isNaN(r) ? undefined : r
         }
+
+        // Extract rotation for all pad types from position 11 (rest[1])
+        const r = Number(rest[1])
+        const rotation = Number.isNaN(r) ? undefined : r
+
         const padInputParams = {
           type: "PAD",
           shape: padShape,
@@ -272,6 +282,17 @@ export const ShapeItemSchema = z
           id,
         })
       }
+      case "VIA": {
+        const [x, y, outerDiameter, , holeDiameter, id] = shape.data.split("~")
+        const center: [number, number] = [Number(x), Number(y)]
+        return ViaSchema.parse({
+          type: "VIA",
+          center,
+          outerDiameter: Number(outerDiameter),
+          holeDiameter: Number(holeDiameter),
+          id,
+        })
+      }
       case "SOLIDREGION": {
         const [layermask, , pathData, fillStyle, id] = shape.data.split("~")
         const points =
@@ -329,7 +350,6 @@ export const ShapeItemSchema = z
 
       default:
         throw new Error(`Unknown shape type: ${shape.type}`)
-        return BaseShapeSchema.parse({ type: shape.type })
     }
   })
   .pipe(PackageDetailShapeSchema)

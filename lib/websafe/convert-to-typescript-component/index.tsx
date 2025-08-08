@@ -2,7 +2,7 @@ import {
   EasyEdaJsonSchema,
   type BetterEasyEdaJson,
 } from "lib/schemas/easy-eda-json-schema"
-import { su } from "@tscircuit/soup-util"
+import { su } from "@tscircuit/circuit-json-util"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
@@ -30,8 +30,8 @@ export const convertBetterEasyToTsx = async ({
 
   const pinLabels: Record<string, string[]> = {}
   const sortedPorts = sourcePorts.sort((a, b) => {
-    const aNum = parseInt(a.name.replace("pin", ""))
-    const bNum = parseInt(b.name.replace("pin", ""))
+    const aNum = Number.parseInt(a.name.replace("pin", ""))
+    const bNum = Number.parseInt(b.name.replace("pin", ""))
     return aNum - bNum
   })
   for (const sourcePort of sortedPorts) {
