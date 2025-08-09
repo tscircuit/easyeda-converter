@@ -177,7 +177,6 @@ export const convertEasyEdaJsonToCircuitJson = (
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
-
   // Prepare pin labels for normalization
   const pinLabelSets = pads.map((pad) => {
     const labels = []
@@ -479,6 +478,24 @@ export const convertEasyEdaJsonToCircuitJson = (
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput),
     )
+    const ozStr = svgNode?.svgData.attrs?.z ?? "0"
+    const origin = {
+      x: milx10(Number(oxStr)),
+      y: milx10(Number(oyStr)),
+      z: -milx10(Number(ozStr)),
+    }
+
+    const cad_component = Soup.cad_component.parse({
+      type: "cad_component",
+      cad_component_id: "cad_component_1",
+      source_component_id: "source_component_1",
+      pcb_component_id: "pcb_component_1",
+      position: hasPlatedHole ? origin : { x: 0, y: 0, z: 0 },
+      rotation: { x: rx, y: ry, z: rz },
+      model_obj_url: objFileUrl,
+    } as Soup.CadComponentInput)
+
+    soupElements.push(cad_component)
   }
 
   if (shouldRecenter) {
@@ -487,7 +504,6 @@ export const convertEasyEdaJsonToCircuitJson = (
     const elementsForBounds = circuitElements.filter(
       (e) => e.type !== "pcb_component",
     )
-
     const bounds = findBoundsAndCenter(elementsForBounds)
 
     if (Number.isFinite(bounds.center.x) && Number.isFinite(bounds.center.y)) {
