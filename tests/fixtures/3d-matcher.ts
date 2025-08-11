@@ -1,5 +1,6 @@
 import { expect, type MatcherResult } from "bun:test"
 import { convertCircuitJsonToSimple3dSvg } from "circuit-json-to-simple-3d"
+import { DEFAULT_PCB_THICKNESS_MM } from "lib/constants"
 import sharp from "sharp"
 
 async function toMatch3dSnapshot(
@@ -16,7 +17,7 @@ async function toMatch3dSnapshot(
       height: 50,
       center: { x: 0, y: 0 },
       pcb_board_id: "board1",
-      thickness: 1.6,
+      thickness: DEFAULT_PCB_THICKNESS_MM,
       num_layers: 2,
       material: "fr4",
     }),
