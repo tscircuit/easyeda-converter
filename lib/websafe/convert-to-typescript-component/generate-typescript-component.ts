@@ -58,7 +58,7 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
           ? `cadModel={{
         objUrl: "${objUrl}",
         rotationOffset: { x: 0, y: 0, z: ${cadComponent?.rotation?.z ?? 0} },
-        positionOffset: { x: 0, y: 0, z: 0 },
+        positionOffset: { x: ${cadComponent?.position.x ?? 0}, y: ${cadComponent?.position.y ?? 0}, z: ${cadComponent?.position.z ?? 0} },
       }}`
           : ""
       }
