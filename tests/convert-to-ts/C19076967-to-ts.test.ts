@@ -72,7 +72,7 @@ it("should convert C19076967 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(result)
 
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+  expect(convertCircuitJsonToPcbSvg(circuitJson as any)).toMatchSvgSnapshot(
     import.meta.path,
   )
 })

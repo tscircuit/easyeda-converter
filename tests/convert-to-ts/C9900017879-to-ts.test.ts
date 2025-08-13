@@ -186,7 +186,7 @@ it("should convert C9900017879 into typescript file", async () => {
   // const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
   const circuitJson = await runTscircuitCode(tsxResult)
 
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+  expect(convertCircuitJsonToPcbSvg(circuitJson as any)).toMatchSvgSnapshot(
     import.meta.path,
   )
   expect(
