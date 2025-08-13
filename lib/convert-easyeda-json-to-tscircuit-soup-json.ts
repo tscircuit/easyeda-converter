@@ -33,6 +33,7 @@ import { compose, scale, translate, applyToPoint } from "transformation-matrix"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
+import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -48,6 +49,55 @@ const milx10 = (mil10: number | string) => {
   if (mil10.match(/^\d+$/)) return mil2mm(mil10) * 10
   // If it has a unit, return the specified unit ignoring the multiplier
   return mil2mm(mil10)
+}
+
+const parseCadOffsetsFromSvgNode = (
+  svgNode?: z.infer<typeof SVGNodeSchema>,
+) => {
+  const attrs = svgNode?.svgData?.attrs ?? {}
+  const [cx, cy] = String(attrs.c_origin ?? "0,0")
+    .split(",")
+    .map((s) => Number(s.trim()))
+
+  // z: bare numbers are mils; strings with units go through mm()
+  const zStr = attrs.z ?? 0
+  const z_mm =
+    typeof zStr === "string" && /[a-z]/i.test(zStr)
+      ? mm(zStr) // already has units
+      : mm(`${Number(zStr) || 0}mil`) // bare number => mils
+
+  return {
+    position: {
+      x: mil10ToMm(Number.isNaN(cx) ? 0 : cx),
+      y: mil10ToMm(Number.isNaN(cy) ? 0 : cy),
+      z: Math.max(0, -z_mm), // EasyEDA uses negative up; make it positive up
+    },
+    rotation: (() => {
+      const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
+      return { x: rx || 0, y: ry || 0, z: rz || 0 }
+    })(),
+  }
+}
+
+const dbg = (...args: any[]) => console.log("[3D]", ...args)
+
+/** Try mil and mil×10; clamp to a plausible component thickness */
+const readModelHeightMm = (raw: unknown) => {
+  const fallback = 2 // typical assembled board thickness
+  if (raw == null) return fallback
+  const n = Number(raw)
+  if (!Number.isFinite(n)) return fallback
+
+  const mmFromMil10 = mil10ToMm(n) // many EasyEDA unlabeled values
+  const mmFromMil = mm(`${n}mil`) // sometimes plain mil
+
+  // Use the larger of the two guesses, but clamp to a plausible thickness
+  const upper = 6 // max reasonable package thickness (mm)
+  const lower = 0.1
+  let chosen = Math.max(mmFromMil10, mmFromMil)
+  if (chosen > upper || chosen < lower) chosen = fallback
+
+  return chosen
 }
 
 const handleSilkscreenPath = (
@@ -465,27 +515,24 @@ export const convertEasyEdaJsonToCircuitJson = (
     : undefined
 
   if (objFileUrl !== undefined) {
-    const [rx, ry, rz] = (svgNode?.svgData.attrs?.c_rotation ?? "0,0,0")
-      .split(",")
-      .map(Number)
+    const { position, rotation } = parseCadOffsetsFromSvgNode(svgNode)
     circuitElements.push(
       Soup.cad_component.parse({
         type: "cad_component",
         cad_component_id: "cad_component_1",
         source_component_id: "source_component_1",
         pcb_component_id: "pcb_component_1",
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: rx, y: ry, z: rz },
+        position,
+        rotation,
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput),
     )
   }
 
   if (shouldRecenter) {
-    // exclude the pcb_component because it's center is currently incorrect,
-    // we set it to (0,0)
+    // exclude pcb_component (its center is wrong; we'll set it to 0,0)
     const elementsForBounds = circuitElements.filter(
-      (e) => e.type !== "pcb_component",
+      (e) => e.type !== "pcb_component" && e.type !== "cad_component",
     )
 
     const bounds = findBoundsAndCenter(elementsForBounds)
@@ -495,11 +542,16 @@ export const convertEasyEdaJsonToCircuitJson = (
         translate(-bounds.center.x, bounds.center.y),
         scale(1, -1),
       )
-      // Filter out polygon SMT pads from general transformation since they don't have x,y coordinates
+
+      // Transform all PCB elems except polygon SMT pads (no x,y) and the cad
       const elementsForTransform = circuitElements.filter(
-        (e) => !(e.type === "pcb_smtpad" && e.shape === "polygon"),
+        (e) =>
+          !(e.type === "pcb_smtpad" && e.shape === "polygon") &&
+          e.type !== "cad_component",
       )
       transformPCBElements(elementsForTransform, matrix)
+
+      // Manually transform polygons/cutouts
       for (const e of circuitElements) {
         if (e.type === "pcb_cutout") {
           if (e.shape === "polygon") {
@@ -511,7 +563,68 @@ export const convertEasyEdaJsonToCircuitJson = (
           e.points = e.points.map((p) => applyToPoint(matrix, p))
         }
       }
+
+      const cad = circuitElements.find(
+        (e): e is Soup.CadComponent => e.type === "cad_component",
+      )
+
+      if (cad) {
+        if (!cad.rotation) cad.rotation = { x: 0, y: 0, z: 0 }
+
+        // Recenter the CAD's in-plane coords
+        const p = applyToPoint(matrix, { x: cad.position.x, y: cad.position.y })
+        cad.position.x = p.x
+        cad.position.y = p.y
+
+        const side = (pcb_component.layer ?? "top") as "top" | "bottom"
+        const t = DEFAULT_PCB_THICKNESS_MM / 2
+        const attrs = svgNode?.svgData?.attrs ?? {}
+        const modelHeight = readModelHeightMm(attrs.c_height)
+
+        // Ensure we have a size; Z holds the model's thickness in local space
+        if (!cad.size) {
+          cad.size = {
+            x: pcb_component.width,
+            y: pcb_component.height,
+            z: modelHeight,
+          }
+        }
+
+        // --- Axis convention: EasyEDA models are typically Y-up ---
+        // Rotate to Z-up so thickness becomes vertical in our scene.
+        const ROTATE_X_FOR_YUP = 90
+        cad.rotation.x = ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
+
+        // Bottom-side parts: flip across the board plane
+        if (side !== "top") {
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
+        }
+
+        // Respect/ignore the EasyEDA z offset explicitly (we ignore by default)
+        const USE_Z_OFFSET = false
+        const zOffRaw = cad.position.z ?? 0
+        const zOff = USE_Z_OFFSET ? zOffRaw : 0
+
+        // ---- Seat using the thickness along WORLD-Z after rotation ----
+        const rx = ((cad.rotation.x % 360) + 360) % 360
+
+        // rx 90/270 ⇒ use local Y
+        const thicknessAlongWorldZ = rx % 180 === 90 ? cad.size.y : cad.size.z
+
+        let centerZ =
+          side === "top"
+            ? t + zOff + thicknessAlongWorldZ / 2
+            : -t - zOff - thicknessAlongWorldZ / 2
+
+        // Snap so the model's bottom exactly touches the board surface
+        const desiredBottom = side === "top" ? +t : -t
+        const bottomZ = centerZ - thicknessAlongWorldZ / 2
+        centerZ += desiredBottom - bottomZ
+        cad.position.z = centerZ
+      }
     }
+
+    // finalize pcb center after recentering
     pcb_component.center = { x: 0, y: 0 }
   }
 
