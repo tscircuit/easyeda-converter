@@ -5,6 +5,7 @@
   "files": [
     "dist"
   ],
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/tscircuit/easyeda-converter"
