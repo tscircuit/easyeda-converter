@@ -5,6 +5,7 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import c2998002 from "tests/assets/C2998002.raweasy.json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { runTscircuitCode } from "tscircuit"
 
 it("should convert C2998002 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -15,6 +16,10 @@ it("should convert C2998002 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
   // Add more specific assertions here based on the component
+  
+  // Generate circuit JSON for 3D snapshot (c_rotation: 0,0,0)
+  const circuitJson = await runTscircuitCode(result)
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })
 
 test("C57759 should generate Circuit Json without errors", () => {

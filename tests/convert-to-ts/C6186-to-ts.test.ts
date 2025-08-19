@@ -4,6 +4,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { runTscircuitCode } from "tscircuit"
 
 it("should convert C6186 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -45,8 +46,8 @@ it("should convert C6186 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=e80246a9471445bfb635be848806a22e&pn=C6186",
-            rotationOffset: { x: 90, y: 0, z: 180 },
-            positionOffset: { x: -4.026211149999995, y: 2.921000000000049, z: 3.6499688999999647 },
+            rotationOffset: { x: 0, y: 0, z: 180 },
+            positionOffset: { x: -4.026211149999995, y: 2.921000000000049, z: 1.8 },
           }}
           {...props}
         />
@@ -58,4 +59,8 @@ it("should convert C6186 into typescript file", async () => {
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
+  
+  // Generate 3D snapshot for component with c_rotation: 0,0,180
+  const circuitJsonFromTsx = await runTscircuitCode(result)
+  await expect(circuitJsonFromTsx).toMatch3dSnapshot(import.meta.path)
 })
