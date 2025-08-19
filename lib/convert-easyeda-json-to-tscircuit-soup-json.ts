@@ -593,7 +593,30 @@ export const convertEasyEdaJsonToCircuitJson = (
         // --- Axis convention: EasyEDA models are typically Y-up ---
         // Rotate to Z-up so thickness becomes vertical in our scene.
         const ROTATE_X_FOR_YUP = 90
-        cad.rotation.x = ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
+        const originalZRotation = (cad.rotation.z ?? 0) % 360
+
+        // Improved rotation handling with tolerance for floating-point precision
+        // Handle different component orientations based on EasyEDA Z rotation
+        if (Math.abs(originalZRotation - 0) < 1 || Math.abs(originalZRotation - 360) < 1) {
+          // For ~0° Z rotation, apply 180° X rotation to show the top side
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 180 + 360) % 360
+        } else if (Math.abs(originalZRotation - 180) < 1) {
+          // For ~180° Z rotation, don't apply standard X rotation - let it lie flat
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
+        } else if (Math.abs(originalZRotation - 90) < 1) {
+          // For ~90° Z rotation, apply Y-up to Z-up conversion + counter Y-rotation
+          cad.rotation.x = ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
+          cad.rotation.y = ((cad.rotation.y ?? 0) + 270 + 360) % 360 // or -90°
+        } else if (Math.abs(originalZRotation - 270) < 1) {
+          // For ~270° Z rotation, apply Y-up to Z-up conversion + corrective Y-rotation
+          cad.rotation.x = ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
+          cad.rotation.y = ((cad.rotation.y ?? 0) + 90 + 360) % 360
+        } else {
+          // Fallback for unusual angles: apply standard Y-up to Z-up conversion
+          // and log for potential future refinement
+          console.warn(`[3D] Unusual rotation angle: ${originalZRotation}° for component ${easyEdaJson.lcsc.number}`)
+          cad.rotation.x = ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
+        }
 
         // Bottom-side parts: flip across the board plane
         if (side !== "top") {
