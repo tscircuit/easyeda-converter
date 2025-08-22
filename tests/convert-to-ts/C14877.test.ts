@@ -10,10 +10,10 @@ it("should convert atmega328p into typescript file", async () => {
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })
-  
+
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-  
+
   // Generate 3D snapshot for component with c_rotation: 0,0,90
   const circuitJson = await runTscircuitCode(result)
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)

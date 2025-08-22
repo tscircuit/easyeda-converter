@@ -16,7 +16,7 @@ it("should convert C2998002 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
   // Add more specific assertions here based on the component
-  
+
   // Generate circuit JSON for 3D snapshot (c_rotation: 0,0,0)
   const circuitJson = await runTscircuitCode(result)
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)

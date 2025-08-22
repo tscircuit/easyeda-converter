@@ -59,7 +59,7 @@ it("should convert C6186 into typescript file", async () => {
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
-  
+
   // Generate 3D snapshot for component with c_rotation: 0,0,180
   const circuitJsonFromTsx = await runTscircuitCode(result)
   await expect(circuitJsonFromTsx).toMatch3dSnapshot(import.meta.path)
