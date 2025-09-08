@@ -395,6 +395,38 @@ export const TextShapeSchema = z
   .transform(parseText)
   .pipe(TextShapeOutputSchema)
 
+const AngleShapeOutputSchema = z.object({
+  type: z.literal("ANGLE"),
+  angleData: z.string(),
+  position: PointSchema,
+  radius: z.number(),
+  angle: z.number(), // the angle of the arc or the direction in degrees
+  color: z.string(),
+  lineWidth: z.number(),
+  id: z.string(),
+})
+
+const parseAngle = (str: string): z.infer<typeof AngleShapeOutputSchema> => {
+  const [, angleData, x, y, radius, angle, color, lineWidth, , id] =
+    str.split("~")
+  return {
+    type: "ANGLE",
+    angleData,
+    position: { x: Number(x), y: Number(y) },
+    radius: Number(radius),
+    angle: Number(angle),
+    color,
+    lineWidth: Number(lineWidth),
+    id,
+  }
+}
+
+export const AngleShapeSchema = z
+  .string()
+  .startsWith("A~") // Assuming the shape starts with 'A~' to distinguish it from others
+  .transform(parseAngle)
+  .pipe(AngleShapeOutputSchema)
+
 export const SingleLetterShapeSchema = z
   .string()
   .transform((x) => {
@@ -406,6 +438,7 @@ export const SingleLetterShapeSchema = z
     if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
     if (x.startsWith("PT~")) return PathShapeSchema.parse(x)
     if (x.startsWith("T~")) return TextShapeSchema.parse(x)
+
     if (x.startsWith("A~")) return ArcShapeSchema.parse(x)
     throw new Error(`Invalid shape type: ${x}`)
   })
