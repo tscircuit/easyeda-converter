@@ -1,5 +1,15 @@
 import { z } from "zod"
 
+// Helper function to safely convert values to numbers with a default
+const safeNumber = (defaultValue = 0) =>
+  z
+    .union([z.number(), z.string()])
+    .transform((val) => {
+      const num = Number(val)
+      return isNaN(num) ? defaultValue : num
+    })
+    .default(defaultValue)
+
 const tenthmil = z
   .union([z.number(), z.string()])
   .optional()
@@ -55,7 +65,7 @@ export const PadSchema = BaseShapeSchema.extend({
   number: z.union([z.string(), z.number()]),
   holeRadius: tenthmil,
   points: z.array(PointSchema).optional(),
-  rotation: z.number().optional(),
+  rotation: safeNumber(0), // Will default to 0 if NaN or missing
   plated: z.boolean(),
 })
 
