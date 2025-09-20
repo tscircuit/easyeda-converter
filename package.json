@@ -54,5 +54,8 @@
     "typescript": "^5.5.2",
     "tscircuit": "^0.0.571",
     "zod": "3"
+  },
+  "dependencies": {
+    "graphics-debug": "^0.0.65"
   }
 }
