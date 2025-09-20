@@ -66,6 +66,13 @@ export async function fetchEasyEDAComponent(
   }
 
   const componentResult = await componentResponse.json()
+
+    if (componentResult.result.szlcsc && typeof componentResult.result.szlcsc.id === "string") {
+    componentResult.result.szlcsc.id = Number(componentResult.result.szlcsc.id)
+  }
+
+  console.log("Transformed szlcsc.id:", componentResult.result.szlcsc?.id);
+
   return componentResult.result
 }
 
