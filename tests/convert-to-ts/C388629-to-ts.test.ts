@@ -1,4 +1,3 @@
-
 import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C388629.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
@@ -14,7 +13,7 @@ it("should convert C388629 into typescript file", async () => {
   expect(result).not.toContain("NaNmm")
 
   // Add more specific assertions here based on the component
-  
+
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
 

@@ -76,6 +76,16 @@ export async function fetchEasyEDAComponent(
 
   console.log("Transformed szlcsc.id:", componentResult.result.szlcsc?.id)
 
+  if (
+    componentResult.result.dataStr &&
+    Array.isArray(componentResult.result.dataStr.shape)
+  ) {
+    componentResult.result.dataStr.shape =
+      componentResult.result.dataStr.shape.map((shape: string) =>
+        shape.replace(/P~none~/g, "P~show~"),
+      )
+  }
+
   return componentResult.result
 }
 
