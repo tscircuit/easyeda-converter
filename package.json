@@ -14,9 +14,9 @@
     "test": "bun test",
     "cli": "bun cli/main.ts",
     "build": "bun build:lib && bun build:cli && bun build:web",
-    "build:lib": "tsup-node lib/index.ts --platform node --format esm --dts --sourcemap",
-    "build:cli": "tsup cli/main.ts --platform node --format cjs --dts --sourcemap",
-    "build:web": "tsup lib/websafe/index.ts --platform browser --format esm --dts --sourcemap -d dist/browser",
+    "build:lib": "tsup-node lib/index.ts --format esm --dts --sourcemap",
+    "build:cli": "tsup-node cli/main.ts --format cjs --dts --sourcemap",
+    "build:web": "tsup lib/websafe/index.ts --platform browser --format esm --dts --sourcemap --external @tscircuit/circuit-json-util --external @tscircuit/core --external @tscircuit/mm --external circuit-json --external transformation-matrix --external zod -d dist/browser",
     "aider": "aider",
     "format:check": "biome format .",
     "format": "biome format . --write",
@@ -40,15 +40,21 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@tscircuit/circuit-json-util": "^0.0.67",
-    "@tscircuit/mm": "^0.0.8",
     "@tscircuit/simple-3d-svg": "^0.0.41",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
     "circuit-json-to-simple-3d": "^0.0.7",
     "circuit-to-svg": "^0.0.174",
-    "transformation-matrix": "^2.16.1",
     "tsup": "^8.5.0"
+  },
+  "dependencies": {
+    "@tscircuit/circuit-json-util": "^0.0.67",
+    "@tscircuit/core": "^0.0.571",
+    "@tscircuit/mm": "^0.0.8",
+    "circuit-json": "^0.0.94",
+    "commander": "^12.1.0",
+    "transformation-matrix": "^2.16.1",
+    "zod": "^3.23.8"
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
