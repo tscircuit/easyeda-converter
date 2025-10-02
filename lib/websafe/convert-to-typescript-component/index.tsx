@@ -6,9 +6,13 @@ import { su } from "@tscircuit/circuit-json-util"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
+import { preprocessComponentResult } from "../generate-footprint-tsx"
 
 export const convertRawEasyToTsx = async (rawEasy: any) => {
-  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+  // Preprocess the raw data to replace P~none~ with P~show~
+  const preprocessedRawEasy = preprocessComponentResult(rawEasy)
+
+  const betterEasy = EasyEdaJsonSchema.parse(preprocessedRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })

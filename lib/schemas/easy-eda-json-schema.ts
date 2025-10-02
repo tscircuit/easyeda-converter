@@ -11,7 +11,10 @@ export const maybeNumber = z
   .pipe(z.number().nullable().optional())
 
 export const SzlcscSchema = z.object({
-  id: z.number(),
+  id: z.preprocess((val) => {
+    if (typeof val === "string") return Number(val)
+    return val
+  }, z.number()),
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),
@@ -22,7 +25,10 @@ export const SzlcscSchema = z.object({
 })
 
 export const LcscSchema = z.object({
-  id: z.number(),
+  id: z.preprocess((val) => {
+    if (typeof val === "string") return Number(val)
+    return val
+  }, z.number()),
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),

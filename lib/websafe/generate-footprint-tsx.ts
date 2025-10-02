@@ -2,6 +2,20 @@ import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
 import { su } from "@tscircuit/circuit-json-util"
 
+export const preprocessComponentResult = (componentResult: any) => {
+  if (
+    componentResult.result &&
+    componentResult.result.dataStr &&
+    Array.isArray(componentResult.result.dataStr.shape)
+  ) {
+    componentResult.result.dataStr.shape =
+      componentResult.result.dataStr.shape.map((shape: string) =>
+        shape.replace(/P~none~/g, "P~show~"),
+      )
+  }
+  return componentResult
+}
+
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
 ): string => {
