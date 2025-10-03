@@ -315,13 +315,11 @@ export const convertEasyEdaJsonToCircuitJson = (
             : smallestInnerDimension
 
         additionalPlatedHoleProps = {
-          shape: "pill_hole_with_rect_pad",
-          hole_shape: "pill",
-          pad_shape: "rect",
+          shape: "pill",
+          outer_width: mil2mm(pad.width),
+          outer_height: mil2mm(pad.height),
           hole_width: innerWidth,
           hole_height: innerHeight,
-          rect_pad_width: mil2mm(pad.width),
-          rect_pad_height: mil2mm(pad.height),
         }
       } else if (pad.shape === "RECT") {
         const padWidth = mil2mm(pad.width)
