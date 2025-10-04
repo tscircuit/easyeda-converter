@@ -34,7 +34,6 @@ export const generateFootprintTsx = (
         `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerDiameter="${mmStr(platedHole.outer_diameter)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" shape="circle" />`,
       )
     } else if (platedHole.shape === "pill_hole_with_rect_pad") {
-      // Always use pill shape for OVAL pads to create oval-shaped pads
       elementStrings.push(
         `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" rectPad={true} shape="pill" />`,
       )
