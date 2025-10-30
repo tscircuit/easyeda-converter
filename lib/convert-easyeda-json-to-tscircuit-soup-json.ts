@@ -611,10 +611,8 @@ export const convertEasyEdaJsonToCircuitJson = (
           // For ~180° Z rotation, don't apply standard X rotation - let it lie flat
           cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
         } else if (Math.abs(originalZRotation - 90) < 1) {
-          // For ~90° Z rotation, apply Y-up to Z-up conversion + counter Y-rotation
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-          cad.rotation.y = ((cad.rotation.y ?? 0) + 270 + 360) % 360 // or -90°
+          // For ~90° Z rotation, keep it flat (no X rotation)
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
         } else if (Math.abs(originalZRotation - 270) < 1) {
           // For ~270° Z rotation, apply Y-up to Z-up conversion + corrective Y-rotation
           cad.rotation.x =
