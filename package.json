@@ -42,12 +42,9 @@
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/circuit-json-util": "^0.0.67",
     "@tscircuit/mm": "^0.0.8",
-    "@tscircuit/simple-3d-svg": "^0.0.41",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
     "circuit-json-to-gltf": "^0.0.34",
-    "circuit-json-to-simple-3d": "^0.0.7",
-    "circuit-to-svg": "^0.0.174",
     "looks-same": "^9.0.1",
     "poppygl": "^0.0.16",
     "transformation-matrix": "^2.16.1",
@@ -55,7 +52,7 @@
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
-    "tscircuit": "^0.0.571",
+    "tscircuit": "^0.0.841",
     "zod": "3"
   }
 }
