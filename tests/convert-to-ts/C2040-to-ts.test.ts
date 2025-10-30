@@ -156,7 +156,7 @@ it("should convert C2040 into typescript file", async () => {
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=76b360a9d4c54384a4e47d7e5af156df&pn=C2040",
             rotationOffset: { x: 180, y: 0, z: 0 },
-            positionOffset: { x: -1.1368683772161603e-13, y: 1.1368683772161603e-13, z: 1.8 },
+            positionOffset: { x: -1.1368683772161603e-13, y: 1.1368683772161603e-13, z: 4.3099879 },
           }}
           {...props}
         />

@@ -79,11 +79,10 @@ const parseCadOffsetsFromSvgNode = (
   }
 }
 
-const dbg = (...args: any[]) => console.log("[3D]", ...args)
 
 /** Try mil and mil×10; clamp to a plausible component thickness */
 const readModelHeightMm = (raw: unknown) => {
-  const fallback = 2 // typical assembled board thickness
+  const fallback = 3.5 // typical SMT component height (USB-C, QFN, etc.)
   if (raw == null) return fallback
   const n = Number(raw)
   if (!Number.isFinite(n)) return fallback
@@ -92,7 +91,7 @@ const readModelHeightMm = (raw: unknown) => {
   const mmFromMil = mm(`${n}mil`) // sometimes plain mil
 
   // Use the larger of the two guesses, but clamp to a plausible thickness
-  const upper = 6 // max reasonable package thickness (mm)
+  const upper = 12 // max reasonable package thickness (mm) - increased for connectors
   const lower = 0.1
   let chosen = Math.max(mmFromMil10, mmFromMil)
   if (chosen > upper || chosen < lower) chosen = fallback
@@ -594,6 +593,7 @@ export const convertEasyEdaJsonToCircuitJson = (
           }
         }
 
+
         // --- Axis convention: EasyEDA models are typically Y-up ---
         // Rotate to Z-up so thickness becomes vertical in our scene.
         const ROTATE_X_FOR_YUP = 90
@@ -633,26 +633,53 @@ export const convertEasyEdaJsonToCircuitJson = (
           cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
         }
 
-        // Respect/ignore the EasyEDA z offset explicitly (we ignore by default)
-        const USE_Z_OFFSET = false
+        // For 180° rotated components (Y-up models), the z-offset indicates pin extension below body
+        // We need to subtract this to seat the body on the board
+        const USE_Z_OFFSET_FOR_180 = Math.abs(originalZRotation - 180) < 1
         const zOffRaw = cad.position.z ?? 0
-        const zOff = USE_Z_OFFSET ? zOffRaw : 0
+        const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0 // Negative to lower the component
 
         // ---- Seat using the thickness along WORLD-Z after rotation ----
         const rx = ((cad.rotation.x % 360) + 360) % 360
 
-        // rx 90/270 ⇒ use local Y
-        const thicknessAlongWorldZ = rx % 180 === 90 ? cad.size.y : cad.size.z
+        // EasyEDA models are Y-up. Components with 180° Z-rotation don't get X-rotation applied,
+        // so they remain Y-up. In world Z-up space, the model's local Y (stored as size.z) becomes world Z.
+        let thicknessAlongWorldZ: number
+        const is180RotatedYUp = Math.abs(originalZRotation - 180) < 1 && Math.abs(rx) < 1
 
-        let centerZ =
-          side === "top"
-            ? t + zOff + thicknessAlongWorldZ / 2
-            : -t - zOff - thicknessAlongWorldZ / 2
+        if (is180RotatedYUp) {
+          // 180° Z-rotation, no X-rotation applied → model is still Y-up → use modelHeight (size.z)
+          thicknessAlongWorldZ = cad.size.z
+        } else if (rx % 180 === 90) {
+          // X-rotation of 90/270 → use local Y
+          thicknessAlongWorldZ = cad.size.y
+        } else {
+          // Standard case → use Z
+          thicknessAlongWorldZ = cad.size.z
+        }
 
-        // Snap so the model's bottom exactly touches the board surface
-        const desiredBottom = side === "top" ? +t : -t
-        const bottomZ = centerZ - thicknessAlongWorldZ / 2
-        centerZ += desiredBottom - bottomZ
+        let centerZ: number
+        if (is180RotatedYUp) {
+          // For Y-up models, the model's bottom needs to sit on the PCB
+          // Place the center at the board surface so the model extends upward
+          centerZ = side === "top" ? t : -t
+        } else {
+          // For other orientations, use standard positioning with z-offset
+          centerZ =
+            side === "top"
+              ? t + zOff + thicknessAlongWorldZ / 2
+              : -t - zOff - thicknessAlongWorldZ / 2
+        }
+
+        // // Snap so the model's bottom touches the board surface
+        // // For SMT components, the model has pins extending below the body
+        // // Raise the target position so pin tips (not body bottom) touch the surface
+        // const pinHeightOffset = modelHeight * 0.7 // Pins extend below - raise component
+        // const desiredBottom =
+        //   side === "top" ? +t + pinHeightOffset : -t - pinHeightOffset
+        // const bottomZ = centerZ - thicknessAlongWorldZ / 2
+        // centerZ += desiredBottom - bottomZ
+
         cad.position.z = centerZ
       }
     }
