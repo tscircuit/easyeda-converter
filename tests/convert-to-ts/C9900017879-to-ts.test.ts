@@ -195,9 +195,15 @@ it("should convert C9900017879 into typescript file", async () => {
     {
       "cad_component_id": "cad_component_0",
       "footprinter_string": undefined,
+      "model_glb_url": undefined,
+      "model_gltf_url": undefined,
       "model_jscad": undefined,
+      "model_mtl_url": undefined,
       "model_obj_url": "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=4e90b6d8552a4e058d9ebe9d82e11f3a&pn=C9900017879&cachebust_origin=",
+      "model_step_url": undefined,
       "model_stl_url": undefined,
+      "model_unit_to_mm_scale_factor": undefined,
+      "model_wrl_url": undefined,
       "pcb_component_id": "pcb_component_0",
       "position": {
         "x": -1.0750042000000093,

@@ -25,9 +25,9 @@ export const generateFootprintTsx = (
   }
 
   for (const platedHole of platedHoles) {
-    if (platedHole.shape === "oval" || platedHole.shape === "pill") {
+    if (platedHole.shape === "pill_hole_with_rect_pad") {
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerHeight="${mmStr(platedHole.outer_height)}" outerWidth="${mmStr(platedHole.outer_width)}" holeHeight="${mmStr(platedHole.hole_height)}" holeWidth="${mmStr(platedHole.hole_width)}" shape="${platedHole.shape}" />`,
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" shape="pill" />`,
       )
     } else if (platedHole.shape === "circle") {
       elementStrings.push(
