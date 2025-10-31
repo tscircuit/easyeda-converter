@@ -14,3 +14,4 @@ tmp*
 search-result.json
 playwright-report
 test-results
+*.glb
