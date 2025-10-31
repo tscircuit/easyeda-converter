@@ -79,7 +79,6 @@ const parseCadOffsetsFromSvgNode = (
   }
 }
 
-
 /** Try mil and mil×10; clamp to a plausible component thickness */
 const readModelHeightMm = (raw: unknown) => {
   const fallback = 3.5 // typical SMT component height (USB-C, QFN, etc.)
@@ -593,7 +592,6 @@ export const convertEasyEdaJsonToCircuitJson = (
           }
         }
 
-
         // --- Axis convention: EasyEDA models are typically Y-up ---
         // Rotate to Z-up so thickness becomes vertical in our scene.
         const ROTATE_X_FOR_YUP = 90
@@ -644,7 +642,11 @@ export const convertEasyEdaJsonToCircuitJson = (
         // EasyEDA models are Y-up. Components with 0° or 180° Z-rotation don't get X-rotation applied,
         // so they remain Y-up. For Y-up models, the vertical extent is along the Y axis.
         let thicknessAlongWorldZ: number
-        const is180RotatedYUp = (Math.abs(originalZRotation - 180) < 1 || Math.abs(originalZRotation - 0) < 1 || Math.abs(originalZRotation - 360) < 1) && Math.abs(rx) < 1
+        const is180RotatedYUp =
+          (Math.abs(originalZRotation - 180) < 1 ||
+            Math.abs(originalZRotation - 0) < 1 ||
+            Math.abs(originalZRotation - 360) < 1) &&
+          Math.abs(rx) < 1
 
         if (is180RotatedYUp) {
           // 180° Z-rotation, no X-rotation applied → model is still Y-up
@@ -661,7 +663,10 @@ export const convertEasyEdaJsonToCircuitJson = (
         let centerZ: number
         if (is180RotatedYUp) {
           // For Y-up models, subtract half the thickness to lower the component to the board
-          centerZ = side === "top" ? t - thicknessAlongWorldZ / 2 : -t + thicknessAlongWorldZ / 2
+          centerZ =
+            side === "top"
+              ? t - thicknessAlongWorldZ / 2
+              : -t + thicknessAlongWorldZ / 2
         } else {
           // For other orientations, use standard positioning with z-offset
           centerZ =
