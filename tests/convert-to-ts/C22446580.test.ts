@@ -73,8 +73,8 @@ it("should convert C22446580 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=86016d4675144293b45eabfe7e8ef2ff&pn=C22446580",
-            rotationOffset: { x: 180, y: 0, z: 0 },
-            positionOffset: { x: 0, y: -0.000050799999989692424, z: 2.2999970000000003 },
+            rotationOffset: { x: 0, y: 0, z: 0 },
+            positionOffset: { x: 0, y: -0.000050799999989692424, z: 0 },
           }}
           {...props}
         />

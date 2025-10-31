@@ -605,8 +605,8 @@ export const convertEasyEdaJsonToCircuitJson = (
           Math.abs(originalZRotation - 0) < 1 ||
           Math.abs(originalZRotation - 360) < 1
         ) {
-          // For ~0° Z rotation, apply 180° X rotation to show the top side
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 180 + 360) % 360
+          // For ~0° Z rotation, don't apply X rotation - keep model as-is (Y-up)
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
         } else if (Math.abs(originalZRotation - 180) < 1) {
           // For ~180° Z rotation, don't apply standard X rotation - let it lie flat
           cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
@@ -642,10 +642,10 @@ export const convertEasyEdaJsonToCircuitJson = (
         // ---- Determine the vertical extent based on model orientation ----
         const rx = ((cad.rotation.x % 360) + 360) % 360
 
-        // EasyEDA models are Y-up. Components with 180° Z-rotation don't get X-rotation applied,
+        // EasyEDA models are Y-up. Components with 0° or 180° Z-rotation don't get X-rotation applied,
         // so they remain Y-up. For Y-up models, the vertical extent is along the Y axis.
         let thicknessAlongWorldZ: number
-        const is180RotatedYUp = Math.abs(originalZRotation - 180) < 1 && Math.abs(rx) < 1
+        const is180RotatedYUp = (Math.abs(originalZRotation - 180) < 1 || Math.abs(originalZRotation - 0) < 1 || Math.abs(originalZRotation - 360) < 1) && Math.abs(rx) < 1
 
         if (is180RotatedYUp) {
           // 180° Z-rotation, no X-rotation applied → model is still Y-up
