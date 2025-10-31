@@ -79,11 +79,9 @@ const parseCadOffsetsFromSvgNode = (
   }
 }
 
-const dbg = (...args: any[]) => console.log("[3D]", ...args)
-
 /** Try mil and mil×10; clamp to a plausible component thickness */
 const readModelHeightMm = (raw: unknown) => {
-  const fallback = 2 // typical assembled board thickness
+  const fallback = 3.5 // typical SMT component height (USB-C, QFN, etc.)
   if (raw == null) return fallback
   const n = Number(raw)
   if (!Number.isFinite(n)) return fallback
@@ -92,7 +90,7 @@ const readModelHeightMm = (raw: unknown) => {
   const mmFromMil = mm(`${n}mil`) // sometimes plain mil
 
   // Use the larger of the two guesses, but clamp to a plausible thickness
-  const upper = 6 // max reasonable package thickness (mm)
+  const upper = 12 // max reasonable package thickness (mm) - increased for connectors
   const lower = 0.1
   let chosen = Math.max(mmFromMil10, mmFromMil)
   if (chosen > upper || chosen < lower) chosen = fallback
@@ -605,16 +603,14 @@ export const convertEasyEdaJsonToCircuitJson = (
           Math.abs(originalZRotation - 0) < 1 ||
           Math.abs(originalZRotation - 360) < 1
         ) {
-          // For ~0° Z rotation, apply 180° X rotation to show the top side
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 180 + 360) % 360
+          // For ~0° Z rotation, don't apply X rotation - keep model as-is (Y-up)
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
         } else if (Math.abs(originalZRotation - 180) < 1) {
           // For ~180° Z rotation, don't apply standard X rotation - let it lie flat
           cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
         } else if (Math.abs(originalZRotation - 90) < 1) {
-          // For ~90° Z rotation, apply Y-up to Z-up conversion + counter Y-rotation
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-          cad.rotation.y = ((cad.rotation.y ?? 0) + 270 + 360) % 360 // or -90°
+          // For ~90° Z rotation, keep it flat (no X rotation)
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
         } else if (Math.abs(originalZRotation - 270) < 1) {
           // For ~270° Z rotation, apply Y-up to Z-up conversion + corrective Y-rotation
           cad.rotation.x =
@@ -635,26 +631,50 @@ export const convertEasyEdaJsonToCircuitJson = (
           cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
         }
 
-        // Respect/ignore the EasyEDA z offset explicitly (we ignore by default)
-        const USE_Z_OFFSET = false
+        // For 180° rotated components (Y-up models), the z-offset indicates pin extension below body
+        const USE_Z_OFFSET_FOR_180 = Math.abs(originalZRotation - 180) < 1
         const zOffRaw = cad.position.z ?? 0
-        const zOff = USE_Z_OFFSET ? zOffRaw : 0
+        const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0
 
-        // ---- Seat using the thickness along WORLD-Z after rotation ----
+        // ---- Determine the vertical extent based on model orientation ----
         const rx = ((cad.rotation.x % 360) + 360) % 360
 
-        // rx 90/270 ⇒ use local Y
-        const thicknessAlongWorldZ = rx % 180 === 90 ? cad.size.y : cad.size.z
+        // EasyEDA models are Y-up. Components with 0° or 180° Z-rotation don't get X-rotation applied,
+        // so they remain Y-up. For Y-up models, the vertical extent is along the Y axis.
+        let thicknessAlongWorldZ: number
+        const is180RotatedYUp =
+          (Math.abs(originalZRotation - 180) < 1 ||
+            Math.abs(originalZRotation - 0) < 1 ||
+            Math.abs(originalZRotation - 360) < 1) &&
+          Math.abs(rx) < 1
 
-        let centerZ =
-          side === "top"
-            ? t + zOff + thicknessAlongWorldZ / 2
-            : -t - zOff - thicknessAlongWorldZ / 2
+        if (is180RotatedYUp) {
+          // 180° Z-rotation, no X-rotation applied → model is still Y-up
+          // For Y-up models, the vertical extent is along Y axis (size.y)
+          thicknessAlongWorldZ = cad.size.y
+        } else if (rx % 180 === 90) {
+          // X-rotation of 90/270 → use local Y
+          thicknessAlongWorldZ = cad.size.y
+        } else {
+          // Standard case → model rotated to Z-up, use Z
+          thicknessAlongWorldZ = cad.size.z
+        }
 
-        // Snap so the model's bottom exactly touches the board surface
-        const desiredBottom = side === "top" ? +t : -t
-        const bottomZ = centerZ - thicknessAlongWorldZ / 2
-        centerZ += desiredBottom - bottomZ
+        let centerZ: number
+        if (is180RotatedYUp) {
+          // For Y-up models, subtract half the thickness to lower the component to the board
+          centerZ =
+            side === "top"
+              ? t - thicknessAlongWorldZ / 2
+              : -t + thicknessAlongWorldZ / 2
+        } else {
+          // For other orientations, use standard positioning with z-offset
+          centerZ =
+            side === "top"
+              ? t + zOff + thicknessAlongWorldZ / 2
+              : -t - zOff - thicknessAlongWorldZ / 2
+        }
+
         cad.position.z = centerZ
       }
     }

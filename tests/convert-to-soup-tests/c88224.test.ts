@@ -18,4 +18,6 @@ it("should parse easyeda json for a c88224 and convert to tscircuit soup", async
       material: "fr4",
     },
   ])
+
+  await expect(soupElements).toMatch3dSnapshot(import.meta.path)
 })

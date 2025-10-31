@@ -75,8 +75,8 @@ it("should convert C105419 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=761680ba9d244812bfb349e4268ee9de&pn=C105419",
-            rotationOffset: { x: 180, y: 0, z: 0 },
-            positionOffset: { x: 0.1450276500002019, y: 0.19999959999995554, z: 1.8 },
+            rotationOffset: { x: 0, y: 0, z: 0 },
+            positionOffset: { x: 0.1450276500002019, y: 0.19999959999995554, z: -6.774902300000076 },
           }}
           {...props}
         />
@@ -85,11 +85,13 @@ it("should convert C105419 into typescript file", async () => {
   `)
 })
 
-it("C105419 should generate Circuit Json without errors", () => {
+it("C105419 should generate Circuit Json without errors", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
+
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })

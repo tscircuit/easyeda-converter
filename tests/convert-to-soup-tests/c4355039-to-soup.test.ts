@@ -11,4 +11,6 @@ it("should parse easyeda json for c4355039 and convert to tscircuit soup", async
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
+
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })
