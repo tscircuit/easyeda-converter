@@ -43,4 +43,20 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
     expect(firstPad.shape).toBeDefined()
     expect(firstPad.layer).toBe("top")
   }
+
+  // Add pcb_board for 3D snapshot testing
+  const circuitJsonWithBoard = soupElements.concat([
+    {
+      type: "pcb_board",
+      center: { x: 0, y: 0 },
+      width: 15,
+      height: 15,
+      pcb_board_id: "main_board",
+      thickness: 1.6,
+      num_layers: 2,
+      material: "fr4",
+    },
+  ])
+
+  await expect(circuitJsonWithBoard).toMatch3dSnapshot(import.meta.path)
 })

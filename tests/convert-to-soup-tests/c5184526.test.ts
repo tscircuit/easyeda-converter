@@ -3,7 +3,7 @@ import { expect, test } from "bun:test"
 import { convertEasyEdaJsonToCircuitJson, EasyEdaJsonSchema } from "lib/index"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
-test("C5184526 should have two holes", () => {
+test("C5184526 should have two holes", async () => {
   const bettereasy = EasyEdaJsonSchema.parse(c5184526)
   const circuitJson = convertEasyEdaJsonToCircuitJson(bettereasy)
 
@@ -30,4 +30,6 @@ test("C5184526 should have two holes", () => {
   expect(minX).toBeGreaterThan(-10)
   expect(maxY).toBeLessThan(10)
   expect(minY).toBeGreaterThan(-10)
+
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })

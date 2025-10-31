@@ -85,11 +85,13 @@ it("should convert C105419 into typescript file", async () => {
   `)
 })
 
-it("C105419 should generate Circuit Json without errors", () => {
+it("C105419 should generate Circuit Json without errors", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
+
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })

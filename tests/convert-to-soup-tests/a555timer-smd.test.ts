@@ -22,4 +22,6 @@ it("should parse easyeda json for a 555 timer (smd) and convert to tscircuit sou
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
+
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })
