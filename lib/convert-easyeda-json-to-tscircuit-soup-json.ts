@@ -639,30 +639,31 @@ export const convertEasyEdaJsonToCircuitJson = (
         const zOffRaw = cad.position.z ?? 0
         const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0 // Negative to lower the component
 
-        // ---- Seat using the thickness along WORLD-Z after rotation ----
+        // ---- Determine the vertical extent based on model orientation ----
         const rx = ((cad.rotation.x % 360) + 360) % 360
 
         // EasyEDA models are Y-up. Components with 180° Z-rotation don't get X-rotation applied,
-        // so they remain Y-up. In world Z-up space, the model's local Y (stored as size.z) becomes world Z.
+        // so they remain Y-up. For Y-up models, the vertical extent is along the Y axis.
         let thicknessAlongWorldZ: number
         const is180RotatedYUp = Math.abs(originalZRotation - 180) < 1 && Math.abs(rx) < 1
 
         if (is180RotatedYUp) {
-          // 180° Z-rotation, no X-rotation applied → model is still Y-up → use modelHeight (size.z)
-          thicknessAlongWorldZ = cad.size.z
+          // 180° Z-rotation, no X-rotation applied → model is still Y-up
+          // For Y-up models, the vertical extent is along Y axis (size.y)
+          thicknessAlongWorldZ = cad.size.y
         } else if (rx % 180 === 90) {
           // X-rotation of 90/270 → use local Y
           thicknessAlongWorldZ = cad.size.y
         } else {
-          // Standard case → use Z
+          // Standard case → model rotated to Z-up, use Z
           thicknessAlongWorldZ = cad.size.z
         }
 
         let centerZ: number
         if (is180RotatedYUp) {
-          // For Y-up models, the model's bottom needs to sit on the PCB
-          // Place the center at the board surface so the model extends upward
-          centerZ = side === "top" ? t : -t
+          // For Y-up models, the model origin is at the pin connection point (bottom of component)
+          // Place at world origin (z = 0) so pins touch the board surface
+          centerZ = 0
         } else {
           // For other orientations, use standard positioning with z-offset
           centerZ =
@@ -670,15 +671,6 @@ export const convertEasyEdaJsonToCircuitJson = (
               ? t + zOff + thicknessAlongWorldZ / 2
               : -t - zOff - thicknessAlongWorldZ / 2
         }
-
-        // // Snap so the model's bottom touches the board surface
-        // // For SMT components, the model has pins extending below the body
-        // // Raise the target position so pin tips (not body bottom) touch the surface
-        // const pinHeightOffset = modelHeight * 0.7 // Pins extend below - raise component
-        // const desiredBottom =
-        //   side === "top" ? +t + pinHeightOffset : -t - pinHeightOffset
-        // const bottomZ = centerZ - thicknessAlongWorldZ / 2
-        // centerZ += desiredBottom - bottomZ
 
         cad.position.z = centerZ
       }
