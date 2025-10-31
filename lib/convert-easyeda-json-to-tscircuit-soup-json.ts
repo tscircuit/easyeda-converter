@@ -634,10 +634,9 @@ export const convertEasyEdaJsonToCircuitJson = (
         }
 
         // For 180° rotated components (Y-up models), the z-offset indicates pin extension below body
-        // We need to subtract this to seat the body on the board
         const USE_Z_OFFSET_FOR_180 = Math.abs(originalZRotation - 180) < 1
         const zOffRaw = cad.position.z ?? 0
-        const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0 // Negative to lower the component
+        const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0
 
         // ---- Determine the vertical extent based on model orientation ----
         const rx = ((cad.rotation.x % 360) + 360) % 360
@@ -661,9 +660,8 @@ export const convertEasyEdaJsonToCircuitJson = (
 
         let centerZ: number
         if (is180RotatedYUp) {
-          // For Y-up models, the model origin is at the pin connection point (bottom of component)
-          // Place at world origin (z = 0) so pins touch the board surface
-          centerZ = 0
+          // For Y-up models, subtract half the thickness to lower the component to the board
+          centerZ = side === "top" ? t - thicknessAlongWorldZ / 2 : -t + thicknessAlongWorldZ / 2
         } else {
           // For other orientations, use standard positioning with z-offset
           centerZ =

@@ -59,4 +59,10 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   ])
 
   await expect(circuitJsonWithBoard).toMatch3dSnapshot(import.meta.path)
+
+  // Add side view snapshot (poppygl y+ is circuit json z+)
+  await expect(circuitJsonWithBoard).toMatch3dSnapshot(
+    import.meta.path.replace(".test", "-side.test"),
+    { camPos: [30, 1, 0] },
+  )
 })
