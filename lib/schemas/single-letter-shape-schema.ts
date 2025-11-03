@@ -331,6 +331,73 @@ export const PathShapeSchema = z
   .transform(parsePath)
   .pipe(PathShapeOutputSchema)
 
+const isColorValue = (value?: string) =>
+  Boolean(
+    value &&
+      (value.startsWith("#") ||
+        value.startsWith("rgb") ||
+        value.startsWith("hsl") ||
+        ["none", "transparent"].includes(value.toLowerCase())),
+  )
+
+const parseFontWeightValue = (fontWeight?: string) => {
+  const normalized = fontWeight?.trim().toLowerCase()
+  if (!normalized)
+    return { fontWeight: "normal" as const, fontStrokeWidth: undefined }
+  if (normalized === "bold" || normalized === "normal") {
+    return {
+      fontWeight: normalized as "bold" | "normal",
+      fontStrokeWidth: undefined,
+    }
+  }
+
+  const numericValue = Number(normalized)
+  if (!Number.isNaN(numericValue)) {
+    return { fontWeight: "normal" as const, fontStrokeWidth: numericValue }
+  }
+
+  return { fontWeight: "normal" as const, fontStrokeWidth: undefined }
+}
+
+const parseFontStyleValue = (fontStyle?: string) =>
+  (fontStyle?.trim().toLowerCase() === "italic" ? "italic" : "normal") as
+    | "normal"
+    | "italic"
+
+const parseFontDecorationValue = (fontDecoration?: string) => {
+  const normalized = fontDecoration?.trim().toLowerCase()
+
+  if (!normalized) {
+    return {
+      fontDecoration: "" as const,
+      textBaseline: undefined as string | undefined,
+    }
+  }
+
+  if (normalized === "underline") {
+    return { fontDecoration: "underline" as const, textBaseline: undefined }
+  }
+
+  const baselineValues = new Set([
+    "top",
+    "middle",
+    "bottom",
+    "center",
+    "baseline",
+  ])
+
+  if (baselineValues.has(normalized)) {
+    return { fontDecoration: "" as const, textBaseline: normalized }
+  }
+
+  return { fontDecoration: "" as const, textBaseline: undefined }
+}
+
+const toNumberOrDefault = (value: string | undefined, defaultValue = 0) => {
+  const parsed = Number(value)
+  return Number.isNaN(parsed) ? defaultValue : parsed
+}
+
 const TextShapeOutputSchema = z.object({
   type: z.literal("TEXT"),
   alignment: z.enum(["L", "C", "R"]),
@@ -339,10 +406,13 @@ const TextShapeOutputSchema = z.object({
   rotation: z.number(),
   fontColor: z.string(),
   backgroundColor: z.string().optional(),
+  fontFamily: z.string().optional(),
   fontSize: z.string(),
-  fontWeight: z.string().optional().default("normal"),
+  fontStrokeWidth: z.number().optional(),
+  fontWeight: z.enum(["normal", "bold"]).optional().default("normal"),
   fontStyle: z.enum(["normal", "italic"]).optional().default("normal"),
-  fontDecoration: z.string().optional().default(""),
+  fontDecoration: z.enum(["", "underline"]).optional().default(""),
+  textBaseline: z.string().optional(),
   content: z.string(),
   textType: z.string(),
   visibility: z.enum(["0", "1"]),
@@ -351,6 +421,7 @@ const TextShapeOutputSchema = z.object({
 })
 
 const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
+  const parts = str.split("~")
   const [
     ,
     alignment,
@@ -358,33 +429,52 @@ const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
     y,
     rotation,
     fontColor,
-    backgroundColor,
+    backgroundColorOrFontFamily,
     fontSize,
     fontWeight,
     fontStyle,
     fontDecoration,
-    content,
     textType,
+    content,
     visibility,
     mirror,
     id,
-  ] = str.split("~")
+  ] = parts
+
+  const { fontWeight: normalizedFontWeight, fontStrokeWidth } =
+    parseFontWeightValue(fontWeight)
+  const normalizedFontStyle = parseFontStyleValue(fontStyle)
+  const { fontDecoration: normalizedDecoration, textBaseline } =
+    parseFontDecorationValue(fontDecoration)
+
+  const backgroundColor = backgroundColorOrFontFamily?.trim()
+  const fontFamily =
+    backgroundColor && !isColorValue(backgroundColor)
+      ? backgroundColor
+      : undefined
+
   return {
     type: "TEXT",
     alignment: alignment as "L" | "C" | "R",
-    x: Number(x),
-    y: Number(y),
-    rotation: Number(rotation),
+    x: toNumberOrDefault(x),
+    y: toNumberOrDefault(y),
+    rotation: toNumberOrDefault(rotation),
     fontColor,
-    backgroundColor: backgroundColor || undefined,
-    fontSize,
-    fontWeight: fontWeight || "normal",
-    fontStyle: (fontStyle || "normal") as "normal" | "italic",
-    fontDecoration: fontDecoration || "",
-    content,
-    textType,
-    visibility: visibility as "0" | "1",
-    mirror,
+    backgroundColor:
+      backgroundColor && isColorValue(backgroundColor)
+        ? backgroundColor
+        : undefined,
+    fontFamily,
+    fontSize: fontSize ?? "",
+    fontStrokeWidth,
+    fontWeight: normalizedFontWeight,
+    fontStyle: normalizedFontStyle,
+    fontDecoration: normalizedDecoration,
+    textBaseline,
+    content: content ?? "",
+    textType: textType ?? "",
+    visibility: (visibility as "0" | "1") ?? "1",
+    mirror: mirror ?? "",
     id,
   }
 }
