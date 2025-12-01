@@ -56,9 +56,9 @@ export async function resolvePoppyglOptions(
     switch (cameraPreset) {
       case "bottom_angled":
         resolvedOpts.camPos = [
-          board.width / 2,
-          -(board.width + board.height) / 2,
-          board.height / 2,
+          board.width! / 2,
+          -(board.width! + board.height!) / 2,
+          board.height! / 2,
         ]
         break
       default:
@@ -68,9 +68,9 @@ export async function resolvePoppyglOptions(
 
   if (!resolvedOpts.camPos && board) {
     resolvedOpts.camPos = [
-      board.width / 2,
-      (board.width + board.height) / 2,
-      board.height / 2,
+      board.width! / 2,
+      (board.width! + board.height!) / 2,
+      board.height! / 2,
     ]
   }
 
