@@ -14,12 +14,11 @@ it("should convert C75749 into typescript file", async () => {
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-    // const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-    const circuitJson = await runTscircuitCode(result)
-  
-    expect(convertCircuitJsonToPcbSvg(circuitJson as any)).toMatchSvgSnapshot(
-      import.meta.path,
-    )
-   expect(circuitJson).toMatch3dSnapshot(import.meta.path)
-}, 20000)
+  // const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const circuitJson = await runTscircuitCode(result)
 
+  expect(convertCircuitJsonToPcbSvg(circuitJson as any)).toMatchSvgSnapshot(
+    import.meta.path,
+  )
+  expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+}, 20000)
