@@ -14,9 +14,9 @@
     "test": "bun test",
     "cli": "bun cli/main.ts",
     "build": "bun build:lib && bun build:cli && bun build:web",
-    "build:lib": "tsup-node lib/index.ts --platform node --format esm --dts --sourcemap",
-    "build:cli": "tsup cli/main.ts --platform node --format cjs --dts --sourcemap",
-    "build:web": "tsup lib/websafe/index.ts --platform browser --format esm --dts --sourcemap -d dist/browser",
+    "build:lib": "tsup-node lib/index.ts --platform node --format esm --dts --sourcemap --external tscircuit",
+    "build:cli": "tsup cli/main.ts --platform node --format cjs --dts --sourcemap --external tscircuit",
+    "build:web": "tsup lib/websafe/index.ts --platform browser --format esm --dts --sourcemap --external tscircuit -d dist/browser",
     "aider": "aider",
     "format:check": "biome format .",
     "format": "biome format . --write",
@@ -43,6 +43,7 @@
     "@tscircuit/circuit-json-util": "^0.0.67",
     "@tscircuit/mm": "^0.0.8",
     "@types/bun": "latest",
+    "tscircuit": "^0.0.1007",
     "bun-match-svg": "^0.0.13",
     "circuit-json-to-gltf": "^0.0.35",
     "looks-same": "^9.0.1",
@@ -52,7 +53,6 @@
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
-    "tscircuit": "^0.0.841",
     "zod": "3"
   }
 }
