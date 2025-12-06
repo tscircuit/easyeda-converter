@@ -3,6 +3,7 @@ import usbCEasyEdaJson from "../assets/usb-c.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/circuit-json-util"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 it("should convert a usb-c footprint (C2765186) to tscircuit soup json", () => {
   const parsedJson = EasyEdaJsonSchema.parse(usbCEasyEdaJson)
@@ -20,5 +21,9 @@ it("should convert a usb-c footprint (C2765186) to tscircuit soup json", () => {
   expect(cadComponents.length).toBe(1)
   expect(cadComponents[0]?.model_obj_url).toContain(
     "modules.easyeda.com/3dmodel",
+  )
+
+  expect(convertCircuitJsonToPcbSvg(soupElements)).toMatchSvgSnapshot(
+    import.meta.path,
   )
 })
