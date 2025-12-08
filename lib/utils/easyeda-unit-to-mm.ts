@@ -27,7 +27,7 @@ export const easyedaUnitToMm = (value: string | number): number => {
   }
 
   console.warn(
-    `[easyeda-converter] Could not parse unit: "${value}", defaulting to 0`
+    `[easyeda-converter] Could not parse unit: "${value}", defaulting to 0`,
   )
   return 0
 }
