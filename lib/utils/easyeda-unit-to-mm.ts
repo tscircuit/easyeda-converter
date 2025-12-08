@@ -7,3 +7,27 @@
  * 1 mil = 25.4/1000 = 0.0254 mm
  */
 export const mil10ToMm = (value: number): number => value * 10 * 0.0254
+
+export const easyedaUnitToMm = (value: string | number): number => {
+  if (typeof value === "number") return value
+
+  const lowerValue = value.toLowerCase().trim()
+
+  if (lowerValue.endsWith("mm")) {
+    return parseFloat(lowerValue)
+  }
+
+  if (lowerValue.endsWith("mil")) {
+    return parseFloat(lowerValue) * 0.0254
+  }
+
+  const parsed = parseFloat(value)
+  if (!isNaN(parsed)) {
+    return parsed
+  }
+
+  console.warn(
+    `[easyeda-converter] Could not parse unit: "${value}", defaulting to 0`
+  )
+  return 0
+}
