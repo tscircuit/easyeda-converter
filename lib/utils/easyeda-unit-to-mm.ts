@@ -6,7 +6,9 @@
  * 1 inch = 25.4 mm
  * 1 mil = 25.4/1000 = 0.0254 mm
  */
-export const mil10ToMm = (value: string | number): number => {
+export const mil10ToMm = (value: number): number => value * 10 * 0.0254
+
+export const easyedaUnitToMm = (value: string | number): number => {
   if (typeof value === "number") return value
 
   const lowerValue = value.toLowerCase().trim()
@@ -29,5 +31,3 @@ export const mil10ToMm = (value: string | number): number => {
   )
   return 0
 }
-
-export const easyedaUnitToMm = mil10ToMm
