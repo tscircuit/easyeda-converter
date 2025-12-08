@@ -16,7 +16,7 @@ export const mil10ToMm = (value: string | number): number => {
   }
 
   if (lowerValue.endsWith("mil")) {
-    return parseFloat(lowerValue) * 10 * 0.0254
+    return parseFloat(lowerValue) * 0.0254
   }
 
   const parsed = parseFloat(value)
