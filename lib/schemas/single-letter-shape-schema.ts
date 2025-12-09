@@ -178,7 +178,7 @@ export const ArcShapeSchema = z
 
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
-  visibility: z.enum(["show", "hide"]),
+  visibility: z.enum(["show", "hide", "none"]),
   pinNumber: z.union([z.string(), z.number()]),
   x: z.number(),
   y: z.number(),
@@ -212,7 +212,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const r = Number.parseFloat(rotation)
   return {
     type: "PIN",
-    visibility: visibility as "show" | "hide",
+    visibility: visibility as "show" | "hide" | "none",
     id,
     pinNumber: Number.isNaN(Number(pinNumber)) ? pinNumber : Number(pinNumber),
     x: Number.parseFloat(x),
