@@ -7,7 +7,7 @@ test("C2848306 should parse successfully with 'none' visibility enum", async () 
   // See: https://github.com/tscircuit/easyeda-converter/pull/338
   const bettereasy = EasyEdaJsonSchema.parse(c2848306)
   expect(bettereasy).toBeDefined()
-  
+
   const circuitJson = convertEasyEdaJsonToCircuitJson(bettereasy)
   expect(circuitJson).toBeDefined()
   expect(circuitJson.length).toBeGreaterThan(0)
