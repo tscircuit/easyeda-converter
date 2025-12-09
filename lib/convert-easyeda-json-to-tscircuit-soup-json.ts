@@ -34,6 +34,7 @@ import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
+import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -232,7 +233,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     if (pad.number) labels.push(pad.number.toString())
 
     const pin = pins.find((p) => p.pinNumber === pad.number)
-    if (pin) labels.push(pin.label)
+    if (pin) labels.push(normalizeSymbolName(pin.label))
 
     return labels
   })
@@ -469,7 +470,7 @@ export const convertEasyEdaJsonToCircuitJson = (
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
           pcb_component_id: "pcb_component_1",
-          text: shape.text,
+          text: normalizeSymbolName(shape.text),
           anchor_position: {
             x: mil2mm(shape.x),
             y: mil2mm(shape.y),
