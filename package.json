@@ -38,9 +38,6 @@
     "easyeda-converter": "./dist/main.cjs",
     "easyeda": "./dist/main.cjs"
   },
-  "dependencies": {
-    "easyeda": "^0.0.233"
-  },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/circuit-json-util": "^0.0.67",
