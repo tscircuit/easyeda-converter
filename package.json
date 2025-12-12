@@ -52,11 +52,11 @@
     "looks-same": "^9.0.1",
     "poppygl": "^0.0.16",
     "transformation-matrix": "^2.16.1",
-    "tsup": "^8.5.0"
+    "tsup": "^8.5.0",
+    "tscircuit": "^0.0.841"
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
-    "tscircuit": "^0.0.841",
     "zod": "3"
   }
 }
