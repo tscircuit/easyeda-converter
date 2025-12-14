@@ -13,10 +13,7 @@
   "scripts": {
     "test": "bun test",
     "cli": "bun cli/main.ts",
-    "build": "bun build:lib && bun build:cli && bun build:web",
-    "build:lib": "tsup-node lib/index.ts --platform node --format esm --dts --sourcemap",
-    "build:cli": "tsup cli/main.ts --platform node --format cjs --dts --sourcemap",
-    "build:web": "tsup lib/websafe/index.ts --platform browser --format esm --dts --sourcemap -d dist/browser",
+    "build": "tsup",
     "aider": "aider",
     "format:check": "biome format .",
     "format": "biome format . --write",
