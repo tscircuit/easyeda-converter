@@ -35,19 +35,19 @@ it("should convert C19795120 into typescript file", async () => {
     }}
           manufacturerPartNumber="A_470533000"
           footprint={<footprint>
-            <hole pcbX="-1.2700000000000955mm" pcbY="-1.4850046000000248mm" diameter="1.2499848mm" />
+            <hole pcbX="-1.2700000000000955mm" pcbY="-1.4850046000000248mm" diameter="1.2499847999999998mm" />
     <platedhole  portHints={["pin1"]} pcbX="3.8099999999999454mm" pcbY="0.6750114000000167mm" outerDiameter="1.7199864000000002mm" holeDiameter="1.0200131999999997mm" shape="circle" />
     <platedhole  portHints={["pin2"]} pcbX="1.2699999999998681mm" pcbY="0.6750114000000167mm" outerDiameter="1.7199864000000002mm" holeDiameter="1.0200131999999997mm" shape="circle" />
     <platedhole  portHints={["pin3"]} pcbX="-1.2700000000000955mm" pcbY="0.6750114000000167mm" outerDiameter="1.7199864000000002mm" holeDiameter="1.0200131999999997mm" shape="circle" />
     <platedhole  portHints={["pin4"]} pcbX="-3.810000000000059mm" pcbY="0.6750114000000167mm" outerDiameter="1.7199864000000002mm" holeDiameter="1.0200131999999997mm" shape="circle" />
-    <silkscreenpath route={[{"x":-5.080000000000041,"y":2.2696488000000272},{"x":5.0799999999998136,"y":2.2696488000000272}]} />
-    <silkscreenpath route={[{"x":-1.9940778000001274,"y":-1.864988599999947},{"x":-5.080000000000041,"y":-1.864988599999947}]} />
-    <silkscreenpath route={[{"x":-5.080000000000041,"y":-1.864988599999947},{"x":-5.080000000000041,"y":3.9770114000000376},{"x":5.0799999999998136,"y":3.9770114000000376},{"x":5.0799999999998136,"y":-1.864988599999947},{"x":-0.5459222000001773,"y":-1.864988599999947}]} />
+    <silkscreenpath route={[{"x":-5.080000000000155,"y":2.2696488000000272},{"x":5.0799999999998136,"y":2.2696488000000272}]} />
+    <silkscreenpath route={[{"x":-1.9940778000000137,"y":-1.864988599999947},{"x":-5.080000000000155,"y":-1.864988599999947}]} />
+    <silkscreenpath route={[{"x":-5.080000000000155,"y":-1.864988599999947},{"x":-5.080000000000155,"y":3.9770114000000376},{"x":5.0799999999998136,"y":3.9770114000000376},{"x":5.0799999999998136,"y":-1.864988599999947},{"x":-0.5459222000001773,"y":-1.864988599999947}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=9a93067adc7a4c82860f56e3024924ad&pn=C19795120",
             rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: -1.1368683772161603e-13, y: 1.0550208000000794, z: -0.7350045999999792 },
+            positionOffset: { x: -1.1368683772161603e-13, y: 1.0550208000000794, z: 2.335004599999979 },
           }}
           {...props}
         />

@@ -41,13 +41,13 @@ it("should convert C2848306 into typescript file", async () => {
     <smtpad portHints={["pin3"]} pcbX="0.6774179999999888mm" pcbY="-0.40005000000000734mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
     <smtpad portHints={["pin4"]} pcbX="0.6774179999999888mm" pcbY="0.40004999999999313mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
     <smtpad portHints={["pin5"]} pcbX="0mm" pcbY="-1.4210854715202004e-14mm" width="0.39999919999999994mm" height="1.0999978mm" shape="rect" />
-    <silkscreenpath route={[{"x":-0.8261857999999904,"y":0.8261857999999904},{"x":0.8262111999999888,"y":0.8261857999999904}]} />
-    <silkscreenpath route={[{"x":-0.8261857999999904,"y":-0.826211200000003},{"x":0.8262111999999888,"y":-0.826211200000003}]} />
+    <silkscreenpath route={[{"x":-0.8261858000000046,"y":0.8261857999999904},{"x":0.826211200000003,"y":0.8261857999999904}]} />
+    <silkscreenpath route={[{"x":-0.8261858000000046,"y":-0.826211200000003},{"x":0.826211200000003,"y":-0.826211200000003}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=09d63d3bb21a495aa100cde68133c9fa&pn=C2848306",
             rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: 0, y: -1.4210854715202004e-14, z: 0.18995550000000638 },
+            positionOffset: { x: 0, y: -1.4210854715202004e-14, z: 1.4100444999999937 },
           }}
           {...props}
         />
