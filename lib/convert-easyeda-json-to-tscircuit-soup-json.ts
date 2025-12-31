@@ -42,14 +42,14 @@ const mil2mm = (mil: number | string) => {
   return mm(mil)
 }
 /**
- * Some components, like paths and "HOLE", seem to use mil*10 as
- * their unlabeled unit
+ * Convert EasyEDA "pixel" units (1 pixel = 10mil = 0.254mm) to mm.
+ * Used for paths, holes, vias, and other unlabeled coordinates.
+ * If string has unit suffix (e.g., "5mm"), parse as-is.
  */
 const milx10 = (mil10: number | string) => {
-  if (typeof mil10 === "number") return mil2mm(mil10) * 10
-  if (mil10.match(/^\d+$/)) return mil2mm(mil10) * 10
-  // If it has a unit, return the specified unit ignoring the multiplier
-  return mil2mm(mil10)
+  if (typeof mil10 === "number") return mil10ToMm(mil10)
+  if (mil10.match(/^\d+$/)) return mil10ToMm(Number(mil10))
+  return mil2mm(mil10) // Has unit suffix, use as-is
 }
 
 const parseCadOffsetsFromSvgNode = (
@@ -670,11 +670,11 @@ export const convertEasyEdaJsonToCircuitJson = (
 
         let centerZ: number
         if (is180RotatedYUp) {
-          // For Y-up models, subtract half the thickness to lower the component to the board
+          // For Y-up models, add half the thickness to place model center above board surface
           centerZ =
             side === "top"
-              ? t - thicknessAlongWorldZ / 2
-              : -t + thicknessAlongWorldZ / 2
+              ? t + thicknessAlongWorldZ / 2
+              : -t - thicknessAlongWorldZ / 2
         } else {
           // For other orientations, use standard positioning with z-offset
           centerZ =
