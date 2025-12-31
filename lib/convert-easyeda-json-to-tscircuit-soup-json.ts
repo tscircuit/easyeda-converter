@@ -60,18 +60,21 @@ const parseCadOffsetsFromSvgNode = (
     .split(",")
     .map((s) => Number(s.trim()))
 
-  // z: bare numbers are mils; strings with units go through mm()
+  // z offset: bare numbers are in pixel units (1px = 10mil = 0.254mm)
+  // EasyEDA convention: negative z = above board, positive z = into board
+  // Our convention (Z-up): positive z = above board
+  // So we flip the sign: z_world = -z_easyeda
   const zStr = attrs.z ?? 0
-  const z_mm =
+  const z_easyeda_mm =
     typeof zStr === "string" && /[a-z]/i.test(zStr)
       ? mm(zStr) // already has units
-      : mm(`${Number(zStr) || 0}mil`) // bare number => mils
+      : mil10ToMm(Number(zStr) || 0) // bare number => pixel units (mil*10)
 
   return {
     position: {
       x: mil10ToMm(Number.isNaN(cx) ? 0 : cx),
       y: mil10ToMm(Number.isNaN(cy) ? 0 : cy),
-      z: Math.max(0, -z_mm), // EasyEDA uses negative up; make it positive up
+      z: -z_easyeda_mm, // Flip sign: EasyEDA negative=up → our positive=up
     },
     rotation: (() => {
       const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
@@ -639,10 +642,9 @@ export const convertEasyEdaJsonToCircuitJson = (
           cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
         }
 
-        // For 180° rotated components (Y-up models), the z-offset indicates pin extension below body
-        const USE_Z_OFFSET_FOR_180 = Math.abs(originalZRotation - 180) < 1
-        const zOffRaw = cad.position.z ?? 0
-        const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0
+        // z-offset from EasyEDA (already converted: negative EasyEDA = positive world)
+        // This offset should be applied to ALL models regardless of rotation
+        const zOff = cad.position.z ?? 0
 
         // ---- Determine the vertical extent based on model orientation ----
         const rx = ((cad.rotation.x % 360) + 360) % 360
@@ -657,7 +659,7 @@ export const convertEasyEdaJsonToCircuitJson = (
           Math.abs(rx) < 1
 
         if (is180RotatedYUp) {
-          // 180° Z-rotation, no X-rotation applied → model is still Y-up
+          // 0°/180°/360° Z-rotation, no X-rotation applied → model is still Y-up
           // For Y-up models, the vertical extent is along Y axis (size.y)
           thicknessAlongWorldZ = cad.size.y
         } else if (rx % 180 === 90) {
@@ -668,20 +670,12 @@ export const convertEasyEdaJsonToCircuitJson = (
           thicknessAlongWorldZ = cad.size.z
         }
 
-        let centerZ: number
-        if (is180RotatedYUp) {
-          // For Y-up models, add half the thickness to place model center above board surface
-          centerZ =
-            side === "top"
-              ? t + thicknessAlongWorldZ / 2
-              : -t - thicknessAlongWorldZ / 2
-        } else {
-          // For other orientations, use standard positioning with z-offset
-          centerZ =
-            side === "top"
-              ? t + zOff + thicknessAlongWorldZ / 2
-              : -t - zOff - thicknessAlongWorldZ / 2
-        }
+        // Position model center above board surface, including z-offset
+        // Formula: board_top + z_offset + half_thickness
+        const centerZ =
+          side === "top"
+            ? t + zOff + thicknessAlongWorldZ / 2
+            : -t - zOff - thicknessAlongWorldZ / 2
 
         cad.position.z = centerZ
       }
