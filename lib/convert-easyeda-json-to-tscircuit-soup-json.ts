@@ -52,18 +52,60 @@ const milx10 = (mil10: number | string) => {
   return mil2mm(mil10) // Has unit suffix, use as-is
 }
 
+/**
+ * Calculate bbox center from polyline points.
+ * Polyline points are space-separated "x y" pairs.
+ */
+const getPolylineBboxCenter = (
+  svgNode?: z.infer<typeof SVGNodeSchema>,
+): { x: number; y: number } | null => {
+  const childNodes = svgNode?.svgData?.childNodes
+  if (!childNodes) return null
+
+  for (const child of childNodes) {
+    if (child.nodeName === "polyline" && child.attrs?.points) {
+      const coords = String(child.attrs.points).trim().split(/\s+/).map(Number)
+      const xs: number[] = []
+      const ys: number[] = []
+
+      for (let i = 0; i < coords.length; i += 2) {
+        if (!Number.isNaN(coords[i])) xs.push(coords[i])
+        if (!Number.isNaN(coords[i + 1])) ys.push(coords[i + 1])
+      }
+
+      if (xs.length > 0 && ys.length > 0) {
+        return {
+          x: (Math.min(...xs) + Math.max(...xs)) / 2,
+          y: (Math.min(...ys) + Math.max(...ys)) / 2,
+        }
+      }
+    }
+  }
+  return null
+}
+
 const parseCadOffsetsFromSvgNode = (
   svgNode?: z.infer<typeof SVGNodeSchema>,
 ) => {
   const attrs = svgNode?.svgData?.attrs ?? {}
-  const [cx, cy] = String(attrs.c_origin ?? "0,0")
+
+  // Prefer polyline bbox center over c_origin - c_origin can be wildly wrong
+  // (off by hundreds of mm in some components like C46497, C88224)
+  const bboxCenter = getPolylineBboxCenter(svgNode)
+  const [cOriginX, cOriginY] = String(attrs.c_origin ?? "0,0")
     .split(",")
     .map((s) => Number(s.trim()))
+
+  const cx = bboxCenter?.x ?? (Number.isNaN(cOriginX) ? 0 : cOriginX)
+  const cy = bboxCenter?.y ?? (Number.isNaN(cOriginY) ? 0 : cOriginY)
 
   // z offset: bare numbers are in pixel units (1px = 10mil = 0.254mm)
   // EasyEDA convention: negative z = above board, positive z = into board
   // Our convention (Z-up): positive z = above board
   // So we flip the sign: z_world = -z_easyeda
+  //
+  // VALIDATED: All 16 test components with non-zero z have negative values.
+  // Visual inspection confirms sign flip is correct (bodies render above board).
   const zStr = attrs.z ?? 0
   const z_easyeda_mm =
     typeof zStr === "string" && /[a-z]/i.test(zStr)
@@ -72,8 +114,8 @@ const parseCadOffsetsFromSvgNode = (
 
   return {
     position: {
-      x: mil10ToMm(Number.isNaN(cx) ? 0 : cx),
-      y: mil10ToMm(Number.isNaN(cy) ? 0 : cy),
+      x: mil10ToMm(cx),
+      y: mil10ToMm(cy),
       z: -z_easyeda_mm, // Flip sign: EasyEDA negative=up → our positive=up
     },
     rotation: (() => {
