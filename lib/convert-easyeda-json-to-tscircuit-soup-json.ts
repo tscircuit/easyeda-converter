@@ -113,6 +113,130 @@ const parseHeightFromTitle = (title: string | undefined): number | null => {
   return null
 }
 
+// ============ 3D Rotation Matrix Utilities ============
+type Mat3 = [[number, number, number], [number, number, number], [number, number, number]]
+
+const toRad = (deg: number) => (deg * Math.PI) / 180
+const toDeg = (rad: number) => (rad * 180) / Math.PI
+
+/** Convert Euler angles (degrees, XYZ order) to 3x3 rotation matrix */
+const eulerToMatrix = (rx: number, ry: number, rz: number): Mat3 => {
+  const cx = Math.cos(toRad(rx)), sx = Math.sin(toRad(rx))
+  const cy = Math.cos(toRad(ry)), sy = Math.sin(toRad(ry))
+  const cz = Math.cos(toRad(rz)), sz = Math.sin(toRad(rz))
+  // Combined: Rz * Ry * Rx
+  return [
+    [cy * cz, sx * sy * cz - cx * sz, cx * sy * cz + sx * sz],
+    [cy * sz, sx * sy * sz + cx * cz, cx * sy * sz - sx * cz],
+    [-sy, sx * cy, cx * cy],
+  ]
+}
+
+/** Extract Euler angles (degrees, XYZ order) from rotation matrix */
+const matrixToEuler = (m: Mat3): { x: number; y: number; z: number } => {
+  let rx: number, ry: number, rz: number
+  if (Math.abs(m[2][0]) < 0.9999) {
+    ry = Math.asin(-m[2][0])
+    rx = Math.atan2(m[2][1], m[2][2])
+    rz = Math.atan2(m[1][0], m[0][0])
+  } else {
+    // Gimbal lock
+    ry = m[2][0] < 0 ? Math.PI / 2 : -Math.PI / 2
+    rx = Math.atan2(m[0][1], m[1][1])
+    rz = 0
+  }
+  return { x: toDeg(rx), y: toDeg(ry), z: toDeg(rz) }
+}
+
+/** Multiply two 3x3 matrices */
+const matMul3x3 = (a: Mat3, b: Mat3): Mat3 => {
+  const r: Mat3 = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      for (let k = 0; k < 3; k++) {
+        r[i][j] += a[i][k] * b[k][j]
+      }
+    }
+  }
+  return r
+}
+
+/**
+ * Apply Y-mirror transformation to rotation.
+ *
+ * When we apply scale(1, -1) to 2D PCB geometry, the 3D equivalent is
+ * M = diag(1, -1, 1). For rotations under reflection: R' = M * R * M
+ * (since M^(-1) = M for reflections).
+ *
+ * This changes rotation handedness - Z rotations invert direction.
+ */
+const applyYMirrorToRotation = (
+  rx: number,
+  ry: number,
+  rz: number,
+): { x: number; y: number; z: number } => {
+  // Mirror matrix: M = diag(1, -1, 1)
+  const M: Mat3 = [
+    [1, 0, 0],
+    [0, -1, 0],
+    [0, 0, 1],
+  ]
+
+  // Convert Euler angles to rotation matrix
+  const R = eulerToMatrix(rx, ry, rz)
+
+  // Apply mirror transform: R' = M * R * M
+  const MR = matMul3x3(M, R)
+  const Rprime = matMul3x3(MR, M)
+
+  // Convert back to Euler angles
+  return matrixToEuler(Rprime)
+}
+
+/**
+ * Determine vertical extent for a Y-up model after rotation.
+ *
+ * EasyEDA models are Y-up, so the "height" dimension is size.y in model space.
+ * After applying rotation, we need to find which world axis the model's Y points to,
+ * then return the corresponding size component.
+ *
+ * @param rotation - Euler angles in degrees (XYZ order) in EasyEDA Y-up space
+ * @param size - Model dimensions {x, y, z} where y is height in model space
+ */
+const getThicknessForYUpModel = (
+  rotation: { x: number; y: number; z: number },
+  size: { x: number; y: number; z: number },
+): number => {
+  // For pure Z-rotation (in-plane rotation), the Y axis stays pointing up
+  // This is the common case: (0,0,0), (0,0,90), (0,0,180), (0,0,270)
+  const rx = rotation.x % 360
+  const ry = rotation.y % 360
+
+  // If there's no X or Y rotation, the model's Y axis still points up
+  // Z-rotation only spins the model in-plane, doesn't affect which axis is vertical
+  if (Math.abs(rx) < 1 && Math.abs(ry) < 1) {
+    return size.y // Model Y is still vertical
+  }
+
+  // For non-trivial rotations, use matrix math to find which local axis is now vertical
+  const R = eulerToMatrix(rotation.x, rotation.y, rotation.z)
+
+  // In Y-up space, world "up" is [0, 1, 0].
+  // R's second row tells us where the model's local axes project onto world Y (up).
+  // R[1][0] = how much local X contributes to world Y
+  // R[1][1] = how much local Y contributes to world Y
+  // R[1][2] = how much local Z contributes to world Y
+
+  const absContributions = [
+    Math.abs(R[1][0]),
+    Math.abs(R[1][1]),
+    Math.abs(R[1][2]),
+  ]
+
+  const maxIdx = absContributions.indexOf(Math.max(...absContributions))
+  return maxIdx === 0 ? size.x : maxIdx === 1 ? size.y : size.z
+}
+
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
   index: number,
@@ -622,71 +746,28 @@ export const convertEasyEdaJsonToCircuitJson = (
           }
         }
 
-        // --- Axis convention: EasyEDA models are typically Y-up ---
-        // Rotate to Z-up so thickness becomes vertical in our scene.
-        const ROTATE_X_FOR_YUP = 90
-        const originalZRotation = (cad.rotation.z ?? 0) % 360
-
-        // Improved rotation handling with tolerance for floating-point precision
-        // Handle different component orientations based on EasyEDA Z rotation
-        if (
-          Math.abs(originalZRotation - 0) < 1 ||
-          Math.abs(originalZRotation - 360) < 1
-        ) {
-          // For ~0° Z rotation, don't apply X rotation - keep model as-is (Y-up)
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
-        } else if (Math.abs(originalZRotation - 180) < 1) {
-          // For ~180° Z rotation, don't apply standard X rotation - let it lie flat
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
-        } else if (Math.abs(originalZRotation - 90) < 1) {
-          // For ~90° Z rotation, keep it flat (no X rotation)
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
-        } else if (Math.abs(originalZRotation - 270) < 1) {
-          // For ~270° Z rotation, apply Y-up to Z-up conversion + corrective Y-rotation
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-          cad.rotation.y = ((cad.rotation.y ?? 0) + 90 + 360) % 360
-        } else {
-          // Fallback for unusual angles: apply standard Y-up to Z-up conversion
-          // and log for potential future refinement
-          console.warn(
-            `[3D] Unusual rotation angle: ${originalZRotation}° for component ${easyEdaJson.lcsc.number}`,
-          )
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-        }
-
-        // Bottom-side parts: flip across the board plane
-        if (side !== "top") {
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
-        }
-
         // z-offset from EasyEDA (already converted: negative EasyEDA = positive world)
-        // This offset should be applied to ALL models regardless of rotation
         const zOff = cad.position.z ?? 0
 
-        // ---- Determine the vertical extent based on model orientation ----
-        const rx = ((cad.rotation.x % 360) + 360) % 360
+        // --- Rotation handling ---
+        // The 2D recentering applies scale(1, -1) which mirrors Y.
+        // We must apply the equivalent basis change to 3D rotation: R' = M * R * M
+        // where M = diag(1, -1, 1). This inverts Z-rotation direction.
+        const mirroredRot = applyYMirrorToRotation(
+          cad.rotation.x,
+          cad.rotation.y,
+          cad.rotation.z,
+        )
+        cad.rotation.x = mirroredRot.x
+        cad.rotation.y = mirroredRot.y
+        cad.rotation.z = mirroredRot.z
 
-        // EasyEDA models are Y-up. Components with 0° or 180° Z-rotation don't get X-rotation applied,
-        // so they remain Y-up. For Y-up models, the vertical extent is along the Y axis.
-        let thicknessAlongWorldZ: number
-        const is180RotatedYUp =
-          (Math.abs(originalZRotation - 180) < 1 ||
-            Math.abs(originalZRotation - 0) < 1 ||
-            Math.abs(originalZRotation - 360) < 1) &&
-          Math.abs(rx) < 1
+        // Determine vertical extent after mirror transform
+        const thicknessAlongWorldZ = getThicknessForYUpModel(cad.rotation, cad.size)
 
-        if (is180RotatedYUp) {
-          // 0°/180°/360° Z-rotation, no X-rotation applied → model is still Y-up
-          // For Y-up models, the vertical extent is along Y axis (size.y)
-          thicknessAlongWorldZ = cad.size.y
-        } else if (rx % 180 === 90) {
-          // X-rotation of 90/270 → use local Y
-          thicknessAlongWorldZ = cad.size.y
-        } else {
-          // Standard case → model rotated to Z-up, use Z
-          thicknessAlongWorldZ = cad.size.z
+        // Bottom-side parts: flip 180° around X
+        if (side !== "top") {
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
         }
 
         // Position model center above board surface, including z-offset
