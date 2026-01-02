@@ -217,43 +217,35 @@ const applyYMirrorToRotation = (
 }
 
 /**
- * Determine vertical extent for a Y-up model after rotation.
+ * Determine vertical extent for a Z-up model after rotation.
  *
- * EasyEDA models are Y-up, so the "height" dimension is size.y in model space.
- * After applying rotation, we need to find which world axis the model's Y points to,
- * then return the corresponding size component.
+ * Our convention: cad.size.z = thickness (vertical extent in world space).
+ * For common case (no X/Y rotation), thickness is simply size.z.
+ * For tilted models, we find which local axis maps to world Z.
  *
- * @param rotation - Euler angles in degrees (XYZ order) in EasyEDA Y-up space
- * @param size - Model dimensions {x, y, z} where y is height in model space
+ * @param rotation - Euler angles in degrees (XYZ order)
+ * @param size - Model dimensions {x, y, z} where z is thickness
  */
-const getThicknessForYUpModel = (
+const getThicknessForZUpModel = (
   rotation: { x: number; y: number; z: number },
   size: { x: number; y: number; z: number },
 ): number => {
-  // For pure Z-rotation (in-plane rotation), the Y axis stays pointing up
-  // This is the common case: (0,0,0), (0,0,90), (0,0,180), (0,0,270)
-  const rx = rotation.x % 360
-  const ry = rotation.y % 360
+  const rx = (rotation.x ?? 0) % 360
+  const ry = (rotation.y ?? 0) % 360
 
-  // If there's no X or Y rotation, the model's Y axis still points up
-  // Z-rotation only spins the model in-plane, doesn't affect which axis is vertical
+  // For pure Z-rotation (in-plane), thickness is simply size.z
   if (Math.abs(rx) < 1 && Math.abs(ry) < 1) {
-    return size.y // Model Y is still vertical
+    return size.z
   }
 
-  // For non-trivial rotations, use matrix math to find which local axis is now vertical
+  // For tilted models, find which local axis maps to world Z
   const R = eulerToMatrix(rotation.x, rotation.y, rotation.z)
 
-  // In Y-up space, world "up" is [0, 1, 0].
-  // R's second row tells us where the model's local axes project onto world Y (up).
-  // R[1][0] = how much local X contributes to world Y
-  // R[1][1] = how much local Y contributes to world Y
-  // R[1][2] = how much local Z contributes to world Y
-
+  // R[2][i] tells us how much local axis i contributes to world Z
   const absContributions = [
-    Math.abs(R[1][0]),
-    Math.abs(R[1][1]),
-    Math.abs(R[1][2]),
+    Math.abs(R[2][0]), // local X → world Z
+    Math.abs(R[2][1]), // local Y → world Z
+    Math.abs(R[2][2]), // local Z → world Z
   ]
 
   const maxIdx = absContributions.indexOf(Math.max(...absContributions))
@@ -788,7 +780,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         cad.rotation.z = mirroredRot.z
 
         // Determine vertical extent after mirror transform
-        const thicknessAlongWorldZ = getThicknessForYUpModel(cad.rotation, cad.size)
+        const thicknessAlongWorldZ = getThicknessForZUpModel(cad.rotation, cad.size)
 
         // Bottom-side parts: flip 180° around X
         if (side !== "top") {
