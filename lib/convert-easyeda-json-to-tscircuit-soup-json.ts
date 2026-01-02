@@ -102,6 +102,17 @@ const readModelHeightMm = (raw: unknown) => {
   return chosen
 }
 
+/** Parse height from title like "R0805_L2.0-W1.3-H0.6" → 0.6mm */
+const parseHeightFromTitle = (title: string | undefined): number | null => {
+  if (!title) return null
+  const match = title.match(/H([\d.]+)/i)
+  if (match) {
+    const val = parseFloat(match[1])
+    if (val > 0 && val < 50) return val // Valid height in mm
+  }
+  return null
+}
+
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
   index: number,
@@ -592,14 +603,22 @@ export const convertEasyEdaJsonToCircuitJson = (
         const side = (pcb_component.layer ?? "top") as "top" | "bottom"
         const t = DEFAULT_PCB_THICKNESS_MM / 2
         const attrs = svgNode?.svgData?.attrs ?? {}
-        const modelHeight = readModelHeightMm(attrs.c_height)
+        const title = attrs.title as string | undefined
+        const heightFromTitle = parseHeightFromTitle(title)
+
+        // c_width/c_height are 2D outline dimensions in pixel units
+        const outlineWidth = mil10ToMm(Number(attrs.c_width) || 0)
+        const outlineHeight = mil10ToMm(Number(attrs.c_height) || 0)
+
+        // Get thickness from title (H...) or fall back to heuristic
+        const thickness = heightFromTitle ?? readModelHeightMm(attrs.c_height)
 
         // Ensure we have a size; Z holds the model's thickness in local space
         if (!cad.size) {
           cad.size = {
-            x: pcb_component.width,
-            y: pcb_component.height,
-            z: modelHeight,
+            x: outlineWidth || pcb_component.width,
+            y: outlineHeight || pcb_component.height,
+            z: thickness,
           }
         }
 
