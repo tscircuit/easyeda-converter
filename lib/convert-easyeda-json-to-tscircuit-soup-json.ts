@@ -83,25 +83,6 @@ const parseCadOffsetsFromSvgNode = (
   }
 }
 
-/** Try mil and mil×10; clamp to a plausible component thickness */
-const readModelHeightMm = (raw: unknown) => {
-  const fallback = 3.5 // typical SMT component height (USB-C, QFN, etc.)
-  if (raw == null) return fallback
-  const n = Number(raw)
-  if (!Number.isFinite(n)) return fallback
-
-  const mmFromMil10 = mil10ToMm(n) // many EasyEDA unlabeled values
-  const mmFromMil = mm(`${n}mil`) // sometimes plain mil
-
-  // Use the larger of the two guesses, but clamp to a plausible thickness
-  const upper = 12 // max reasonable package thickness (mm) - increased for connectors
-  const lower = 0.1
-  let chosen = Math.max(mmFromMil10, mmFromMil)
-  if (chosen > upper || chosen < lower) chosen = fallback
-
-  return chosen
-}
-
 /** Parse height from title like "R0805_L2.0-W1.3-H0.6" → 0.6mm */
 const parseHeightFromTitle = (title: string | undefined): number | null => {
   if (!title) return null
@@ -728,14 +709,16 @@ export const convertEasyEdaJsonToCircuitJson = (
         const t = DEFAULT_PCB_THICKNESS_MM / 2
         const attrs = svgNode?.svgData?.attrs ?? {}
         const title = attrs.title as string | undefined
-        const heightFromTitle = parseHeightFromTitle(title)
 
-        // c_width/c_height are 2D outline dimensions in pixel units
+        // c_width/c_height are 2D outline dimensions (top-view), NOT thickness
         const outlineWidth = mil10ToMm(Number(attrs.c_width) || 0)
         const outlineHeight = mil10ToMm(Number(attrs.c_height) || 0)
 
-        // Get thickness from title (H...) or fall back to heuristic
-        const thickness = heightFromTitle ?? readModelHeightMm(attrs.c_height)
+        // Get thickness from title "H..." value (e.g., "SOT-23_L2.9-W1.3-H1.0")
+        // Do NOT use c_height as thickness - that's the 2D outline height
+        const heightFromTitle = parseHeightFromTitle(title)
+        const DEFAULT_THICKNESS_MM = 1.0 // typical SMD component thickness
+        const thickness = heightFromTitle ?? DEFAULT_THICKNESS_MM
 
         // Ensure we have a size; Z holds the model's thickness in local space
         if (!cad.size) {
