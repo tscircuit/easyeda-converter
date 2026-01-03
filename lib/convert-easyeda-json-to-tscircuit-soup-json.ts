@@ -52,36 +52,69 @@ const milx10 = (mil10: number | string) => {
   return mil2mm(mil10) // Has unit suffix, use as-is
 }
 
+type OutlineBbox = { minX: number; maxX: number; minY: number; maxY: number }
+
 /**
- * Calculate bbox center from polyline points.
- * Polyline points are space-separated "x y" pairs.
+ * Extract numbers from SVG points string.
+ * Supports: "x y x y", "x,y x,y", scientific notation, +/-
+ */
+const extractSvgNumbers = (s: unknown): number[] => {
+  const str = String(s ?? "")
+  const matches = str.match(/[+-]?\d*\.?\d+(?:e[+-]?\d+)?/gi)
+  if (!matches) return []
+  return matches.map((m) => Number(m)).filter((n) => Number.isFinite(n))
+}
+
+/**
+ * Recursively collect point numbers from polyline/polygon elements.
+ */
+const collectOutlinePointNumbers = (node: any, out: number[]) => {
+  if (!node) return
+  const name = node.nodeName
+  if ((name === "polyline" || name === "polygon") && node.attrs?.points) {
+    out.push(...extractSvgNumbers(node.attrs.points))
+  }
+  if (Array.isArray(node.childNodes)) {
+    for (const c of node.childNodes) collectOutlinePointNumbers(c, out)
+  }
+}
+
+/**
+ * Calculate bbox from outline polyline/polygon points.
+ */
+const getPolylineBbox = (
+  svgNode?: z.infer<typeof SVGNodeSchema>,
+): OutlineBbox | null => {
+  const nums: number[] = []
+  collectOutlinePointNumbers({ childNodes: svgNode?.svgData?.childNodes }, nums)
+  if (nums.length < 4) return null
+
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
+  for (let i = 0; i + 1 < nums.length; i += 2) {
+    const x = nums[i]
+    const y = nums[i + 1]
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue
+    if (x < minX) minX = x
+    if (x > maxX) maxX = x
+    if (y < minY) minY = y
+    if (y > maxY) maxY = y
+  }
+  if (!Number.isFinite(minX) || !Number.isFinite(minY)) return null
+  return { minX, maxX, minY, maxY }
+}
+
+/**
+ * Calculate bbox center from outline polyline/polygon points.
  */
 const getPolylineBboxCenter = (
   svgNode?: z.infer<typeof SVGNodeSchema>,
 ): { x: number; y: number } | null => {
-  const childNodes = svgNode?.svgData?.childNodes
-  if (!childNodes) return null
-
-  for (const child of childNodes) {
-    if (child.nodeName === "polyline" && child.attrs?.points) {
-      const coords = String(child.attrs.points).trim().split(/\s+/).map(Number)
-      const xs: number[] = []
-      const ys: number[] = []
-
-      for (let i = 0; i < coords.length; i += 2) {
-        if (!Number.isNaN(coords[i])) xs.push(coords[i])
-        if (!Number.isNaN(coords[i + 1])) ys.push(coords[i + 1])
-      }
-
-      if (xs.length > 0 && ys.length > 0) {
-        return {
-          x: (Math.min(...xs) + Math.max(...xs)) / 2,
-          y: (Math.min(...ys) + Math.max(...ys)) / 2,
-        }
-      }
-    }
-  }
-  return null
+  const bbox = getPolylineBbox(svgNode)
+  if (!bbox) return null
+  return { x: (bbox.minX + bbox.maxX) / 2, y: (bbox.minY + bbox.maxY) / 2 }
 }
 
 const parseCadOffsetsFromSvgNode = (
@@ -217,40 +250,21 @@ const applyYMirrorToRotation = (
 }
 
 /**
- * Determine vertical extent for a Z-up model after rotation.
+ * Get the physical height/thickness for Z placement.
  *
- * Our convention: cad.size.z = thickness (vertical extent in world space).
- * For common case (no X/Y rotation), thickness is simply size.z.
- * For tilted models, we find which local axis maps to world Z.
+ * IMPORTANT: In this converter, cad.size.x/y are derived from EasyEDA's 2D outline
+ * (top view), not from the model's local bounding box axes.
  *
- * @param rotation - Euler angles in degrees (XYZ order)
- * @param size - Model dimensions {x, y, z} where z is thickness
+ * cad.size.z is derived from the physical package height (e.g. "H3.3" in titles)
+ * and is the only reliable vertical extent for Z placement.
+ *
+ * Therefore: always use size.z as the height/thickness for CAD Z positioning,
+ * regardless of rotation.
  */
 const getThicknessForZUpModel = (
-  rotation: { x: number; y: number; z: number },
+  _rotation: { x: number; y: number; z: number },
   size: { x: number; y: number; z: number },
-): number => {
-  const rx = (rotation.x ?? 0) % 360
-  const ry = (rotation.y ?? 0) % 360
-
-  // For pure Z-rotation (in-plane), thickness is simply size.z
-  if (Math.abs(rx) < 1 && Math.abs(ry) < 1) {
-    return size.z
-  }
-
-  // For tilted models, find which local axis maps to world Z
-  const R = eulerToMatrix(rotation.x, rotation.y, rotation.z)
-
-  // R[2][i] tells us how much local axis i contributes to world Z
-  const absContributions = [
-    Math.abs(R[2][0]), // local X → world Z
-    Math.abs(R[2][1]), // local Y → world Z
-    Math.abs(R[2][2]), // local Z → world Z
-  ]
-
-  const maxIdx = absContributions.indexOf(Math.max(...absContributions))
-  return maxIdx === 0 ? size.x : maxIdx === 1 ? size.y : size.z
-}
+): number => size.z
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
@@ -265,7 +279,7 @@ const handleSilkscreenPath = (
       x: milx10(point.x),
       y: milx10(point.y),
     })),
-    stroke_width: mil10ToMm(track.width),
+    stroke_width: milx10(track.width),
   })
 }
 
@@ -289,7 +303,7 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
       x: milx10(p.x),
       y: milx10(p.y),
     })),
-    stroke_width: mil10ToMm(arc.width),
+    stroke_width: milx10(arc.width),
   } as Soup.PcbSilkscreenPathInput)
 }
 
@@ -744,9 +758,17 @@ export const convertEasyEdaJsonToCircuitJson = (
         const attrs = svgNode?.svgData?.attrs ?? {}
         const title = attrs.title as string | undefined
 
-        // c_width/c_height are 2D outline dimensions (top-view), NOT thickness
-        const outlineWidth = mil10ToMm(Number(attrs.c_width) || 0)
-        const outlineHeight = mil10ToMm(Number(attrs.c_height) || 0)
+        // c_width/c_height are 2D outline dimensions (top-view), NOT thickness.
+        // If missing/0, fall back to computing from the outline3D polyline bbox.
+        const outlineBbox = getPolylineBbox(svgNode)
+        const rawOutlineWidth =
+          Number(attrs.c_width) ||
+          (outlineBbox ? outlineBbox.maxX - outlineBbox.minX : 0)
+        const rawOutlineHeight =
+          Number(attrs.c_height) ||
+          (outlineBbox ? outlineBbox.maxY - outlineBbox.minY : 0)
+        const outlineWidth = mil10ToMm(rawOutlineWidth)
+        const outlineHeight = mil10ToMm(rawOutlineHeight)
 
         // Get thickness from title "H..." value (e.g., "SOT-23_L2.9-W1.3-H1.0")
         // Do NOT use c_height as thickness - that's the 2D outline height
@@ -761,6 +783,9 @@ export const convertEasyEdaJsonToCircuitJson = (
             y: outlineHeight || pcb_component.height,
             z: thickness,
           }
+        } else if (!cad.size.z || cad.size.z === 0) {
+          // Ensure z is always populated with physical thickness
+          cad.size.z = thickness
         }
 
         // z-offset from EasyEDA (already converted: negative EasyEDA = positive world)
