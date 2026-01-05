@@ -161,11 +161,14 @@ const parseCadOffsetsFromSvgNode = (
 /** Parse height from title like "R0805_L2.0-W1.3-H0.6" → 0.6mm */
 const parseHeightFromTitle = (title: string | undefined): number | null => {
   if (!title) return null
-  const match = title.match(/H([\d.]+)/i)
-  if (match) {
-    const val = parseFloat(match[1])
-    if (val > 0 && val < 50) return val // Valid height in mm
-  }
+  // Only match explicit dimension tokens: "-H1.7", "_H1.7", "H=1.7", "H:1.7"
+  // Avoids false matches like "CH32..." where H is part of another word
+  const match = title.match(
+    /(?:^|[-_])H(?:=|:)?\s*([0-9]+(?:\.[0-9]+)?)(?=$|[-_])/i,
+  )
+  if (!match) return null
+  const val = parseFloat(match[1])
+  if (Number.isFinite(val) && val > 0 && val < 50) return val
   return null
 }
 
