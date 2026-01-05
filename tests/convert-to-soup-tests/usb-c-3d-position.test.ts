@@ -8,7 +8,9 @@ test("USB-C connector should be positioned on board (not floating below)", async
   const circuitJson = convertEasyEdaJsonToCircuitJson(bettereasy)
 
   // Check that cad_component z position is >= 0 (on or above board)
-  const cadComponent = circuitJson.find((e) => e.type === "cad_component") as any
+  const cadComponent = circuitJson.find(
+    (e) => e.type === "cad_component",
+  ) as any
   expect(cadComponent).toBeDefined()
   expect(cadComponent.position.z).toBeGreaterThanOrEqual(0)
 

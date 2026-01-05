@@ -170,16 +170,23 @@ const parseHeightFromTitle = (title: string | undefined): number | null => {
 }
 
 // ============ 3D Rotation Matrix Utilities ============
-type Mat3 = [[number, number, number], [number, number, number], [number, number, number]]
+type Mat3 = [
+  [number, number, number],
+  [number, number, number],
+  [number, number, number],
+]
 
 const toRad = (deg: number) => (deg * Math.PI) / 180
 const toDeg = (rad: number) => (rad * 180) / Math.PI
 
 /** Convert Euler angles (degrees, XYZ order) to 3x3 rotation matrix */
 const eulerToMatrix = (rx: number, ry: number, rz: number): Mat3 => {
-  const cx = Math.cos(toRad(rx)), sx = Math.sin(toRad(rx))
-  const cy = Math.cos(toRad(ry)), sy = Math.sin(toRad(ry))
-  const cz = Math.cos(toRad(rz)), sz = Math.sin(toRad(rz))
+  const cx = Math.cos(toRad(rx)),
+    sx = Math.sin(toRad(rx))
+  const cy = Math.cos(toRad(ry)),
+    sy = Math.sin(toRad(ry))
+  const cz = Math.cos(toRad(rz)),
+    sz = Math.sin(toRad(rz))
   // Combined: Rz * Ry * Rx
   return [
     [cy * cz, sx * sy * cz - cx * sz, cx * sy * cz + sx * sz],
@@ -206,7 +213,11 @@ const matrixToEuler = (m: Mat3): { x: number; y: number; z: number } => {
 
 /** Multiply two 3x3 matrices */
 const matMul3x3 = (a: Mat3, b: Mat3): Mat3 => {
-  const r: Mat3 = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+  const r: Mat3 = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ]
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
       for (let k = 0; k < 3; k++) {
@@ -805,7 +816,10 @@ export const convertEasyEdaJsonToCircuitJson = (
         cad.rotation.z = mirroredRot.z
 
         // Determine vertical extent after mirror transform
-        const thicknessAlongWorldZ = getThicknessForZUpModel(cad.rotation, cad.size)
+        const thicknessAlongWorldZ = getThicknessForZUpModel(
+          cad.rotation,
+          cad.size,
+        )
 
         // Bottom-side parts: flip 180° around X
         if (side !== "top") {
