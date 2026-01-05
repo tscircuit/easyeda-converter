@@ -122,15 +122,15 @@ const parseCadOffsetsFromSvgNode = (
 ) => {
   const attrs = svgNode?.svgData?.attrs ?? {}
 
-  // Prefer polyline bbox center over c_origin - c_origin can be wildly wrong
-  // (off by hundreds of mm in some components like C46497, C88224)
+  // Use bbox center for XY positioning - more reliable than c_origin which
+  // can have arbitrary offsets that don't correspond to the visual center.
   const bboxCenter = getPolylineBboxCenter(svgNode)
   const [cOriginX, cOriginY] = String(attrs.c_origin ?? "0,0")
     .split(",")
     .map((s) => Number(s.trim()))
 
-  const cx = bboxCenter?.x ?? (Number.isNaN(cOriginX) ? 0 : cOriginX)
-  const cy = bboxCenter?.y ?? (Number.isNaN(cOriginY) ? 0 : cOriginY)
+  const cx = bboxCenter?.x ?? (Number.isFinite(cOriginX) ? cOriginX : 0)
+  const cy = bboxCenter?.y ?? (Number.isFinite(cOriginY) ? cOriginY : 0)
 
   // z offset: bare numbers are in pixel units (1px = 10mil = 0.254mm)
   // EasyEDA convention: negative z = above board, positive z = into board
