@@ -14,6 +14,15 @@ test("USB-C connector should be positioned on board (not floating below)", async
   expect(cadComponent).toBeDefined()
   expect(cadComponent.position.z).toBeGreaterThanOrEqual(0)
 
+  circuitJson.push({
+    type: "pcb_board",
+    pcb_board_id: "pcb_board_0",
+    center: { x: 0, y: 0 },
+    width: 10,
+    height: 10,
+    thickness: 1.4,
+  })
+
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
