@@ -818,25 +818,17 @@ export const convertEasyEdaJsonToCircuitJson = (
         cad.rotation.y = mirroredRot.y
         cad.rotation.z = mirroredRot.z
 
-        // Determine vertical extent after mirror transform
-        const thicknessAlongWorldZ = getThicknessForZUpModel(
-          cad.rotation,
-          cad.size,
-        )
-
         // Bottom-side parts: flip 180° around X
         if (side !== "top") {
           cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
         }
 
-        // Position model center above board surface, including z-offset
-        // Formula: board_top + z_offset + half_thickness
-        const centerZ =
-          side === "top"
-            ? t + zOff + thicknessAlongWorldZ / 2
-            : -t - zOff - thicknessAlongWorldZ / 2
-
-        cad.position.z = centerZ
+        // IMPORTANT:
+        // EasyEDA's `attrs.z` already positions the *model origin* relative to the PCB surface.
+        //
+        // Our convention: board is centered at Z=0 => top surface at +t, bottom at -t.
+        const originZ = side === "top" ? t + zOff : -t - zOff
+        cad.position.z = originZ
       }
     }
 

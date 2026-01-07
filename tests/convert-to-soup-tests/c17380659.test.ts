@@ -3,7 +3,7 @@ import { expect, test } from "bun:test"
 import { convertEasyEdaJsonToCircuitJson, EasyEdaJsonSchema } from "lib/index"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
-test.skip("C17380659 should convert to Circuit Json correctly", async () => {
+test("C17380659 should convert to Circuit Json correctly", async () => {
   const easyeda = EasyEdaJsonSchema.parse(c17380659)
   const circuitJson = convertEasyEdaJsonToCircuitJson(easyeda).concat([
     {
