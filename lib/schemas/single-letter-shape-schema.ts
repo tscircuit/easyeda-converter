@@ -194,7 +194,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const parts = pinString.split("~")
   const [, visibility, , pinNumber, x, y, rotation, id] = parts
 
-  const nameMatch = pinString.match(/~([\w+-]+)~(start|end)~/)
+  const nameMatch = pinString.match(/~([\w+#-]+)~(start|end)~/)
   let label = nameMatch ? nameMatch[1] : ""
   if (label.endsWith("+")) label = label.slice(0, -1) + "_POS"
   if (label.endsWith("-")) label = label.slice(0, -1) + "_NEG"
