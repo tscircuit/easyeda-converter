@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [1, 2, 3]
 
     steps:
       - name: Checkout code
@@ -19,5 +23,21 @@ jobs:
       - name: Install dependencies
         run: bun i
 
-      - name: Test
-        run: bun test --timeout 60_000
+      - name: Install bun-test-plan
+        run: npm install -g @tscircuit/bun-test-plan
+
+      - name: Generate test plans
+        run: bun-test-plan
+
+      - name: Run tests for node ${{ matrix.node }}
+        run: |
+          mapfile -t test_files < .bun-test-plan/testplans/testplan${{ matrix.node }}.txt
+          bun test "${test_files[@]}" --timeout 60_000
+
+      - name: Upload diff PNG artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: diff-png-artifacts-node${{ matrix.node }}
+          path: |
+            **/*.diff.png

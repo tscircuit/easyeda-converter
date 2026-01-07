@@ -15,3 +15,4 @@ search-result.json
 playwright-report
 test-results
 *.glb
+.bun-test-plan/

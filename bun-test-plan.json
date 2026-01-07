@@ -1,0 +1,4 @@
+{
+  "nodeCount": 3,
+  "globPatterns": ["tests/**/*.test.{ts,tsx}"]
+}
