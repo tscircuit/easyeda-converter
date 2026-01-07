@@ -8,11 +8,11 @@ const rtsHashPinStr =
 const eHashPinStr =
   "P~show~0~6~330~280~180~gge325~0^^330~280^^M 330 280 h 10~#880000^^1~343.7~284~0~E#~start~~~#0000FF^^1~339.5~279~0~6~end~~~#0000FF^^0~337~280^^0~M 340 283 L 343 280 L 340 277"
 
-it("parses pin labels with trailing # (active-low signals)", () => {
+it("strips trailing # from pin labels (active-low signals)", () => {
   const resetPin = PinShapeSchema.parse(resetHashPinStr)
   const rtsPin = PinShapeSchema.parse(rtsHashPinStr)
   const ePin = PinShapeSchema.parse(eHashPinStr)
-  expect(resetPin.label).toBe("RESET#")
-  expect(rtsPin.label).toBe("RTS#")
-  expect(ePin.label).toBe("E#")
+  expect(resetPin.label).toBe("RESET")
+  expect(rtsPin.label).toBe("RTS")
+  expect(ePin.label).toBe("E")
 })
