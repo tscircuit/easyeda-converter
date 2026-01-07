@@ -133,12 +133,8 @@ const parseCadOffsetsFromSvgNode = (
   const cy = bboxCenter?.y ?? (Number.isFinite(cOriginY) ? cOriginY : 0)
 
   // z offset: bare numbers are in pixel units (1px = 10mil = 0.254mm)
-  // EasyEDA convention: negative z = above board, positive z = into board
-  // Our convention (Z-up): positive z = above board
-  // So we flip the sign: z_world = -z_easyeda
-  //
-  // VALIDATED: All 16 test components with non-zero z have negative values.
-  // Visual inspection confirms sign flip is correct (bodies render above board).
+  // Keep EasyEDA's Z sign as-is. In the assets, non-zero Z is frequently negative and
+  // (empirically) corresponds to "down into the PCB" for through-hole / tall parts.
   const zStr = attrs.z ?? 0
   const z_easyeda_mm =
     typeof zStr === "string" && /[a-z]/i.test(zStr)
@@ -149,7 +145,7 @@ const parseCadOffsetsFromSvgNode = (
     position: {
       x: mil10ToMm(cx),
       y: mil10ToMm(cy),
-      z: -z_easyeda_mm, // Flip sign: EasyEDA negative=up → our positive=up
+      z: z_easyeda_mm, // Keep EasyEDA's Z as-is
     },
     rotation: (() => {
       const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
