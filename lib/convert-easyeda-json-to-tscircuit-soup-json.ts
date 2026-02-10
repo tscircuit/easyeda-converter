@@ -1,39 +1,39 @@
-import type {
-  PadSchema,
-  TrackSchema,
-  ArcSchema,
-  SVGNodeSchema,
-  HoleSchema,
-  ViaSchema,
-  SolidRegionSchema,
-} from "./schemas/package-detail-shape-schema"
-import type { z } from "zod"
-import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
-import type {
-  AnyCircuitElement,
-  PcbSmtPad,
-  PcbViaInput,
-  PcbComponentInput,
-} from "circuit-json"
-import {
-  any_source_component,
-  pcb_smtpad,
-  pcb_silkscreen_path,
-  pcb_plated_hole,
-  pcb_hole,
-  pcb_via,
-} from "circuit-json"
-import * as Soup from "circuit-json"
-import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import {
   findBoundsAndCenter,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
-import { compose, scale, translate, applyToPoint } from "transformation-matrix"
-import { mm } from "@tscircuit/mm"
-import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
+import { mm } from "@tscircuit/mm"
+import type {
+  AnyCircuitElement,
+  PcbComponentInput,
+  PcbSmtPad,
+  PcbViaInput,
+} from "circuit-json"
+import {
+  any_source_component,
+  pcb_hole,
+  pcb_plated_hole,
+  pcb_silkscreen_path,
+  pcb_smtpad,
+  pcb_via,
+} from "circuit-json"
+import * as Soup from "circuit-json"
+import { applyToPoint, compose, scale, translate } from "transformation-matrix"
+import type { z } from "zod"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
+import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
+import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
+import type {
+  ArcSchema,
+  HoleSchema,
+  PadSchema,
+  SVGNodeSchema,
+  SolidRegionSchema,
+  TrackSchema,
+  ViaSchema,
+} from "./schemas/package-detail-shape-schema"
+import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 
 const mil2mm = (mil: number | string) => {
