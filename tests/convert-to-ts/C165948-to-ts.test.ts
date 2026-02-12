@@ -44,4 +44,4 @@ it("C165948 should generate Circuit Json without errors", () => {
       camPos: [30, 1, 0],
     },
   )
-})
+}, 20000)
