@@ -659,7 +659,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         if (is180RotatedYUp) {
           // 180° Z-rotation, no X-rotation applied → model is still Y-up
           // For Y-up models, the vertical extent is along Y axis (size.y)
-          thicknessAlongWorldZ = cad.size.y
+          thicknessAlongWorldZ = cad.size.z
         } else if (rx % 180 === 90) {
           // X-rotation of 90/270 → use local Y
           thicknessAlongWorldZ = cad.size.y
@@ -683,7 +683,7 @@ export const convertEasyEdaJsonToCircuitJson = (
               : -t - zOff - thicknessAlongWorldZ / 2
         }
 
-        cad.position.z = centerZ
+        cad.position.z = 0
       }
     }
 
