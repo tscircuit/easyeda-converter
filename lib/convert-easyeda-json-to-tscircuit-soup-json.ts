@@ -94,7 +94,10 @@ const readModelHeightMm = (raw: unknown) => {
   const upper = 12 // max reasonable package thickness (mm) - increased for connectors
   const lower = 0.1
   let chosen = Math.max(mmFromMil10, mmFromMil)
-  if (chosen > upper || chosen < lower) chosen = fallback
+  // If mil*10 interpretation is out of bounds, try plain mil before falling back
+  if (chosen > upper || chosen < lower) {
+    chosen = mmFromMil >= lower && mmFromMil <= upper ? mmFromMil : fallback
+  }
 
   return chosen
 }
@@ -657,9 +660,13 @@ export const convertEasyEdaJsonToCircuitJson = (
           Math.abs(rx) < 1
 
         if (is180RotatedYUp) {
-          // 180° Z-rotation, no X-rotation applied → model is still Y-up
-          // For Y-up models, the vertical extent is along Y axis (size.y)
-          thicknessAlongWorldZ = cad.size.y
+          // 0°/180° Z-rotation, no X-rotation applied → model is still Y-up
+          // Footprint height (cad.size.y) is normally a good proxy for model
+          // thickness. But for flat ICs like LQFP whose footprint is much
+          // wider than their body is tall, it grossly overestimates.
+          // Fall back to modelHeight only when the ratio is extreme.
+          thicknessAlongWorldZ =
+            cad.size.y > modelHeight * 4 ? modelHeight : cad.size.y
         } else if (rx % 180 === 90) {
           // X-rotation of 90/270 → use local Y
           thicknessAlongWorldZ = cad.size.y
