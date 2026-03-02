@@ -1,39 +1,39 @@
-import type {
-  PadSchema,
-  TrackSchema,
-  ArcSchema,
-  SVGNodeSchema,
-  HoleSchema,
-  ViaSchema,
-  SolidRegionSchema,
-} from "./schemas/package-detail-shape-schema"
-import type { z } from "zod"
-import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
-import type {
-  AnyCircuitElement,
-  PcbSmtPad,
-  PcbViaInput,
-  PcbComponentInput,
-} from "circuit-json"
-import {
-  any_source_component,
-  pcb_smtpad,
-  pcb_silkscreen_path,
-  pcb_plated_hole,
-  pcb_hole,
-  pcb_via,
-} from "circuit-json"
-import * as Soup from "circuit-json"
-import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import {
   findBoundsAndCenter,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
-import { compose, scale, translate, applyToPoint } from "transformation-matrix"
-import { mm } from "@tscircuit/mm"
-import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
+import { mm } from "@tscircuit/mm"
+import type {
+  AnyCircuitElement,
+  PcbComponentInput,
+  PcbSmtPad,
+  PcbViaInput,
+} from "circuit-json"
+import {
+  any_source_component,
+  pcb_hole,
+  pcb_plated_hole,
+  pcb_silkscreen_path,
+  pcb_smtpad,
+  pcb_via,
+} from "circuit-json"
+import * as Soup from "circuit-json"
+import { applyToPoint, compose, scale, translate } from "transformation-matrix"
+import type { z } from "zod"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
+import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
+import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
+import type {
+  ArcSchema,
+  HoleSchema,
+  PadSchema,
+  SVGNodeSchema,
+  SolidRegionSchema,
+  TrackSchema,
+  ViaSchema,
+} from "./schemas/package-detail-shape-schema"
+import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 
 const mil2mm = (mil: number | string) => {
@@ -60,18 +60,19 @@ const parseCadOffsetsFromSvgNode = (
     .split(",")
     .map((s) => Number(s.trim()))
 
-  // z: bare numbers are mils; strings with units go through mm()
+  // z: bare numbers are in pixel units (1px = 10mil = 0.254mm)
+  // Keep EasyEDA's Z as-is for proper positioning relative to board surface
   const zStr = attrs.z ?? 0
   const z_mm =
     typeof zStr === "string" && /[a-z]/i.test(zStr)
       ? mm(zStr) // already has units
-      : mm(`${Number(zStr) || 0}mil`) // bare number => mils
+      : mil10ToMm(Number(zStr) || 0) // bare number => pixel units (mil*10)
 
   return {
     position: {
       x: mil10ToMm(Number.isNaN(cx) ? 0 : cx),
       y: mil10ToMm(Number.isNaN(cy) ? 0 : cy),
-      z: Math.max(0, -z_mm), // EasyEDA uses negative up; make it positive up
+      z: z_mm, // Keep as-is, will be positioned relative to board surface
     },
     rotation: (() => {
       const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
@@ -668,20 +669,10 @@ export const convertEasyEdaJsonToCircuitJson = (
           thicknessAlongWorldZ = cad.size.z
         }
 
-        let centerZ: number
-        if (is180RotatedYUp) {
-          // For Y-up models, subtract half the thickness to lower the component to the board
-          centerZ =
-            side === "top"
-              ? t - thicknessAlongWorldZ / 2
-              : -t + thicknessAlongWorldZ / 2
-        } else {
-          // For other orientations, use standard positioning with z-offset
-          centerZ =
-            side === "top"
-              ? t + zOff + thicknessAlongWorldZ / 2
-              : -t - zOff - thicknessAlongWorldZ / 2
-        }
+        // Simplified Z positioning: position the model origin relative to board surface
+        // EasyEDA's z-offset already accounts for the model's local origin
+        // Board surface is at +t for top side, -t for bottom side
+        const centerZ = side === "top" ? t + zOff : -t - zOff
 
         cad.position.z = centerZ
       }
