@@ -19,6 +19,7 @@ import {
   any_source_component,
   pcb_smtpad,
   pcb_silkscreen_path,
+  pcb_courtyard_outline,
   pcb_plated_hole,
   pcb_hole,
   pcb_via,
@@ -116,6 +117,23 @@ const handleSilkscreenPath = (
   })
 }
 
+const handleCourtyardPath = (
+  track: z.infer<typeof TrackSchema>,
+  index: number,
+) => {
+  return pcb_courtyard_outline.parse({
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: `pcb_courtyard_outline_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: "top",
+    outline: track.points.map((point) => ({
+      x: milx10(point.x),
+      y: milx10(point.y),
+    })),
+    stroke_width: mil10ToMm(track.width),
+  })
+}
+
 const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
   const arcPath = generateArcFromSweep(
     arc.start.x,
@@ -138,6 +156,30 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     })),
     stroke_width: mil10ToMm(arc.width),
   } as Soup.PcbSilkscreenPathInput)
+}
+
+const handleCourtyardArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
+  const arcPath = generateArcFromSweep(
+    arc.start.x,
+    arc.start.y,
+    arc.end.x,
+    arc.end.y,
+    arc.radiusX,
+    arc.largeArc,
+    arc.sweepDirection === "CW",
+  )
+
+  return pcb_courtyard_outline.parse({
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: `pcb_courtyard_arc_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: "top",
+    outline: arcPath.map((p) => ({
+      x: milx10(p.x),
+      y: milx10(p.y),
+    })),
+    stroke_width: mil10ToMm(arc.width),
+  })
 }
 
 const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
@@ -461,9 +503,17 @@ export const convertEasyEdaJsonToCircuitJson = (
   // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
-      circuitElements.push(handleSilkscreenPath(shape, index))
+      if (shape.layer === 12) {
+        circuitElements.push(handleCourtyardPath(shape, index))
+      } else {
+        circuitElements.push(handleSilkscreenPath(shape, index))
+      }
     } else if (shape.type === "ARC") {
-      circuitElements.push(handleSilkscreenArc(shape, index))
+      if (shape.layer === 12) {
+        circuitElements.push(handleCourtyardArc(shape, index))
+      } else {
+        circuitElements.push(handleSilkscreenArc(shape, index))
+      }
     } else if (shape.type === "TEXT") {
       circuitElements.push(
         Soup.pcb_silkscreen_text.parse({
@@ -495,6 +545,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       e.type === "pcb_hole" ||
       e.type === "pcb_via" ||
       e.type === "pcb_silkscreen_path" ||
+      e.type === "pcb_courtyard_outline" ||
       e.type === "pcb_silkscreen_text",
   )
 
