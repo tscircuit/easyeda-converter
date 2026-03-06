@@ -17,6 +17,7 @@ import type {
 } from "circuit-json"
 import {
   any_source_component,
+  pcb_courtyard_outline,
   pcb_smtpad,
   pcb_silkscreen_path,
   pcb_plated_hole,
@@ -116,6 +117,33 @@ const handleSilkscreenPath = (
   })
 }
 
+const getDrawingKindFromLayer = (layer?: number) => {
+  if (layer === 13 || layer === 14) return "courtyard"
+  return "silkscreen"
+}
+
+const getSideFromLayer = (layer?: number): "top" | "bottom" => {
+  if (layer === 4 || layer === 14) return "bottom"
+  return "top"
+}
+
+const handleCourtyardPath = (
+  track: z.infer<typeof TrackSchema>,
+  index: number,
+) => {
+  return pcb_courtyard_outline.parse({
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: `pcb_courtyard_outline_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: getSideFromLayer(track.layer),
+    outline: track.points.map((point) => ({
+      x: milx10(point.x),
+      y: milx10(point.y),
+    })),
+    stroke_width: mil10ToMm(track.width),
+  })
+}
+
 const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
   const arcPath = generateArcFromSweep(
     arc.start.x,
@@ -138,6 +166,30 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     })),
     stroke_width: mil10ToMm(arc.width),
   } as Soup.PcbSilkscreenPathInput)
+}
+
+const handleCourtyardArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
+  const arcPath = generateArcFromSweep(
+    arc.start.x,
+    arc.start.y,
+    arc.end.x,
+    arc.end.y,
+    arc.radiusX,
+    arc.largeArc,
+    arc.sweepDirection === "CW",
+  )
+
+  return pcb_courtyard_outline.parse({
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: `pcb_courtyard_arc_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: getSideFromLayer(arc.layer),
+    outline: arcPath.map((p) => ({
+      x: milx10(p.x),
+      y: milx10(p.y),
+    })),
+    stroke_width: mil10ToMm(arc.width),
+  })
 }
 
 const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
@@ -461,10 +513,21 @@ export const convertEasyEdaJsonToCircuitJson = (
   // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
-      circuitElements.push(handleSilkscreenPath(shape, index))
+      const drawingKind = getDrawingKindFromLayer(shape.layer)
+      circuitElements.push(
+        drawingKind === "courtyard"
+          ? handleCourtyardPath(shape, index)
+          : handleSilkscreenPath(shape, index),
+      )
     } else if (shape.type === "ARC") {
-      circuitElements.push(handleSilkscreenArc(shape, index))
+      const drawingKind = getDrawingKindFromLayer(shape.layer)
+      circuitElements.push(
+        drawingKind === "courtyard"
+          ? handleCourtyardArc(shape, index)
+          : handleSilkscreenArc(shape, index),
+      )
     } else if (shape.type === "TEXT") {
+      if (getDrawingKindFromLayer(shape.layer) === "courtyard") return
       circuitElements.push(
         Soup.pcb_silkscreen_text.parse({
           type: "pcb_silkscreen_text",
@@ -494,6 +557,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       e.type === "pcb_plated_hole" ||
       e.type === "pcb_hole" ||
       e.type === "pcb_via" ||
+      e.type === "pcb_courtyard_outline" ||
       e.type === "pcb_silkscreen_path" ||
       e.type === "pcb_silkscreen_text",
   )

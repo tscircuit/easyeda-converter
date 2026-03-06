@@ -11,6 +11,7 @@ export const generateFootprintTsx = (
   const vias = su(circuitJson).pcb_via.list()
   const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
   const silkscreenTexts = su(circuitJson).pcb_silkscreen_text.list()
+  const courtyardOutlines = su(circuitJson).pcb_courtyard_outline.list()
 
   const elementStrings: string[] = []
 
@@ -76,6 +77,12 @@ export const generateFootprintTsx = (
   for (const silkscreenText of silkscreenTexts) {
     elementStrings.push(
       `<silkscreentext text="${silkscreenText.text}" pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}" ${silkscreenText.font_size ? `fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,
+    )
+  }
+
+  for (const courtyardOutline of courtyardOutlines) {
+    elementStrings.push(
+      `<courtyardoutline points={${JSON.stringify(courtyardOutline.outline)}} />`,
     )
   }
 
