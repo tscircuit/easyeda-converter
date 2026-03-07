@@ -118,7 +118,7 @@ const handleSilkscreenPath = (
 }
 
 const getDrawingKindFromLayer = (layer?: number) => {
-  if (layer === 13 || layer === 14) return "courtyard"
+  if (layer === 13 || layer === 14 || layer === 15) return "courtyard"
   return "silkscreen"
 }
 
