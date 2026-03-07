@@ -635,6 +635,8 @@ export const convertEasyEdaJsonToCircuitJson = (
           }
         } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
           e.points = e.points.map((p) => applyToPoint(matrix, p))
+        } else if (e.type === "pcb_courtyard_outline") {
+          e.outline = e.outline.map((p) => applyToPoint(matrix, p))
         }
       }
 
