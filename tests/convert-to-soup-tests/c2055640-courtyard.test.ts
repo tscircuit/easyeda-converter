@@ -20,7 +20,11 @@ test("C2055640 should import courtyard outlines with non-zero height and render 
   // Guard against the prior issue where courtyard collapsed to near-zero height.
   expect(uniqueYValues.size).toBeGreaterThan(1)
 
-  expect(
-    convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
-  ).toMatchSvgSnapshot(import.meta.path)
+  const pcbSvg = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
+
+  expect(pcbSvg).toContain("pcb-courtyard-outline")
+  expect(pcbSvg).toContain('data-type="pcb_courtyard_outline"')
+  expect(pcbSvg).toMatchSvgSnapshot(import.meta.path)
 })
