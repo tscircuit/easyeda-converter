@@ -56,13 +56,13 @@ it("should convert C19076967 into typescript file", async () => {
     <platedhole  portHints={["pin1"]} pcbX="7.12533499999995mm" pcbY="9.778999999999996mm" holeWidth="1.5000224mm" holeHeight="3.90005824mm" outerWidth="2.1999956mm" outerHeight="5.199989599999999mm" rectPad={true} pcbRotation="54deg" shape="pill" />
     <platedhole  portHints={["pin10"]} pcbX="-1.4258290000001352mm" pcbY="0mm" holeWidth="1.5000224mm" holeHeight="3.90005824mm" outerWidth="2.1999956mm" outerHeight="4.9999899999999995mm" rectPad={true} pcbRotation="0deg" shape="pill" />
     <silkscreenpath route={[{"x":-2.8999942000000374,"y":-4.099991799999998},{"x":2.89999419999981,"y":-4.099991799999998}]} />
-    <silkscreenpath route={[{"x":2.224227199999973,"y":12.100001199999951},{"x":-2.275789199999963,"y":12.100001199999951}]} />
-    <silkscreenpath route={[{"x":-2.275789199999963,"y":-12.099950400000012},{"x":2.224227199999973,"y":-12.099950400000012}]} />
+    <silkscreenpath route={[{"x":2.2242271999998593,"y":12.100001200000065},{"x":-2.2757892000000766,"y":12.100001200000065}]} />
+    <silkscreenpath route={[{"x":-2.2757892000000766,"y":-12.099950400000012},{"x":2.2242271999998593,"y":-12.099950400000012}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=b6d9880015ca4fcf86b410816d650f7b&pn=C19076967",
             rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: -0.026009600000065802, y: 0, z: -11.350051999999902 },
+            positionOffset: { x: -0.026009600000065802, y: -0.000012700000070253736, z: -3.699991 },
           }}
           {...props}
         />

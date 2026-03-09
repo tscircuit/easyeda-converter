@@ -52,14 +52,14 @@ it("should convert C3178291 into typescript file", async () => {
     <smtpad portHints={["pin7"]} pcbX="-1.6317721999998867mm" pcbY="0.7999983999999358mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin5"]} pcbX="-1.6317721999998867mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin4"]} pcbX="-0.8316721999998435mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <smtpad portHints={["pin1"]} points={[{x: "1.2507722000001422mm", y: "-0.5459984000001441mm"}, {x: "1.8857722000000194mm", y: "-0.5459984000001441mm"}, {x: "1.8857722000000194mm", y: "-0.7999984000000495mm"}, {x: "1.7587722000000667mm", y: "-0.7999984000000495mm"}, {x: "1.7587722000000667mm", y: "-1.0539984000000686mm"}, {x: "1.2507722000001422mm", y: "-1.0539984000000686mm"}, {x: "1.2507722000001422mm", y: "-0.5459984000001441mm"}]} shape="polygon" />
+    <smtpad portHints={["pin1"]} points={[{x: "1.2507722000000285mm", y: "-0.5459984000000304mm"}, {x: "1.8857722000000194mm", y: "-0.5459984000000304mm"}, {x: "1.8857722000000194mm", y: "-0.7999984000000495mm"}, {x: "1.7587722000000667mm", y: "-0.7999984000000495mm"}, {x: "1.7587722000000667mm", y: "-1.053998399999955mm"}, {x: "1.2507722000000285mm", y: "-1.053998399999955mm"}, {x: "1.2507722000000285mm", y: "-0.5459984000000304mm"}]} shape="polygon" />
     <smtpad portHints={["pin2"]} pcbX="0.7682738000000882mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin3"]} pcbX="-0.03182619999995495mm" pcbY="-0.7999475999999959mm" width="0.508mm" height="0.508mm" shape="rect" />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=f3ceff5efad3481c85905821fe6f8192&pn=C3178291",
             rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: -0.03169919999982085, y: 0.000025400000026820635, z: -0.2539983999999549 },
+            positionOffset: { x: -0.03168649999997797, y: 0.000038099999983387534, z: 0.8 },
           }}
           {...props}
         />

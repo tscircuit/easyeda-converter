@@ -17,7 +17,8 @@
     "aider": "aider",
     "format:check": "biome format .",
     "format": "biome format . --write",
-    "add-test-for-part": "bun run scripts/add-test-for-part.ts"
+    "add-test-for-part": "bun run scripts/add-test-for-part.ts",
+    "typecheck": "tsc --noEmit"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -44,7 +45,7 @@
     "circuit-json-to-gltf": "^0.0.35",
     "circuit-to-svg": "^0.0.333",
     "looks-same": "^9.0.1",
-    "poppygl": "^0.0.16",
+    "poppygl": "^0.0.17",
     "transformation-matrix": "^2.16.1",
     "tsup": "^8.5.0",
     "tscircuit": "^0.0.841"

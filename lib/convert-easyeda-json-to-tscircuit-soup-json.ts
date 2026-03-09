@@ -43,36 +43,110 @@ const mil2mm = (mil: number | string) => {
   return mm(mil)
 }
 /**
- * Some components, like paths and "HOLE", seem to use mil*10 as
- * their unlabeled unit
+ * Convert EasyEDA "pixel" units (1 pixel = 10mil = 0.254mm) to mm.
+ * Used for paths, holes, vias, and other unlabeled coordinates.
+ * If string has unit suffix (e.g., "5mm"), parse as-is.
  */
 const milx10 = (mil10: number | string) => {
-  if (typeof mil10 === "number") return mil2mm(mil10) * 10
-  if (mil10.match(/^\d+$/)) return mil2mm(mil10) * 10
-  // If it has a unit, return the specified unit ignoring the multiplier
-  return mil2mm(mil10)
+  if (typeof mil10 === "number") return mil10ToMm(mil10)
+  if (mil10.match(/^\d+$/)) return mil10ToMm(Number(mil10))
+  return mil2mm(mil10) // Has unit suffix, use as-is
+}
+
+type OutlineBbox = { minX: number; maxX: number; minY: number; maxY: number }
+
+/**
+ * Extract numbers from SVG points string.
+ * Supports: "x y x y", "x,y x,y", scientific notation, +/-
+ */
+const extractSvgNumbers = (s: unknown): number[] => {
+  const str = String(s ?? "")
+  const matches = str.match(/[+-]?\d*\.?\d+(?:e[+-]?\d+)?/gi)
+  if (!matches) return []
+  return matches.map((m) => Number(m)).filter((n) => Number.isFinite(n))
+}
+
+/**
+ * Recursively collect point numbers from polyline/polygon elements.
+ */
+const collectOutlinePointNumbers = (node: any, out: number[]) => {
+  if (!node) return
+  const name = node.nodeName
+  if ((name === "polyline" || name === "polygon") && node.attrs?.points) {
+    out.push(...extractSvgNumbers(node.attrs.points))
+  }
+  if (Array.isArray(node.childNodes)) {
+    for (const c of node.childNodes) collectOutlinePointNumbers(c, out)
+  }
+}
+
+/**
+ * Calculate bbox from outline polyline/polygon points.
+ */
+const getPolylineBbox = (
+  svgNode?: z.infer<typeof SVGNodeSchema>,
+): OutlineBbox | null => {
+  const nums: number[] = []
+  collectOutlinePointNumbers({ childNodes: svgNode?.svgData?.childNodes }, nums)
+  if (nums.length < 4) return null
+
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
+  for (let i = 0; i + 1 < nums.length; i += 2) {
+    const x = nums[i]
+    const y = nums[i + 1]
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue
+    if (x < minX) minX = x
+    if (x > maxX) maxX = x
+    if (y < minY) minY = y
+    if (y > maxY) maxY = y
+  }
+  if (!Number.isFinite(minX) || !Number.isFinite(minY)) return null
+  return { minX, maxX, minY, maxY }
+}
+
+/**
+ * Calculate bbox center from outline polyline/polygon points.
+ */
+const getPolylineBboxCenter = (
+  svgNode?: z.infer<typeof SVGNodeSchema>,
+): { x: number; y: number } | null => {
+  const bbox = getPolylineBbox(svgNode)
+  if (!bbox) return null
+  return { x: (bbox.minX + bbox.maxX) / 2, y: (bbox.minY + bbox.maxY) / 2 }
 }
 
 const parseCadOffsetsFromSvgNode = (
   svgNode?: z.infer<typeof SVGNodeSchema>,
 ) => {
   const attrs = svgNode?.svgData?.attrs ?? {}
-  const [cx, cy] = String(attrs.c_origin ?? "0,0")
+
+  // Use bbox center for XY positioning - more reliable than c_origin which
+  // can have arbitrary offsets that don't correspond to the visual center.
+  const bboxCenter = getPolylineBboxCenter(svgNode)
+  const [cOriginX, cOriginY] = String(attrs.c_origin ?? "0,0")
     .split(",")
     .map((s) => Number(s.trim()))
 
-  // z: bare numbers are mils; strings with units go through mm()
+  const cx = bboxCenter?.x ?? (Number.isFinite(cOriginX) ? cOriginX : 0)
+  const cy = bboxCenter?.y ?? (Number.isFinite(cOriginY) ? cOriginY : 0)
+
+  // z offset: bare numbers are in pixel units (1px = 10mil = 0.254mm)
+  // Keep EasyEDA's Z sign as-is. In the assets, non-zero Z is frequently negative and
+  // (empirically) corresponds to "down into the PCB" for through-hole / tall parts.
   const zStr = attrs.z ?? 0
-  const z_mm =
+  const z_easyeda_mm =
     typeof zStr === "string" && /[a-z]/i.test(zStr)
       ? mm(zStr) // already has units
-      : mm(`${Number(zStr) || 0}mil`) // bare number => mils
+      : mil10ToMm(Number(zStr) || 0) // bare number => pixel units (mil*10)
 
   return {
     position: {
-      x: mil10ToMm(Number.isNaN(cx) ? 0 : cx),
-      y: mil10ToMm(Number.isNaN(cy) ? 0 : cy),
-      z: Math.max(0, -z_mm), // EasyEDA uses negative up; make it positive up
+      x: mil10ToMm(cx),
+      y: mil10ToMm(cy),
+      z: z_easyeda_mm, // Keep EasyEDA's Z as-is
     },
     rotation: (() => {
       const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
@@ -81,24 +155,127 @@ const parseCadOffsetsFromSvgNode = (
   }
 }
 
-/** Try mil and mil×10; clamp to a plausible component thickness */
-const readModelHeightMm = (raw: unknown) => {
-  const fallback = 3.5 // typical SMT component height (USB-C, QFN, etc.)
-  if (raw == null) return fallback
-  const n = Number(raw)
-  if (!Number.isFinite(n)) return fallback
-
-  const mmFromMil10 = mil10ToMm(n) // many EasyEDA unlabeled values
-  const mmFromMil = mm(`${n}mil`) // sometimes plain mil
-
-  // Use the larger of the two guesses, but clamp to a plausible thickness
-  const upper = 12 // max reasonable package thickness (mm) - increased for connectors
-  const lower = 0.1
-  let chosen = Math.max(mmFromMil10, mmFromMil)
-  if (chosen > upper || chosen < lower) chosen = fallback
-
-  return chosen
+/** Parse height from title like "R0805_L2.0-W1.3-H0.6" → 0.6mm */
+const parseHeightFromTitle = (title: string | undefined): number | null => {
+  if (!title) return null
+  // Only match explicit dimension tokens: "-H1.7", "_H1.7", "H=1.7", "H:1.7"
+  // Avoids false matches like "CH32..." where H is part of another word
+  const match = title.match(
+    /(?:^|[-_])H(?:=|:)?\s*([0-9]+(?:\.[0-9]+)?)(?=$|[-_])/i,
+  )
+  if (!match) return null
+  const val = parseFloat(match[1])
+  if (Number.isFinite(val) && val > 0 && val < 50) return val
+  return null
 }
+
+// ============ 3D Rotation Matrix Utilities ============
+type Mat3 = [
+  [number, number, number],
+  [number, number, number],
+  [number, number, number],
+]
+
+const toRad = (deg: number) => (deg * Math.PI) / 180
+const toDeg = (rad: number) => (rad * 180) / Math.PI
+
+/** Convert Euler angles (degrees, XYZ order) to 3x3 rotation matrix */
+const eulerToMatrix = (rx: number, ry: number, rz: number): Mat3 => {
+  const cx = Math.cos(toRad(rx)),
+    sx = Math.sin(toRad(rx))
+  const cy = Math.cos(toRad(ry)),
+    sy = Math.sin(toRad(ry))
+  const cz = Math.cos(toRad(rz)),
+    sz = Math.sin(toRad(rz))
+  // Combined: Rz * Ry * Rx
+  return [
+    [cy * cz, sx * sy * cz - cx * sz, cx * sy * cz + sx * sz],
+    [cy * sz, sx * sy * sz + cx * cz, cx * sy * sz - sx * cz],
+    [-sy, sx * cy, cx * cy],
+  ]
+}
+
+/** Extract Euler angles (degrees, XYZ order) from rotation matrix */
+const matrixToEuler = (m: Mat3): { x: number; y: number; z: number } => {
+  let rx: number, ry: number, rz: number
+  if (Math.abs(m[2][0]) < 0.9999) {
+    ry = Math.asin(-m[2][0])
+    rx = Math.atan2(m[2][1], m[2][2])
+    rz = Math.atan2(m[1][0], m[0][0])
+  } else {
+    // Gimbal lock
+    ry = m[2][0] < 0 ? Math.PI / 2 : -Math.PI / 2
+    rx = Math.atan2(m[0][1], m[1][1])
+    rz = 0
+  }
+  return { x: toDeg(rx), y: toDeg(ry), z: toDeg(rz) }
+}
+
+/** Multiply two 3x3 matrices */
+const matMul3x3 = (a: Mat3, b: Mat3): Mat3 => {
+  const r: Mat3 = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0],
+  ]
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      for (let k = 0; k < 3; k++) {
+        r[i][j] += a[i][k] * b[k][j]
+      }
+    }
+  }
+  return r
+}
+
+/**
+ * Apply Y-mirror transformation to rotation.
+ *
+ * When we apply scale(1, -1) to 2D PCB geometry, the 3D equivalent is
+ * M = diag(1, -1, 1). For rotations under reflection: R' = M * R * M
+ * (since M^(-1) = M for reflections).
+ *
+ * This changes rotation handedness - Z rotations invert direction.
+ */
+const applyYMirrorToRotation = (
+  rx: number,
+  ry: number,
+  rz: number,
+): { x: number; y: number; z: number } => {
+  // Mirror matrix: M = diag(1, -1, 1)
+  const M: Mat3 = [
+    [1, 0, 0],
+    [0, -1, 0],
+    [0, 0, 1],
+  ]
+
+  // Convert Euler angles to rotation matrix
+  const R = eulerToMatrix(rx, ry, rz)
+
+  // Apply mirror transform: R' = M * R * M
+  const MR = matMul3x3(M, R)
+  const Rprime = matMul3x3(MR, M)
+
+  // Convert back to Euler angles
+  return matrixToEuler(Rprime)
+}
+
+/**
+ * Get the physical height/thickness for Z placement.
+ *
+ * IMPORTANT: In this converter, cad.size.x/y are derived from EasyEDA's 2D outline
+ * (top view), not from the model's local bounding box axes.
+ *
+ * cad.size.z is derived from the physical package height (e.g. "H3.3" in titles)
+ * and is the only reliable vertical extent for Z placement.
+ *
+ * Therefore: always use size.z as the height/thickness for CAD Z positioning,
+ * regardless of rotation.
+ */
+const getThicknessForZUpModel = (
+  _rotation: { x: number; y: number; z: number },
+  size: { x: number; y: number; z: number },
+): number => size.z
 
 const handleSilkscreenPath = (
   track: z.infer<typeof TrackSchema>,
@@ -113,7 +290,7 @@ const handleSilkscreenPath = (
       x: milx10(point.x),
       y: milx10(point.y),
     })),
-    stroke_width: mil10ToMm(track.width),
+    stroke_width: milx10(track.width),
   })
 }
 
@@ -164,7 +341,7 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
       x: milx10(p.x),
       y: milx10(p.y),
     })),
-    stroke_width: mil10ToMm(arc.width),
+    stroke_width: milx10(arc.width),
   } as Soup.PcbSilkscreenPathInput)
 }
 
@@ -655,101 +832,65 @@ export const convertEasyEdaJsonToCircuitJson = (
         const side = (pcb_component.layer ?? "top") as "top" | "bottom"
         const t = DEFAULT_PCB_THICKNESS_MM / 2
         const attrs = svgNode?.svgData?.attrs ?? {}
-        const modelHeight = readModelHeightMm(attrs.c_height)
+        const title = attrs.title as string | undefined
+
+        // c_width/c_height are 2D outline dimensions (top-view), NOT thickness.
+        // If missing/0, fall back to computing from the outline3D polyline bbox.
+        const outlineBbox = getPolylineBbox(svgNode)
+        const rawOutlineWidth =
+          Number(attrs.c_width) ||
+          (outlineBbox ? outlineBbox.maxX - outlineBbox.minX : 0)
+        const rawOutlineHeight =
+          Number(attrs.c_height) ||
+          (outlineBbox ? outlineBbox.maxY - outlineBbox.minY : 0)
+        const outlineWidth = mil10ToMm(rawOutlineWidth)
+        const outlineHeight = mil10ToMm(rawOutlineHeight)
+
+        // Get thickness from title "H..." value (e.g., "SOT-23_L2.9-W1.3-H1.0")
+        // Do NOT use c_height as thickness - that's the 2D outline height
+        const heightFromTitle = parseHeightFromTitle(title)
+        const DEFAULT_THICKNESS_MM = 1.0 // typical SMD component thickness
+        const thickness = heightFromTitle ?? DEFAULT_THICKNESS_MM
 
         // Ensure we have a size; Z holds the model's thickness in local space
         if (!cad.size) {
           cad.size = {
-            x: pcb_component.width,
-            y: pcb_component.height,
-            z: modelHeight,
+            x: outlineWidth || pcb_component.width,
+            y: outlineHeight || pcb_component.height,
+            z: thickness,
           }
+        } else if (!cad.size.z || cad.size.z === 0) {
+          // Ensure z is always populated with physical thickness
+          cad.size.z = thickness
         }
 
-        // --- Axis convention: EasyEDA models are typically Y-up ---
-        // Rotate to Z-up so thickness becomes vertical in our scene.
-        const ROTATE_X_FOR_YUP = 90
-        const originalZRotation = (cad.rotation.z ?? 0) % 360
+        // z-offset from EasyEDA (already converted: negative EasyEDA = positive world)
+        const zOff = cad.position.z ?? 0
 
-        // Improved rotation handling with tolerance for floating-point precision
-        // Handle different component orientations based on EasyEDA Z rotation
-        if (
-          Math.abs(originalZRotation - 0) < 1 ||
-          Math.abs(originalZRotation - 360) < 1
-        ) {
-          // For ~0° Z rotation, don't apply X rotation - keep model as-is (Y-up)
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
-        } else if (Math.abs(originalZRotation - 180) < 1) {
-          // For ~180° Z rotation, don't apply standard X rotation - let it lie flat
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
-        } else if (Math.abs(originalZRotation - 90) < 1) {
-          // For ~90° Z rotation, keep it flat (no X rotation)
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
-        } else if (Math.abs(originalZRotation - 270) < 1) {
-          // For ~270° Z rotation, apply Y-up to Z-up conversion + corrective Y-rotation
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-          cad.rotation.y = ((cad.rotation.y ?? 0) + 90 + 360) % 360
-        } else {
-          // Fallback for unusual angles: apply standard Y-up to Z-up conversion
-          // and log for potential future refinement
-          console.warn(
-            `[3D] Unusual rotation angle: ${originalZRotation}° for component ${easyEdaJson.lcsc.number}`,
-          )
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-        }
+        // --- Rotation handling ---
+        // The 2D recentering applies scale(1, -1) which mirrors Y.
+        // We must apply the equivalent basis change to 3D rotation: R' = M * R * M
+        // where M = diag(1, -1, 1). This inverts Z-rotation direction.
+        const mirroredRot = applyYMirrorToRotation(
+          cad.rotation.x,
+          cad.rotation.y,
+          cad.rotation.z,
+        )
+        cad.rotation.x = mirroredRot.x
+        cad.rotation.y = mirroredRot.y
+        cad.rotation.z = mirroredRot.z
 
-        // Bottom-side parts: flip across the board plane
+        // Bottom-side parts: flip 180° around X
         if (side !== "top") {
           cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
         }
 
-        // For 180° rotated components (Y-up models), the z-offset indicates pin extension below body
-        const USE_Z_OFFSET_FOR_180 = Math.abs(originalZRotation - 180) < 1
-        const zOffRaw = cad.position.z ?? 0
-        const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0
-
-        // ---- Determine the vertical extent based on model orientation ----
-        const rx = ((cad.rotation.x % 360) + 360) % 360
-
-        // EasyEDA models are Y-up. Components with 0° or 180° Z-rotation don't get X-rotation applied,
-        // so they remain Y-up. For Y-up models, the vertical extent is along the Y axis.
-        let thicknessAlongWorldZ: number
-        const is180RotatedYUp =
-          (Math.abs(originalZRotation - 180) < 1 ||
-            Math.abs(originalZRotation - 0) < 1 ||
-            Math.abs(originalZRotation - 360) < 1) &&
-          Math.abs(rx) < 1
-
-        if (is180RotatedYUp) {
-          // 180° Z-rotation, no X-rotation applied → model is still Y-up
-          // For Y-up models, the vertical extent is along Y axis (size.y)
-          thicknessAlongWorldZ = cad.size.y
-        } else if (rx % 180 === 90) {
-          // X-rotation of 90/270 → use local Y
-          thicknessAlongWorldZ = cad.size.y
-        } else {
-          // Standard case → model rotated to Z-up, use Z
-          thicknessAlongWorldZ = cad.size.z
-        }
-
-        let centerZ: number
-        if (is180RotatedYUp) {
-          // For Y-up models, subtract half the thickness to lower the component to the board
-          centerZ =
-            side === "top"
-              ? t - thicknessAlongWorldZ / 2
-              : -t + thicknessAlongWorldZ / 2
-        } else {
-          // For other orientations, use standard positioning with z-offset
-          centerZ =
-            side === "top"
-              ? t + zOff + thicknessAlongWorldZ / 2
-              : -t - zOff - thicknessAlongWorldZ / 2
-        }
-
-        cad.position.z = centerZ
+        // IMPORTANT:
+        // EasyEDA's `attrs.z` already positions the *model origin* relative to the PCB surface.
+        //
+        // Our convention: board is centered at Z=0 => top surface at +t, bottom at -t.
+        const originZ = side === "top" ? t + zOff : -t - zOff
+        cad.position.z = originZ
       }
     }
 
