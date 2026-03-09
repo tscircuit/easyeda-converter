@@ -34,15 +34,12 @@ export const convertEasyEdaJsonToVariousFormats = async ({
     let filename = path.basename(jlcpcbPartNumberOrFilepath).split(".")[0]
 
     if (outputFormat === tsxExtension) {
-      const {
-        dataStr: {
-          head: {
-            c_para: { "Manufacturer Part": manufacturerPartNumber },
-          },
-        },
-      } = rawEasyEdaJson
+      const manufacturerPartNumber =
+        rawEasyEdaJson?.dataStr?.head?.c_para?.["Manufacturer Part"]
 
-      filename = normalizeManufacturerPartNumber(manufacturerPartNumber)
+      if (manufacturerPartNumber) {
+        filename = normalizeManufacturerPartNumber(manufacturerPartNumber)
+      }
     }
 
     outputFilename = `${filename}.${outputFormat}`
