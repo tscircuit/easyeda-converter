@@ -1,6 +1,6 @@
 # easyeda - Download and Convert EasyEDA Footprints
 
-Convert EasyEDA JSON PCB footprints into [Circuit JSON](https://github.com/tscircuit/circuit-json) or TypeScript React components.
+Convert EasyEDA JSON PCB footprints into [Circuit JSON](https://github.com/tscircuit/circuit-json) or tscircuit components.
 
 [![npm version](https://img.shields.io/npm/v/easyeda.svg)](https://www.npmjs.com/package/easyeda)
 
