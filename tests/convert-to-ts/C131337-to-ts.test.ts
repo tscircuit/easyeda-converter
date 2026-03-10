@@ -1,0 +1,53 @@
+import { it, expect } from "bun:test"
+import chipRawEasy from "../assets/C131337.raweasy.json"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+
+it("should convert C131337 into typescript file", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
+  const result = await convertBetterEasyToTsx({
+    betterEasy,
+  })
+
+  expect(result).not.toContain("milmm")
+  expect(result).not.toContain("NaNmm")
+
+  // Add more specific assertions here based on the component
+
+  expect(result).toMatchInlineSnapshot(`
+    "import type { ChipProps } from "@tscircuit/props"
+
+    const pinLabels = {
+      pin1: ["pin1"],
+      pin2: ["pin2"]
+    } as const
+
+    export const B2B_PH_K_S_LF__SN_ = (props: ChipProps<typeof pinLabels>) => {
+      return (
+        <chip
+          pinLabels={pinLabels}
+          supplierPartNumbers={{
+      "jlcpcb": [
+        "C131337"
+      ]
+    }}
+          manufacturerPartNumber="B2B_PH_K_S_LF__SN_"
+          footprint={<footprint>
+            <platedhole  portHints={["pin2"]} pcbX="-0.999998000000005mm" pcbY="0mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
+    <platedhole  portHints={["pin1"]} pcbX="0.9999979999998914mm" pcbY="0mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
+    <silkscreenpath route={[{"x":-2.921000000000049,"y":0.2540000000000191},{"x":-2.413000000000011,"y":0.2540000000000191},{"x":-2.413000000000011,"y":2.158999999999992},{"x":2.53999999999985,"y":2.158999999999992},{"x":2.53999999999985,"y":0.2540000000000191},{"x":2.9209999999998217,"y":0.2540000000000191}]} />
+    <silkscreenpath route={[{"x":3.000044799999955,"y":-0.3810000000000855},{"x":2.4920448000000306,"y":-0.3810000000000855},{"x":2.4920448000000306,"y":-1.1430000000001428},{"x":0.3330447999999251,"y":-1.1430000000001428},{"x":0.3330447999999251,"y":-1.6510000000000673}]} />
+    <silkscreenpath route={[{"x":-2.921000000000049,"y":-0.3810000000000855},{"x":-2.413000000000011,"y":-0.3810000000000855},{"x":-2.413000000000011,"y":-1.1430000000001428},{"x":-0.2540000000001328,"y":-1.1430000000001428},{"x":-0.2540000000001328,"y":-1.6510000000000673}]} />
+    <courtyardoutline points={[{"x":-3.2565980000001673,"y":3.145599999999945},{"x":3.288601999999969,"y":3.145599999999945},{"x":3.288601999999969,"y":-1.9517999999999347},{"x":-3.2565980000001673,"y":-1.9517999999999347},{"x":-3.2565980000001673,"y":3.145599999999945}]} />
+          </footprint>}
+          cadModel={{
+            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=ee6b32b5c03144688a5663b32f9648c4&pn=C131337",
+            rotationOffset: { x: 0, y: 0, z: 180 },
+            positionOffset: { x: -2.2737367544323206e-13, y: 0.5999987999999803, z: 0.0000015999999505300622 },
+          }}
+          {...props}
+        />
+      )
+    }"
+  `)
+})

@@ -117,31 +117,12 @@ const handleSilkscreenPath = (
   })
 }
 
-const getDrawingKindFromLayer = (layer?: number) => {
-  if (layer === 13 || layer === 14 || layer === 15) return "courtyard"
-  return "silkscreen"
-}
+const isCourtyardLayer = (layer?: number) =>
+  layer === 13 || layer === 14 || layer === 15
 
 const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   if (layer === 4 || layer === 14) return "bottom"
   return "top"
-}
-
-const handleCourtyardPath = (
-  track: z.infer<typeof TrackSchema>,
-  index: number,
-) => {
-  return pcb_courtyard_outline.parse({
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: `pcb_courtyard_outline_${index + 1}`,
-    pcb_component_id: "pcb_component_1",
-    layer: getSideFromLayer(track.layer),
-    outline: track.points.map((point) => ({
-      x: milx10(point.x),
-      y: milx10(point.y),
-    })),
-    stroke_width: mil10ToMm(track.width),
-  })
 }
 
 const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
@@ -166,30 +147,6 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     })),
     stroke_width: mil10ToMm(arc.width),
   } as Soup.PcbSilkscreenPathInput)
-}
-
-const handleCourtyardArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
-  const arcPath = generateArcFromSweep(
-    arc.start.x,
-    arc.start.y,
-    arc.end.x,
-    arc.end.y,
-    arc.radiusX,
-    arc.largeArc,
-    arc.sweepDirection === "CW",
-  )
-
-  return pcb_courtyard_outline.parse({
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: `pcb_courtyard_arc_${index + 1}`,
-    pcb_component_id: "pcb_component_1",
-    layer: getSideFromLayer(arc.layer),
-    outline: arcPath.map((p) => ({
-      x: milx10(p.x),
-      y: milx10(p.y),
-    })),
-    stroke_width: mil10ToMm(arc.width),
-  })
 }
 
 const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
@@ -513,21 +470,15 @@ export const convertEasyEdaJsonToCircuitJson = (
   // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
-      const drawingKind = getDrawingKindFromLayer(shape.layer)
-      circuitElements.push(
-        drawingKind === "courtyard"
-          ? handleCourtyardPath(shape, index)
-          : handleSilkscreenPath(shape, index),
-      )
+      if (!isCourtyardLayer(shape.layer)) {
+        circuitElements.push(handleSilkscreenPath(shape, index))
+      }
     } else if (shape.type === "ARC") {
-      const drawingKind = getDrawingKindFromLayer(shape.layer)
-      circuitElements.push(
-        drawingKind === "courtyard"
-          ? handleCourtyardArc(shape, index)
-          : handleSilkscreenArc(shape, index),
-      )
+      if (!isCourtyardLayer(shape.layer)) {
+        circuitElements.push(handleSilkscreenArc(shape, index))
+      }
     } else if (shape.type === "TEXT") {
-      if (getDrawingKindFromLayer(shape.layer) === "courtyard") return
+      if (isCourtyardLayer(shape.layer)) return
       circuitElements.push(
         Soup.pcb_silkscreen_text.parse({
           type: "pcb_silkscreen_text",
@@ -594,6 +545,41 @@ export const convertEasyEdaJsonToCircuitJson = (
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput),
     )
+  }
+
+  // Generate courtyard outline from packageDetail.dataStr.BBox when no explicit
+  // courtyard TRACK (layers 13/14/15) exists. The BBox is EasyEDA's own bounding
+  // box for the footprint in canvas coordinates (milx10 units). It is added before
+  // recentering so it gets transformed automatically with all other elements.
+  const hasExplicitCourtyard = circuitElements.some(
+    (e) => e.type === "pcb_courtyard_outline",
+  )
+  if (!hasExplicitCourtyard) {
+    const bbox = easyEdaJson.packageDetail.dataStr.BBox
+    if (bbox) {
+      const strokeWidth = 0.05
+      const margin = 0.25
+      const x1 = milx10(bbox.x) - margin
+      const y1 = milx10(bbox.y) - margin
+      const x2 = milx10(bbox.x + bbox.width) + margin
+      const y2 = milx10(bbox.y + bbox.height) + margin
+      circuitElements.push(
+        pcb_courtyard_outline.parse({
+          type: "pcb_courtyard_outline",
+          pcb_courtyard_outline_id: `pcb_courtyard_outline_${easyEdaJson.lcsc.number}_1`,
+          pcb_component_id: "pcb_component_1",
+          layer: "top",
+          outline: [
+            { x: x1, y: y1 },
+            { x: x2, y: y1 },
+            { x: x2, y: y2 },
+            { x: x1, y: y2 },
+            { x: x1, y: y1 },
+          ],
+          stroke_width: strokeWidth,
+        }),
+      )
+    }
   }
 
   if (shouldRecenter) {
