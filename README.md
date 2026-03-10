@@ -11,15 +11,6 @@ npm install -g easyeda
 
 ## Library Usage
 
-### Fetching EasyEDA Component Data
-
-```ts
-import { fetchEasyEDAComponent } from "easyeda"
-
-// Get raw EasyEDA JSON for a component
-const rawEasyJson = await fetchEasyEDAComponent("C46749")
-```
-
 ### Converting to Circuit JSON
 
 ```ts
@@ -52,6 +43,15 @@ async function convertPartNumberToTsx(partNumber: string) {
 // Usage
 const ne555TsxComponent = await convertPartNumberToTsx("C46749")
 console.log(ne555TsxComponent)
+```
+
+### Fetching EasyEDA Component Data
+
+```ts
+import { fetchEasyEDAComponent } from "easyeda"
+
+// Get raw EasyEDA JSON for a component
+const rawEasyJson = await fetchEasyEDAComponent("C46749")
 ```
 
 ## CLI
