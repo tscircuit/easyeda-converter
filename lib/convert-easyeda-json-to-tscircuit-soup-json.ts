@@ -557,6 +557,7 @@ export const convertEasyEdaJsonToCircuitJson = (
   if (!hasExplicitCourtyard) {
     const bbox = easyEdaJson.packageDetail.dataStr.BBox
     if (bbox) {
+      const strokeWidth = 0.05
       const margin = 0.25
       const x1 = milx10(bbox.x) - margin
       const y1 = milx10(bbox.y) - margin
@@ -565,7 +566,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       circuitElements.push(
         pcb_courtyard_outline.parse({
           type: "pcb_courtyard_outline",
-          pcb_courtyard_outline_id: "pcb_courtyard_outline_generated_1",
+          pcb_courtyard_outline_id: `pcb_courtyard_outline_${easyEdaJson.lcsc.number}_1`,
           pcb_component_id: "pcb_component_1",
           layer: "top",
           outline: [
@@ -575,7 +576,7 @@ export const convertEasyEdaJsonToCircuitJson = (
             { x: x1, y: y2 },
             { x: x1, y: y1 },
           ],
-          stroke_width: 0.05,
+          stroke_width: strokeWidth,
         }),
       )
     }
