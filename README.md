@@ -1,4 +1,4 @@
-# easyeda-converter
+# easyeda - Download and Convert EasyEDA Footprints
 
 Convert EasyEDA JSON PCB footprints into [Circuit JSON](https://github.com/tscircuit/circuit-json) or TypeScript React components.
 
