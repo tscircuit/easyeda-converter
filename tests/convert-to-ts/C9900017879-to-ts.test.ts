@@ -172,7 +172,7 @@ it("should convert C9900017879 into typescript file", async () => {
     <silkscreentext text="RST" pcbX="13.228065999999984mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
     <silkscreentext text="RXD" pcbX="15.768065999999976mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
     <silkscreentext text="TXD" pcbX="18.308065999999968mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <courtyardoutline points={[{"x":-23.97359999999999,"y":9.24160000000002},{"x":21.967000000000013,"y":9.24160000000002},{"x":21.967000000000013,"y":-9.266999999999982},{"x":-23.97359999999999,"y":-9.266999999999982},{"x":-23.97359999999999,"y":9.24160000000002}]} />
+    <courtyardoutline outline={[{"x":-23.97359999999999,"y":9.24160000000002},{"x":21.967000000000013,"y":9.24160000000002},{"x":21.967000000000013,"y":-9.266999999999982},{"x":-23.97359999999999,"y":-9.266999999999982},{"x":-23.97359999999999,"y":9.24160000000002}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=4e90b6d8552a4e058d9ebe9d82e11f3a&pn=C9900017879",

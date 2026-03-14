@@ -82,7 +82,7 @@ export const generateFootprintTsx = (
 
   for (const courtyardOutline of courtyardOutlines) {
     elementStrings.push(
-      `<courtyardoutline points={${JSON.stringify(courtyardOutline.outline)}} />`,
+      `<courtyardoutline outline={${JSON.stringify(courtyardOutline.outline)}} />`,
     )
   }
 
