@@ -67,7 +67,7 @@ const getSvgNodeZOffsetMm = (easyEdaJson: BetterEasyEdaJson) => {
   const svgNodeZ = Number(svgNode.svgData.attrs?.z ?? 0)
   if (!Number.isFinite(svgNodeZ)) return null
 
-  return Math.abs(mil10ToMm(svgNodeZ))
+  return mil10ToMm(svgNodeZ)
 }
 
 export const getEasyEdaCadModelPlacement = async (
@@ -106,13 +106,13 @@ export const getEasyEdaCadModelPlacement = async (
       const bounds = parseObjBounds(objText)
       if (!bounds) return null
 
-      console.log(svgNodeZOffsetMm, bounds.min.z)
+      const minZ = Math.abs(bounds.min.z) < 1e-6 ? 0 : bounds.min.z
 
       return {
         modelObjUrl,
         bounds,
         // Align the EasyEDA SVG-node Z against the model's minimum Z.
-        positionZMm: svgNodeZOffsetMm + bounds.min.z,
+        positionZMm: minZ - svgNodeZOffsetMm,
       }
     } catch (error) {
       console.error(
