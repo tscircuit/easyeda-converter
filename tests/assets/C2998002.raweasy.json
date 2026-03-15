@@ -19,9 +19,11 @@
     "nickname": "LCSC",
     "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
   },
-  "tags": ["Bipolar Transistors - BJT"],
-  "updateTime": 1717611246,
-  "updated_at": "2024-06-05 18:15:08",
+  "tags": [
+    "Bipolar Transistors - BJT"
+  ],
+  "updateTime": 1732271410,
+  "updated_at": "2024-11-22 10:30:56",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -29,7 +31,7 @@
       "x": 400,
       "y": 300,
       "c_para": {
-        "pre": "U?",
+        "pre": "Q?",
         "name": "BCM62B,215",
         "package": "SOT-143_L2.9-W1.3-P1.92-LS2.3-BR",
         "Contributor": "lcsc",
@@ -77,7 +79,7 @@
     },
     "colors": []
   },
-  "datastrid": "fb22ba873c8b4851bfd327157f497c9b",
+  "datastrid": "05256b0d734744d9a9c64072a07a4570",
   "verify": true,
   "SMT": true,
   "jlcOnSale": 1,

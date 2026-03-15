@@ -2,6 +2,8 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C19795120.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C19795120 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -12,7 +14,13 @@ it("should convert C19795120 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 
-  // Add more specific assertions here based on the component
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  console.log(circuitJson.filter((c) => c.type === "cad_component"))
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path, {
+    camPos: [10, 10, 40],
+  })
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -43,12 +51,12 @@ it("should convert C19795120 into typescript file", async () => {
     <silkscreenpath route={[{"x":-5.080000000000041,"y":2.2696488000000272},{"x":5.0799999999998136,"y":2.2696488000000272}]} />
     <silkscreenpath route={[{"x":-1.9940778000001274,"y":-1.864988599999947},{"x":-5.080000000000041,"y":-1.864988599999947}]} />
     <silkscreenpath route={[{"x":-5.080000000000041,"y":-1.864988599999947},{"x":-5.080000000000041,"y":3.9770114000000376},{"x":5.0799999999998136,"y":3.9770114000000376},{"x":5.0799999999998136,"y":-1.864988599999947},{"x":-0.5459222000001773,"y":-1.864988599999947}]} />
-    <courtyardoutline outline={[{"x":-5.380800000000022,"y":4.227011400000038},{"x":5.3554000000000315,"y":4.227011400000038},{"x":5.3554000000000315,"y":-2.622988599999985},{"x":-5.380800000000022,"y":-2.622988599999985},{"x":-5.380800000000022,"y":4.227011400000038}]} />
+    <courtyardoutline outline={[{"x":-1025.1908,"y":758.448},{"x":-1014.4546,"y":758.448},{"x":-1014.4546,"y":765.298},{"x":-1025.1908,"y":765.298},{"x":-1025.1908,"y":758.448}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=9a93067adc7a4c82860f56e3024924ad&pn=C19795120",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: -1.1368683772161603e-13, y: 1.0550208000000794, z: -0.7350045999999792 },
+            pcbRotationOffset: 0,
+            modelOriginPosition: { x: 0, y: 0, z: -3.295008 },
           }}
           {...props}
         />

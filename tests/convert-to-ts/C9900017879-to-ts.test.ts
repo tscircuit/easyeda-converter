@@ -2,22 +2,26 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C9900017879.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C9900017879 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-  const tsxResult = await convertBetterEasyToTsx({
+  const result = await convertBetterEasyToTsx({
     betterEasy,
   })
 
-  expect(tsxResult).not.toContain("milmm")
-  expect(tsxResult).not.toContain("NaNmm")
+  expect(result).not.toContain("milmm")
+  expect(result).not.toContain("NaNmm")
 
-  // Add more specific assertions here based on the component
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path, {
+    camPos: [0, 20, 50],
+  })
 
-  expect(tsxResult).toMatchInlineSnapshot(`
+  expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
@@ -172,55 +176,16 @@ it("should convert C9900017879 into typescript file", async () => {
     <silkscreentext text="RST" pcbX="13.228065999999984mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
     <silkscreentext text="RXD" pcbX="15.768065999999976mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
     <silkscreentext text="TXD" pcbX="18.308065999999968mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <courtyardoutline outline={[{"x":-23.97359999999999,"y":9.24160000000002},{"x":21.967000000000013,"y":9.24160000000002},{"x":21.967000000000013,"y":-9.266999999999982},{"x":-23.97359999999999,"y":-9.266999999999982},{"x":-23.97359999999999,"y":9.24160000000002}]} />
+    <courtyardoutline outline={[{"x":-143.35359999999997,"y":59.33839999999999},{"x":-97.41299999999998,"y":59.33839999999999},{"x":-97.41299999999998,"y":77.847},{"x":-143.35359999999997,"y":77.847},{"x":-143.35359999999997,"y":59.33839999999999}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=4e90b6d8552a4e058d9ebe9d82e11f3a&pn=C9900017879",
-            rotationOffset: { x: 90, y: 90, z: 270 },
-            positionOffset: { x: -1.0750042000000093, y: 1.4210854715202004e-14, z: 9.219998400000005 },
+            pcbRotationOffset: 270,
+            modelOriginPosition: { x: 0, y: 0, z: -2.5000069999999996 },
           }}
           {...props}
         />
       )
     }"
   `)
-  // const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-  const circuitJson = await runTscircuitCode(tsxResult)
-
-  expect(convertCircuitJsonToPcbSvg(circuitJson as any)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
-  expect(
-    circuitJson.find((a) => a.type === "cad_component"),
-  ).toMatchInlineSnapshot(`
-    {
-      "cad_component_id": "cad_component_0",
-      "footprinter_string": undefined,
-      "model_glb_url": undefined,
-      "model_gltf_url": undefined,
-      "model_jscad": undefined,
-      "model_mtl_url": undefined,
-      "model_obj_url": "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=4e90b6d8552a4e058d9ebe9d82e11f3a&pn=C9900017879&cachebust_origin=",
-      "model_step_url": undefined,
-      "model_stl_url": undefined,
-      "model_unit_to_mm_scale_factor": undefined,
-      "model_wrl_url": undefined,
-      "pcb_component_id": "pcb_component_0",
-      "position": {
-        "x": -1.0750042000000093,
-        "y": 0.000000000000024868995751603507,
-        "z": 9.219998400000005,
-      },
-      "rotation": {
-        "x": 90,
-        "y": 90,
-        "z": 270,
-      },
-      "show_as_translucent_model": undefined,
-      "source_component_id": "source_component_0",
-      "type": "cad_component",
-    }
-  `)
-
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
-}, 20000)
+})
