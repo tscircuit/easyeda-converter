@@ -1,5 +1,5 @@
 import { fetchEasyEDAComponent } from "lib/websafe/fetch-easyeda-json"
-import { convertEasyEdaJsonToTscircuitSoupJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJsonWithCadPlacement } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import fs from "fs/promises"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertRawEasyToTsx } from "lib/websafe/convert-to-typescript-component"
@@ -61,7 +61,8 @@ export const convertEasyEdaJsonToVariousFormats = async ({
 
   try {
     const betterEasy = EasyEdaJsonSchema.parse(rawEasyEdaJson)
-    const tscircuitSoup = convertEasyEdaJsonToTscircuitSoupJson(betterEasy)
+    const tscircuitSoup =
+      await convertEasyEdaJsonToCircuitJsonWithCadPlacement(betterEasy)
 
     if (
       outputFilename.endsWith(".soup.json") ||

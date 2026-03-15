@@ -1,13 +1,16 @@
 import { it, expect } from "bun:test"
 import a555TimerEasyEdaJson from "../assets/a555-timer-dip.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJsonWithCadPlacement } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/circuit-json-util"
 import type { PcbPlatedHole, PcbSmtPad } from "circuit-json"
+import { addBoardToSoupFor3dSnapshot } from "../fixtures/add-board-to-soup-for-3d-snapshot"
 
 it("should parse easyeda json for a 555 timer and convert to tscircuit soup", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(a555TimerEasyEdaJson)
-  const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson) as any
+  const soupElements = (await convertEasyEdaJsonToCircuitJsonWithCadPlacement(
+    parsedJson,
+  )) as any
 
   // Check if the result is an array and has elements
   expect(Array.isArray(soupElements)).toBe(true)
@@ -22,6 +25,12 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   // Check for the presence of source ports
   const sourcePorts = su(soupElements).source_port.list()
   expect(sourcePorts.length).toBeGreaterThan(0)
+
+  const cadComponent = su(soupElements).cad_component.list()[0]
+  expect(cadComponent).toBeDefined()
+  expect(cadComponent.model_origin_position).toBeDefined()
+  expect(cadComponent.model_origin_position?.z).toBeTypeOf("number")
+  console.log("cadComponent", cadComponent)
 
   // Check for the presence of pcb_smtpads and pcb_plated_holes
   const pcbSmtPads = su(soupElements).pcb_smtpad.list() as PcbSmtPad[]
@@ -44,19 +53,7 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
     expect(firstPad.layer).toBe("top")
   }
 
-  // Add pcb_board for 3D snapshot testing
-  const circuitJsonWithBoard = soupElements.concat([
-    {
-      type: "pcb_board",
-      center: { x: 0, y: 0 },
-      width: 15,
-      height: 15,
-      pcb_board_id: "main_board",
-      thickness: 1.6,
-      num_layers: 2,
-      material: "fr4",
-    },
-  ])
+  const circuitJsonWithBoard = addBoardToSoupFor3dSnapshot(soupElements)
 
   await expect(circuitJsonWithBoard).toMatch3dSnapshot(import.meta.path)
 

@@ -2,9 +2,8 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C6186.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C6186 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -15,7 +14,10 @@ it("should convert C6186 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 
-  // Add more specific assertions here based on the component
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -47,21 +49,12 @@ it("should convert C6186 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=e80246a9471445bfb635be848806a22e&pn=C6186",
-            rotationOffset: { x: 0, y: 0, z: 180 },
-            positionOffset: { x: -4.026211149999995, y: 2.921000000000049, z: -2.049968899999965 },
+            pcbRotationOffset: 180,
+            modelOriginPosition: { x: 0, y: 0, z: -0.049394 },
           }}
           {...props}
         />
       )
     }"
   `)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
-
-  // Generate 3D snapshot for component with c_rotation: 0,0,180
-  const circuitJsonFromTsx = await runTscircuitCode(result)
-  await expect(circuitJsonFromTsx).toMatch3dSnapshot(import.meta.path)
 })

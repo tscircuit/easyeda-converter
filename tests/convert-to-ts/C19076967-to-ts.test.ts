@@ -2,8 +2,8 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C19076967.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C19076967 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -14,7 +14,10 @@ it("should convert C19076967 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 
-  // Add more specific assertions here based on the component
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -62,18 +65,12 @@ it("should convert C19076967 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=b6d9880015ca4fcf86b410816d650f7b&pn=C19076967",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: -0.026009600000065802, y: 0, z: -11.350051999999902 },
+            pcbRotationOffset: 0,
+            modelOriginPosition: { x: 0, y: 0, z: -0.000009000000000369823 },
           }}
           {...props}
         />
       )
     }"
   `)
-
-  const circuitJson = await runTscircuitCode(result)
-
-  expect(convertCircuitJsonToPcbSvg(circuitJson as any)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
 })

@@ -6,6 +6,7 @@ import { su } from "@tscircuit/circuit-json-util"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
+import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 
 export const convertRawEasyToTsx = async (rawEasy: any) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
@@ -20,10 +21,17 @@ export const convertBetterEasyToTsx = async ({
 }: {
   betterEasy: BetterEasyEdaJson
 }): Promise<string> => {
+  const cadPlacement = await getEasyEdaCadModelPlacement(betterEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy, {
     useModelCdn: true,
     shouldRecenter: true,
+    cadPositionZMm: cadPlacement?.positionZMm,
   })
+  const [cadComponent] = su(circuitJson).cad_component.list()
+  if (cadComponent) {
+    cadComponent.position.x = 0
+    cadComponent.position.y = 0
+  }
   const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
   const pn = rawPn ? normalizeManufacturerPartNumber(rawPn) : "unknown"
   const sourcePorts = su(circuitJson).source_port.list()
@@ -41,9 +49,10 @@ export const convertBetterEasyToTsx = async ({
     ]
   }
 
-  const [cadComponent] = su(circuitJson).cad_component.list()
   let modelObjUrl: string | undefined
-  if (cadComponent?.model_obj_url) {
+  if (cadPlacement?.modelObjUrl) {
+    modelObjUrl = cadPlacement.modelObjUrl
+  } else if (cadComponent?.model_obj_url) {
     const isValidUrl = await checkModelObjUrlValidity(
       cadComponent.model_obj_url,
     )

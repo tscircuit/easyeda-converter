@@ -1,13 +1,14 @@
 import { it, expect } from "bun:test"
 import usbCEasyEdaJson from "../assets/usb-c.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJsonWithCadPlacement } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/circuit-json-util"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
-it("should convert a usb-c footprint (C2765186) to tscircuit soup json", () => {
+it("should convert a usb-c footprint (C2765186) to tscircuit soup json", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(usbCEasyEdaJson)
-  const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson)
+  const soupElements =
+    await convertEasyEdaJsonToCircuitJsonWithCadPlacement(parsedJson)
   const soup = su(soupElements)
 
   const pcbComponent = soup.pcb_component.list()[0]

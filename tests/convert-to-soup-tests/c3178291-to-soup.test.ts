@@ -1,12 +1,14 @@
 import { it, expect } from "bun:test"
 import C3178291EasyEdaJson from "../assets/C3178291.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJsonWithCadPlacement } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { addBoardToSoupFor3dSnapshot } from "../fixtures/add-board-to-soup-for-3d-snapshot"
 
 it("should convert c3178291 with polygon pads", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(C3178291EasyEdaJson)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(parsedJson)
+  const circuitJson =
+    await convertEasyEdaJsonToCircuitJsonWithCadPlacement(parsedJson)
 
   // Test polygon pad coordinates are valid (not NaN)
   const polygonPads = circuitJson.filter(
@@ -27,5 +29,7 @@ it("should convert c3178291 with polygon pads", async () => {
     import.meta.path,
   )
 
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  await expect(addBoardToSoupFor3dSnapshot(circuitJson)).toMatch3dSnapshot(
+    import.meta.path,
+  )
 })

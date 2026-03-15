@@ -2,11 +2,12 @@ import c2055640Raw from "tests/assets/C2055640.raweasy.json"
 import { expect, test } from "bun:test"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJsonWithCadPlacement } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
-test("C2055640 should import courtyard outlines with non-zero height and render them", () => {
+test("C2055640 should import courtyard outlines with non-zero height and render them", async () => {
   const bettereasy = EasyEdaJsonSchema.parse(c2055640Raw)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(bettereasy)
+  const circuitJson =
+    await convertEasyEdaJsonToCircuitJsonWithCadPlacement(bettereasy)
 
   const courtyardOutlines = circuitJson.filter(
     (el) => el.type === "pcb_courtyard_outline",

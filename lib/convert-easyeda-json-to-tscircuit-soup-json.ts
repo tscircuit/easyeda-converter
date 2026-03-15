@@ -36,6 +36,7 @@ import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
+import { getEasyEdaCadModelPlacement } from "./websafe/get-easyeda-cad-model-placement"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -200,11 +201,12 @@ const handleCutout = (
 interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
+  cadPositionZMm?: number
 }
 
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
-  { useModelCdn, shouldRecenter = true }: Options = {},
+  { useModelCdn, shouldRecenter = true, cadPositionZMm }: Options = {},
 ): AnyCircuitElement[] => {
   const circuitElements: AnyCircuitElement[] = []
 
@@ -540,7 +542,14 @@ export const convertEasyEdaJsonToCircuitJson = (
         cad_component_id: "cad_component_1",
         source_component_id: "source_component_1",
         pcb_component_id: "pcb_component_1",
-        position,
+        anchor_alignment: "center_of_component_on_board_surface",
+        model_origin_alignment: "center_of_component_on_board_surface",
+        model_origin_position: {
+          x: 0,
+          y: 0,
+          z: cadPositionZMm ?? position.z,
+        },
+        position: { x: 0, y: 0, z: 0.8 },
         rotation,
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput),
@@ -621,8 +630,6 @@ export const convertEasyEdaJsonToCircuitJson = (
           }
         } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
           e.points = e.points.map((p) => applyToPoint(matrix, p))
-        } else if (e.type === "pcb_courtyard_outline") {
-          e.outline = e.outline.map((p) => applyToPoint(matrix, p))
         }
       }
 
@@ -632,11 +639,9 @@ export const convertEasyEdaJsonToCircuitJson = (
 
       if (cad) {
         if (!cad.rotation) cad.rotation = { x: 0, y: 0, z: 0 }
-
-        // Recenter the CAD's in-plane coords
-        const p = applyToPoint(matrix, { x: cad.position.x, y: cad.position.y })
-        cad.position.x = p.x
-        cad.position.y = p.y
+        if (!cad.model_origin_position) {
+          cad.model_origin_position = { x: 0, y: 0, z: 0 }
+        }
 
         const side = (pcb_component.layer ?? "top") as "top" | "bottom"
         const t = DEFAULT_PCB_THICKNESS_MM / 2
@@ -672,10 +677,10 @@ export const convertEasyEdaJsonToCircuitJson = (
           // For ~90° Z rotation, keep it flat (no X rotation)
           cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
         } else if (Math.abs(originalZRotation - 270) < 1) {
-          // For ~270° Z rotation, apply Y-up to Z-up conversion + corrective Y-rotation
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-          cad.rotation.y = ((cad.rotation.y ?? 0) + 90 + 360) % 360
+          // Keep EasyEDA's raw 270° orientation; adding corrective X/Y rotations
+          // makes parts like C9900017879 stand on their side.
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
+          cad.rotation.y = ((cad.rotation.y ?? 0) + 0 + 360) % 360
         } else {
           // Fallback for unusual angles: apply standard Y-up to Z-up conversion
           // and log for potential future refinement
@@ -693,7 +698,7 @@ export const convertEasyEdaJsonToCircuitJson = (
 
         // For 180° rotated components (Y-up models), the z-offset indicates pin extension below body
         const USE_Z_OFFSET_FOR_180 = Math.abs(originalZRotation - 180) < 1
-        const zOffRaw = cad.position.z ?? 0
+        const zOffRaw = cad.model_origin_position.z ?? cad.position.z ?? 0
         const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0
 
         // ---- Determine the vertical extent based on model orientation ----
@@ -720,22 +725,27 @@ export const convertEasyEdaJsonToCircuitJson = (
           thicknessAlongWorldZ = cad.size.z
         }
 
-        let centerZ: number
-        if (is180RotatedYUp) {
-          // For Y-up models, subtract half the thickness to lower the component to the board
-          centerZ =
-            side === "top"
-              ? t - thicknessAlongWorldZ / 2
-              : -t + thicknessAlongWorldZ / 2
+        if (Number.isFinite(cadPositionZMm)) {
+          cad.model_origin_position.z =
+            side === "top" ? cadPositionZMm! : -cadPositionZMm!
         } else {
-          // For other orientations, use standard positioning with z-offset
-          centerZ =
-            side === "top"
-              ? t + zOff + thicknessAlongWorldZ / 2
-              : -t - zOff - thicknessAlongWorldZ / 2
-        }
+          let centerZ: number
+          if (is180RotatedYUp) {
+            // For Y-up models, subtract half the thickness to lower the component to the board
+            centerZ =
+              side === "top"
+                ? t - thicknessAlongWorldZ / 2
+                : -t + thicknessAlongWorldZ / 2
+          } else {
+            // For other orientations, use standard positioning with z-offset
+            centerZ =
+              side === "top"
+                ? t + zOff + thicknessAlongWorldZ / 2
+                : -t - zOff - thicknessAlongWorldZ / 2
+          }
 
-        cad.position.z = centerZ
+          cad.model_origin_position.z = centerZ
+        }
       }
     }
 
@@ -746,6 +756,18 @@ export const convertEasyEdaJsonToCircuitJson = (
   return circuitElements
 }
 
+export const convertEasyEdaJsonToCircuitJsonWithCadPlacement = async (
+  easyEdaJson: BetterEasyEdaJson,
+  options: Options = {},
+): Promise<AnyCircuitElement[]> => {
+  const cadPlacement = await getEasyEdaCadModelPlacement(easyEdaJson)
+
+  return convertEasyEdaJsonToCircuitJson(easyEdaJson, {
+    ...options,
+    cadPositionZMm: cadPlacement?.positionZMm ?? options.cadPositionZMm,
+  })
+}
+
 /** @deprecated Use `convertEasyEdaJsonToCircuitJson` instead. */
 export const convertEasyEdaJsonToTscircuitSoupJson =
-  convertEasyEdaJsonToCircuitJson
+  convertEasyEdaJsonToCircuitJsonWithCadPlacement

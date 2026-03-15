@@ -1,11 +1,16 @@
 import c5184526 from "tests/assets/C5184526.raweasy.json"
 import { expect, test } from "bun:test"
-import { convertEasyEdaJsonToCircuitJson, EasyEdaJsonSchema } from "lib/index"
+import {
+  convertEasyEdaJsonToCircuitJsonWithCadPlacement,
+  EasyEdaJsonSchema,
+} from "lib/index"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { addBoardToSoupFor3dSnapshot } from "../fixtures/add-board-to-soup-for-3d-snapshot"
 
 test("C5184526 should have two holes", async () => {
   const bettereasy = EasyEdaJsonSchema.parse(c5184526)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(bettereasy)
+  const circuitJson =
+    await convertEasyEdaJsonToCircuitJsonWithCadPlacement(bettereasy)
 
   expect(circuitJson.filter((e) => e.type === "pcb_hole").length).toBe(2)
 
@@ -31,5 +36,7 @@ test("C5184526 should have two holes", async () => {
   expect(maxY).toBeLessThan(10)
   expect(minY).toBeGreaterThan(-10)
 
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  await expect(addBoardToSoupFor3dSnapshot(circuitJson)).toMatch3dSnapshot(
+    import.meta.path,
+  )
 })

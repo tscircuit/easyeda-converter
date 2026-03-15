@@ -1,17 +1,24 @@
 import c57759 from "tests/assets/C57759.raweasy.json"
 import { expect, test } from "bun:test"
-import { convertEasyEdaJsonToCircuitJson, EasyEdaJsonSchema } from "lib/index"
+import {
+  convertEasyEdaJsonToCircuitJsonWithCadPlacement,
+  EasyEdaJsonSchema,
+} from "lib/index"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { addBoardToSoupFor3dSnapshot } from "../fixtures/add-board-to-soup-for-3d-snapshot"
 
 test("C57759 should generate Circuit Json without errors", async () => {
   const bettereasy = EasyEdaJsonSchema.parse(c57759)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(bettereasy)
+  const circuitJson =
+    await convertEasyEdaJsonToCircuitJsonWithCadPlacement(bettereasy)
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )
 
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  await expect(addBoardToSoupFor3dSnapshot(circuitJson)).toMatch3dSnapshot(
+    import.meta.path,
+  )
 })
 
 // Add a new test to specifically check the parsing of the PT shape
