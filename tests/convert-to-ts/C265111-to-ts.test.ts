@@ -2,6 +2,8 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C265111.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C265111 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -12,7 +14,10 @@ it("should convert C265111 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 
-  // Add more specific assertions here based on the component
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -61,12 +66,12 @@ it("should convert C265111 into typescript file", async () => {
     <silkscreenpath route={[{"x":2.593721000000073,"y":1.5999333000000888},{"x":2.405989599999998,"y":1.5999333000000888}]} />
     <silkscreenpath route={[{"x":3.843705800000066,"y":1.5999333000000888},{"x":3.655999799999904,"y":1.5999333000000888}]} />
     <silkscreenpath route={[{"x":4.905984600000124,"y":1.5999333000000888},{"x":6.59985979999999,"y":1.5999333000000888},{"x":6.59985979999999,"y":0.23110189999999875}]} />
-    <courtyardoutline outline={[{"x":-7.068122000000017,"y":2.944749500000057},{"x":7.097078000000124,"y":2.944749500000057},{"x":7.097078000000124,"y":-2.9654504999999745},{"x":-7.068122000000017,"y":-2.9654504999999745},{"x":-7.068122000000017,"y":2.944749500000057}]} />
+    <courtyardoutline outline={[{"x":-1015.408244,"y":760.9372},{"x":-1001.2430439999998,"y":760.9372},{"x":-1001.2430439999998,"y":766.8474},{"x":-1015.408244,"y":766.8474},{"x":-1015.408244,"y":760.9372}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=e2cbbcb052e1425b939676152927732c&pn=C265111",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: -0.0001269999999067295, y: -0.027063699999985147, z: -1.8999438000000282 },
+            pcbRotationOffset: 0,
+            modelOriginPosition: { x: 0, y: 0, z: -3.875 },
           }}
           {...props}
         />

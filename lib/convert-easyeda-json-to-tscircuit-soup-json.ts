@@ -200,11 +200,12 @@ const handleCutout = (
 interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
+  cadPositionZMm?: number
 }
 
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
-  { useModelCdn, shouldRecenter = true }: Options = {},
+  { useModelCdn, shouldRecenter = true, cadPositionZMm }: Options = {},
 ): AnyCircuitElement[] => {
   const circuitElements: AnyCircuitElement[] = []
 
@@ -672,10 +673,10 @@ export const convertEasyEdaJsonToCircuitJson = (
           // For ~90° Z rotation, keep it flat (no X rotation)
           cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
         } else if (Math.abs(originalZRotation - 270) < 1) {
-          // For ~270° Z rotation, apply Y-up to Z-up conversion + corrective Y-rotation
-          cad.rotation.x =
-            ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
-          cad.rotation.y = ((cad.rotation.y ?? 0) + 90 + 360) % 360
+          // Keep EasyEDA's raw 270° orientation; adding corrective X/Y rotations
+          // makes parts like C9900017879 stand on their side.
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
+          cad.rotation.y = ((cad.rotation.y ?? 0) + 0 + 360) % 360
         } else {
           // Fallback for unusual angles: apply standard Y-up to Z-up conversion
           // and log for potential future refinement
@@ -720,22 +721,26 @@ export const convertEasyEdaJsonToCircuitJson = (
           thicknessAlongWorldZ = cad.size.z
         }
 
-        let centerZ: number
-        if (is180RotatedYUp) {
-          // For Y-up models, subtract half the thickness to lower the component to the board
-          centerZ =
-            side === "top"
-              ? t - thicknessAlongWorldZ / 2
-              : -t + thicknessAlongWorldZ / 2
+        if (Number.isFinite(cadPositionZMm)) {
+          cad.position.z = side === "top" ? cadPositionZMm! : -cadPositionZMm!
         } else {
-          // For other orientations, use standard positioning with z-offset
-          centerZ =
-            side === "top"
-              ? t + zOff + thicknessAlongWorldZ / 2
-              : -t - zOff - thicknessAlongWorldZ / 2
-        }
+          let centerZ: number
+          if (is180RotatedYUp) {
+            // For Y-up models, subtract half the thickness to lower the component to the board
+            centerZ =
+              side === "top"
+                ? t - thicknessAlongWorldZ / 2
+                : -t + thicknessAlongWorldZ / 2
+          } else {
+            // For other orientations, use standard positioning with z-offset
+            centerZ =
+              side === "top"
+                ? t + zOff + thicknessAlongWorldZ / 2
+                : -t - zOff - thicknessAlongWorldZ / 2
+          }
 
-        cad.position.z = centerZ
+          cad.position.z = centerZ
+        }
       }
     }
 

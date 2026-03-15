@@ -2,8 +2,8 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C1046.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C1046 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -14,7 +14,10 @@ it("should convert C1046 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 
-  // Add more specific assertions here based on the component
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -39,27 +42,16 @@ it("should convert C1046 into typescript file", async () => {
     <smtpad portHints={["pin2"]} pcbX="0.9662160000000313mm" pcbY="0mm" width="1.1325352mm" height="1.3770101999999997mm" shape="rect" />
     <silkscreenpath route={[{"x":-0.4212590000000773,"y":1.015949199999909},{"x":-1.5642590000001064,"y":1.015949199999909},{"x":-1.6912590000000591,"y":1.015949199999909},{"x":-1.9452590000000782,"y":0.76194919999989},{"x":-1.9452590000000782,"y":-0.6350507999999309},{"x":-1.9452590000000782,"y":-0.7620508000001109},{"x":-1.6912590000000591,"y":-1.0160508000000164},{"x":-0.4212590000000773,"y":-1.0160508000000164}]} />
     <silkscreenpath route={[{"x":0.34074099999998,"y":-1.0160508000000164},{"x":1.4837409999998954,"y":-1.0160508000000164},{"x":1.6107409999999618,"y":-1.0160508000000164},{"x":1.8647409999998672,"y":-0.7620508000001109},{"x":1.8647409999998672,"y":0.6349491999999373},{"x":1.8647409999998672,"y":0.76194919999989},{"x":1.6107409999999618,"y":1.015949199999909},{"x":0.34074099999998,"y":1.015949199999909}]} />
-    <courtyardoutline outline={[{"x":-2.1969100000000026,"y":1.2693020000001525},{"x":2.1130900000000565,"y":1.2693020000001525},{"x":2.1130900000000565,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":1.2693020000001525}]} />
+    <courtyardoutline outline={[{"x":-1018.7976199999999,"y":764.3407999999998},{"x":-1014.4876199999999,"y":764.3407999999998},{"x":-1014.4876199999999,"y":766.8728},{"x":-1018.7976199999999,"y":766.8728},{"x":-1018.7976199999999,"y":764.3407999999998}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=c7acac53bcbc44d68fbab8f60a747688&pn=C1046",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: -1.1368683772161603e-13, y: 0.000025400000026820635, z: 0.11149489999995699 },
+            pcbRotationOffset: 0,
+            modelOriginPosition: { x: 0, y: 0, z: 0 },
           }}
           {...props}
         />
       )
     }"
   `)
-})
-
-it("C1046 should generate Circuit Json without errors", async () => {
-  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
-
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })
