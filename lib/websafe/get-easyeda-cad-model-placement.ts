@@ -70,6 +70,14 @@ const getSvgNodeZOffsetMm = (easyEdaJson: BetterEasyEdaJson) => {
   return mil10ToMm(svgNodeZ)
 }
 
+const getPositionZMmFromBounds = (
+  bounds: ModelBounds,
+  svgNodeZOffsetMm: number,
+) => {
+  const minZ = Math.abs(bounds.min.z) < 1e-6 ? 0 : bounds.min.z
+  return minZ - svgNodeZOffsetMm
+}
+
 export const getEasyEdaCadModelPlacement = async (
   easyEdaJson: BetterEasyEdaJson,
   { fetch = globalThis.fetch }: { fetch?: typeof globalThis.fetch } = {},
@@ -93,6 +101,15 @@ export const getEasyEdaCadModelPlacement = async (
     easyedaPartNumber: partNumber,
   })
 
+  const metadataBounds = easyEdaJson._objMetadata?.bounds
+  if (metadataBounds) {
+    return {
+      modelObjUrl,
+      bounds: metadataBounds,
+      positionZMm: getPositionZMmFromBounds(metadataBounds, svgNodeZOffsetMm),
+    }
+  }
+
   const cacheKey = `${modelObjUrl}::${svgNodeZOffsetMm}`
   const cachedPlacement = placementCache.get(cacheKey)
   if (cachedPlacement) return cachedPlacement
@@ -106,13 +123,11 @@ export const getEasyEdaCadModelPlacement = async (
       const bounds = parseObjBounds(objText)
       if (!bounds) return null
 
-      const minZ = Math.abs(bounds.min.z) < 1e-6 ? 0 : bounds.min.z
-
       return {
         modelObjUrl,
         bounds,
         // Align the EasyEDA SVG-node Z against the model's minimum Z.
-        positionZMm: minZ - svgNodeZOffsetMm,
+        positionZMm: getPositionZMmFromBounds(bounds, svgNodeZOffsetMm),
       }
     } catch (error) {
       console.error(

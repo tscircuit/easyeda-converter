@@ -34,7 +34,7 @@
     "Wire To Board / Wire To Wire Connector"
   ],
   "updateTime": 1724295302,
-  "updated_at": "2026-03-14 13:03:40",
+  "updated_at": "2026-03-16 11:35:22",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -216,6 +216,20 @@
         "height": 24
       },
       "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -2.5,
+        "y": -0.6,
+        "z": -4.3
+      },
+      "max": {
+        "x": 5,
+        "y": 5.101,
+        "z": 5.2
+      }
     }
   }
 }

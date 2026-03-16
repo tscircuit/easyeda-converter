@@ -36,7 +36,6 @@ import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "@tscircuit/core"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
-import { getEasyEdaCadModelPlacement } from "./websafe/get-easyeda-cad-model-placement"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -73,7 +72,7 @@ const parseCadOffsetsFromSvgNode = (
     position: {
       x: mil10ToMm(Number.isNaN(cx) ? 0 : cx),
       y: mil10ToMm(Number.isNaN(cy) ? 0 : cy),
-      z: Math.max(0, -z_mm), // EasyEDA uses negative up; make it positive up
+      z: z_mm,
     },
     rotation: (() => {
       const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
@@ -204,10 +203,28 @@ interface Options {
   cadPositionZMm?: number
 }
 
+const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
+  const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
+    (shape) => shape.type === "SVGNODE" && shape.svgData.attrs?.uuid,
+  )
+  if (!svgNode || svgNode.type !== "SVGNODE") return undefined
+
+  const svgNodeZ = Number(svgNode.svgData.attrs?.z ?? 0)
+  if (!Number.isFinite(svgNodeZ)) return undefined
+
+  const bounds = easyEdaJson._objMetadata?.bounds
+  if (!bounds) return undefined
+
+  const minZ = Math.abs(bounds.min.z) < 1e-6 ? 0 : bounds.min.z
+  return minZ - mil10ToMm(svgNodeZ)
+}
+
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
   { useModelCdn, shouldRecenter = true, cadPositionZMm }: Options = {},
 ): AnyCircuitElement[] => {
+  const resolvedCadPositionZMm =
+    cadPositionZMm ?? getCadPositionZMmFromMetadata(easyEdaJson)
   const circuitElements: AnyCircuitElement[] = []
 
   // Add source component
@@ -547,9 +564,9 @@ export const convertEasyEdaJsonToCircuitJson = (
         model_origin_position: {
           x: 0,
           y: 0,
-          z: cadPositionZMm ?? position.z,
+          z: resolvedCadPositionZMm ?? position.z,
         },
-        position: { x: 0, y: 0, z: 0.8 },
+        position: { x: 0, y: 0, z: 0 },
         rotation,
         model_obj_url: objFileUrl,
       } as Soup.CadComponentInput),
@@ -725,9 +742,9 @@ export const convertEasyEdaJsonToCircuitJson = (
           thicknessAlongWorldZ = cad.size.z
         }
 
-        if (Number.isFinite(cadPositionZMm)) {
+        if (Number.isFinite(resolvedCadPositionZMm)) {
           cad.model_origin_position.z =
-            side === "top" ? cadPositionZMm! : -cadPositionZMm!
+            side === "top" ? resolvedCadPositionZMm! : -resolvedCadPositionZMm!
         } else {
           let centerZ: number
           if (is180RotatedYUp) {
@@ -755,19 +772,3 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   return circuitElements
 }
-
-export const convertEasyEdaJsonToCircuitJsonWithCadPlacement = async (
-  easyEdaJson: BetterEasyEdaJson,
-  options: Options = {},
-): Promise<AnyCircuitElement[]> => {
-  const cadPlacement = await getEasyEdaCadModelPlacement(easyEdaJson)
-
-  return convertEasyEdaJsonToCircuitJson(easyEdaJson, {
-    ...options,
-    cadPositionZMm: cadPlacement?.positionZMm ?? options.cadPositionZMm,
-  })
-}
-
-/** @deprecated Use `convertEasyEdaJsonToCircuitJson` instead. */
-export const convertEasyEdaJsonToTscircuitSoupJson =
-  convertEasyEdaJsonToCircuitJsonWithCadPlacement

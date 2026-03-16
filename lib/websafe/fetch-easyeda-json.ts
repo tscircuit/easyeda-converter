@@ -1,8 +1,81 @@
 import type { RawEasyEdaJson } from "../schemas/easy-eda-json-schema"
+import { getModelCdnUrl } from "./get-model-cdn-url"
+
+type ModelBounds = {
+  min: { x: number; y: number; z: number }
+  max: { x: number; y: number; z: number }
+}
+
+const getModelUuidFromRawPackageDetail = (result: RawEasyEdaJson) => {
+  const shapes = result.packageDetail?.dataStr?.shape
+  if (!Array.isArray(shapes)) return null
+
+  for (const shape of shapes) {
+    if (typeof shape !== "string" || !shape.startsWith("SVGNODE~")) continue
+
+    const svgNodeJson = shape.slice("SVGNODE~".length)
+    try {
+      const svgNode = JSON.parse(svgNodeJson)
+      const modelUuid = svgNode?.attrs?.uuid
+      if (typeof modelUuid === "string" && modelUuid.length > 0) {
+        return modelUuid
+      }
+    } catch {
+      continue
+    }
+  }
+
+  return null
+}
+
+const parseObjBounds = (objText: string): ModelBounds | null => {
+  let minX = Number.POSITIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let minZ = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
+  let maxZ = Number.NEGATIVE_INFINITY
+  let vertexCount = 0
+
+  for (const line of objText.split(/\r?\n/)) {
+    const trimmed = line.trim()
+    if (!trimmed.startsWith("v ")) continue
+
+    const [, xStr, yStr, zStr] = trimmed.split(/\s+/, 4)
+    const x = Number(xStr)
+    const y = Number(yStr)
+    const z = Number(zStr)
+
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(z)) {
+      continue
+    }
+
+    vertexCount += 1
+    minX = Math.min(minX, x)
+    minY = Math.min(minY, y)
+    minZ = Math.min(minZ, z)
+    maxX = Math.max(maxX, x)
+    maxY = Math.max(maxY, y)
+    maxZ = Math.max(maxZ, z)
+  }
+
+  if (vertexCount === 0) return null
+
+  return {
+    min: { x: minX, y: minY, z: minZ },
+    max: { x: maxX, y: maxY, z: maxZ },
+  }
+}
 
 export async function fetchEasyEDAComponent(
   jlcpcbPartNumber: string,
-  { fetch = globalThis.fetch }: { fetch?: typeof globalThis.fetch } = {},
+  {
+    fetch = globalThis.fetch,
+    includeModelMetadata = true,
+  }: {
+    fetch?: typeof globalThis.fetch
+    includeModelMetadata?: boolean
+  } = {},
 ): Promise<RawEasyEdaJson> {
   const searchUrl = "https://easyeda.com/api/components/search"
   const componentUrl = (uuid: string) =>
@@ -66,7 +139,41 @@ export async function fetchEasyEDAComponent(
   }
 
   const componentResult = await componentResponse.json()
-  return componentResult.result
+  const result = componentResult.result as RawEasyEdaJson
+
+  if (includeModelMetadata) {
+    const modelUuid = getModelUuidFromRawPackageDetail(result)
+    const partNumber = result.lcsc?.number
+
+    if (modelUuid && partNumber) {
+      try {
+        const objUrl = getModelCdnUrl({
+          easyedaModelUuid: modelUuid,
+          easyedaPartNumber: partNumber,
+        })
+        const objResponse = await fetch(objUrl)
+
+        if (objResponse.ok) {
+          const objText = await objResponse.text()
+          const bounds = parseObjBounds(objText)
+          if (bounds) {
+            ;(
+              result as RawEasyEdaJson & {
+                _objMetadata?: { bounds: ModelBounds }
+              }
+            )._objMetadata = { bounds }
+          }
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching model metadata for ${jlcpcbPartNumber}:`,
+          error,
+        )
+      }
+    }
+  }
+
+  return result
 }
 
 // Usage example

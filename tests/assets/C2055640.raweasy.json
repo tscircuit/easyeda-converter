@@ -23,7 +23,7 @@
     "ST Microelectronics"
   ],
   "updateTime": 1727577674,
-  "updated_at": "2026-02-28 12:48:04",
+  "updated_at": "2026-03-14 12:51:32",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -492,6 +492,20 @@
         "y": 2984.5,
         "width": 31.9,
         "height": 31.9
+      }
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -3.5,
+        "y": -3.5,
+        "z": -0.28
+      },
+      "max": {
+        "x": 3.5,
+        "y": 3.5,
+        "z": 0.33
       }
     }
   }

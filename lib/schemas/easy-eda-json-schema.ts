@@ -137,6 +137,19 @@ export const PackageDetailSchema = z.object({
   dataStr: PackageDetailDataStrSchema,
 })
 
+export const ModelBoundsSchema = z.object({
+  min: z.object({
+    x: z.number(),
+    y: z.number(),
+    z: z.number(),
+  }),
+  max: z.object({
+    x: z.number(),
+    y: z.number(),
+    z: z.number(),
+  }),
+})
+
 export const EasyEdaJsonSchema = z.object({
   uuid: z.string(),
   title: z.string(),
@@ -157,6 +170,11 @@ export const EasyEdaJsonSchema = z.object({
   writable: z.boolean(),
   isFavorite: z.boolean(),
   packageDetail: PackageDetailSchema,
+  _objMetadata: z
+    .object({
+      bounds: ModelBoundsSchema,
+    })
+    .optional(),
 })
 
 export type RawEasyEdaJson = z.input<typeof EasyEdaJsonSchema>

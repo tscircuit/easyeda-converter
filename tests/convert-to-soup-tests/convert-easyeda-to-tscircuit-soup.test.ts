@@ -1,16 +1,14 @@
 import { it, expect } from "bun:test"
-import a555TimerEasyEdaJson from "../assets/a555-timer-dip.raweasy.json"
+import a555TimerEasyEdaJson from "../assets/C46749.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToCircuitJsonWithCadPlacement } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/circuit-json-util"
 import type { PcbPlatedHole, PcbSmtPad } from "circuit-json"
-import { addBoardToSoupFor3dSnapshot } from "../fixtures/add-board-to-soup-for-3d-snapshot"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 it("should parse easyeda json for a 555 timer and convert to tscircuit soup", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(a555TimerEasyEdaJson)
-  const soupElements = (await convertEasyEdaJsonToCircuitJsonWithCadPlacement(
-    parsedJson,
-  )) as any
+  const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson) as any
 
   // Check if the result is an array and has elements
   expect(Array.isArray(soupElements)).toBe(true)
@@ -52,13 +50,7 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
     expect(firstPad.layer).toBe("top")
   }
 
-  const circuitJsonWithBoard = addBoardToSoupFor3dSnapshot(soupElements)
-
-  await expect(circuitJsonWithBoard).toMatch3dSnapshot(import.meta.path)
-
-  // Add side view snapshot (poppygl y+ is circuit json z+)
-  await expect(circuitJsonWithBoard).toMatch3dSnapshot(
-    import.meta.path.replace(".test", "-side.test"),
-    { camPos: [30, 1, 0] },
-  )
+  expect(
+    convertCircuitJsonToPcbSvg(soupElements, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path)
 })

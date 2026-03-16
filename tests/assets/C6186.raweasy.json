@@ -34,7 +34,7 @@
     "Linear Voltage Regulators (LDO)"
   ],
   "updateTime": 1742925083,
-  "updated_at": "2026-03-14 12:49:45",
+  "updated_at": "2026-03-15 15:20:44",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -217,6 +217,20 @@
         "height": 26.2
       },
       "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -3.554711,
+        "y": -3.25,
+        "z": -0.049394
+      },
+      "max": {
+        "x": 3.554711,
+        "y": 3.25,
+        "z": 1.7
+      }
     }
   }
 }
