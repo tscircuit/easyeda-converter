@@ -30,7 +30,6 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   expect(cadComponent).toBeDefined()
   expect(cadComponent.model_origin_position).toBeDefined()
   expect(cadComponent.model_origin_position?.z).toBeTypeOf("number")
-  console.log("cadComponent", cadComponent)
 
   // Check for the presence of pcb_smtpads and pcb_plated_holes
   const pcbSmtPads = su(soupElements).pcb_smtpad.list() as PcbSmtPad[]

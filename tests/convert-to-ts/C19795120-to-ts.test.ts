@@ -17,7 +17,6 @@ it("should convert C19795120 into typescript file", async () => {
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
   )
-  console.log(circuitJson.filter((c) => c.type === "cad_component"))
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path, {
     camPos: [10, 10, 40],
   })
