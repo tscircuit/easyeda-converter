@@ -2,7 +2,7 @@ import type { RawEasyEdaJson } from "../schemas/easy-eda-json-schema"
 
 export async function fetchEasyEDAComponent(
   jlcpcbPartNumber: string,
-  { fetch = globalThis.fetch }: { fetch?: typeof globalThis.fetch } = {},
+  { fetch = globalThis.fetch, includeModelMetadata?: boolean }: { fetch?: typeof globalThis.fetch, includeModelMetadata = true } = {},
 ): Promise<RawEasyEdaJson> {
   const searchUrl = "https://easyeda.com/api/components/search"
   const componentUrl = (uuid: string) =>
