@@ -157,6 +157,9 @@ export const EasyEdaJsonSchema = z.object({
   writable: z.boolean(),
   isFavorite: z.boolean(),
   packageDetail: PackageDetailSchema,
+  _objMetadata: z.object({
+    bounds: z.object({ x: z.number(), y: z.number(), z: z.number() })
+  }).optional()
 })
 
 export type RawEasyEdaJson = z.input<typeof EasyEdaJsonSchema>
