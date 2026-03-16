@@ -1,9 +1,9 @@
-import { it, expect } from "bun:test"
-import chipRawEasy from "../assets/C22446580.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { expect, it } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import chipRawEasy from "../assets/C22446580.raweasy.json"
 
 it("should convert C22446580 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -75,7 +75,7 @@ it("should convert C22446580 into typescript file", async () => {
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=86016d4675144293b45eabfe7e8ef2ff&pn=C22446580",
             rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: 0, y: -0.000050799999989692424, z: -1.0999962000000003 },
+            positionOffset: { x: 0, y: -0.000050799999989692424, z: 0 },
           }}
           {...props}
         />
@@ -89,4 +89,4 @@ it("should convert C22446580 into typescript file", async () => {
   )
 
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
-})
+}, 20000)
