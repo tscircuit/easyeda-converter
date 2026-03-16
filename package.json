@@ -37,16 +37,18 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@tscircuit/alphabet": "^0.0.22",
+    "@tscircuit/circuit-json-util": "^0.0.90",
     "@tscircuit/mm": "^0.0.8",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
-    "circuit-json-to-gltf": "^0.0.35",
-    "circuit-to-svg": "^0.0.333",
+    "circuit-json-to-gltf": "^0.0.84",
+    "circuit-to-svg": "^0.0.337",
     "looks-same": "^9.0.1",
-    "poppygl": "^0.0.16",
+    "poppygl": "^0.0.19",
     "transformation-matrix": "^2.16.1",
-    "tsup": "^8.5.0",
-    "tscircuit": "^0.0.1465"
+    "tscircuit": "^0.0.1513",
+    "tsup": "^8.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.5.2",

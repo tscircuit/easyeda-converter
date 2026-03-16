@@ -4,7 +4,7 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
-test("C2055640 should import courtyard outlines with non-zero height and render them", () => {
+test("C2055640 should import courtyard outlines with non-zero height and render them", async () => {
   const bettereasy = EasyEdaJsonSchema.parse(c2055640Raw)
   const circuitJson = convertEasyEdaJsonToCircuitJson(bettereasy)
 

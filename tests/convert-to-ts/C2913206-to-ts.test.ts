@@ -2,21 +2,11 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C2913206.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { su } from "@tscircuit/circuit-json-util"
-import type { PcbSmtPadRect } from "circuit-json"
+import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C2913206 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-
-  const smtPad1 = su(circuitJson)
-    .pcb_smtpad.list()
-    .find((smtpad) => smtpad.port_hints?.includes("pin1"))! as PcbSmtPadRect
-
-  expect(smtPad1.width > smtPad1.height).toBeTrue()
-
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })
@@ -24,7 +14,10 @@ it("should convert C2913206 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 
-  // Add more specific assertions here based on the component
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -197,8 +190,8 @@ it("should convert C2913206 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=1270b5cf7aa247fc9d0ae79a19686940&pn=C2913206",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: 0, y: 2.540126999999984, z: -6.62500419999999 },
+            pcbRotationOffset: 0,
+            modelOriginPosition: { x: 0, y: 0, z: -0.02 },
           }}
           {...props}
         />

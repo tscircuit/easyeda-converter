@@ -23,7 +23,7 @@
     "SIM Card Connectors"
   ],
   "updateTime": 1709889603,
-  "updated_at": "2025-09-06 12:44:44",
+  "updated_at": "2026-03-14 12:40:28",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -245,6 +245,20 @@
         "height": 120.4
       },
       "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -14.4,
+        "y": -15.19,
+        "z": -0.6
+      },
+      "max": {
+        "x": 14.4,
+        "y": 15.19,
+        "z": 3
+      }
     }
   }
 }

@@ -2,8 +2,8 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C472489.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C472489 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -13,6 +13,11 @@ it("should convert C472489 into typescript file", async () => {
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
+
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -172,41 +177,12 @@ it("should convert C472489 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=7e9b9111dcfd48d3add0eab11d882721&pn=C472489",
-            rotationOffset: { x: 0, y: 0, z: 0 },
-            positionOffset: { x: 0, y: 0.011810999999994465, z: -5.638201499999998 },
+            pcbRotationOffset: 0,
+            modelOriginPosition: { x: 0, y: 0, z: 0.000795 },
           }}
           {...props}
         />
       )
     }"
   `)
-})
-
-it("C472489 should generate Circuit Json without errors", async () => {
-  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
-
-  const circuitJsonWithBoard = circuitJson.concat([
-    {
-      type: "pcb_board",
-      center: { x: 0, y: 0 },
-      width: 20,
-      height: 20,
-      pcb_board_id: "main_board",
-      thickness: 1.6,
-      num_layers: 2,
-      material: "fr4",
-    },
-  ])
-
-  await expect(circuitJsonWithBoard).toMatch3dSnapshot(import.meta.path)
-
-  await expect(circuitJsonWithBoard).toMatch3dSnapshot(
-    import.meta.path.replace(".test", "-side.test"),
-    { camPos: [30, 1, 0] },
-  )
 })

@@ -19,9 +19,11 @@
     "nickname": "LCSC",
     "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
   },
-  "tags": ["USB ICs"],
-  "updateTime": 1706201115,
-  "updated_at": "2024-10-12 13:05:40",
+  "tags": [
+    "USB ICs"
+  ],
+  "updateTime": 1735272003,
+  "updated_at": "2026-03-14 12:58:16",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -88,7 +90,7 @@
     "colors": []
   },
   "verify": true,
-  "datastrid": "e3f552e2a63e4a80bc3c5d2823526d07",
+  "datastrid": "ce81d10f61c246cb85e64bf181681128",
   "SMT": true,
   "jlcOnSale": 1,
   "writable": false,
@@ -304,6 +306,20 @@
         "height": 34.3
       },
       "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -5.1,
+        "y": -3.9,
+        "z": 0
+      },
+      "max": {
+        "x": 5.1,
+        "y": 3.9,
+        "z": 2.201
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib"
 import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert atmega328p into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(atmegaRawEasy)
@@ -14,7 +15,8 @@ it("should convert atmega328p into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 
-  // Generate 3D snapshot for component with c_rotation: 0,0,90
-  const circuitJson = await runTscircuitCode(result)
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 }, 20000)

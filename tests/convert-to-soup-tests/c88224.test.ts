@@ -2,22 +2,13 @@ import { it, expect } from "bun:test"
 import c88224RawEasy from "../assets/C88224.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import type { AnyCircuitElement } from "circuit-json"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 it("should parse easyeda json for a c88224 and convert to tscircuit soup", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(c88224RawEasy)
-  const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson).concat([
-    {
-      type: "pcb_board",
-      center: { x: 0, y: 0 },
-      width: 20,
-      height: 20,
-      pcb_board_id: "main_board",
-      thickness: 1.6,
-      num_layers: 2,
-      material: "fr4",
-    },
-  ])
+  const soupElements = convertEasyEdaJsonToCircuitJson(parsedJson)
 
-  await expect(soupElements).toMatch3dSnapshot(import.meta.path)
+  expect(
+    convertCircuitJsonToPcbSvg(soupElements, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path)
 })

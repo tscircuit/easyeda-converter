@@ -30,9 +30,11 @@
     "nickname": "LCSC",
     "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
   },
-  "tags": ["ATMEL & AVR"],
+  "tags": [
+    "ATMEL & AVR"
+  ],
   "updateTime": 1713799966,
-  "updated_at": "2024-10-15 03:56:25",
+  "updated_at": "2026-03-14 13:01:01",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -329,6 +331,20 @@
         "height": 39.1
       },
       "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -4.507608,
+        "y": -4.51033,
+        "z": 0.000917
+      },
+      "max": {
+        "x": 4.508999,
+        "y": 4.506278,
+        "z": 1.3
+      }
     }
   }
 }

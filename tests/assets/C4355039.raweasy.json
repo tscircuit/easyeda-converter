@@ -4,6 +4,7 @@
   "description": "",
   "docType": 2,
   "type": 3,
+  "thumb": "//image.lceda.cn/components/6cbdfe3b239e4e5cb99069e0042dab7d.png",
   "lcsc": {
     "id": 4925478,
     "number": "C4355039"
@@ -18,9 +19,11 @@
     "nickname": "LCSC",
     "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
   },
-  "tags": ["MOSFETs"],
-  "updateTime": 1676959310,
-  "updated_at": "2023-07-25 10:34:10",
+  "tags": [
+    "MOSFETs"
+  ],
+  "updateTime": 1740745585,
+  "updated_at": "2025-02-28 12:40:55",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -72,7 +75,7 @@
     },
     "colors": []
   },
-  "datastrid": "cc30b2c9934349338beba5bfd1da3e63",
+  "datastrid": "c2a1d91c20b94785b312a19b466ba1a2",
   "verify": true,
   "jlcOnSale": 1,
   "SMT": true,
@@ -82,14 +85,14 @@
     "uuid": "bade90667a6e4731855e9a223387b8a6",
     "title": "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR",
     "docType": 4,
-    "updateTime": 1651211575,
+    "updateTime": 1766747611,
     "owner": {
       "uuid": "0819f05c4eef4c71ace90d822a990e87",
       "username": "lcsc",
       "nickname": "LCSC",
       "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
     },
-    "datastrid": "7e1e1eed91394febacba1c098bbdf406",
+    "datastrid": "3549a1349a4b49d2ad7206cf9b4ffe74",
     "writable": false,
     "dataStr": {
       "head": {
@@ -209,6 +212,20 @@
         "y": 2994,
         "width": 12.8,
         "height": 12
+      }
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -1.25279,
+        "y": -1.45,
+        "z": 0.050795
+      },
+      "max": {
+        "x": 1.25279,
+        "y": 1.45,
+        "z": 1.1
       }
     }
   }

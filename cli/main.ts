@@ -2,7 +2,6 @@
 
 import { Command } from "commander"
 import { fetchEasyEDAComponent } from "../lib/websafe/fetch-easyeda-json"
-import { convertEasyEdaJsonToTscircuitSoupJson } from "../lib/convert-easyeda-json-to-tscircuit-soup-json"
 import fs from "fs/promises"
 import packageJson from "../package.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"

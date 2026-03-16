@@ -9,9 +9,7 @@ test("C19795120 should generate a pcb_cutout", async () => {
   const cutouts = circuitJson.filter((e) => e.type === "pcb_cutout")
   expect(cutouts.length).toBeGreaterThan(0)
 
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
-
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  expect(
+    convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path)
 })

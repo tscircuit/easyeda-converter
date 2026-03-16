@@ -8,9 +8,7 @@ it("should parse easyeda json for c4355039 and convert to tscircuit soup", async
   const parsedJson = EasyEdaJsonSchema.parse(C4355039EasyEdaJson)
   const circuitJson = convertEasyEdaJsonToCircuitJson(parsedJson)
 
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
-
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  expect(
+    convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path)
 })

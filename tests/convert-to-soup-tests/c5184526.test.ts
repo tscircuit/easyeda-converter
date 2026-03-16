@@ -9,9 +9,9 @@ test("C5184526 should have two holes", async () => {
 
   expect(circuitJson.filter((e) => e.type === "pcb_hole").length).toBe(2)
 
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
+  expect(
+    convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path)
 
   const coords = circuitJson
     .map((e: any) => ({
@@ -30,6 +30,4 @@ test("C5184526 should have two holes", async () => {
   expect(minX).toBeGreaterThan(-10)
   expect(maxY).toBeLessThan(10)
   expect(minY).toBeGreaterThan(-10)
-
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })

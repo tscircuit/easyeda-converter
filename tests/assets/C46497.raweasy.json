@@ -15,7 +15,7 @@
     "Audio Power OpAmps"
   ],
   "updateTime": 1713800489,
-  "updated_at": "2025-06-28 12:33:46",
+  "updated_at": "2026-03-14 12:29:45",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -340,6 +340,20 @@
         "y": 2982.6,
         "width": 44.2,
         "height": 35.5
+      }
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -4.056278,
+        "y": -5.5,
+        "z": -0.099083
+      },
+      "max": {
+        "x": 4.056278,
+        "y": 5.5,
+        "z": 1.2
       }
     }
   }

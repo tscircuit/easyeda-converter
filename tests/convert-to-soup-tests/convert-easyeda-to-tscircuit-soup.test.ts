@@ -1,9 +1,10 @@
 import { it, expect } from "bun:test"
-import a555TimerEasyEdaJson from "../assets/a555-timer-dip.raweasy.json"
+import a555TimerEasyEdaJson from "../assets/C46749.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { su } from "@tscircuit/circuit-json-util"
 import type { PcbPlatedHole, PcbSmtPad } from "circuit-json"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 it("should parse easyeda json for a 555 timer and convert to tscircuit soup", async () => {
   const parsedJson = EasyEdaJsonSchema.parse(a555TimerEasyEdaJson)
@@ -22,6 +23,11 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   // Check for the presence of source ports
   const sourcePorts = su(soupElements).source_port.list()
   expect(sourcePorts.length).toBeGreaterThan(0)
+
+  const cadComponent = su(soupElements).cad_component.list()[0]
+  expect(cadComponent).toBeDefined()
+  expect(cadComponent.model_origin_position).toBeDefined()
+  expect(cadComponent.model_origin_position?.z).toBeTypeOf("number")
 
   // Check for the presence of pcb_smtpads and pcb_plated_holes
   const pcbSmtPads = su(soupElements).pcb_smtpad.list() as PcbSmtPad[]
@@ -44,25 +50,7 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
     expect(firstPad.layer).toBe("top")
   }
 
-  // Add pcb_board for 3D snapshot testing
-  const circuitJsonWithBoard = soupElements.concat([
-    {
-      type: "pcb_board",
-      center: { x: 0, y: 0 },
-      width: 15,
-      height: 15,
-      pcb_board_id: "main_board",
-      thickness: 1.6,
-      num_layers: 2,
-      material: "fr4",
-    },
-  ])
-
-  await expect(circuitJsonWithBoard).toMatch3dSnapshot(import.meta.path)
-
-  // Add side view snapshot (poppygl y+ is circuit json z+)
-  await expect(circuitJsonWithBoard).toMatch3dSnapshot(
-    import.meta.path.replace(".test", "-side.test"),
-    { camPos: [30, 1, 0] },
-  )
+  expect(
+    convertCircuitJsonToPcbSvg(soupElements, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path)
 })

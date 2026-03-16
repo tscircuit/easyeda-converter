@@ -34,7 +34,7 @@
     "Screw terminal"
   ],
   "updateTime": 1727573215,
-  "updated_at": "2026-03-07 12:49:44",
+  "updated_at": "2026-03-14 13:05:52",
   "dataStr": {
     "head": {
       "docType": "2",
@@ -215,6 +215,20 @@
         "height": 40
       },
       "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -8.22,
+        "y": -4.5,
+        "z": -3.5
+      },
+      "max": {
+        "x": 2.54,
+        "y": 5.5,
+        "z": 14
+      }
     }
   }
 }
