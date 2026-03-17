@@ -4,6 +4,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { runTscircuitCode } from "tscircuit"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 it("should convert C2934569 into typescript with keepouts", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -27,5 +28,7 @@ it("should convert C2934569 into typescript with keepouts", async () => {
   )
   expect(generatedKeepouts.length).toBeGreaterThan(0)
 
-  expect(generatedCircuitJson).toMatchSnapshot()
+  expect(convertCircuitJsonToPcbSvg(generatedCircuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+  )
 }, 30000)
