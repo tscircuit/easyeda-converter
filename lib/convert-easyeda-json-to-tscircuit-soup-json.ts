@@ -197,6 +197,32 @@ const handleCutout = (
   } as Soup.PcbCutoutPolygonInput)
 }
 
+const handleKeepout = (
+  solidRegion: z.infer<typeof SolidRegionSchema>,
+  index: number,
+) => {
+  const xs = solidRegion.points.map((p) => milx10(p.x))
+  const ys = solidRegion.points.map((p) => milx10(p.y))
+
+  const minX = Math.min(...xs)
+  const maxX = Math.max(...xs)
+  const minY = Math.min(...ys)
+  const maxY = Math.max(...ys)
+
+  return Soup.pcb_keepout.parse({
+    type: "pcb_keepout",
+    pcb_keepout_id: `pcb_keepout_${index + 1}`,
+    layers: ["top"],
+    shape: "rect",
+    width: maxX - minX,
+    height: maxY - minY,
+    center: {
+      x: (minX + maxX) / 2,
+      y: (minY + maxY) / 2,
+    },
+  })
+}
+
 interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
@@ -486,6 +512,18 @@ export const convertEasyEdaJsonToCircuitJson = (
       circuitElements.push(handleCutout(sr, index))
     })
 
+  // Add keepouts from top keepout layer solid regions
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter(
+      (shape): shape is z.infer<typeof SolidRegionSchema> =>
+        shape.type === "SOLIDREGION" &&
+        shape.layermask === 100 &&
+        shape.fillStyle === "solid",
+    )
+    .forEach((sr, index) => {
+      circuitElements.push(handleKeepout(sr, index))
+    })
+
   // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
@@ -527,6 +565,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       e.type === "pcb_plated_hole" ||
       e.type === "pcb_hole" ||
       e.type === "pcb_via" ||
+      e.type === "pcb_keepout" ||
       e.type === "pcb_courtyard_outline" ||
       e.type === "pcb_silkscreen_path" ||
       e.type === "pcb_silkscreen_text",
