@@ -4,4 +4,4 @@ export { convertRawEasyToTsx as convertRawEasyEdaToTs } from "./websafe/convert-
 export { normalizeManufacturerPartNumber } from "./utils/normalize-manufacturer-part-number"
 export * from "./schemas/easy-eda-json-schema"
 export { convertEasyEdaJsonToVariousFormats } from "./convert-easyeda-json-to-various-formats"
-export { normalizePinLabels } from "@tscircuit/core"
+export { normalizePinLabels } from "./utils/normalize-pin-labels"

@@ -33,7 +33,7 @@ import {
 import { compose, scale, translate, applyToPoint } from "transformation-matrix"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
-import { normalizePinLabels } from "@tscircuit/core"
+import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 
