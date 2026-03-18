@@ -486,6 +486,26 @@ export const convertEasyEdaJsonToCircuitJson = (
       circuitElements.push(handleCutout(sr, index))
     })
 
+  // Add courtyard outlines from TRACK shapes on courtyard layers (13/14/15)
+  let courtyardIndex = 0
+  easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
+    if (shape.type === "TRACK" && isCourtyardLayer(shape.layer)) {
+      courtyardIndex++
+      circuitElements.push(
+        pcb_courtyard_outline.parse({
+          type: "pcb_courtyard_outline",
+          pcb_courtyard_outline_id: `pcb_courtyard_outline_track_${index}_${courtyardIndex}`,
+          pcb_component_id: "pcb_component_1",
+          layer: getSideFromLayer(shape.layer),
+          outline: shape.points.map((point) => ({
+            x: milx10(point.x),
+            y: milx10(point.y),
+          })),
+        }),
+      )
+    }
+  })
+
   // Add silkscreen paths, arcs and text
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
