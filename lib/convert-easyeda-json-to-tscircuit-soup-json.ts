@@ -565,9 +565,6 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   if (objFileUrl !== undefined || stepFileUrl !== undefined) {
     const { position, rotation } = parseCadOffsetsFromSvgNode(svgNode)
-    const modelUrlProps = objFileUrl
-      ? { model_obj_url: objFileUrl }
-      : { model_step_url: stepFileUrl }
 
     circuitElements.push(
       Soup.cad_component.parse({
@@ -584,7 +581,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         },
         position: { x: 0, y: 0, z: 0 },
         rotation,
-        ...modelUrlProps,
+        model_obj_url: objFileUrl,
+        model_step_url: stepFileUrl,
       } as Soup.CadComponentInput),
     )
   }
