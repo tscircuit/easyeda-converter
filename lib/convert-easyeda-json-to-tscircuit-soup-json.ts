@@ -1,41 +1,45 @@
-import type {
-  PadSchema,
-  TrackSchema,
-  ArcSchema,
-  SVGNodeSchema,
-  HoleSchema,
-  ViaSchema,
-  SolidRegionSchema,
-} from "./schemas/package-detail-shape-schema"
-import type { z } from "zod"
-import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
-import type {
-  AnyCircuitElement,
-  PcbSmtPad,
-  PcbViaInput,
-  PcbComponentInput,
-} from "circuit-json"
-import {
-  any_source_component,
-  pcb_courtyard_outline,
-  pcb_smtpad,
-  pcb_silkscreen_path,
-  pcb_plated_hole,
-  pcb_hole,
-  pcb_via,
-} from "circuit-json"
-import * as Soup from "circuit-json"
-import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import {
   findBoundsAndCenter,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
-import { compose, scale, translate, applyToPoint } from "transformation-matrix"
 import { mm } from "@tscircuit/mm"
+import type {
+  AnyCircuitElement,
+  PcbComponentInput,
+  PcbSmtPad,
+  PcbViaInput,
+} from "circuit-json"
+import {
+  any_source_component,
+  pcb_courtyard_outline,
+  pcb_hole,
+  pcb_plated_hole,
+  pcb_silkscreen_path,
+  pcb_smtpad,
+  pcb_via,
+} from "circuit-json"
+import * as Soup from "circuit-json"
+import { applyToPoint, compose, scale, translate } from "transformation-matrix"
+import type { z } from "zod"
+import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
+import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
+import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
+import type {
+  ArcSchema,
+  HoleSchema,
+  PadSchema,
+  SVGNodeSchema,
+  SolidRegionSchema,
+  TrackSchema,
+  ViaSchema,
+} from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
-import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
+
+const EASYEDA_STEP_MODEL_URL =
+  "https://modules.easyeda.com/qAxj6KHrDKw4blvCG8QJPs7Y"
+const EASYEDA_OBJ_MODEL_URL = "https://modules.easyeda.com/3dmodel"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -212,7 +216,8 @@ const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
   const svgNodeZ = Number(svgNode.svgData.attrs?.z ?? 0)
   if (!Number.isFinite(svgNodeZ)) return undefined
 
-  const bounds = easyEdaJson._objMetadata?.bounds
+  const bounds =
+    easyEdaJson._objMetadata?.bounds ?? easyEdaJson._stepMetadata?.bounds
   if (!bounds) return undefined
 
   const minZ = Math.abs(bounds.min.z) < 1e-6 ? 0 : bounds.min.z
@@ -543,16 +548,26 @@ export const convertEasyEdaJsonToCircuitJson = (
     (a): a is z.infer<typeof SVGNodeSchema> =>
       Boolean(a.type === "SVGNODE" && a.svgData.attrs?.uuid),
   )
-  const objFileUuid = svgNode?.svgData?.attrs?.uuid
+  const modelUuid = svgNode?.svgData?.attrs?.uuid
 
-  const objFileUrl = objFileUuid
+  const objFileUrl = modelUuid
     ? useModelCdn
-      ? `https://modelcdn.tscircuit.com/easyeda_models/download?uuid=${objFileUuid}&pn=${easyEdaJson.lcsc.number}`
-      : `https://modules.easyeda.com/3dmodel/${objFileUuid}`
+      ? `https://modelcdn.tscircuit.com/easyeda_models/download?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
+      : `${EASYEDA_OBJ_MODEL_URL}/${modelUuid}`
     : undefined
 
-  if (objFileUrl !== undefined) {
+  const stepFileUrl = modelUuid
+    ? useModelCdn
+      ? `https://modelcdn.tscircuit.com/easyeda_models/download.step?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
+      : `${EASYEDA_STEP_MODEL_URL}/${modelUuid}`
+    : undefined
+
+  if (objFileUrl !== undefined || stepFileUrl !== undefined) {
     const { position, rotation } = parseCadOffsetsFromSvgNode(svgNode)
+    const modelUrlProps = objFileUrl
+      ? { model_obj_url: objFileUrl }
+      : { model_step_url: stepFileUrl }
+
     circuitElements.push(
       Soup.cad_component.parse({
         type: "cad_component",
@@ -568,7 +583,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         },
         position: { x: 0, y: 0, z: 0 },
         rotation,
-        model_obj_url: objFileUrl,
+        ...modelUrlProps,
       } as Soup.CadComponentInput),
     )
   }

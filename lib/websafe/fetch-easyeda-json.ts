@@ -1,4 +1,5 @@
 import type { RawEasyEdaJson } from "../schemas/easy-eda-json-schema"
+import { parseStepBounds } from "../utils/parse-step-bounds"
 import { getModelCdnUrl } from "./get-model-cdn-url"
 
 type ModelBounds = {
@@ -20,9 +21,7 @@ const getModelUuidFromRawPackageDetail = (result: RawEasyEdaJson) => {
       if (typeof modelUuid === "string" && modelUuid.length > 0) {
         return modelUuid
       }
-    } catch {
-      continue
-    }
+    } catch {}
   }
 
   return null
@@ -151,7 +150,13 @@ export async function fetchEasyEDAComponent(
           easyedaModelUuid: modelUuid,
           easyedaPartNumber: partNumber,
         })
+        const stepUrl = getModelCdnUrl({
+          easyedaModelUuid: modelUuid,
+          easyedaPartNumber: partNumber,
+          format: "step",
+        })
         const objResponse = await fetch(objUrl)
+        const stepResponse = await fetch(stepUrl)
 
         if (objResponse.ok) {
           const objText = await objResponse.text()
@@ -162,6 +167,18 @@ export async function fetchEasyEDAComponent(
                 _objMetadata?: { bounds: ModelBounds }
               }
             )._objMetadata = { bounds }
+          }
+        }
+
+        if (stepResponse.ok) {
+          const stepText = await stepResponse.text()
+          const bounds = parseStepBounds(stepText)
+          if (bounds) {
+            ;(
+              result as RawEasyEdaJson & {
+                _stepMetadata?: { bounds: ModelBounds }
+              }
+            )._stepMetadata = { bounds }
           }
         }
       } catch (error) {
