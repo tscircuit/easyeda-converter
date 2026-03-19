@@ -8,10 +8,14 @@ import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacture
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 
-export const convertRawEasyToTsx = async (rawEasy: any) => {
+export const convertRawEasyToTsx = async ({
+  rawEasy,
+  format = "obj",
+}: { rawEasy: any; format?: "obj" | "step" }) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
+    format,
   })
   return result
 }
