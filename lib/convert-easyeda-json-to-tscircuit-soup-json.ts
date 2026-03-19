@@ -40,6 +40,7 @@ import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 const EASYEDA_STEP_MODEL_URL =
   "https://modules.easyeda.com/qAxj6KHrDKw4blvCG8QJPs7Y"
 const EASYEDA_OBJ_MODEL_URL = "https://modules.easyeda.com/3dmodel"
+const TSCIRCUIT_MODEL_CDN_URL = "https://modelcdn.tscircuit.com/easyeda_models"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -552,13 +553,13 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   const objFileUrl = modelUuid
     ? useModelCdn
-      ? `https://modelcdn.tscircuit.com/easyeda_models/download?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
+      ? `${TSCIRCUIT_MODEL_CDN_URL}/download?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
       : `${EASYEDA_OBJ_MODEL_URL}/${modelUuid}`
     : undefined
 
   const stepFileUrl = modelUuid
     ? useModelCdn
-      ? `https://modelcdn.tscircuit.com/easyeda_models/download.step?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
+      ? `${TSCIRCUIT_MODEL_CDN_URL}/download.step?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
       : `${EASYEDA_STEP_MODEL_URL}/${modelUuid}`
     : undefined
 
