@@ -107,8 +107,7 @@ export const getEasyEdaCadModelPlacement = async (
     format: "step",
   })
 
-  const metadataBounds =
-    easyEdaJson._objMetadata?.bounds ?? easyEdaJson._stepMetadata?.bounds
+  const metadataBounds = easyEdaJson._objMetadata?.bounds
   if (metadataBounds) {
     return {
       modelObjUrl,

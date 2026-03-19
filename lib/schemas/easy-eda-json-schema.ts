@@ -175,11 +175,6 @@ export const EasyEdaJsonSchema = z.object({
       bounds: ModelBoundsSchema,
     })
     .optional(),
-  _stepMetadata: z
-    .object({
-      bounds: ModelBoundsSchema,
-    })
-    .optional(),
 })
 
 export type RawEasyEdaJson = z.input<typeof EasyEdaJsonSchema>

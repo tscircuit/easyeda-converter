@@ -217,8 +217,7 @@ const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
   const svgNodeZ = Number(svgNode.svgData.attrs?.z ?? 0)
   if (!Number.isFinite(svgNodeZ)) return undefined
 
-  const bounds =
-    easyEdaJson._objMetadata?.bounds ?? easyEdaJson._stepMetadata?.bounds
+  const bounds = easyEdaJson._objMetadata?.bounds
   if (!bounds) return undefined
 
   const minZ = Math.abs(bounds.min.z) < 1e-6 ? 0 : bounds.min.z
