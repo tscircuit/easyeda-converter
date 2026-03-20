@@ -48,7 +48,7 @@ it("should convert C1046 into typescript file with step model", async () => {
     <courtyardoutline outline={[{"x":-2.1969100000000026,"y":1.2693020000001525},{"x":2.1130900000000565,"y":1.2693020000001525},{"x":2.1130900000000565,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":1.2693020000001525}]} />
           </footprint>}
           cadModel={{
-            stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/download.step?uuid=c7acac53bcbc44d68fbab8f60a747688&pn=C1046",
+            stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C1046.step?uuid=c7acac53bcbc44d68fbab8f60a747688",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: 0 },
           }}

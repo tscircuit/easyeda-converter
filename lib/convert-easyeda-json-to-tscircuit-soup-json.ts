@@ -552,13 +552,13 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   const objFileUrl = modelUuid
     ? useModelCdn
-      ? `${TSCIRCUIT_MODEL_CDN_URL}/download?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
+      ? `${TSCIRCUIT_MODEL_CDN_URL}/assets/${easyEdaJson.lcsc.number}.obj?uuid=${modelUuid}`
       : `${EASYEDA_OBJ_MODEL_URL}/${modelUuid}`
     : undefined
 
   const stepFileUrl = modelUuid
     ? useModelCdn
-      ? `${TSCIRCUIT_MODEL_CDN_URL}/download.step?uuid=${modelUuid}&pn=${easyEdaJson.lcsc.number}`
+      ? `${TSCIRCUIT_MODEL_CDN_URL}/assets/${easyEdaJson.lcsc.number}.step?uuid=${modelUuid}`
       : `${EASYEDA_STEP_MODEL_URL}/${modelUuid}`
     : undefined
 

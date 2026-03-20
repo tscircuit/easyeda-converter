@@ -9,6 +9,6 @@ export const getModelCdnUrl = ({
   easyedaPartNumber,
   format = "obj",
 }: Params): string => {
-  const extension = format === "step" ? ".step" : ""
-  return `https://modelcdn.tscircuit.com/easyeda_models/download${extension}?uuid=${easyedaModelUuid}&pn=${easyedaPartNumber}`
+  const extension = format === "step" ? "step" : "obj"
+  return `https://modelcdn.tscircuit.com/easyeda_models/assets/${easyedaPartNumber}.${extension}?uuid=${easyedaModelUuid}`
 }
