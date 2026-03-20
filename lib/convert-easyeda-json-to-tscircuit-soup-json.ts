@@ -34,8 +34,8 @@ import { compose, scale, translate, applyToPoint } from "transformation-matrix"
 import { mm } from "@tscircuit/mm"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
-import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
+import { DEFAULT_PCB_THICKNESS_MM, REFERENCE_DESIGNATOR } from "./constants"
 
 const mil2mm = (mil: number | string) => {
   if (typeof mil === "number") return mm(`${mil}mil`)
@@ -201,6 +201,7 @@ interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
   cadPositionZMm?: number
+  name?: string
 }
 
 const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
@@ -221,17 +222,20 @@ const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
 
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
-  { useModelCdn, shouldRecenter = true, cadPositionZMm }: Options = {},
+  { useModelCdn, shouldRecenter = true, cadPositionZMm, name }: Options = {},
 ): AnyCircuitElement[] => {
   const resolvedCadPositionZMm =
     cadPositionZMm ?? getCadPositionZMmFromMetadata(easyEdaJson)
   const circuitElements: AnyCircuitElement[] = []
 
+  const sourceComponentName =
+    name || easyEdaJson.dataStr.head.c_para.pre || "U1"
+
   // Add source component
   const source_component = any_source_component.parse({
     type: "source_component",
     source_component_id: "source_component_1",
-    name: "U1",
+    name: sourceComponentName,
     ftype: "simple_chip",
   })
 
@@ -239,7 +243,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     type: "pcb_component",
     pcb_component_id: "pcb_component_1",
     source_component_id: "source_component_1",
-    name: "U1",
+    name: sourceComponentName,
     ftype: "simple_chip",
     width: 0, // we update this at the end
     height: 0, // we update this at the end
@@ -444,11 +448,11 @@ export const convertEasyEdaJsonToCircuitJson = (
           ? rectSize
           : soupShape === "polygon" && pad.points
             ? {
-                points: pad.points.map((p) => ({
-                  x: milx10(p.x),
-                  y: milx10(p.y),
-                })),
-              }
+              points: pad.points.map((p) => ({
+                x: milx10(p.x),
+                y: milx10(p.y),
+              })),
+            }
             : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
@@ -487,6 +491,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     })
 
   // Add silkscreen paths, arcs and text
+  let hasFoundDesignator = false
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
       if (!isCourtyardLayer(shape.layer)) {
@@ -498,27 +503,65 @@ export const convertEasyEdaJsonToCircuitJson = (
       }
     } else if (shape.type === "TEXT") {
       if (isCourtyardLayer(shape.layer)) return
+
+      let text = shape.text
+      const designatorPrefix = easyEdaJson.dataStr.head.c_para.pre || "U"
+      const isDesignator =
+        text === designatorPrefix ||
+        text === `${designatorPrefix}?` ||
+        text === "U?" ||
+        (designatorPrefix === "U" && text === "U")
+
+      if (isDesignator) {
+        text = REFERENCE_DESIGNATOR
+        hasFoundDesignator = true
+      }
+
       circuitElements.push(
         Soup.pcb_silkscreen_text.parse({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
           pcb_component_id: "pcb_component_1",
-          text: normalizeSymbolName(shape.text),
+          text,
           anchor_position: {
             x: mil2mm(shape.x),
             y: mil2mm(shape.y),
           },
-          anchor_alignment: {
-            L: "bottom_left",
-            C: "center",
-            R: "bottom_right",
-          }[shape.textAnchor ?? "L"],
-          font_size: shape.size_mm ? shape.size_mm : undefined,
+          anchor_alignment: (
+            {
+              L: "bottom_left",
+              C: "center",
+              R: "bottom_right",
+            } as const
+          )[shape.textAnchor ?? "L"],
+          font_size: shape.size_mm || 1.0,
           layer: "top",
         } as Soup.PcbSilkscreenTextInput),
       )
     }
   })
+
+  // Add a fallback designator if none was found in the shapes
+  if (!hasFoundDesignator) {
+    const bbox = easyEdaJson.packageDetail.dataStr.BBox
+    circuitElements.push(
+      Soup.pcb_silkscreen_text.parse({
+        type: "pcb_silkscreen_text",
+        pcb_silkscreen_text_id: `pcb_silkscreen_text_designator_fallback`,
+        pcb_component_id: "pcb_component_1",
+        text: REFERENCE_DESIGNATOR,
+        anchor_position: {
+          x: milx10(bbox.x + bbox.width / 2),
+          y: milx10(bbox.y) - 1.0, // 1mm above top edge
+        },
+        anchor_alignment: "center",
+        font_size: 1.0,
+        layer: "top",
+      } as Soup.PcbSilkscreenTextInput),
+    )
+  }
+
+  // Only add designator if found in EasyEDA
 
   // Calculate pcb_component bounds from all PCB elements
   const pcbElements = circuitElements.filter(
