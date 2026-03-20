@@ -1,6 +1,6 @@
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
-import { getModelCdnUrl } from "./get-model-cdn-url"
+import { getModelObjCdnUrl, getModelStepCdnUrl } from "./get-model-cdn-url"
 
 type ModelBounds = {
   min: { x: number; y: number; z: number }
@@ -97,14 +97,13 @@ export const getEasyEdaCadModelPlacement = async (
     return null
   }
 
-  const modelObjUrl = getModelCdnUrl({
+  const modelObjUrl = getModelObjCdnUrl({
     easyedaModelUuid: modelUuid,
     easyedaPartNumber: partNumber,
   })
-  const modelStepUrl = getModelCdnUrl({
+  const modelStepUrl = getModelStepCdnUrl({
     easyedaModelUuid: modelUuid,
     easyedaPartNumber: partNumber,
-    format: "step",
   })
 
   const metadataBounds = easyEdaJson._objMetadata?.bounds

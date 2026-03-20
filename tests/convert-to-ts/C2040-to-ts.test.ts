@@ -168,6 +168,7 @@ it("should convert C2040 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2040.obj?uuid=76b360a9d4c54384a4e47d7e5af156df",
+            stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2040.step?uuid=76b360a9d4c54384a4e47d7e5af156df",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: -0.02 },
           }}

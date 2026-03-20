@@ -75,6 +75,7 @@ it("should convert C75749 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C75749.obj?uuid=dc634ef6f677426f9bef12d13c1b02cd",
+            stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C75749.step?uuid=dc634ef6f677426f9bef12d13c1b02cd",
             pcbRotationOffset: 90,
             modelOriginPosition: { x: 0, y: 0, z: 0.3381490000000005 },
           }}

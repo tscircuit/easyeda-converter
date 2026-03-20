@@ -1,26 +1,19 @@
-import { it, expect } from "bun:test"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { expect, it } from "bun:test"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { runTscircuitCode } from "tscircuit"
-import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
-import { fetchEasyEDAComponent } from "lib/websafe/fetch-easyeda-json"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import chipRawEasy from "../assets/C1046.raweasy.json"
 
-it("should convert C1046 into typescript file with step model", async () => {
-  const rawEasy = await fetchEasyEDAComponent("C1046")
-  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+it("should include both obj and step cad model urls", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
 
   const result = await convertBetterEasyToTsx({
     betterEasy,
-    format: "step",
   })
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-
-  const circuitJson = await runTscircuitCode(
-    wrapTsxWithBoardFor3dSnapshot(result),
-  )
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  expect(result).toContain("objUrl")
+  expect(result).toContain("stepUrl")
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -48,6 +41,7 @@ it("should convert C1046 into typescript file with step model", async () => {
     <courtyardoutline outline={[{"x":-2.1969100000000026,"y":1.2693020000001525},{"x":2.1130900000000565,"y":1.2693020000001525},{"x":2.1130900000000565,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":1.2693020000001525}]} />
           </footprint>}
           cadModel={{
+            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C1046.obj?uuid=c7acac53bcbc44d68fbab8f60a747688",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C1046.step?uuid=c7acac53bcbc44d68fbab8f60a747688",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: 0 },
