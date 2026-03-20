@@ -448,11 +448,11 @@ export const convertEasyEdaJsonToCircuitJson = (
           ? rectSize
           : soupShape === "polygon" && pad.points
             ? {
-              points: pad.points.map((p) => ({
-                x: milx10(p.x),
-                y: milx10(p.y),
-              })),
-            }
+                points: pad.points.map((p) => ({
+                  x: milx10(p.x),
+                  y: milx10(p.y),
+                })),
+              }
             : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
