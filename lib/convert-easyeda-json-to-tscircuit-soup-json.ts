@@ -21,7 +21,6 @@ import {
 import * as Soup from "circuit-json"
 import { applyToPoint, compose, scale, translate } from "transformation-matrix"
 import type { z } from "zod"
-import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
