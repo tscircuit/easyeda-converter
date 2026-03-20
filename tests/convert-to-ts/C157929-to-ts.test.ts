@@ -55,6 +55,7 @@ it("should convert C157929 into typescript file", async () => {
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C157929.obj?uuid=34ff8836248648119b083f641041fec0",
+            stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C157929.step?uuid=34ff8836248648119b083f641041fec0",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: 0.09999300000000044 },
           }}

@@ -1,14 +1,20 @@
 type Params = {
   easyedaPartNumber: string
   easyedaModelUuid: string
-  format?: "obj" | "step"
 }
 
-export const getModelCdnUrl = ({
+export const getModelObjCdnUrl = ({
   easyedaModelUuid,
   easyedaPartNumber,
-  format = "obj",
 }: Params): string => {
-  const extension = format === "step" ? "step" : "obj"
-  return `https://modelcdn.tscircuit.com/easyeda_models/assets/${easyedaPartNumber}.${extension}?uuid=${easyedaModelUuid}`
+  return `https://modelcdn.tscircuit.com/easyeda_models/assets/${easyedaPartNumber}.obj?uuid=${easyedaModelUuid}`
 }
+
+export const getModelStepCdnUrl = ({
+  easyedaModelUuid,
+  easyedaPartNumber,
+}: Params): string => {
+  return `https://modelcdn.tscircuit.com/easyeda_models/assets/${easyedaPartNumber}.step?uuid=${easyedaModelUuid}`
+}
+
+export const getModelCdnUrl = getModelObjCdnUrl
