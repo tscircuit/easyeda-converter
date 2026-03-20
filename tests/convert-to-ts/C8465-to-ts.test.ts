@@ -53,7 +53,7 @@ it("should convert C8465 into typescript file", async () => {
     <courtyardoutline outline={[{"x":-5.939599999999999,"y":5.888800000000003},{"x":5.456999999999994,"y":5.888800000000003},{"x":5.456999999999994,"y":-4.771199999999993},{"x":-5.939599999999999,"y":-4.771199999999993},{"x":-5.939599999999999,"y":5.888800000000003}]} />
           </footprint>}
           cadModel={{
-            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=d60ef5d423934d3393dc75fa0a07b6bd&pn=C8465",
+            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C8465.obj?uuid=d60ef5d423934d3393dc75fa0a07b6bd",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: -0.000006999999999646178 },
           }}

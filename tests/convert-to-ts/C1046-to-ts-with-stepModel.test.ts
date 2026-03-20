@@ -1,14 +1,17 @@
 import { it, expect } from "bun:test"
-import chipRawEasy from "../assets/C281113.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { fetchEasyEDAComponent } from "lib/websafe/fetch-easyeda-json"
 
-it("should convert C281113 into typescript file", async () => {
-  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
+it("should convert C1046 into typescript file with step model", async () => {
+  const rawEasy = await fetchEasyEDAComponent("C1046")
+  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+
   const result = await convertBetterEasyToTsx({
     betterEasy,
+    format: "step",
   })
 
   expect(result).not.toContain("milmm")
@@ -27,16 +30,16 @@ it("should convert C281113 into typescript file", async () => {
       pin2: ["pin2"]
     } as const
 
-    export const MGFL2012F100MT_LF = (props: ChipProps<typeof pinLabels>) => {
+    export const SDFL2012S100KTF = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [
-        "C281113"
+        "C1046"
       ]
     }}
-          manufacturerPartNumber="MGFL2012F100MT_LF"
+          manufacturerPartNumber="SDFL2012S100KTF"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-0.9662159999999176mm" pcbY="0mm" width="1.1325352mm" height="1.3770101999999997mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="0.9662160000000313mm" pcbY="0mm" width="1.1325352mm" height="1.3770101999999997mm" shape="rect" />
@@ -45,7 +48,7 @@ it("should convert C281113 into typescript file", async () => {
     <courtyardoutline outline={[{"x":-2.1969100000000026,"y":1.2693020000001525},{"x":2.1130900000000565,"y":1.2693020000001525},{"x":2.1130900000000565,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":-1.2626980000000003},{"x":-2.1969100000000026,"y":1.2693020000001525}]} />
           </footprint>}
           cadModel={{
-            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C281113.obj?uuid=c7acac53bcbc44d68fbab8f60a747688",
+            stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C1046.step?uuid=c7acac53bcbc44d68fbab8f60a747688",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: 0 },
           }}

@@ -167,7 +167,7 @@ it("should convert C2040 into typescript file", async () => {
     <courtyardoutline outline={[{"x":-4.3780080000000225,"y":4.109021999999982},{"x":4.097592000000077,"y":4.109021999999982},{"x":4.097592000000077,"y":-4.087178000000108},{"x":-4.3780080000000225,"y":-4.087178000000108},{"x":-4.3780080000000225,"y":4.109021999999982}]} />
           </footprint>}
           cadModel={{
-            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=76b360a9d4c54384a4e47d7e5af156df&pn=C2040",
+            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2040.obj?uuid=76b360a9d4c54384a4e47d7e5af156df",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: -0.02 },
           }}
