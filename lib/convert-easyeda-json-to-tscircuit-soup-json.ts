@@ -66,18 +66,19 @@ const parseCadOffsetsFromSvgNode = (
     .split(",")
     .map((s) => Number(s.trim()))
 
-  // z: bare numbers are mils; strings with units go through mm()
+  // z: bare numbers are in pixel units (1px = 10mil = 0.254mm)
+  // Keep EasyEDA's Z as-is for proper positioning relative to board surface
   const zStr = attrs.z ?? 0
   const z_mm =
     typeof zStr === "string" && /[a-z]/i.test(zStr)
       ? mm(zStr) // already has units
-      : mm(`${Number(zStr) || 0}mil`) // bare number => mils
+      : mil10ToMm(Number(zStr) || 0) // bare number => pixel units (mil*10)
 
   return {
     position: {
       x: mil10ToMm(Number.isNaN(cx) ? 0 : cx),
       y: mil10ToMm(Number.isNaN(cy) ? 0 : cy),
-      z: z_mm,
+      z: z_mm, // Keep as-is, will be positioned relative to board surface
     },
     rotation: (() => {
       const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
@@ -759,20 +760,10 @@ export const convertEasyEdaJsonToCircuitJson = (
           cad.model_origin_position.z =
             side === "top" ? resolvedCadPositionZMm! : -resolvedCadPositionZMm!
         } else {
-          let centerZ: number
-          if (is180RotatedYUp) {
-            // For Y-up models, subtract half the thickness to lower the component to the board
-            centerZ =
-              side === "top"
-                ? t - thicknessAlongWorldZ / 2
-                : -t + thicknessAlongWorldZ / 2
-          } else {
-            // For other orientations, use standard positioning with z-offset
-            centerZ =
-              side === "top"
-                ? t + zOff + thicknessAlongWorldZ / 2
-                : -t - zOff - thicknessAlongWorldZ / 2
-          }
+          // Simplified Z positioning: position the model origin relative to board surface.
+          // EasyEDA's z-offset already accounts for the model's local origin.
+          // Board surface is at +t for top side, -t for bottom side.
+          const centerZ = side === "top" ? t + zOff : -t - zOff
 
           cad.model_origin_position.z = centerZ
         }
