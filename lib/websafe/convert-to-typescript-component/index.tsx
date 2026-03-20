@@ -1,25 +1,31 @@
-import {
-  EasyEdaJsonSchema,
-  type BetterEasyEdaJson,
-} from "lib/schemas/easy-eda-json-schema"
 import { su } from "@tscircuit/circuit-json-util"
-import { generateTypescriptComponent } from "./generate-typescript-component"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import {
+  type BetterEasyEdaJson,
+  EasyEdaJsonSchema,
+} from "lib/schemas/easy-eda-json-schema"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
+import { generateTypescriptComponent } from "./generate-typescript-component"
 
-export const convertRawEasyToTsx = async (rawEasy: any) => {
+export const convertRawEasyToTsx = async ({
+  rawEasy,
+  format = "obj",
+}: { rawEasy: any; format?: "obj" | "step" }) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
+    format,
   })
   return result
 }
 
 export const convertBetterEasyToTsx = async ({
   betterEasy,
+  format = "obj",
 }: {
   betterEasy: BetterEasyEdaJson
+  format?: "obj" | "step"
 }): Promise<string> => {
   const cadPlacement = await getEasyEdaCadModelPlacement(betterEasy)
   const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
@@ -51,16 +57,22 @@ export const convertBetterEasyToTsx = async ({
   }
 
   let modelObjUrl: string | undefined
+  let modelStepUrl: string | undefined
   if (cadPlacement?.modelObjUrl) {
     modelObjUrl = cadPlacement.modelObjUrl
+    modelStepUrl = cadPlacement.modelStepUrl
   } else if (cadComponent?.model_obj_url) {
     const isValidUrl = await checkModelObjUrlValidity(
       cadComponent.model_obj_url,
     )
     if (isValidUrl) {
       modelObjUrl = cadComponent.model_obj_url
+      modelStepUrl = cadComponent.model_step_url
     }
   }
+
+  const selectedObjUrl = format === "obj" ? modelObjUrl : undefined
+  const selectedStepUrl = format === "step" ? modelStepUrl : undefined
 
   const supplierPartNumbers: Record<string, string[]> = {
     jlcpcb: [betterEasy.lcsc.number],
@@ -71,7 +83,8 @@ export const convertBetterEasyToTsx = async ({
     manufacturerPartNumber: pn,
     pinLabels,
 
-    objUrl: modelObjUrl,
+    objUrl: selectedObjUrl,
+    stepUrl: selectedStepUrl,
     circuitJson,
     supplierPartNumbers,
   })

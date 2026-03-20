@@ -4,10 +4,6 @@ import { Command } from "commander"
 import { fetchEasyEDAComponent } from "../lib/websafe/fetch-easyeda-json"
 import fs from "fs/promises"
 import packageJson from "../package.json"
-import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertRawEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import * as path from "path"
-import { normalizeManufacturerPartNumber } from "lib"
 import { convertEasyEdaJsonToVariousFormats } from "lib/convert-easyeda-json-to-various-formats"
 
 const program = new Command()

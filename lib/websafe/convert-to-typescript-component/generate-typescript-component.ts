@@ -1,11 +1,12 @@
-import type { AnyCircuitElement } from "circuit-json"
 import type { ChipProps } from "@tscircuit/props"
+import type { AnyCircuitElement } from "circuit-json"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
   componentName: string
   objUrl?: string
+  stepUrl?: string
   circuitJson: AnyCircuitElement[]
   supplierPartNumbers: ChipProps["supplierPartNumbers"]
   manufacturerPartNumber: string
@@ -15,6 +16,7 @@ export const generateTypescriptComponent = ({
   pinLabels,
   componentName,
   objUrl,
+  stepUrl,
   circuitJson,
   supplierPartNumbers,
   manufacturerPartNumber,
@@ -39,6 +41,16 @@ export const generateTypescriptComponent = ({
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
 
+  const cadModelLines = [
+    objUrl ? `objUrl: "${objUrl}",` : "",
+    stepUrl ? `stepUrl: "${stepUrl}",` : "",
+    `pcbRotationOffset: ${cadComponent?.rotation?.z ?? 0},`,
+    `modelOriginPosition: { x: ${cadComponent?.model_origin_position?.x ?? 0}, y: ${cadComponent?.model_origin_position?.y ?? 0}, z: ${cadComponent?.model_origin_position?.z ?? 0} },`,
+  ]
+    .filter(Boolean)
+    .map((line) => `        ${line}`)
+    .join("\n")
+
   return `
 import type { ChipProps } from "@tscircuit/props"
 
@@ -54,11 +66,9 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
       ${
-        objUrl
+        objUrl || stepUrl
           ? `cadModel={{
-        objUrl: "${objUrl}",
-        pcbRotationOffset: ${cadComponent?.rotation?.z ?? 0},
-        modelOriginPosition: { x: ${cadComponent?.model_origin_position?.x ?? 0}, y: ${cadComponent?.model_origin_position?.y ?? 0}, z: ${cadComponent?.model_origin_position?.z ?? 0} },
+${cadModelLines}
       }}`
           : ""
       }

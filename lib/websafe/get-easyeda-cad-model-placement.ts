@@ -8,7 +8,8 @@ type ModelBounds = {
 }
 
 export type EasyEdaCadModelPlacement = {
-  modelObjUrl: string
+  modelObjUrl?: string
+  modelStepUrl?: string
   positionZMm: number
   bounds: ModelBounds
 }
@@ -100,11 +101,17 @@ export const getEasyEdaCadModelPlacement = async (
     easyedaModelUuid: modelUuid,
     easyedaPartNumber: partNumber,
   })
+  const modelStepUrl = getModelCdnUrl({
+    easyedaModelUuid: modelUuid,
+    easyedaPartNumber: partNumber,
+    format: "step",
+  })
 
   const metadataBounds = easyEdaJson._objMetadata?.bounds
   if (metadataBounds) {
     return {
       modelObjUrl,
+      modelStepUrl,
       bounds: metadataBounds,
       positionZMm: getPositionZMmFromBounds(metadataBounds, svgNodeZOffsetMm),
     }
@@ -125,6 +132,7 @@ export const getEasyEdaCadModelPlacement = async (
 
       return {
         modelObjUrl,
+        modelStepUrl,
         bounds,
         // Align the EasyEDA SVG-node Z against the model's minimum Z.
         positionZMm: getPositionZMmFromBounds(bounds, svgNodeZOffsetMm),

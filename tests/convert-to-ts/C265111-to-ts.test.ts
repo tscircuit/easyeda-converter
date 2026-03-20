@@ -69,7 +69,7 @@ it("should convert C265111 into typescript file", async () => {
     <courtyardoutline outline={[{"x":-7.068122000000017,"y":2.944749500000057},{"x":7.097078000000124,"y":2.944749500000057},{"x":7.097078000000124,"y":-2.9654504999999745},{"x":-7.068122000000017,"y":-2.9654504999999745},{"x":-7.068122000000017,"y":2.944749500000057}]} />
           </footprint>}
           cadModel={{
-            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/download?uuid=e2cbbcb052e1425b939676152927732c&pn=C265111",
+            objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C265111.obj?uuid=e2cbbcb052e1425b939676152927732c",
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: 0, z: -3.875 },
           }}

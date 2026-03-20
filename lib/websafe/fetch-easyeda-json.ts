@@ -20,9 +20,7 @@ const getModelUuidFromRawPackageDetail = (result: RawEasyEdaJson) => {
       if (typeof modelUuid === "string" && modelUuid.length > 0) {
         return modelUuid
       }
-    } catch {
-      continue
-    }
+    } catch {}
   }
 
   return null
@@ -152,7 +150,6 @@ export async function fetchEasyEDAComponent(
           easyedaPartNumber: partNumber,
         })
         const objResponse = await fetch(objUrl)
-
         if (objResponse.ok) {
           const objText = await objResponse.text()
           const bounds = parseObjBounds(objText)
