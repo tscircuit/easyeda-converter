@@ -1,7 +1,6 @@
 import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
 import { su } from "@tscircuit/circuit-json-util"
-import { REFERENCE_DESIGNATOR } from "lib/constants"
 
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
@@ -77,8 +76,8 @@ export const generateFootprintTsx = (
 
   for (const silkscreenText of silkscreenTexts) {
     const text =
-      silkscreenText.text === REFERENCE_DESIGNATOR
-        ? "{props.name}"
+      silkscreenText.text === "{NAME}"
+        ? '{props.name ?? "{NAME}"}'
         : JSON.stringify(silkscreenText.text)
     elementStrings.push(
       `<silkscreentext text=${text} pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}" ${silkscreenText.font_size ? `fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,

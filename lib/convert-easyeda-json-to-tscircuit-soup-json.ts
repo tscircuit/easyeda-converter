@@ -35,7 +35,7 @@ import type {
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
-import { DEFAULT_PCB_THICKNESS_MM, REFERENCE_DESIGNATOR } from "./constants"
+import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 
 const EASYEDA_STEP_MODEL_URL =
   "https://modules.easyeda.com/qAxj6KHrDKw4blvCG8QJPs7Y"
@@ -521,7 +521,7 @@ export const convertEasyEdaJsonToCircuitJson = (
 
       if (isDesignator) {
         if (!name) return
-        text = REFERENCE_DESIGNATOR
+        text = "{NAME}"
         hasFoundDesignator = true
       }
 
@@ -557,7 +557,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         type: "pcb_silkscreen_text",
         pcb_silkscreen_text_id: `pcb_silkscreen_text_designator_fallback`,
         pcb_component_id: "pcb_component_1",
-        text: REFERENCE_DESIGNATOR,
+        text: "{NAME}",
         anchor_position: {
           x: milx10(bbox.x + bbox.width / 2),
           y: milx10(bbox.y) - 1.0, // 1mm above top edge

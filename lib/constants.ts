@@ -1,2 +1,1 @@
 export const DEFAULT_PCB_THICKNESS_MM = 1.6
-export const REFERENCE_DESIGNATOR = "{{NAME}}"
