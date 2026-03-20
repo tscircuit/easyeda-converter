@@ -235,7 +235,11 @@ export const convertEasyEdaJsonToCircuitJson = (
   const circuitElements: AnyCircuitElement[] = []
 
   const sourceComponentName =
-    name || easyEdaJson.dataStr.head.c_para.pre || "U1"
+    name ||
+    (easyEdaJson.dataStr.head.c_para.pre === "U?"
+      ? "U1"
+      : easyEdaJson.dataStr.head.c_para.pre) ||
+    "U1"
 
   // Add source component
   const source_component = any_source_component.parse({
@@ -512,13 +516,17 @@ export const convertEasyEdaJsonToCircuitJson = (
 
       let text = shape.text
       const designatorPrefix = easyEdaJson.dataStr.head.c_para.pre || "U"
+      const NormalizedPrefix = designatorPrefix.replace("?", "")
       const isDesignator =
         text === designatorPrefix ||
-        text === `${designatorPrefix}?` ||
+        text === `${NormalizedPrefix}?` ||
+        text === NormalizedPrefix ||
         text === "U?" ||
-        (designatorPrefix === "U" && text === "U")
+        text === "REF**" ||
+        text === "REFERENCE"
 
       if (isDesignator) {
+        if (!name) return
         text = REFERENCE_DESIGNATOR
         hasFoundDesignator = true
       }
@@ -548,7 +556,7 @@ export const convertEasyEdaJsonToCircuitJson = (
   })
 
   // Add a fallback designator if none was found in the shapes
-  if (!hasFoundDesignator) {
+  if (!hasFoundDesignator && name) {
     const bbox = easyEdaJson.packageDetail.dataStr.BBox
     circuitElements.push(
       Soup.pcb_silkscreen_text.parse({
