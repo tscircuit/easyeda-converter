@@ -233,8 +233,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     cadPositionZMm ?? getCadPositionZMmFromMetadata(easyEdaJson)
   const circuitElements: AnyCircuitElement[] = []
 
-  const sourceComponentName =
-    name || easyEdaJson.dataStr.head.c_para.pre || "U?"
+  const sourceComponentName = name || easyEdaJson.dataStr.head.c_para.pre
 
   // Add source component
   const source_component = any_source_component.parse({
@@ -515,10 +514,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       const isDesignator =
         text === designatorPrefix ||
         text === `${NormalizedPrefix}?` ||
-        text === NormalizedPrefix ||
-        text === "U?" ||
-        text === "REF**" ||
-        text === "REFERENCE"
+        text === NormalizedPrefix
 
       if (isDesignator) {
         if (!name) return
