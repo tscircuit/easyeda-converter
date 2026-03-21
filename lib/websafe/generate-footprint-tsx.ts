@@ -77,7 +77,7 @@ export const generateFootprintTsx = (
   for (const silkscreenText of silkscreenTexts) {
     const text =
       silkscreenText.text === "{NAME}"
-        ? '{props.name ?? "{NAME}"}'
+        ? "{props.name}"
         : JSON.stringify(silkscreenText.text)
     elementStrings.push(
       `<silkscreentext text=${text} pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}" ${silkscreenText.font_size ? `fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,
