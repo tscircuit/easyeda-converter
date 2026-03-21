@@ -52,4 +52,4 @@ it("should include both obj and step cad model urls", async () => {
       )
     }"
   `)
-}, 11111111)
+})
