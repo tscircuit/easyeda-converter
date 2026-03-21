@@ -22,19 +22,19 @@ export const convertBetterEasyToTsx = async ({
   betterEasy: BetterEasyEdaJson
 }): Promise<string> => {
   const cadPlacement = await getEasyEdaCadModelPlacement(betterEasy)
-  const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
-  const pn = rawPn ? normalizeManufacturerPartNumber(rawPn) : "unknown"
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy, {
     useModelCdn: true,
     shouldRecenter: true,
     cadPositionZMm: cadPlacement?.positionZMm,
-    name: pn,
+    showDesignator: true,
   })
   const [cadComponent] = su(circuitJson).cad_component.list()
   if (cadComponent) {
     cadComponent.position.x = 0
     cadComponent.position.y = 0
   }
+  const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
+  const pn = rawPn ? normalizeManufacturerPartNumber(rawPn) : "unknown"
   const sourcePorts = su(circuitJson).source_port.list()
 
   const pinLabels: Record<string, string[]> = {}

@@ -2,6 +2,7 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C2652953.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { su } from "@tscircuit/circuit-json-util"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
@@ -21,6 +22,11 @@ it("should convert C2652953 into typescript file", async () => {
     )
     `,
   )
+  expect(
+    su(circuitJson)
+      .pcb_silkscreen_text.list()
+      .some((t) => t.text === "U_LC1"),
+  ).toBe(true)
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
 

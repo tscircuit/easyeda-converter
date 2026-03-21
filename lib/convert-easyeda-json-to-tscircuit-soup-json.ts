@@ -206,7 +206,7 @@ interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
   cadPositionZMm?: number
-  name?: string
+  showDesignator?: boolean
 }
 
 const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
@@ -227,19 +227,22 @@ const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
 
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
-  { useModelCdn, shouldRecenter = true, cadPositionZMm, name }: Options = {},
+  {
+    useModelCdn,
+    shouldRecenter = true,
+    cadPositionZMm,
+    showDesignator = false,
+  }: Options = {},
 ): AnyCircuitElement[] => {
   const resolvedCadPositionZMm =
     cadPositionZMm ?? getCadPositionZMmFromMetadata(easyEdaJson)
   const circuitElements: AnyCircuitElement[] = []
 
-  const sourceComponentName = name || easyEdaJson.dataStr.head.c_para.pre
-
   // Add source component
   const source_component = any_source_component.parse({
     type: "source_component",
     source_component_id: "source_component_1",
-    name: sourceComponentName,
+    name: "U1",
     ftype: "simple_chip",
   })
 
@@ -247,7 +250,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     type: "pcb_component",
     pcb_component_id: "pcb_component_1",
     source_component_id: "source_component_1",
-    name: sourceComponentName,
+    name: "U1",
     ftype: "simple_chip",
     width: 0, // we update this at the end
     height: 0, // we update this at the end
@@ -517,7 +520,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         text === NormalizedPrefix
 
       if (isDesignator) {
-        if (!name) return
+        if (!showDesignator) return
         text = "{NAME}"
         hasFoundDesignator = true
       }
@@ -547,7 +550,7 @@ export const convertEasyEdaJsonToCircuitJson = (
   })
 
   // Add a fallback designator if none was found in the shapes
-  if (!hasFoundDesignator && name) {
+  if (!hasFoundDesignator && showDesignator) {
     const bbox = easyEdaJson.packageDetail.dataStr.BBox
     circuitElements.push(
       Soup.pcb_silkscreen_text.parse({
