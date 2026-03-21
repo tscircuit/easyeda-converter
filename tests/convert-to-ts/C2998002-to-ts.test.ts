@@ -64,6 +64,6 @@ it("should convert C2998002 into typescript file", async () => {
           {...props}
         />
       )
-    }"                                            
+    }"
   `)
 })
