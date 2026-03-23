@@ -17,7 +17,7 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
   // Check for the presence of a source component
   const sourceComponent = su(soupElements).source_component.list()[0]!
   expect(sourceComponent).toBeDefined()
-  expect(sourceComponent?.name).toBe("U?")
+  expect(sourceComponent?.name).toBe("U1")
   expect(sourceComponent?.ftype).toBe("simple_chip")
 
   // Check for the presence of source ports
