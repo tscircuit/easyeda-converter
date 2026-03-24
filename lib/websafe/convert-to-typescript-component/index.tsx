@@ -26,6 +26,7 @@ export const convertBetterEasyToTsx = async ({
     useModelCdn: true,
     shouldRecenter: true,
     cadPositionZMm: cadPlacement?.positionZMm,
+    showDesignator: true,
   })
   const [cadComponent] = su(circuitJson).cad_component.list()
   if (cadComponent) {
