@@ -205,6 +205,8 @@ const handleCutout = (
 interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
+  cadPositionXMm?: number
+  cadPositionYMm?: number
   cadPositionZMm?: number
 }
 
@@ -226,7 +228,13 @@ const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
 
 export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson: BetterEasyEdaJson,
-  { useModelCdn, shouldRecenter = true, cadPositionZMm }: Options = {},
+  {
+    useModelCdn,
+    shouldRecenter = true,
+    cadPositionXMm,
+    cadPositionYMm,
+    cadPositionZMm,
+  }: Options = {},
 ): AnyCircuitElement[] => {
   const resolvedCadPositionZMm =
     cadPositionZMm ?? getCadPositionZMmFromMetadata(easyEdaJson)
@@ -574,8 +582,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         anchor_alignment: "center_of_component_on_board_surface",
         model_origin_alignment: "center_of_component_on_board_surface",
         model_origin_position: {
-          x: 0,
-          y: 0,
+          x: cadPositionXMm ?? 0,
+          y: cadPositionYMm ?? 0,
           z: resolvedCadPositionZMm ?? position.z,
         },
         position: { x: 0, y: 0, z: 0 },

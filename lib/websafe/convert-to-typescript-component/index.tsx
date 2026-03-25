@@ -25,6 +25,8 @@ export const convertBetterEasyToTsx = async ({
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy, {
     useModelCdn: true,
     shouldRecenter: true,
+    cadPositionXMm: cadPlacement?.positionXMm,
+    cadPositionYMm: cadPlacement?.positionYMm,
     cadPositionZMm: cadPlacement?.positionZMm,
   })
   const [cadComponent] = su(circuitJson).cad_component.list()
