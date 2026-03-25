@@ -26,7 +26,9 @@ const getCadSvgNode = (easyEdaJson: BetterEasyEdaJson) => {
 const parseMil10Value = (value: string | number) =>
   Number(String(value).replace("mil", "")) / 10
 
-const isZeroish = (value: number) => Math.abs(value) < 1e-6
+const isZeroishModelCenter = (value: number) => Math.abs(value) < 1e-6
+
+const isZeroishFootprintDelta = (value: number) => Math.abs(value) < 1e-3
 
 const getPadCenter = (easyEdaJson: BetterEasyEdaJson) => {
   const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
@@ -89,23 +91,31 @@ export const getCadModelOffsetMm = (easyEdaJson: BetterEasyEdaJson) => {
   const modelCenter = getBoundsCenter(bounds)
   const footprintCenter = easyEdaJson.packageDetail.dataStr.head
   const padCenter = getPadCenter(easyEdaJson)
+  const padCenterDelta = padCenter
+    ? {
+        x: padCenter.x - footprintCenter.x,
+        y: padCenter.y - footprintCenter.y,
+      }
+    : null
+  const rawOffsetMil = {
+    x: (originX - footprintCenter.x) * 10,
+    y: (originY - footprintCenter.y) * 10,
+  }
 
   if (
     padCenter &&
-    isZeroish(modelCenter.x) &&
-    isZeroish(modelCenter.y) &&
-    isZeroish(padCenter.x - footprintCenter.x) &&
-    isZeroish(padCenter.y - footprintCenter.y)
+    padCenterDelta &&
+    isZeroishModelCenter(modelCenter.x) &&
+    isZeroishModelCenter(modelCenter.y) &&
+    isZeroishFootprintDelta(padCenterDelta.x) &&
+    isZeroishFootprintDelta(padCenterDelta.y)
   ) {
     return { x: 0, y: 0 }
   }
 
   return getRotatedOffsetMm({
     bounds,
-    rawOffsetMil: {
-      x: (originX - footprintCenter.x) * 10,
-      y: (originY - footprintCenter.y) * 10,
-    },
+    rawOffsetMil,
     rotationDeg,
   })
 }
