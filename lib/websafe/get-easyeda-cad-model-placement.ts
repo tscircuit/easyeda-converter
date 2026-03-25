@@ -1,5 +1,9 @@
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
-import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
+import {
+  getCadModelOffsetMm,
+  getCadSvgNodeModelUuid,
+  getCadSvgNodeZOffsetMm,
+} from "./get-easyeda-cad-placement-helpers"
 import { getModelObjCdnUrl, getModelStepCdnUrl } from "./get-model-cdn-url"
 
 type ModelBounds = {
@@ -8,7 +12,9 @@ type ModelBounds = {
 }
 
 export type EasyEdaCadModelPlacement = {
-  modelObjUrl?: string
+  modelObjUrl: string
+  positionXMm: number
+  positionYMm: number
   modelStepUrl?: string
   positionZMm: number
   bounds: ModelBounds
@@ -58,19 +64,6 @@ const parseObjBounds = (objText: string): ModelBounds | null => {
   }
 }
 
-const getSvgNodeZOffsetMm = (easyEdaJson: BetterEasyEdaJson) => {
-  const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
-    (shape) => shape.type === "SVGNODE" && shape.svgData.attrs?.uuid,
-  )
-
-  if (!svgNode || svgNode.type !== "SVGNODE") return null
-
-  const svgNodeZ = Number(svgNode.svgData.attrs?.z ?? 0)
-  if (!Number.isFinite(svgNodeZ)) return null
-
-  return mil10ToMm(svgNodeZ)
-}
-
 const getPositionZMmFromBounds = (
   bounds: ModelBounds,
   svgNodeZOffsetMm: number,
@@ -83,17 +76,18 @@ export const getEasyEdaCadModelPlacement = async (
   easyEdaJson: BetterEasyEdaJson,
   { fetch = globalThis.fetch }: { fetch?: typeof globalThis.fetch } = {},
 ): Promise<EasyEdaCadModelPlacement | null> => {
-  const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
-    (shape) => shape.type === "SVGNODE" && shape.svgData.attrs?.uuid,
-  )
-
-  if (!svgNode || svgNode.type !== "SVGNODE") return null
-
-  const modelUuid = svgNode.svgData.attrs?.uuid
+  const modelUuid = getCadSvgNodeModelUuid(easyEdaJson)
   const partNumber = easyEdaJson.lcsc.number
-  const svgNodeZOffsetMm = getSvgNodeZOffsetMm(easyEdaJson)
+  const derivedOffsetMm = getCadModelOffsetMm(easyEdaJson)
+  const svgNodeZOffsetMm = getCadSvgNodeZOffsetMm(easyEdaJson)
 
-  if (!modelUuid || !partNumber || svgNodeZOffsetMm == null || !fetch) {
+  if (
+    !modelUuid ||
+    !partNumber ||
+    svgNodeZOffsetMm == null ||
+    !derivedOffsetMm ||
+    !fetch
+  ) {
     return null
   }
 
@@ -110,6 +104,8 @@ export const getEasyEdaCadModelPlacement = async (
   if (metadataBounds) {
     return {
       modelObjUrl,
+      positionXMm: derivedOffsetMm.x,
+      positionYMm: derivedOffsetMm.y,
       modelStepUrl,
       bounds: metadataBounds,
       positionZMm: getPositionZMmFromBounds(metadataBounds, svgNodeZOffsetMm),
@@ -131,6 +127,8 @@ export const getEasyEdaCadModelPlacement = async (
 
       return {
         modelObjUrl,
+        positionXMm: derivedOffsetMm.x,
+        positionYMm: derivedOffsetMm.y,
         modelStepUrl,
         bounds,
         // Align the EasyEDA SVG-node Z against the model's minimum Z.
