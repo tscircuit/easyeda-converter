@@ -75,6 +75,8 @@ export const generateFootprintTsx = (
   }
 
   for (const silkscreenText of silkscreenTexts) {
+    // Inject the dynamic {props.name} for the reference designator text. "{NAME}" was
+    // mapped during the Circuit JSON conversion step to identify the designator text.
     const isRefDes = silkscreenText.text === "{NAME}"
     const textValue = isRefDes
       ? "{props.name}"
