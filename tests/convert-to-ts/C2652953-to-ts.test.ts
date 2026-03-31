@@ -17,7 +17,7 @@ it("should convert C2652953 into typescript file", async () => {
     ${result}
     export default () => (
       <board width="10mm" height="10mm">
-        <TXS0104EQPWRQ1 name="U_LC1" />
+        <TXS0104EQPWRQ1 name="U_LCB1" />
       </board>
     )
     `,
@@ -25,7 +25,7 @@ it("should convert C2652953 into typescript file", async () => {
   expect(
     su(circuitJson)
       .pcb_silkscreen_text.list()
-      .some((t) => t.text === "U_LC1"),
+      .some((t) => t.text === "U_LCB1"),
   ).toBe(true)
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
