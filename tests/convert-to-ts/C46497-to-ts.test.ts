@@ -112,6 +112,7 @@ it("should convert C46497 into typescript file", async () => {
     <via pcbX="0mm" pcbY="-0.999998000000005mm" outerDiameter="0.6095999999999999mm" holeDiameter="0.15239999999999998mm" layers={["top","bottom"]} />
     <via pcbX="0mm" pcbY="0mm" outerDiameter="0.6095999999999999mm" holeDiameter="0.15239999999999998mm" layers={["top","bottom"]} />
     <silkscreenpath route={[{"x":-5.576188999999999,"y":-2.621406999999863},{"x":-5.576188999999999,"y":2.6214069999999765},{"x":5.576188999999999,"y":2.6214069999999765},{"x":5.576188999999999,"y":-2.621406999999863},{"x":-5.576188999999999,"y":-2.621406999999863}]} />
+    <silkscreentext text={props.name} pcbX="-0.02539999999999054mm" pcbY="5.4196000000000595mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-5.88880000000006,"y":4.6696000000000595},{"x":5.837999999999965,"y":4.6696000000000595},{"x":5.837999999999965,"y":-4.847399999999993},{"x":-5.88880000000006,"y":-4.847399999999993},{"x":-5.88880000000006,"y":4.6696000000000595}]} />
           </footprint>}
           cadModel={{

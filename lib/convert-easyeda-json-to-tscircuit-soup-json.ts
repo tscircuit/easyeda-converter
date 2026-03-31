@@ -21,7 +21,6 @@ import {
 import * as Soup from "circuit-json"
 import { applyToPoint, compose, scale, translate } from "transformation-matrix"
 import type { z } from "zod"
-import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
@@ -36,6 +35,7 @@ import type {
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
+import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 
 const EASYEDA_STEP_MODEL_URL =
   "https://modules.easyeda.com/qAxj6KHrDKw4blvCG8QJPs7Y"
@@ -208,6 +208,7 @@ interface Options {
   cadPositionXMm?: number
   cadPositionYMm?: number
   cadPositionZMm?: number
+  showDesignator?: boolean
 }
 
 const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
@@ -234,6 +235,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     cadPositionXMm,
     cadPositionYMm,
     cadPositionZMm,
+    showDesignator = false,
   }: Options = {},
 ): AnyCircuitElement[] => {
   const resolvedCadPositionZMm =
@@ -500,6 +502,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     })
 
   // Add silkscreen paths, arcs and text
+  let hasFoundDesignator = false
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
       if (!isCourtyardLayer(shape.layer)) {
@@ -511,27 +514,67 @@ export const convertEasyEdaJsonToCircuitJson = (
       }
     } else if (shape.type === "TEXT") {
       if (isCourtyardLayer(shape.layer)) return
+
+      let text = shape.text
+      const designatorPrefix = easyEdaJson.dataStr.head.c_para.pre || "U"
+      const normalizedPrefix = designatorPrefix.replace(/\?/g, "")
+      const trimmedText = text.trim()
+      const isDesignator =
+        trimmedText === designatorPrefix ||
+        trimmedText === `${normalizedPrefix}?` ||
+        trimmedText === normalizedPrefix
+
+      if (isDesignator) {
+        if (!showDesignator) return
+        text = "{NAME}"
+        hasFoundDesignator = true
+      }
+
       circuitElements.push(
         Soup.pcb_silkscreen_text.parse({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
           pcb_component_id: "pcb_component_1",
-          text: normalizeSymbolName(shape.text),
+          text,
           anchor_position: {
             x: mil2mm(shape.x),
             y: mil2mm(shape.y),
           },
-          anchor_alignment: {
-            L: "bottom_left",
-            C: "center",
-            R: "bottom_right",
-          }[shape.textAnchor ?? "L"],
-          font_size: shape.size_mm ? shape.size_mm : undefined,
+          anchor_alignment: (
+            {
+              L: "bottom_left",
+              C: "center",
+              R: "bottom_right",
+            } as const
+          )[shape.textAnchor ?? "L"],
+          font_size: shape.size_mm || 1.0,
           layer: "top",
         } as Soup.PcbSilkscreenTextInput),
       )
     }
   })
+
+  // Add a fallback designator if none was found in the shapes
+  if (!hasFoundDesignator && showDesignator) {
+    const bbox = easyEdaJson.packageDetail.dataStr.BBox
+    circuitElements.push(
+      Soup.pcb_silkscreen_text.parse({
+        type: "pcb_silkscreen_text",
+        pcb_silkscreen_text_id: `pcb_silkscreen_text_designator_fallback`,
+        pcb_component_id: "pcb_component_1",
+        text: "{NAME}",
+        anchor_position: {
+          x: milx10(bbox.x + bbox.width / 2),
+          y: milx10(bbox.y) - 1.0, // 1mm above top edge
+        },
+        anchor_alignment: "center",
+        font_size: 1.0,
+        layer: "top",
+      } as Soup.PcbSilkscreenTextInput),
+    )
+  }
+
+  // Only add designator if found in EasyEDA
 
   // Calculate pcb_component bounds from all PCB elements
   const pcbElements = circuitElements.filter(
