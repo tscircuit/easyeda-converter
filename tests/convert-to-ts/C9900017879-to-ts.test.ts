@@ -68,36 +68,36 @@ it("should convert C9900017879 into typescript file", async () => {
     }}
           manufacturerPartNumber="ARDUINO_NANO"
           footprint={<footprint>
-            <platedhole  portHints={["pin1"]} pcbX="17.78mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin29"]} pcbX="15.240000000000009mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin27"]} pcbX="10.159999999999997mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin25"]} pcbX="5.079999999999998mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin23"]} pcbX="0mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin21"]} pcbX="-5.079999999999998mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin19"]} pcbX="-10.159999999999997mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin17"]} pcbX="-15.239999999999995mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin15"]} pcbX="-17.78mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin13"]} pcbX="-12.700000000000003mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin11"]} pcbX="-7.6200000000000045mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin9"]} pcbX="-2.5400000000000063mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin7"]} pcbX="2.5400000000000063mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin5"]} pcbX="7.6200000000000045mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin3"]} pcbX="12.699999999999989mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin2"]} pcbX="15.240000000000009mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin4"]} pcbX="10.159999999999997mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin6"]} pcbX="5.079999999999998mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin8"]} pcbX="0mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin10"]} pcbX="-5.079999999999998mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin12"]} pcbX="-10.159999999999997mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin14"]} pcbX="-15.239999999999995mm" pcbY="7.620000000000012mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin16"]} pcbX="-17.78mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin18"]} pcbX="-12.700000000000003mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin20"]} pcbX="-7.6200000000000045mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin22"]} pcbX="-2.5400000000000063mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin24"]} pcbX="2.5400000000000063mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin26"]} pcbX="7.6200000000000045mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin28"]} pcbX="12.699999999999989mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
-    <platedhole  portHints={["pin30"]} pcbX="17.78mm" pcbY="-7.61999999999999mm" outerDiameter="1.5999967999999998mm" holeDiameter="0.9000235999999999mm" shape="circle" />
+            <platedhole  portHints={["pin1"]} pcbX="17.78mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin29"]} pcbX="15.24mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin27"]} pcbX="10.16mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin25"]} pcbX="5.08mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin23"]} pcbX="0mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin21"]} pcbX="-5.08mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin19"]} pcbX="-10.16mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin17"]} pcbX="-15.24mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin15"]} pcbX="-17.78mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin13"]} pcbX="-12.7mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin11"]} pcbX="-7.62mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin9"]} pcbX="-2.54mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin7"]} pcbX="2.54mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin5"]} pcbX="7.62mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin3"]} pcbX="12.7mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin2"]} pcbX="15.24mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin4"]} pcbX="10.16mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin6"]} pcbX="5.08mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin8"]} pcbX="0mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin10"]} pcbX="-5.08mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin12"]} pcbX="-10.16mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin14"]} pcbX="-15.24mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin16"]} pcbX="-17.78mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin18"]} pcbX="-12.7mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin20"]} pcbX="-7.62mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin22"]} pcbX="-2.54mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin24"]} pcbX="2.54mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin26"]} pcbX="7.62mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin28"]} pcbX="12.7mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin30"]} pcbX="17.78mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
     <silkscreenpath route={[{"x":3.1745936000000086,"y":-8.889390399999982},{"x":3.8095935999999995,"y":-8.254390399999977},{"x":4.444593600000005,"y":-8.889390399999982}]} />
     <silkscreenpath route={[{"x":-18.41525399999999,"y":-6.349517399999996},{"x":-19.05025399999998,"y":-6.984517399999987},{"x":-19.05025399999998,"y":-8.254517399999997},{"x":-18.41525399999999,"y":-8.889517399999988}]} />
     <silkscreenpath route={[{"x":-15.875253999999998,"y":-6.349517399999996},{"x":-16.51025399999999,"y":-6.984517399999987},{"x":-17.145253999999994,"y":-6.349517399999996}]} />
@@ -146,37 +146,37 @@ it("should convert C9900017879 into typescript file", async () => {
     <silkscreenpath route={[{"x":-21.590000000000003,"y":2.794000000000011},{"x":-17.7038,"y":2.794000000000011}]} />
     <silkscreenpath route={[{"x":-17.7038,"y":2.540101600000014},{"x":-17.7038,"y":-2.539999999999992}]} />
     <silkscreenpath route={[{"x":-21.666200000000003,"y":8.966174600000016},{"x":21.66612380000001,"y":8.966174600000016},{"x":21.66612380000001,"y":-8.966199999999986},{"x":-21.666200000000003,"y":-8.966199999999986},{"x":-21.666200000000003,"y":8.966174600000016}]} />
-    <silkscreentext text="D13" pcbX="-17.232122000000004mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="3V3" pcbX="-14.692122000000012mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="REF" pcbX="-12.152122000000006mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A0" pcbX="-9.612122000000014mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A1" pcbX="-7.072122000000007mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A2" pcbX="-4.532122000000001mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A3" pcbX="-1.992122000000009mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A4" pcbX="0.5478779999999972mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A5" pcbX="3.0878779999999892mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A6" pcbX="5.6278779999999955mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="A7" pcbX="8.167877999999988mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="5V" pcbX="10.707878000000022mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="RST" pcbX="13.247878000000014mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="GND" pcbX="15.787878000000006mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="VIN" pcbX="18.327878000000027mm" pcbY="-5.990082000000001mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D12" pcbX="-17.251934000000006mm" pcbY="3.898900000000012mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D11" pcbX="-14.711934mm" pcbY="4.307840000000013mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D10" pcbX="-12.171934000000007mm" pcbY="3.898900000000012mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D9" pcbX="-9.631934000000001mm" pcbY="4.472940000000023mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D8" pcbX="-7.091933999999995mm" pcbY="4.42722000000002mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D7" pcbX="-4.551934000000003mm" pcbY="4.42722000000002mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D6" pcbX="-2.0119339999999966mm" pcbY="4.472940000000023mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D5" pcbX="0.5280659999999955mm" pcbY="4.42722000000002mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D4" pcbX="3.0680660000000017mm" pcbY="4.381500000000017mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D3" pcbX="5.608065999999994mm" pcbY="4.42722000000002mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="D2" pcbX="8.148066mm" pcbY="4.42722000000002mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="GND" pcbX="10.688065999999964mm" pcbY="3.4442400000000077mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="RST" pcbX="13.228065999999984mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="RXD" pcbX="15.768065999999976mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text="TXD" pcbX="18.308065999999968mm" pcbY="3.4899600000000106mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
-    <silkscreentext text={props.name} pcbX="-1.0032999999999959mm" pcbY="9.99160000000002mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text="D13" pcbX="-17.232122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="3V3" pcbX="-14.692122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="REF" pcbX="-12.152122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A0" pcbX="-9.612122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A1" pcbX="-7.072122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A2" pcbX="-4.532122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A3" pcbX="-1.992122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A4" pcbX="0.547878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A5" pcbX="3.087878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A6" pcbX="5.627878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="A7" pcbX="8.167878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="5V" pcbX="10.707878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="RST" pcbX="13.247878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="GND" pcbX="15.787878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="VIN" pcbX="18.327878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D12" pcbX="-17.251934mm" pcbY="3.8989mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D11" pcbX="-14.711934mm" pcbY="4.30784mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D10" pcbX="-12.171934mm" pcbY="3.8989mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D9" pcbX="-9.631934mm" pcbY="4.47294mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D8" pcbX="-7.091934mm" pcbY="4.42722mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D7" pcbX="-4.551934mm" pcbY="4.42722mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D6" pcbX="-2.011934mm" pcbY="4.47294mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D5" pcbX="0.528066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D4" pcbX="3.068066mm" pcbY="4.3815mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D3" pcbX="5.608066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="D2" pcbX="8.148066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="GND" pcbX="10.688066mm" pcbY="3.44424mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="RST" pcbX="13.228066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="RXD" pcbX="15.768066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text="TXD" pcbX="18.308066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" fontSize="1.500124mm" />
+    <silkscreentext text={props.name} pcbX="-1.0033mm" pcbY="9.9916mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-23.97359999999999,"y":9.24160000000002},{"x":21.967000000000013,"y":9.24160000000002},{"x":21.967000000000013,"y":-9.266999999999982},{"x":-23.97359999999999,"y":-9.266999999999982},{"x":-23.97359999999999,"y":9.24160000000002}]} />
           </footprint>}
           cadModel={{

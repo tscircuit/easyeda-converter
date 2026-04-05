@@ -49,17 +49,17 @@ it("should convert C75749 into typescript file", async () => {
     }}
           manufacturerPartNumber="DS1037_09FNAKT74_0CC"
           footprint={<footprint>
-            <platedhole  portHints={["pin3"]} pcbX="-1.4198600000000567mm" pcbY="-0.00012700000000620548mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin11"]} pcbX="0mm" pcbY="-12.499975000000006mm" outerDiameter="4.9999899999999995mm" holeDiameter="3.2500316000000002mm" shape="circle" />
-    <platedhole  portHints={["pin1"]} pcbX="-1.4198600000000567mm" pcbY="5.519801000000015mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin2"]} pcbX="-1.4198600000000567mm" pcbY="2.7598370000000187mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin4"]} pcbX="-1.4198600000000567mm" pcbY="-2.7600910000000027mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin5"]} pcbX="-1.4198600000000567mm" pcbY="-5.520054999999999mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin6"]} pcbX="1.420113999999984mm" pcbY="4.139819000000017mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin7"]} pcbX="1.420113999999984mm" pcbY="1.3798550000000205mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin8"]} pcbX="1.420113999999984mm" pcbY="-1.3801090000000045mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin9"]} pcbX="1.420113999999984mm" pcbY="-4.140073000000001mm" outerDiameter="1.5748mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin10"]} pcbX="0mm" pcbY="12.499974999999978mm" outerDiameter="4.9999899999999995mm" holeDiameter="3.2500316000000002mm" shape="circle" />
+            <platedhole  portHints={["pin3"]} pcbX="-1.41986mm" pcbY="-0.000127mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin11"]} pcbX="0mm" pcbY="-12.499975mm" outerDiameter="4.99999mm" holeDiameter="3.2500316mm" shape="circle" />
+    <platedhole  portHints={["pin1"]} pcbX="-1.41986mm" pcbY="5.519801mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin2"]} pcbX="-1.41986mm" pcbY="2.759837mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin4"]} pcbX="-1.41986mm" pcbY="-2.760091mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin5"]} pcbX="-1.41986mm" pcbY="-5.520055mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin6"]} pcbX="1.420114mm" pcbY="4.139819mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin7"]} pcbX="1.420114mm" pcbY="1.379855mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin8"]} pcbX="1.420114mm" pcbY="-1.380109mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin9"]} pcbX="1.420114mm" pcbY="-4.140073mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin10"]} pcbX="0mm" pcbY="12.499975mm" outerDiameter="4.99999mm" holeDiameter="3.2500316mm" shape="circle" />
     <silkscreenpath route={[{"x":9.500107999999983,"y":-15.400070799999995},{"x":-2.9998924000000216,"y":-15.400070799999995},{"x":-2.9998924000000216,"y":15.39991839999999},{"x":9.500107999999983,"y":15.39991839999999},{"x":9.500107999999983,"y":-15.400070799999995}]} />
     <silkscreenpath route={[{"x":14.78010759999998,"y":-0.005080000000006635},{"x":15.480106199999966,"y":-0.005080000000006635}]} />
     <silkscreenpath route={[{"x":9.500107999999983,"y":8.369934999999998},{"x":15.500121399999955,"y":8.369934999999998},{"x":15.500121399999955,"y":-8.380069600000013},{"x":9.500107999999983,"y":-8.380069600000013}]} />
@@ -67,11 +67,11 @@ it("should convert C75749 into typescript file", async () => {
     <silkscreenpath route={[{"x":9.500107999999983,"y":14.569922599999984},{"x":15.500121399999955,"y":14.569922599999984},{"x":15.500121399999955,"y":10.45992320000002}]} />
     <silkscreenpath route={[{"x":15.500121399999955,"y":-14.540077600000004},{"x":15.500121399999955,"y":-10.430078200000011},{"x":9.500107999999983,"y":-10.430078200000011}]} />
     <silkscreenpath route={[{"x":9.500107999999983,"y":-14.570074999999989},{"x":15.500121399999955,"y":-14.570074999999989}]} />
-    <silkscreentext text="1" pcbX="-1.9786599999999908mm" pcbY="7.348600999999974mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
-    <silkscreentext text="5" pcbX="-1.8770600000000002mm" pcbY="-6.799198999999987mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
-    <silkscreentext text="9" pcbX="1.1709400000000016mm" pcbY="-6.697599000000011mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
-    <silkscreentext text="6" pcbX="1.0185400000000016mm" pcbY="7.374001000000021mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
-    <silkscreentext text={props.name} pcbX="6.309613999999982mm" pcbY="16.51952700000001mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text="1" pcbX="-1.97866mm" pcbY="7.348601mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
+    <silkscreentext text="5" pcbX="-1.87706mm" pcbY="-6.799199mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
+    <silkscreentext text="9" pcbX="1.17094mm" pcbY="-6.697599mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
+    <silkscreentext text="6" pcbX="1.01854mm" pcbY="7.374001mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
+    <silkscreentext text={props.name} pcbX="6.309614mm" pcbY="16.519527mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-3.3764860000000283,"y":15.76952700000001},{"x":15.995713999999964,"y":15.76952700000001},{"x":15.995713999999964,"y":-15.794673000000017},{"x":-3.3764860000000283,"y":-15.794673000000017},{"x":-3.3764860000000283,"y":15.76952700000001}]} />
           </footprint>}
           cadModel={{

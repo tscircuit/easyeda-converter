@@ -41,14 +41,14 @@ it("should convert C2848306 into typescript file", async () => {
     }}
           manufacturerPartNumber="SHT40_AD1B_R3"
           footprint={<footprint>
-            <smtpad portHints={["pin1"]} pcbX="-0.6774179999999888mm" pcbY="0.40004999999999313mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
-    <smtpad portHints={["pin2"]} pcbX="-0.6774179999999888mm" pcbY="-0.40005000000000734mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
-    <smtpad portHints={["pin3"]} pcbX="0.6774179999999888mm" pcbY="-0.40005000000000734mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
-    <smtpad portHints={["pin4"]} pcbX="0.6774179999999888mm" pcbY="0.40004999999999313mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
-    <smtpad portHints={["pin5"]} pcbX="0mm" pcbY="-1.4210854715202004e-14mm" width="0.39999919999999994mm" height="1.0999978mm" shape="rect" />
+            <smtpad portHints={["pin1"]} pcbX="-0.677418mm" pcbY="0.40005mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
+    <smtpad portHints={["pin2"]} pcbX="-0.677418mm" pcbY="-0.40005mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
+    <smtpad portHints={["pin3"]} pcbX="0.677418mm" pcbY="-0.40005mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
+    <smtpad portHints={["pin4"]} pcbX="0.677418mm" pcbY="0.40005mm" width="0.5050028mm" height="0.419989mm" shape="rect" />
+    <smtpad portHints={["pin5"]} pcbX="0mm" pcbY="-0mm" width="0.3999992mm" height="1.0999978mm" shape="rect" />
     <silkscreenpath route={[{"x":-0.8261857999999904,"y":0.8261857999999904},{"x":0.8262111999999888,"y":0.8261857999999904}]} />
     <silkscreenpath route={[{"x":-0.8261857999999904,"y":-0.826211200000003},{"x":0.8262111999999888,"y":-0.826211200000003}]} />
-    <silkscreentext text={props.name} pcbX="-0.050800000000009504mm" pcbY="1.8382000000000005mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text={props.name} pcbX="-0.0508mm" pcbY="1.8382mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-1.29140000000001,"y":1.0882000000000005},{"x":1.189799999999991,"y":1.0882000000000005},{"x":1.189799999999991,"y":-1.06280000000001},{"x":-1.29140000000001,"y":-1.06280000000001},{"x":-1.29140000000001,"y":1.0882000000000005}]} />
           </footprint>}
           cadModel={{
