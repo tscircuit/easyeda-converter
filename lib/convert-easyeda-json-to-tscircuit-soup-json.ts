@@ -2,7 +2,7 @@ import {
   findBoundsAndCenter,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
-import { mm } from "@tscircuit/mm"
+import { mm, mil2mm } from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbComponentInput,
@@ -42,11 +42,6 @@ const EASYEDA_STEP_MODEL_URL =
 const EASYEDA_OBJ_MODEL_URL = "https://modules.easyeda.com/3dmodel"
 const TSCIRCUIT_MODEL_CDN_URL = "https://modelcdn.tscircuit.com/easyeda_models"
 
-const mil2mm = (mil: number | string) => {
-  if (typeof mil === "number") return mm(`${mil}mil`)
-  if (mil.match(/^\d+$/)) return mm(`${mil}mil`)
-  return mm(mil)
-}
 /**
  * Some components, like paths and "HOLE", seem to use mil*10 as
  * their unlabeled unit

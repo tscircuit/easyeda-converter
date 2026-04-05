@@ -40,10 +40,10 @@ it("should convert C2998002 into typescript file", async () => {
     }}
           manufacturerPartNumber="BCM62B_215"
           footprint={<footprint>
-            <smtpad portHints={["pin1"]} pcbX="1.0999470000000002mm" pcbY="-0.7250112499999943mm" width="0.6999986mm" height="1.0999978mm" shape="rect" />
-    <smtpad portHints={["pin2"]} pcbX="1.0999470000000002mm" pcbY="0.9750107499999956mm" width="0.6999986mm" height="0.5999987999999999mm" shape="rect" />
-    <smtpad portHints={["pin3"]} pcbX="-1.0999470000000002mm" pcbY="0.9750107499999956mm" width="0.6999986mm" height="0.5999987999999999mm" shape="rect" />
-    <smtpad portHints={["pin4"]} pcbX="-1.0999470000000002mm" pcbY="-0.9251632499999971mm" width="0.6999986mm" height="0.5999987999999999mm" shape="rect" />
+            <smtpad portHints={["pin1"]} pcbX="1.099947mm" pcbY="-0.72501125mm" width="0.6999986mm" height="1.0999978mm" shape="rect" />
+    <smtpad portHints={["pin2"]} pcbX="1.099947mm" pcbY="0.97501075mm" width="0.6999986mm" height="0.5999988mm" shape="rect" />
+    <smtpad portHints={["pin3"]} pcbX="-1.099947mm" pcbY="0.97501075mm" width="0.6999986mm" height="0.5999988mm" shape="rect" />
+    <smtpad portHints={["pin4"]} pcbX="-1.099947mm" pcbY="-0.92516325mm" width="0.6999986mm" height="0.5999988mm" shape="rect" />
     <silkscreenpath route={[{"x":0.7000239999999991,"y":1.449939950000001},{"x":0.7000239999999991,"y":1.5749079500000107}]} />
     <silkscreenpath route={[{"x":0.7000239999999991,"y":-0.00006985000000270247},{"x":0.7000239999999991,"y":0.4998783499999888}]} />
     <silkscreenpath route={[{"x":0.7000239999999991,"y":-1.525111250000009},{"x":0.7000239999999991,"y":-1.4501558500000016}]} />
@@ -52,7 +52,7 @@ it("should convert C2998002 into typescript file", async () => {
     <silkscreenpath route={[{"x":-0.6999732000000023,"y":-1.525111250000009},{"x":-0.6999732000000023,"y":-1.4001432499999993}]} />
     <silkscreenpath route={[{"x":0.7000239999999991,"y":1.5749079500000107},{"x":-0.6999732000000023,"y":1.5749079500000107}]} />
     <silkscreenpath route={[{"x":0.7000239999999991,"y":-1.525111250000009},{"x":-0.6999732000000023,"y":-1.525111250000009}]} />
-    <silkscreentext text={props.name} pcbX="0.00012699999999199463mm" pcbY="2.5741967499999987mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text={props.name} pcbX="0.000127mm" pcbY="2.57419675mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-1.6976730000000089,"y":1.8241967499999987},{"x":1.6979269999999929,"y":1.8241967499999987},{"x":1.6979269999999929,"y":-2.130203250000008},{"x":-1.6976730000000089,"y":-2.130203250000008},{"x":-1.6976730000000089,"y":1.8241967499999987}]} />
           </footprint>}
           cadModel={{

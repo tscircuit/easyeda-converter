@@ -40,8 +40,8 @@ it("should convert C158012 into typescript file", async () => {
     }}
           manufacturerPartNumber="B2B_XH_A_LF__SN_"
           footprint={<footprint>
-            <platedhole  portHints={["pin1"]} pcbX="1.2499974999999495mm" pcbY="0mm" outerDiameter="1.6999966mm" holeDiameter="0.9999979999999999mm" shape="circle" />
-    <platedhole  portHints={["pin2"]} pcbX="-1.2499975000000632mm" pcbY="0mm" outerDiameter="1.6999966mm" holeDiameter="0.9999979999999999mm" shape="circle" />
+            <platedhole  portHints={["pin1"]} pcbX="1.2499975mm" pcbY="0mm" outerDiameter="1.6999966mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin2"]} pcbX="-1.2499975mm" pcbY="0mm" outerDiameter="1.6999966mm" holeDiameter="0.999998mm" shape="circle" />
     <silkscreenpath route={[{"x":3.6829872999999225,"y":-2.413000000000011},{"x":3.6829872999999225,"y":-2.158999999999878}]} />
     <silkscreenpath route={[{"x":-3.6830127000001767,"y":-2.413000000000011},{"x":-3.6830127000001767,"y":-2.158999999999878}]} />
     <silkscreenpath route={[{"x":3.6829872999999225,"y":-2.413000000000011},{"x":2.5399872999998934,"y":-2.413000000000011}]} />
@@ -49,7 +49,7 @@ it("should convert C158012 into typescript file", async () => {
     <silkscreenpath route={[{"x":-3.6830127000001767,"y":-2.413000000000011},{"x":-2.6670127000001003,"y":-2.413000000000011}]} />
     <silkscreenpath route={[{"x":-3.6830127000001767,"y":-1.0159999999999627},{"x":-3.6830127000001767,"y":3.4289999999999736}]} />
     <silkscreenpath route={[{"x":-3.6830127000001767,"y":3.4289999999999736},{"x":3.6829872999999225,"y":3.4289999999999736},{"x":3.6829872999999225,"y":-1.0159999999999627}]} />
-    <silkscreentext text={props.name} pcbX="-0.000012700000070253736mm" pcbY="4.55600000000004mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text={props.name} pcbX="-0.0000127mm" pcbY="4.556mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-4.060012700000129,"y":3.80600000000004},{"x":4.059987299999875,"y":3.80600000000004},{"x":4.059987299999875,"y":-2.7899999999999636},{"x":-4.060012700000129,"y":-2.7899999999999636},{"x":-4.060012700000129,"y":3.80600000000004}]} />
           </footprint>}
           cadModel={{

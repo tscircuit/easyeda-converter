@@ -42,12 +42,12 @@ it("should convert C160354 into typescript file", async () => {
     }}
           manufacturerPartNumber="B4B_PH_SM4_TB_LF__SN_"
           footprint={<footprint>
-            <smtpad portHints={["pin1"]} pcbX="2.9969459999997525mm" pcbY="0.507987299999968mm" width="0.9999979999999999mm" height="5.999988mm" shape="rect" />
-    <smtpad portHints={["pin2"]} pcbX="0.9969499999998561mm" pcbY="0.507987299999968mm" width="0.9999979999999999mm" height="5.999988mm" shape="rect" />
-    <smtpad portHints={["pin3"]} pcbX="-1.0030460000002677mm" pcbY="0.507987299999968mm" width="0.9999979999999999mm" height="5.999988mm" shape="rect" />
-    <smtpad portHints={["pin5"]} pcbX="-5.348986000000082mm" pcbY="-1.8079847000001337mm" width="1.7999964mm" height="3.3999932mm" shape="rect" />
-    <smtpad portHints={["pin6"]} pcbX="5.348985999999968mm" pcbY="-1.8079847000001337mm" width="1.7999964mm" height="3.3999932mm" shape="rect" />
-    <smtpad portHints={["pin4"]} pcbX="-3.000502000000324mm" pcbY="0.507987299999968mm" width="0.9999979999999999mm" height="5.999988mm" shape="rect" />
+            <smtpad portHints={["pin1"]} pcbX="2.996946mm" pcbY="0.5079873mm" width="0.999998mm" height="5.999988mm" shape="rect" />
+    <smtpad portHints={["pin2"]} pcbX="0.99695mm" pcbY="0.5079873mm" width="0.999998mm" height="5.999988mm" shape="rect" />
+    <smtpad portHints={["pin3"]} pcbX="-1.003046mm" pcbY="0.5079873mm" width="0.999998mm" height="5.999988mm" shape="rect" />
+    <smtpad portHints={["pin5"]} pcbX="-5.348986mm" pcbY="-1.8079847mm" width="1.7999964mm" height="3.3999932mm" shape="rect" />
+    <smtpad portHints={["pin6"]} pcbX="5.348986mm" pcbY="-1.8079847mm" width="1.7999964mm" height="3.3999932mm" shape="rect" />
+    <smtpad portHints={["pin4"]} pcbX="-3.000502mm" pcbY="0.5079873mm" width="0.999998mm" height="5.999988mm" shape="rect" />
     <silkscreenpath route={[{"x":5.998971999999753,"y":-4.317834900000207},{"x":-6.001029400000334,"y":-4.317834900000207}]} />
     <silkscreenpath route={[{"x":3.999483999999825,"y":0.6820026999998845},{"x":6.000470599999744,"y":0.6819772999999714}]} />
     <silkscreenpath route={[{"x":-6.001029400000334,"y":0.6820026999998845},{"x":-3.9999920000002476,"y":0.6820026999998845}]} />
@@ -55,7 +55,7 @@ it("should convert C160354 into typescript file", async () => {
     <silkscreenpath route={[{"x":-6.001029400000334,"y":-4.317834900000207},{"x":-6.001029400000334,"y":-3.7391467000001057}]} />
     <silkscreenpath route={[{"x":6.000470599999744,"y":0.6819772999999714},{"x":6.000470599999744,"y":0.12312649999978476}]} />
     <silkscreenpath route={[{"x":6.000470599999744,"y":-3.7391467000001057},{"x":6.000470599999744,"y":-4.317834900000207}]} />
-    <silkscreentext text={props.name} pcbX="-0.0010160000001633307mm" pcbY="4.496297299999924mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text={props.name} pcbX="-0.001016mm" pcbY="4.4962973mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-6.49941600000011,"y":3.746297299999924},{"x":6.4973839999997836,"y":3.746297299999924},{"x":6.4973839999997836,"y":-4.576902700000119},{"x":-6.49941600000011,"y":-4.576902700000119},{"x":-6.49941600000011,"y":3.746297299999924}]} />
           </footprint>}
           cadModel={{
