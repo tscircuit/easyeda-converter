@@ -202,6 +202,98 @@ const handleCutout = (
   } as Soup.PcbCutoutPolygonInput)
 }
 
+const getRegionBounds = (solidRegion: z.infer<typeof SolidRegionSchema>) => {
+  const xs = solidRegion.points.map((p) => milx10(p.x))
+  const ys = solidRegion.points.map((p) => milx10(p.y))
+
+  return {
+    minX: Math.min(...xs),
+    maxX: Math.max(...xs),
+    minY: Math.min(...ys),
+    maxY: Math.max(...ys),
+  }
+}
+
+const findAntennaKeepoutCandidates = (
+  solidRegions: Array<z.infer<typeof SolidRegionSchema>>,
+) => {
+  const bodyRegion = solidRegions.find((shape) => shape.layermask === 99)
+  if (!bodyRegion) return []
+
+  const bodyBounds = getRegionBounds(bodyRegion)
+  const bodyWidth = bodyBounds.maxX - bodyBounds.minX
+  const bodyHeight = bodyBounds.maxY - bodyBounds.minY
+
+  const docLayerBars = solidRegions
+    .filter(
+      (shape) =>
+        shape.layermask === 12 &&
+        shape.fillStyle === "solid" &&
+        shape.points.length === 4,
+    )
+    .map((shape) => ({ shape, bounds: getRegionBounds(shape) }))
+
+  const keepouts: Soup.PCBKeepout[] = []
+
+  for (const { bounds } of docLayerBars) {
+    const width = bounds.maxX - bounds.minX
+    const height = bounds.maxY - bounds.minY
+    const isHorizontalBar = width > bodyWidth * 0.7 && height < bodyHeight * 0.1
+    const isVerticalBar = height > bodyHeight * 0.7 && width < bodyWidth * 0.1
+
+    if (!isHorizontalBar && !isVerticalBar) continue
+
+    if (isHorizontalBar) {
+      const distanceToTop = Math.abs(bounds.maxY - bodyBounds.maxY)
+      const distanceToBottom = Math.abs(bounds.minY - bodyBounds.minY)
+      const keepoutMinY =
+        distanceToTop < distanceToBottom ? bounds.maxY : bodyBounds.minY
+      const keepoutMaxY =
+        distanceToTop < distanceToBottom ? bodyBounds.maxY : bounds.minY
+
+      keepouts.push(
+        Soup.pcb_keepout.parse({
+          type: "pcb_keepout",
+          pcb_keepout_id: `pcb_keepout_${keepouts.length + 1}`,
+          layers: ["top"],
+          shape: "rect",
+          width: bodyWidth,
+          height: keepoutMaxY - keepoutMinY,
+          center: {
+            x: (bodyBounds.minX + bodyBounds.maxX) / 2,
+            y: (keepoutMinY + keepoutMaxY) / 2,
+          },
+        }),
+      )
+      continue
+    }
+
+    const distanceToLeft = Math.abs(bounds.maxX - bodyBounds.maxX)
+    const distanceToRight = Math.abs(bounds.minX - bodyBounds.minX)
+    const keepoutMinX =
+      distanceToLeft < distanceToRight ? bounds.maxX : bodyBounds.minX
+    const keepoutMaxX =
+      distanceToLeft < distanceToRight ? bodyBounds.maxX : bounds.minX
+
+    keepouts.push(
+      Soup.pcb_keepout.parse({
+        type: "pcb_keepout",
+        pcb_keepout_id: `pcb_keepout_${keepouts.length + 1}`,
+        layers: ["top"],
+        shape: "rect",
+        width: keepoutMaxX - keepoutMinX,
+        height: bodyHeight,
+        center: {
+          x: (keepoutMinX + keepoutMaxX) / 2,
+          y: (bodyBounds.minY + bodyBounds.maxY) / 2,
+        },
+      }),
+    )
+  }
+
+  return keepouts
+}
+
 interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
@@ -501,6 +593,14 @@ export const convertEasyEdaJsonToCircuitJson = (
       circuitElements.push(handleCutout(sr, index))
     })
 
+  // Add antenna keepouts based on EasyEDA documentation layer bars
+  const solidRegions = easyEdaJson.packageDetail.dataStr.shape.filter(
+    (shape): shape is z.infer<typeof SolidRegionSchema> =>
+      shape.type === "SOLIDREGION",
+  )
+
+  circuitElements.push(...findAntennaKeepoutCandidates(solidRegions))
+
   // Add silkscreen paths, arcs and text
   let hasFoundDesignator = false
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
@@ -583,6 +683,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       e.type === "pcb_plated_hole" ||
       e.type === "pcb_hole" ||
       e.type === "pcb_via" ||
+      e.type === "pcb_keepout" ||
       e.type === "pcb_courtyard_outline" ||
       e.type === "pcb_silkscreen_path" ||
       e.type === "pcb_silkscreen_text",

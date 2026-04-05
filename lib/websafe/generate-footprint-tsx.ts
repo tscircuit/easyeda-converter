@@ -12,6 +12,7 @@ export const generateFootprintTsx = (
   const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
   const silkscreenTexts = su(circuitJson).pcb_silkscreen_text.list()
   const courtyardOutlines = su(circuitJson).pcb_courtyard_outline.list()
+  const keepouts = su(circuitJson).pcb_keepout.list()
 
   const elementStrings: string[] = []
 
@@ -85,6 +86,14 @@ export const generateFootprintTsx = (
     elementStrings.push(
       `<silkscreentext text=${textValue} pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}" ${silkscreenText.font_size ? `fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,
     )
+  }
+
+  for (const keepout of keepouts) {
+    if (keepout.shape === "rect") {
+      elementStrings.push(
+        `<keepout pcbX="${mmStr(keepout.center.x)}" pcbY="${mmStr(keepout.center.y)}" width="${mmStr(keepout.width)}" height="${mmStr(keepout.height)}" shape="rect" />`,
+      )
+    }
   }
 
   for (const courtyardOutline of courtyardOutlines) {
