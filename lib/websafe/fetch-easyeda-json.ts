@@ -65,6 +65,61 @@ const parseObjBounds = (objText: string): ModelBounds | null => {
   }
 }
 
+async function tryJlcpcbFallbackSearch(
+  jlcpcbPartNumber: string,
+  searchUrl: string,
+  searchHeaders: Record<string, string>,
+  originalSearchData: string,
+  fetch: typeof globalThis.fetch,
+): Promise<{ success: boolean; result: any } | null> {
+  try {
+    const jlcpcbResponse = await fetch(
+      "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          keyword: jlcpcbPartNumber,
+          currentPage: 1,
+          pageSize: 10,
+        }),
+      },
+    )
+    if (!jlcpcbResponse.ok) return null
+
+    const jlcpcbData = await jlcpcbResponse.json()
+    const parts = jlcpcbData?.data?.componentPageInfo?.list
+    if (!parts?.length) return null
+
+    const partName = parts[0].erpComponentName
+    if (!partName) return null
+
+    // Search EasyEDA with the manufacturer part name
+    const fallbackSearchData = originalSearchData.replace(
+      `wd=${jlcpcbPartNumber}`,
+      `wd=${encodeURIComponent(partName)}`,
+    )
+    const fallbackResponse = await fetch(searchUrl, {
+      method: "POST",
+      headers: searchHeaders,
+      body: fallbackSearchData,
+    })
+    if (!fallbackResponse.ok) return null
+
+    const fallbackResult = await fallbackResponse.json()
+    if (
+      !fallbackResult.success ||
+      !fallbackResult.result?.lists?.lcsc?.length
+    ) {
+      return null
+    }
+
+    return fallbackResult
+  } catch {
+    return null
+  }
+}
+
 export async function fetchEasyEDAComponent(
   jlcpcbPartNumber: string,
   {
@@ -112,7 +167,22 @@ export async function fetchEasyEDAComponent(
 
   const searchResult = await searchResponse.json()
   if (!searchResult.success || !searchResult.result.lists.lcsc.length) {
-    throw new Error("Component not found")
+    // Try JLCPCB API to get manufacturer part name and retry search
+    const jlcpcbResult = await tryJlcpcbFallbackSearch(
+      jlcpcbPartNumber,
+      searchUrl,
+      searchHeaders,
+      searchData,
+      fetch,
+    )
+    if (jlcpcbResult) {
+      searchResult.result = jlcpcbResult.result
+      searchResult.success = jlcpcbResult.success
+    } else {
+      throw new Error(
+        `Component ${jlcpcbPartNumber} not found. This may be a JLCPCB-exclusive part without EasyEDA data.`,
+      )
+    }
   }
 
   const bestMatchComponent =
