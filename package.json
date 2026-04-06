@@ -43,11 +43,11 @@
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
     "circuit-json-to-gltf": "^0.0.87",
-    "circuit-to-svg": "^0.0.337",
+    "circuit-to-svg": "^0.0.340",
     "looks-same": "^9.0.1",
     "poppygl": "^0.0.19",
     "transformation-matrix": "^2.16.1",
-    "tscircuit": "^0.0.1513",
+    "tscircuit": "^0.0.1598",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {
