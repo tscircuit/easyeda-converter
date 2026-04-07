@@ -60,7 +60,7 @@ it("should convert C3178291 into typescript file", async () => {
     <smtpad portHints={["pin1"]} points={[{x: "1.2507722mm", y: "-0.5459984mm"}, {x: "1.8857722mm", y: "-0.5459984mm"}, {x: "1.8857722mm", y: "-0.7999984mm"}, {x: "1.7587722mm", y: "-0.7999984mm"}, {x: "1.7587722mm", y: "-1.0539984mm"}, {x: "1.2507722mm", y: "-1.0539984mm"}, {x: "1.2507722mm", y: "-0.5459984mm"}]} shape="polygon" />
     <smtpad portHints={["pin2"]} pcbX="0.7682738mm" pcbY="-0.7999476mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin3"]} pcbX="-0.0318262mm" pcbY="-0.7999476mm" width="0.508mm" height="0.508mm" shape="rect" />
-    <silkscreentext text={props.name} pcbX="-0.0442722mm" pcbY="2.2825984mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text="{NAME}" pcbX="-0.0442722mm" pcbY="2.2825984mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-2.542172199999868,"y":1.5325983999999835},{"x":2.4536278000000493,"y":1.5325983999999835},{"x":2.4536278000000493,"y":-2.0154016000000183},{"x":-2.542172199999868,"y":-2.0154016000000183},{"x":-2.542172199999868,"y":1.5325983999999835}]} />
           </footprint>}
           cadModel={{

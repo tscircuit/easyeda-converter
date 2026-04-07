@@ -53,7 +53,7 @@ it("should convert C128415 into typescript file", async () => {
     <smtpad portHints={["pin2"]} pcbX="-0.635mm" pcbY="-2.569972mm" width="0.58801mm" height="2.0450048mm" shape="rect" />
     <smtpad portHints={["pin1"]} pcbX="-1.905mm" pcbY="-2.569972mm" width="0.58801mm" height="2.0450048mm" shape="rect" />
     <silkscreenpath route={[{"x":-2.5262078000000656,"y":-1.5214091999999937},{"x":-2.5262078000000656,"y":1.5214092000001074},{"x":2.526207799999952,"y":1.5214092000001074},{"x":2.526207799999952,"y":-1.5214091999999937},{"x":-2.5262078000000656,"y":-1.5214091999999937}]} />
-    <silkscreentext text={props.name} pcbX="-0.127mm" pcbY="4.302mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text="{NAME}" pcbX="-0.127mm" pcbY="4.302mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-3.0439999999999827,"y":3.552000000000021},{"x":2.7899999999999636,"y":3.552000000000021},{"x":2.7899999999999636,"y":-3.80600000000004},{"x":-3.0439999999999827,"y":-3.80600000000004},{"x":-3.0439999999999827,"y":3.552000000000021}]} />
           </footprint>}
           cadModel={{

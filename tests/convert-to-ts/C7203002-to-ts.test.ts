@@ -182,7 +182,7 @@ it("should convert C7203002 into typescript file", async () => {
     <silkscreenpath route={[{"x":-18.75890964999985,"y":-10.49997899999994},{"x":-18.28116104999981,"y":-10.49997899999994}]} />
     <silkscreenpath route={[{"x":-21.298909649999928,"y":-10.49997899999994},{"x":-20.821161049999887,"y":-10.49997899999994}]} />
     <silkscreenpath route={[{"x":-23.838909649999778,"y":-10.49997899999994},{"x":-23.361161049999964,"y":-10.49997899999994}]} />
-    <silkscreentext text={props.name} pcbX="-0.93773625mm" pcbY="12.687048mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text="{NAME}" pcbX="-0.93773625mm" pcbY="12.687048mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-27.92123624999988,"y":11.937048000000118},{"x":26.045763750000106,"y":11.937048000000118},{"x":26.045763750000106,"y":-12.997751999999764},{"x":-27.92123624999988,"y":-12.997751999999764},{"x":-27.92123624999988,"y":11.937048000000118}]} />
           </footprint>}
           

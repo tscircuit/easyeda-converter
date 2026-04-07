@@ -98,7 +98,7 @@ it("should convert C490691 into typescript file", async () => {
     <silkscreenpath route={[{"x":-5.080000000000041,"y":2.199868600000059},{"x":5.079999999999927,"y":2.199868600000059}]} />
     <silkscreenpath route={[{"x":-5.080000000000041,"y":-2.1999955999999656},{"x":5.079999999999927,"y":-2.1999955999999656}]} />
     <silkscreenpath route={[{"x":-5.080000000000041,"y":-0.6439915999999357},{"x":-5.080000000000041,"y":0.6349999999999909}]} />
-    <silkscreentext text={props.name} pcbX="0mm" pcbY="5.2926mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text="{NAME}" pcbX="0mm" pcbY="5.2926mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-5.355399999999918,"y":4.542600000000107},{"x":5.3554000000000315,"y":4.542600000000107},{"x":5.3554000000000315,"y":-4.669599999999946},{"x":-5.355399999999918,"y":-4.669599999999946},{"x":-5.355399999999918,"y":4.542600000000107}]} />
           </footprint>}
           cadModel={{

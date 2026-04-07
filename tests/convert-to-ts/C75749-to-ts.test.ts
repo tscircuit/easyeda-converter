@@ -71,7 +71,7 @@ it("should convert C75749 into typescript file", async () => {
     <silkscreentext text="5" pcbX="-1.87706mm" pcbY="-6.799199mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
     <silkscreentext text="9" pcbX="1.17094mm" pcbY="-6.697599mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
     <silkscreentext text="6" pcbX="1.01854mm" pcbY="7.374001mm" anchorAlignment="bottom_left" fontSize="1.27mm" />
-    <silkscreentext text={props.name} pcbX="6.309614mm" pcbY="16.519527mm" anchorAlignment="center" fontSize="1mm" />
+    <silkscreentext text="{NAME}" pcbX="6.309614mm" pcbY="16.519527mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-3.3764860000000283,"y":15.76952700000001},{"x":15.995713999999964,"y":15.76952700000001},{"x":15.995713999999964,"y":-15.794673000000017},{"x":-3.3764860000000283,"y":-15.794673000000017},{"x":-3.3764860000000283,"y":15.76952700000001}]} />
           </footprint>}
           cadModel={{
