@@ -351,6 +351,18 @@ const TextShapeOutputSchema = z.object({
   id: z.string(),
 })
 
+/**
+ * EasyEDA sometimes serializes absent text tokens as the literal string
+ * "undefined" instead of omitting them or leaving them empty.
+ */
+const normalizeMissingEasyEdaTextToken = (value?: string) => {
+  if (value == null || value === "" || value === "undefined") {
+    return undefined
+  }
+
+  return value
+}
+
 const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
   const [
     ,
@@ -370,6 +382,13 @@ const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
     mirror,
     id,
   ] = str.split("~")
+  const normalizedBackgroundColor =
+    normalizeMissingEasyEdaTextToken(backgroundColor)
+  const normalizedFontWeight = normalizeMissingEasyEdaTextToken(fontWeight)
+  const normalizedFontStyle = normalizeMissingEasyEdaTextToken(fontStyle)
+  const normalizedFontDecoration =
+    normalizeMissingEasyEdaTextToken(fontDecoration)
+
   return {
     type: "TEXT",
     alignment: alignment as "L" | "C" | "R",
@@ -377,11 +396,11 @@ const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
     y: Number(y),
     rotation: Number(rotation),
     fontColor,
-    backgroundColor: backgroundColor || undefined,
+    backgroundColor: normalizedBackgroundColor,
     fontSize,
-    fontWeight: fontWeight || "normal",
-    fontStyle: (fontStyle || "normal") as "normal" | "italic",
-    fontDecoration: fontDecoration || "",
+    fontWeight: normalizedFontWeight ?? "normal",
+    fontStyle: (normalizedFontStyle || "normal") as "normal" | "italic",
+    fontDecoration: normalizedFontDecoration ?? "",
     content,
     textType,
     visibility: visibility as "0" | "1",

@@ -28,3 +28,27 @@ it("parses examples for single letter shape schema", () => {
     }).not.toThrow()
   })
 })
+
+it("normalizes literal undefined optional text tokens from EasyEDA text shapes", () => {
+  const shape = SingleLetterShapeSchema.parse(
+    "T~L~415~303~0~#0000FF~undefined~5.5pt~undefined~undefined~undefined~comment~TR1~1~start~gge7~0~pinpart",
+  )
+
+  expect(shape).toMatchObject({
+    type: "TEXT",
+    fontWeight: "normal",
+    fontStyle: "normal",
+    fontDecoration: "",
+    backgroundColor: undefined,
+    content: "comment",
+    textType: "TR1",
+  })
+})
+
+it("still rejects unexpected fontStyle values", () => {
+  expect(() =>
+    SingleLetterShapeSchema.parse(
+      "T~L~415~303~0~#0000FF~~5.5pt~~slanted~~comment~TR1~1~start~gge7~0~pinpart",
+    ),
+  ).toThrow(/fontStyle/)
+})
