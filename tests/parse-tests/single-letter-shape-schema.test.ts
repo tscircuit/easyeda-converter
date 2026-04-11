@@ -29,7 +29,7 @@ it("parses examples for single letter shape schema", () => {
   })
 })
 
-it("normalizes literal undefined optional text tokens from EasyEDA text shapes", () => {
+it("normalizes literal undefined optional text fields from EasyEDA text shapes", () => {
   const shape = SingleLetterShapeSchema.parse(
     "T~L~415~303~0~#0000FF~undefined~5.5pt~undefined~undefined~undefined~comment~TR1~1~start~gge7~0~pinpart",
   )

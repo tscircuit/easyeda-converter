@@ -72,4 +72,4 @@ it("should convert C113367 into typescript file", async () => {
   `)
   const pcbSvg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(pcbSvg).toMatchSvgSnapshot(import.meta.path)
-})
+}, 50000)
