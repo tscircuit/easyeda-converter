@@ -352,15 +352,15 @@ const TextShapeOutputSchema = z.object({
 })
 
 /**
- * EasyEDA sometimes serializes absent text tokens as the literal string
+ * EasyEDA sometimes serializes absent optional text fields as the literal string
  * "undefined" instead of omitting them or leaving them empty.
  */
-const normalizeMissingEasyEdaTextToken = (value?: string) => {
-  if (value == null || value === "" || value === "undefined") {
+const normalizeMissingEasyEdaTextField = (fontStr?: string) => {
+  if (fontStr == null || fontStr === "" || fontStr === "undefined") {
     return undefined
   }
 
-  return value
+  return fontStr
 }
 
 const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
@@ -383,11 +383,11 @@ const parseText = (str: string): z.infer<typeof TextShapeOutputSchema> => {
     id,
   ] = str.split("~")
   const normalizedBackgroundColor =
-    normalizeMissingEasyEdaTextToken(backgroundColor)
-  const normalizedFontWeight = normalizeMissingEasyEdaTextToken(fontWeight)
-  const normalizedFontStyle = normalizeMissingEasyEdaTextToken(fontStyle)
+    normalizeMissingEasyEdaTextField(backgroundColor)
+  const normalizedFontWeight = normalizeMissingEasyEdaTextField(fontWeight)
+  const normalizedFontStyle = normalizeMissingEasyEdaTextField(fontStyle)
   const normalizedFontDecoration =
-    normalizeMissingEasyEdaTextToken(fontDecoration)
+    normalizeMissingEasyEdaTextField(fontDecoration)
 
   return {
     type: "TEXT",
