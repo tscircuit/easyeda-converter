@@ -16,3 +16,4 @@ playwright-report
 test-results
 *.glb
 .bun-test-plan/
+.codex
