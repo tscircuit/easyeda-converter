@@ -315,8 +315,9 @@ export const convertEasyEdaJsonToCircuitJson = (
       let additionalPlatedHoleProps: any
 
       if (pad.shape === "OVAL") {
-        // A JLCPCB Oval is actually a Pill, and it's a bit tricky to compute
-        // the correct dimensions, but we can use the following process:
+        // EasyEDA OVAL plated pads map cleanly to pill-shaped plated holes.
+        // We preserve the pad rotation so slots like C2961147 stay aligned.
+        // To compute the drill dimensions:
         // 1. Find the smallest outer dimensions
         // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
         // 3. Calculate the largest "inner dimension" (which is either the
@@ -352,15 +353,12 @@ export const convertEasyEdaJsonToCircuitJson = (
             : smallestInnerDimension
 
         additionalPlatedHoleProps = {
-          shape: "pill_hole_with_rect_pad",
-          hole_shape: "pill",
-          pad_shape: "rect",
+          shape: "pill",
           hole_width: innerWidth,
           hole_height: innerHeight,
-          rect_pad_width: mil2mm(pad.width),
-          rect_pad_height: mil2mm(pad.height),
-          hole_offset_x: 0,
-          hole_offset_y: 0,
+          outer_width: mil2mm(pad.width),
+          outer_height: mil2mm(pad.height),
+          ccw_rotation: pad.rotation || 0,
         }
       } else if (pad.shape === "RECT") {
         const padWidth = mil2mm(pad.width)

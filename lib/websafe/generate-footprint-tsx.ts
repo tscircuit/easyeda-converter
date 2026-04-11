@@ -26,7 +26,16 @@ export const generateFootprintTsx = (
   }
 
   for (const platedHole of platedHoles) {
-    if (platedHole.shape === "pill_hole_with_rect_pad") {
+    if (platedHole.shape === "pill" || platedHole.shape === "oval") {
+      const cccwRotationDegree = platedHole.ccw_rotation || 0
+      const rotationProp = cccwRotationDegree
+        ? ` pcbRotation="${cccwRotationDegree}deg"`
+        : ""
+
+      elementStrings.push(
+        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.outer_width)}" outerHeight="${mmStr(platedHole.outer_height)}"${rotationProp} shape="${platedHole.shape}" />`,
+      )
+    } else if (platedHole.shape === "pill_hole_with_rect_pad") {
       elementStrings.push(
         `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" shape="pill" />`,
       )
