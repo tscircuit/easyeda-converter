@@ -61,12 +61,13 @@ const parseCadOffsetsFromSvgNode = (
     .split(",")
     .map((s) => Number(s.trim()))
 
-  // z: bare numbers are mils; strings with units go through mm()
+  // z: bare numbers are in EasyEDA pixel units (1px = 10mil = 0.254mm).
+  // This matches the X/Y convention used by mil10ToMm elsewhere in this file.
   const zStr = attrs.z ?? 0
   const z_mm =
     typeof zStr === "string" && /[a-z]/i.test(zStr)
       ? mm(zStr) // already has units
-      : mm(`${Number(zStr) || 0}mil`) // bare number => mils
+      : mil10ToMm(Number(zStr) || 0) // bare number => pixel units (mil*10)
 
   return {
     position: {
@@ -315,15 +316,6 @@ export const convertEasyEdaJsonToCircuitJson = (
       let additionalPlatedHoleProps: any
 
       if (pad.shape === "OVAL") {
-        // EasyEDA OVAL plated pads map cleanly to pill-shaped plated holes.
-        // We preserve the pad rotation so slots like C2961147 stay aligned.
-        // To compute the drill dimensions:
-        // 1. Find the smallest outer dimensions
-        // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
-        // 3. Calculate the largest "inner dimension" (which is either the
-        //    holeWidth or holeHeight) by subtracting the distanceFromOuterPlatingToHole * 2
-        //    from the largest outer dimensions
-
         const largestOuterDimensionName: "width" | "height" =
           mil2mm(pad.width) > mil2mm(pad.height) ? "width" : "height"
 
@@ -364,18 +356,15 @@ export const convertEasyEdaJsonToCircuitJson = (
         const padWidth = mil2mm(pad.width)
         const padHeight = mil2mm(pad.height)
         const holeRadius = mil2mm(pad.holeRadius)
-        const holeDiameter = holeRadius * 2 // Use normal diameter
+        const holeDiameter = holeRadius * 2
 
-        // Check if the pad is significantly rectangular (not square)
         const aspectRatio =
           Math.max(padWidth, padHeight) / Math.min(padWidth, padHeight)
-        const isSignificantlyRectangular = aspectRatio > 1.5 // Only use pill holes for aspect ratios > 1.5
+        const isSignificantlyRectangular = aspectRatio > 1.5
 
         if (isSignificantlyRectangular) {
-          // Simple approach: create slim pill holes with consistent proportions
-          // Width = original hole diameter, Height = 2.6x width for good pill shape
           const baseWidth = holeDiameter
-          const pillHeight = baseWidth * 2.6 // 2.6:1 aspect ratio for elegant pills
+          const pillHeight = baseWidth * 2.6
 
           const holeWidth = padWidth > padHeight ? pillHeight : baseWidth
           const holeHeight = padHeight > padWidth ? pillHeight : baseWidth
@@ -392,7 +381,6 @@ export const convertEasyEdaJsonToCircuitJson = (
             rect_pad_height: padHeight,
           }
         } else {
-          // For square or nearly square pads, use circular holes
           additionalPlatedHoleProps = {
             shape: "circle",
             hole_diameter: holeDiameter,
@@ -421,10 +409,8 @@ export const convertEasyEdaJsonToCircuitJson = (
       if (pad.shape === "RECT") {
         soupShape = "rect"
       } else if (pad.shape === "ELLIPSE") {
-        // This is just a bug
         soupShape = "rect"
       } else if (pad.shape === "OVAL") {
-        // OVAL is often a rect, especially when holeRadius is 0
         soupShape = "rect"
       } else if (pad.shape === "POLYGON") {
         soupShape = "polygon"
@@ -435,7 +421,6 @@ export const convertEasyEdaJsonToCircuitJson = (
 
       const rectSize = { width: mil2mm(pad.width), height: mil2mm(pad.height) }
       if (pad.rotation === 90 || pad.rotation === 270) {
-        // Swap width and height
         rectSize.width = mil2mm(pad.height)
         rectSize.height = mil2mm(pad.width)
       }
@@ -558,7 +543,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         text: "{NAME}",
         anchor_position: {
           x: milx10(bbox.x + bbox.width / 2),
-          y: milx10(bbox.y) - 1.0, // 1mm above top edge
+          y: milx10(bbox.y) - 1.0,
         },
         anchor_alignment: "center",
         font_size: 1.0,
@@ -566,8 +551,6 @@ export const convertEasyEdaJsonToCircuitJson = (
       } as Soup.PcbSilkscreenTextInput),
     )
   }
-
-  // Only add designator if found in EasyEDA
 
   // Calculate pcb_component bounds from all PCB elements
   const pcbElements = circuitElements.filter(
@@ -631,9 +614,7 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   // Generate courtyard outline from packageDetail.dataStr.BBox when no explicit
-  // courtyard TRACK (layers 13/14/15) exists. The BBox is EasyEDA's own bounding
-  // box for the footprint in canvas coordinates (milx10 units). It is added before
-  // recentering so it gets transformed automatically with all other elements.
+  // courtyard TRACK (layers 13/14/15) exists.
   const hasExplicitCourtyard = circuitElements.some(
     (e) => e.type === "pcb_courtyard_outline",
   )
@@ -666,7 +647,6 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   if (shouldRecenter) {
-    // exclude pcb_component (its center is wrong; we'll set it to 0,0)
     const elementsForBounds = circuitElements.filter(
       (e) => e.type !== "pcb_component" && e.type !== "cad_component",
     )
@@ -679,7 +659,6 @@ export const convertEasyEdaJsonToCircuitJson = (
         scale(1, -1),
       )
 
-      // Transform all PCB elems except polygon SMT pads (no x,y) and the cad
       const elementsForTransform = circuitElements.filter(
         (e) =>
           !(e.type === "pcb_smtpad" && e.shape === "polygon") &&
@@ -687,7 +666,6 @@ export const convertEasyEdaJsonToCircuitJson = (
       )
       transformPCBElements(elementsForTransform, matrix)
 
-      // Manually transform polygons/cutouts
       for (const e of circuitElements) {
         if (e.type === "pcb_cutout") {
           if (e.shape === "polygon") {
@@ -722,7 +700,6 @@ export const convertEasyEdaJsonToCircuitJson = (
         const attrs = svgNode?.svgData?.attrs ?? {}
         const modelHeight = readModelHeightMm(attrs.c_height)
 
-        // Ensure we have a size; Z holds the model's thickness in local space
         if (!cad.size) {
           cad.size = {
             x: pcb_component.width,
@@ -731,55 +708,39 @@ export const convertEasyEdaJsonToCircuitJson = (
           }
         }
 
-        // --- Axis convention: EasyEDA models are typically Y-up ---
-        // Rotate to Z-up so thickness becomes vertical in our scene.
         const ROTATE_X_FOR_YUP = 90
         const originalZRotation = (cad.rotation.z ?? 0) % 360
 
-        // Improved rotation handling with tolerance for floating-point precision
-        // Handle different component orientations based on EasyEDA Z rotation
         if (
           Math.abs(originalZRotation - 0) < 1 ||
           Math.abs(originalZRotation - 360) < 1
         ) {
-          // For ~0° Z rotation, don't apply X rotation - keep model as-is (Y-up)
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
         } else if (Math.abs(originalZRotation - 180) < 1) {
-          // For ~180° Z rotation, don't apply standard X rotation - let it lie flat
-          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360 // no X rotation
+          cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
         } else if (Math.abs(originalZRotation - 90) < 1) {
-          // For ~90° Z rotation, keep it flat (no X rotation)
           cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
         } else if (Math.abs(originalZRotation - 270) < 1) {
-          // Keep EasyEDA's raw 270° orientation; adding corrective X/Y rotations
-          // makes parts like C9900017879 stand on their side.
           cad.rotation.x = ((cad.rotation.x ?? 0) + 0 + 360) % 360
           cad.rotation.y = ((cad.rotation.y ?? 0) + 0 + 360) % 360
         } else {
-          // Fallback for unusual angles: apply standard Y-up to Z-up conversion
-          // and log for potential future refinement
           console.warn(
-            `[3D] Unusual rotation angle: ${originalZRotation}° for component ${easyEdaJson.lcsc.number}`,
+            `[3D] Unusual rotation angle: ${originalZRotation}\u00b0 for component ${easyEdaJson.lcsc.number}`,
           )
           cad.rotation.x =
             ((cad.rotation.x ?? 0) + ROTATE_X_FOR_YUP + 360) % 360
         }
 
-        // Bottom-side parts: flip across the board plane
         if (side !== "top") {
           cad.rotation.x = ((cad.rotation.x ?? 0) + 180) % 360
         }
 
-        // For 180° rotated components (Y-up models), the z-offset indicates pin extension below body
         const USE_Z_OFFSET_FOR_180 = Math.abs(originalZRotation - 180) < 1
         const zOffRaw = cad.model_origin_position.z ?? cad.position.z ?? 0
         const zOff = USE_Z_OFFSET_FOR_180 ? -zOffRaw : 0
 
-        // ---- Determine the vertical extent based on model orientation ----
         const rx = ((cad.rotation.x % 360) + 360) % 360
 
-        // EasyEDA models are Y-up. Components with 0° or 180° Z-rotation don't get X-rotation applied,
-        // so they remain Y-up. For Y-up models, the vertical extent is along the Y axis.
         let thicknessAlongWorldZ: number
         const is180RotatedYUp =
           (Math.abs(originalZRotation - 180) < 1 ||
@@ -788,14 +749,10 @@ export const convertEasyEdaJsonToCircuitJson = (
           Math.abs(rx) < 1
 
         if (is180RotatedYUp) {
-          // 180° Z-rotation, no X-rotation applied → model is still Y-up
-          // For Y-up models, the vertical extent is along Y axis (size.y)
           thicknessAlongWorldZ = cad.size.y
         } else if (rx % 180 === 90) {
-          // X-rotation of 90/270 → use local Y
           thicknessAlongWorldZ = cad.size.y
         } else {
-          // Standard case → model rotated to Z-up, use Z
           thicknessAlongWorldZ = cad.size.z
         }
 
@@ -805,13 +762,11 @@ export const convertEasyEdaJsonToCircuitJson = (
         } else {
           let centerZ: number
           if (is180RotatedYUp) {
-            // For Y-up models, subtract half the thickness to lower the component to the board
             centerZ =
               side === "top"
                 ? t - thicknessAlongWorldZ / 2
                 : -t + thicknessAlongWorldZ / 2
           } else {
-            // For other orientations, use standard positioning with z-offset
             centerZ =
               side === "top"
                 ? t + zOff + thicknessAlongWorldZ / 2
@@ -823,7 +778,6 @@ export const convertEasyEdaJsonToCircuitJson = (
       }
     }
 
-    // finalize pcb center after recentering
     pcb_component.center = { x: 0, y: 0 }
   }
 
