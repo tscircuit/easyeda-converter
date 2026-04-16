@@ -7,8 +7,17 @@ import {
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
+import type { GeneratedComponentType } from "./generate-typescript-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
+
+const getGeneratedComponentType = (
+  betterEasy: BetterEasyEdaJson,
+): GeneratedComponentType => {
+  if (isLedCategoryComponent(betterEasy)) return "led"
+  if (isDiodeCategoryComponent(betterEasy)) return "diode"
+  return "chip"
+}
 
 export const convertRawEasyToTsx = async ({ rawEasy }: { rawEasy: any }) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
@@ -82,11 +91,7 @@ export const convertBetterEasyToTsx = async ({
     stepUrl: modelStepUrl,
     circuitJson,
     supplierPartNumbers,
-    componentType: isLedCategoryComponent(betterEasy)
-      ? "led"
-      : isDiodeCategoryComponent(betterEasy)
-        ? "diode"
-        : "chip",
+    componentType: getGeneratedComponentType(betterEasy),
   })
 }
 
