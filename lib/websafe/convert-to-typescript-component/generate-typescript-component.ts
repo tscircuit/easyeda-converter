@@ -2,7 +2,7 @@ import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 
-export type GeneratedComponentType = "chip" | "diode"
+export type GeneratedComponentType = "chip" | "diode" | "led"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -20,7 +20,7 @@ const getPinLabelValues = (labels: string | readonly string[]): string[] => {
   return [...labels]
 }
 
-const getDiodePortHintsMap = (
+const getPolarizedPortHintsMap = (
   pinLabels: ChipProps["pinLabels"],
 ): Record<string, string[]> | undefined => {
   const labelsByPin = Object.entries(pinLabels ?? {}).map(([pin, labels]) => ({
@@ -58,8 +58,8 @@ export const generateTypescriptComponent = ({
   const cadComponent = circuitJson.find((item) => item.type === "cad_component")
   const footprintTsx = generateFootprintTsx(
     circuitJson,
-    componentType === "diode"
-      ? { portHintsMap: getDiodePortHintsMap(safePinLabels) }
+    componentType === "diode" || componentType === "led"
+      ? { portHintsMap: getPolarizedPortHintsMap(safePinLabels) }
       : undefined,
   )
 
@@ -97,6 +97,33 @@ export const ${componentName} = (props: DiodeProps) => {
 
   return (
     <diode
+      name={name}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...restProps}
+    />
+  )
+}
+`.trim()
+  }
+
+  if (componentType === "led") {
+    return `
+import type { LedProps } from "@tscircuit/props"
+
+export const ${componentName} = (props: LedProps) => {
+  const { name = "LED1", ...restProps } = props
+
+  return (
+    <led
       name={name}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
