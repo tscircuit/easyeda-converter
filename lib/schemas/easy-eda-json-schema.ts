@@ -160,6 +160,7 @@ export const EasyEdaJsonSchema = z.object({
   lcsc: LcscSchema,
   owner: OwnerSchema,
   tags: z.array(z.string()),
+  category: z.string().optional(),
   updateTime: z.number(),
   updated_at: z.string(),
   dataStr: DataStrSchema,

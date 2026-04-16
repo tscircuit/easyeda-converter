@@ -1,6 +1,8 @@
-import type { ChipProps } from "@tscircuit/props"
+import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
+
+export type GeneratedComponentType = "chip" | "diode"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -8,8 +10,37 @@ interface Params {
   objUrl?: string
   stepUrl?: string
   circuitJson: AnyCircuitElement[]
-  supplierPartNumbers: ChipProps["supplierPartNumbers"]
+  supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
+  componentType?: GeneratedComponentType
+}
+
+const getPinLabelValues = (labels: string | readonly string[]): string[] => {
+  if (typeof labels === "string") return [labels]
+  return [...labels]
+}
+
+const getDiodePortHintsMap = (
+  pinLabels: ChipProps["pinLabels"],
+): Record<string, string[]> | undefined => {
+  const labelsByPin = Object.entries(pinLabels ?? {}).map(([pin, labels]) => ({
+    pin,
+    labels: getPinLabelValues(labels).map((label) => label.toLowerCase()),
+  }))
+
+  const anodePin = labelsByPin.find(({ labels }) =>
+    labels.some((label) => ["a", "anode", "pos", "+"].includes(label)),
+  )?.pin
+  const cathodePin = labelsByPin.find(({ labels }) =>
+    labels.some((label) => ["c", "k", "cathode", "neg", "-"].includes(label)),
+  )?.pin
+
+  if (!anodePin || !cathodePin) return undefined
+
+  return {
+    [anodePin]: ["pin1", "anode"],
+    [cathodePin]: ["pin2", "cathode"],
+  }
 }
 
 export const generateTypescriptComponent = ({
@@ -20,11 +51,17 @@ export const generateTypescriptComponent = ({
   circuitJson,
   supplierPartNumbers,
   manufacturerPartNumber,
+  componentType = "chip",
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
   const cadComponent = circuitJson.find((item) => item.type === "cad_component")
-  const footprintTsx = generateFootprintTsx(circuitJson)
+  const footprintTsx = generateFootprintTsx(
+    circuitJson,
+    componentType === "diode"
+      ? { portHintsMap: getDiodePortHintsMap(safePinLabels) }
+      : undefined,
+  )
 
   // Simplify pin labels to include only the second element
   const simplifiedPinLabels = Object.fromEntries(
@@ -50,6 +87,33 @@ export const generateTypescriptComponent = ({
     .filter(Boolean)
     .map((line) => `        ${line}`)
     .join("\n")
+
+  if (componentType === "diode") {
+    return `
+import type { DiodeProps } from "@tscircuit/props"
+
+export const ${componentName} = (props: DiodeProps) => {
+  const { name = "D1", ...restProps } = props
+
+  return (
+    <diode
+      name={name}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...restProps}
+    />
+  )
+}
+`.trim()
+  }
 
   return `
 import type { ChipProps } from "@tscircuit/props"

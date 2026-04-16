@@ -2,8 +2,22 @@ import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
 import { su } from "@tscircuit/circuit-json-util"
 
+interface GenerateFootprintTsxOptions {
+  portHintsMap?: Record<string, string[]>
+}
+
+const mapPortHints = (
+  portHints: string[] | undefined,
+  portHintsMap: Record<string, string[]> | undefined,
+): string[] | undefined => {
+  if (!portHintsMap || !portHints) return portHints
+
+  return portHints.flatMap((hint) => portHintsMap[hint] ?? [hint])
+}
+
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
+  options: GenerateFootprintTsxOptions = {},
 ): string => {
   const holes = su(circuitJson).pcb_hole.list()
   const platedHoles = su(circuitJson).pcb_plated_hole.list()
@@ -33,21 +47,21 @@ export const generateFootprintTsx = (
         : ""
 
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.outer_width)}" outerHeight="${mmStr(platedHole.outer_height)}"${rotation} shape="${platedHole.shape}" />`,
+        `<platedhole  portHints={${JSON.stringify(mapPortHints(platedHole.port_hints, options.portHintsMap))}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.outer_width)}" outerHeight="${mmStr(platedHole.outer_height)}"${rotation} shape="${platedHole.shape}" />`,
       )
     } else if (platedHole.shape === "pill_hole_with_rect_pad") {
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" shape="pill" />`,
+        `<platedhole  portHints={${JSON.stringify(mapPortHints(platedHole.port_hints, options.portHintsMap))}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" shape="pill" />`,
       )
     } else if (platedHole.shape === "circle") {
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerDiameter="${mmStr(platedHole.outer_diameter)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" shape="circle" />`,
+        `<platedhole  portHints={${JSON.stringify(mapPortHints(platedHole.port_hints, options.portHintsMap))}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" outerDiameter="${mmStr(platedHole.outer_diameter)}" holeDiameter="${mmStr(platedHole.hole_diameter)}" shape="circle" />`,
       )
     } else if (platedHole.shape === "rotated_pill_hole_with_rect_pad") {
       const rotation = platedHole.hole_ccw_rotation || 0
 
       elementStrings.push(
-        `<platedhole  portHints={${JSON.stringify(platedHole.port_hints)}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" rectPad={true} pcbRotation="${rotation}deg" shape="pill" />`,
+        `<platedhole  portHints={${JSON.stringify(mapPortHints(platedHole.port_hints, options.portHintsMap))}} pcbX="${mmStr(platedHole.x)}" pcbY="${mmStr(platedHole.y)}" holeWidth="${mmStr(platedHole.hole_width)}" holeHeight="${mmStr(platedHole.hole_height)}" outerWidth="${mmStr(platedHole.rect_pad_width)}" outerHeight="${mmStr(platedHole.rect_pad_height)}" rectPad={true} pcbRotation="${rotation}deg" shape="pill" />`,
       )
     }
   }
@@ -55,18 +69,18 @@ export const generateFootprintTsx = (
   for (const smtPad of smtPads) {
     if (smtPad.shape === "circle") {
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle" />`,
       )
     } else if (smtPad.shape === "rect") {
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" shape="rect" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" shape="rect" />`,
       )
     } else if (smtPad.shape === "polygon") {
       const pointsStr = smtPad.points
         .map((p) => `{x: "${mmStr(p.x)}", y: "${mmStr(p.y)}"}`)
         .join(", ")
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} points={[${pointsStr}]} shape="polygon" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} points={[${pointsStr}]} shape="polygon" />`,
       )
     }
   }

@@ -1,27 +1,31 @@
 export const wrapTsxWithBoardFor3dSnapshot = (tsx: string): string => {
   const lines = tsx.split("\n")
-  const chipLineIndex = lines.findIndex((line) => line.includes("<chip"))
+  const componentLineIndex = lines.findIndex(
+    (line) => line.includes("<chip") || line.includes("<diode"),
+  )
 
-  if (chipLineIndex === -1) {
-    throw new Error("Expected generated TSX to contain a root <chip> element")
+  if (componentLineIndex === -1) {
+    throw new Error(
+      "Expected generated TSX to contain a root <chip> or <diode> element",
+    )
   }
 
-  const chipIndent = lines[chipLineIndex].match(/^\s*/)![0]
-  lines.splice(chipLineIndex, 0, `${chipIndent}<board >`)
+  const componentIndent = lines[componentLineIndex].match(/^\s*/)![0]
+  lines.splice(componentLineIndex, 0, `${componentIndent}<board >`)
 
-  let chipCloseLineIndex = -1
-  for (let i = lines.length - 1; i > chipLineIndex; i--) {
+  let componentCloseLineIndex = -1
+  for (let i = lines.length - 1; i > componentLineIndex; i--) {
     if (lines[i].trim() === "/>") {
-      chipCloseLineIndex = i
+      componentCloseLineIndex = i
       break
     }
   }
 
-  if (chipCloseLineIndex === -1) {
+  if (componentCloseLineIndex === -1) {
     throw new Error("Expected generated TSX to contain a closing root /> line")
   }
 
-  lines.splice(chipCloseLineIndex + 1, 0, `${chipIndent}</board>`)
+  lines.splice(componentCloseLineIndex + 1, 0, `${componentIndent}</board>`)
 
   return lines.join("\n")
 }
