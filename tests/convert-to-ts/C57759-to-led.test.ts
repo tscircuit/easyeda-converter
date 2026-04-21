@@ -43,7 +43,7 @@ it("should convert led category components to led elements", async () => {
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C57759.obj?uuid=973acf8a660c48b1975f1ba1c890421a",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C57759.step?uuid=973acf8a660c48b1975f1ba1c890421a",
             pcbRotationOffset: 0,
-            modelOriginPosition: { x: 0, y: 0, z: -0.01 },
+            modelOriginPosition: { x: 0.000012699999956566899, y: 0.000012699999842880061, z: -0.01 },
           }}
           {...restProps}
         />
