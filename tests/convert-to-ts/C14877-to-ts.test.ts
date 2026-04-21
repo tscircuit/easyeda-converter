@@ -112,7 +112,7 @@ it("should convert C14877 into typescript file", async () => {
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C14877.obj?uuid=4d9f6c3430024506b87ce44b53201fc5",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C14877.step?uuid=4d9f6c3430024506b87ce44b53201fc5",
             pcbRotationOffset: 90,
-            modelOriginPosition: { x: -0.00131110000000168, y: -0.00301659999999665, z: 0.000917 },
+            modelOriginPosition: { x: -0.0012984000000164642, y: -0.0030292999999934622, z: 0.000917 },
           }}
           {...props}
         />

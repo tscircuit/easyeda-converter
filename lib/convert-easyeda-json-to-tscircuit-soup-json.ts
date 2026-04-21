@@ -33,6 +33,7 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
@@ -203,6 +204,10 @@ interface Options {
   cadPositionXMm?: number
   cadPositionYMm?: number
   cadPositionZMm?: number
+  cadModelBounds?: {
+    min: { x: number; y: number; z: number }
+    max: { x: number; y: number; z: number }
+  }
   showDesignator?: boolean
 }
 
@@ -230,6 +235,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     cadPositionXMm,
     cadPositionYMm,
     cadPositionZMm,
+    cadModelBounds,
     showDesignator = false,
   }: Options = {},
 ): AnyCircuitElement[] => {
@@ -715,6 +721,19 @@ export const convertEasyEdaJsonToCircuitJson = (
         if (!cad.rotation) cad.rotation = { x: 0, y: 0, z: 0 }
         if (!cad.model_origin_position) {
           cad.model_origin_position = { x: 0, y: 0, z: 0 }
+        }
+
+        const resolvedCadModelBounds =
+          cadModelBounds ?? easyEdaJson._objMetadata?.bounds
+        const recenteredCadOffset =
+          resolvedCadModelBounds &&
+          getCadModelOffsetMmFromBounds(easyEdaJson, resolvedCadModelBounds, {
+            footprintBoundsCenterMm: bounds.center,
+          })
+
+        if (recenteredCadOffset) {
+          cad.model_origin_position.x = recenteredCadOffset.x
+          cad.model_origin_position.y = recenteredCadOffset.y
         }
 
         const side = (pcb_component.layer ?? "top") as "top" | "bottom"

@@ -1,19 +1,21 @@
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
+import {
+  getBoundsCenter,
+  getBoundsFromPoints,
+  type Bounds,
+  type Point,
+} from "@tscircuit/math-utils"
 
-type XYBounds = {
-  min: { x: number; y: number }
-  max: { x: number; y: number }
-}
+type ModelBounds = NonNullable<BetterEasyEdaJson["_objMetadata"]>["bounds"]
 
 type RotationDeg = 0 | 90 | 180 | 270
 
-const milToMm = (mil: number) => mil * 0.0254
-
-const getBoundsCenter = (bounds: XYBounds) => ({
-  x: (bounds.min.x + bounds.max.x) / 2,
-  y: (bounds.min.y + bounds.max.y) / 2,
-})
+type SvgChildNodeWithAttrs = {
+  attrs?: {
+    points?: string | number
+  }
+}
 
 const getCadSvgNode = (easyEdaJson: BetterEasyEdaJson) => {
   const svgNode = easyEdaJson.packageDetail.dataStr.shape.find(
@@ -23,52 +25,84 @@ const getCadSvgNode = (easyEdaJson: BetterEasyEdaJson) => {
   return svgNode?.type === "SVGNODE" ? svgNode : null
 }
 
-const parseMil10Value = (value: string | number) =>
-  Number(String(value).replace("mil", "")) / 10
+const isSvgChildNodeWithAttrs = (
+  childNode: unknown,
+): childNode is SvgChildNodeWithAttrs =>
+  typeof childNode === "object" && childNode !== null
 
-const isZeroishModelCenter = (value: number) => Math.abs(value) < 1e-6
+const getXyBoundsFromModelBounds = (bounds: ModelBounds): Bounds => ({
+  minX: bounds.min.x,
+  minY: bounds.min.y,
+  maxX: bounds.max.x,
+  maxY: bounds.max.y,
+})
 
-const isZeroishFootprintDelta = (value: number) => Math.abs(value) < 1e-3
-
-const getPadCenter = (easyEdaJson: BetterEasyEdaJson) => {
-  const pads = easyEdaJson.packageDetail.dataStr.shape.filter(
-    (shape) => shape.type === "PAD",
-  )
-  if (pads.length === 0) return null
-
-  const xs = pads.map((pad) => parseMil10Value(pad.center.x))
-  const ys = pads.map((pad) => parseMil10Value(pad.center.y))
-
-  return {
-    x: (Math.min(...xs) + Math.max(...xs)) / 2,
-    y: (Math.min(...ys) + Math.max(...ys)) / 2,
-  }
-}
-
-const getRotatedOffsetMm = ({
-  bounds,
-  rawOffsetMil,
-  rotationDeg,
-}: {
-  bounds: XYBounds
-  rawOffsetMil: { x: number; y: number }
-  rotationDeg: RotationDeg
-}) => {
-  const center = getBoundsCenter(bounds)
-  const offsetX = milToMm(rawOffsetMil.x)
-  const offsetY = milToMm(rawOffsetMil.y)
-
+const rotateScenePoint = (point: Point, rotationDeg: RotationDeg): Point => {
   switch (rotationDeg) {
     case 0:
-      return { x: center.x + offsetX, y: center.y + offsetY }
+      return point
     case 90:
-      return { x: center.x + offsetY, y: center.y + offsetX }
+      return { x: point.y, y: -point.x }
     case 180:
-      return { x: center.x - offsetX, y: center.y - offsetY }
+      return { x: -point.x, y: -point.y }
     case 270:
-      return { x: center.x - offsetY, y: center.y - offsetX }
+      return { x: -point.y, y: point.x }
   }
 }
+
+const getEasyEdaModelOriginOnBoardMm = ({
+  svgNode,
+  footprintCenterMm,
+}: {
+  svgNode: NonNullable<ReturnType<typeof getCadSvgNode>>
+  footprintCenterMm: Point
+}) => {
+  const points: Point[] = []
+
+  for (const childNode of svgNode.svgData.childNodes ?? []) {
+    if (!isSvgChildNodeWithAttrs(childNode)) continue
+
+    const rawPoints = childNode.attrs?.points
+    if (!rawPoints) continue
+
+    const values = String(rawPoints).trim().split(/\s+/).map(Number)
+    for (let i = 0; i + 1 < values.length; i += 2) {
+      const x = values[i]
+      const y = values[i + 1]
+      if (Number.isFinite(x) && Number.isFinite(y)) {
+        points.push({ x: mil10ToMm(x), y: mil10ToMm(y) })
+      }
+    }
+  }
+
+  let modelOriginMm: Point | null = null
+
+  if (points.length > 0) {
+    const bounds = getBoundsFromPoints(points)
+    modelOriginMm = bounds ? getBoundsCenter(bounds) : null
+  } else {
+    const [originX, originY] = String(svgNode.svgData.attrs?.c_origin ?? "0,0")
+      .split(",")
+      .map((value) => Number(value.trim()))
+    if (Number.isFinite(originX) && Number.isFinite(originY)) {
+      modelOriginMm = { x: mil10ToMm(originX), y: mil10ToMm(originY) }
+    }
+  }
+
+  if (!modelOriginMm) return null
+
+  return {
+    x: modelOriginMm.x - footprintCenterMm.x,
+    y: footprintCenterMm.y - modelOriginMm.y,
+  }
+}
+
+const snapZero = (value: number) => (Math.abs(value) < 1e-6 ? 0 : value)
+
+const normalizePoint = (point: Point): Point => ({
+  x: snapZero(point.x),
+  y: snapZero(point.y),
+})
 
 export const getCadModelOffsetMm = (easyEdaJson: BetterEasyEdaJson) => {
   const svgNode = getCadSvgNode(easyEdaJson)
@@ -80,15 +114,15 @@ export const getCadModelOffsetMm = (easyEdaJson: BetterEasyEdaJson) => {
 
 export const getCadModelOffsetMmFromBounds = (
   easyEdaJson: BetterEasyEdaJson,
-  bounds?: XYBounds,
+  bounds?: ModelBounds,
+  {
+    footprintBoundsCenterMm,
+  }: {
+    footprintBoundsCenterMm?: Point
+  } = {},
 ) => {
   const svgNode = getCadSvgNode(easyEdaJson)
   if (!svgNode || !bounds) return null
-
-  const [originX, originY] = String(svgNode.svgData.attrs?.c_origin ?? "0,0")
-    .split(",")
-    .map((value) => Number(value.trim()))
-  if (!Number.isFinite(originX) || !Number.isFinite(originY)) return null
 
   const [, , rotationZRaw] = String(
     svgNode.svgData.attrs?.c_rotation ?? "0,0,0",
@@ -98,35 +132,26 @@ export const getCadModelOffsetMmFromBounds = (
   const rotationDeg = (((rotationZRaw % 360) + 360) % 360) as RotationDeg
   if (![0, 90, 180, 270].includes(rotationDeg)) return null
 
-  const modelCenter = getBoundsCenter(bounds)
+  const modelCenter = getBoundsCenter(getXyBoundsFromModelBounds(bounds))
   const footprintCenter = easyEdaJson.packageDetail.dataStr.head
-  const padCenter = getPadCenter(easyEdaJson)
-  const padCenterDelta = padCenter
-    ? {
-        x: padCenter.x - footprintCenter.x,
-        y: padCenter.y - footprintCenter.y,
-      }
-    : null
-  const rawOffsetMil = {
-    x: (originX - footprintCenter.x) * 10,
-    y: (originY - footprintCenter.y) * 10,
+  const footprintCenterMm = footprintBoundsCenterMm ?? {
+    x: mil10ToMm(footprintCenter.x),
+    y: mil10ToMm(footprintCenter.y),
   }
+  const targetOriginOnBoardMm = getEasyEdaModelOriginOnBoardMm({
+    svgNode,
+    footprintCenterMm,
+  })
+  if (!targetOriginOnBoardMm) return null
 
-  if (
-    padCenter &&
-    padCenterDelta &&
-    isZeroishModelCenter(modelCenter.x) &&
-    isZeroishModelCenter(modelCenter.y) &&
-    isZeroishFootprintDelta(padCenterDelta.x) &&
-    isZeroishFootprintDelta(padCenterDelta.y)
-  ) {
-    return { x: 0, y: 0 }
-  }
-
-  return getRotatedOffsetMm({
-    bounds,
-    rawOffsetMil,
+  const targetOriginInModelFrame = rotateScenePoint(
+    targetOriginOnBoardMm,
     rotationDeg,
+  )
+
+  return normalizePoint({
+    x: modelCenter.x - targetOriginInModelFrame.x,
+    y: modelCenter.y - targetOriginInModelFrame.y,
   })
 }
 

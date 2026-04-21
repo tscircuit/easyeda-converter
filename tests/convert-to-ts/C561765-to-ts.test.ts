@@ -58,7 +58,7 @@ it("should convert C561765 into typescript file", async () => {
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C561765.obj?uuid=b9df3af421404a02b675e13120fa0c0c",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C561765.step?uuid=b9df3af421404a02b675e13120fa0c0c",
             pcbRotationOffset: 0,
-            modelOriginPosition: { x: 0.0050000000000003375, y: 6.105001199999991, z: -1.7900066000000003 },
+            modelOriginPosition: { x: 0.0050000000000003375, y: 2.9399516000000676, z: -1.7900066000000003 },
           }}
           {...props}
         />

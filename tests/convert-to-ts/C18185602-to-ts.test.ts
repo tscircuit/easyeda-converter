@@ -17,7 +17,9 @@ it("should convert C18185602 into typescript file", async () => {
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
   )
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  await expect(circuitJson).toMatch3dSnapshot(import.meta.path, {
+    camPos: [-10, -20, 10],
+  })
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -65,7 +67,7 @@ it("should convert C18185602 into typescript file", async () => {
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C18185602.obj?uuid=f90b68db56444592a325e6a33e48bfdb",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C18185602.step?uuid=f90b68db56444592a325e6a33e48bfdb",
             pcbRotationOffset: 0,
-            modelOriginPosition: { x: -2.183917399999925, y: -0.0050000000000001155, z: -2.5000069999999996 },
+            modelOriginPosition: { x: 1.383957099999975, y: -0.0050000000000001155, z: -2.5000069999999996 },
           }}
           {...props}
         />

@@ -39,6 +39,7 @@ export const convertBetterEasyToTsx = async ({
     cadPositionXMm: cadPlacement?.positionXMm,
     cadPositionYMm: cadPlacement?.positionYMm,
     cadPositionZMm: cadPlacement?.positionZMm,
+    cadModelBounds: cadPlacement?.bounds,
     showDesignator: true,
   })
   const [cadComponent] = su(circuitJson).cad_component.list()

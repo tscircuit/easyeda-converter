@@ -45,7 +45,7 @@ it("should include both obj and step cad model urls", async () => {
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C1046.obj?uuid=c7acac53bcbc44d68fbab8f60a747688",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C1046.step?uuid=c7acac53bcbc44d68fbab8f60a747688",
             pcbRotationOffset: 0,
-            modelOriginPosition: { x: 0, y: 0, z: 0 },
+            modelOriginPosition: { x: 0, y: -0.000038099999983387534, z: 0 },
           }}
           {...props}
         />

@@ -10,35 +10,12 @@
     "type": "git",
     "url": "https://github.com/tscircuit/easyeda-converter"
   },
-  "scripts": {
-    "test": "bun test",
-    "cli": "bun cli/main.ts",
-    "build": "tsup",
-    "aider": "aider",
-    "format:check": "biome format .",
-    "format": "biome format . --write",
-    "add-test-for-part": "bun run scripts/add-test-for-part.ts"
-  },
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./browser": {
-      "types": "./dist/browser/index.d.ts",
-      "default": "./dist/browser/index.js"
-    }
-  },
-  "bin": {
-    "easyeda-converter": "./dist/main.cjs",
-    "easyeda": "./dist/main.cjs"
-  },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/alphabet": "^0.0.22",
     "@tscircuit/circuit-json-util": "^0.0.90",
+    "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
@@ -53,5 +30,34 @@
   "peerDependencies": {
     "typescript": "^5.5.2",
     "zod": "3"
-  }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/browser/index.d.ts",
+      "default": "./dist/browser/index.js"
+    }
+  },
+  "bin": {
+    "easyeda-converter": "./dist/main.cjs",
+    "easyeda": "./dist/main.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "bun test",
+    "cli": "bun cli/main.ts",
+    "build": "tsup",
+    "aider": "aider",
+    "format:check": "biome format .",
+    "format": "biome format . --write",
+    "add-test-for-part": "bun run scripts/add-test-for-part.ts"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts"
 }
