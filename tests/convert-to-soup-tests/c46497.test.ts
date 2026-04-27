@@ -10,6 +10,7 @@ test("C46497 should generate Circuit Json with vias", async () => {
   expect(
     circuitJson.filter((e) => e.type === "pcb_via").length,
   ).toBeGreaterThan(0)
+  expect(circuitJson.filter((e) => e.type === "pcb_cutout")).toHaveLength(0)
 
   expect(
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),

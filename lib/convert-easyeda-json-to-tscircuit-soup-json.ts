@@ -198,6 +198,13 @@ const handleCutout = (
   } as Soup.PcbCutoutPolygonInput)
 }
 
+const LEAD_SHAPE_LAYER = 100
+
+const isPcbSolidRegionCutout = (shape: z.infer<typeof SolidRegionSchema>) => {
+  // LeadShapeLayer cutouts describe package lead artwork, not board drills.
+  return shape.fillStyle === "cutout" && shape.layermask !== LEAD_SHAPE_LAYER
+}
+
 interface Options {
   useModelCdn?: boolean
   shouldRecenter?: boolean
@@ -499,7 +506,7 @@ export const convertEasyEdaJsonToCircuitJson = (
   easyEdaJson.packageDetail.dataStr.shape
     .filter(
       (shape): shape is z.infer<typeof SolidRegionSchema> =>
-        shape.type === "SOLIDREGION" && shape.fillStyle === "cutout",
+        shape.type === "SOLIDREGION" && isPcbSolidRegionCutout(shape),
     )
     .forEach((sr, index) => {
       circuitElements.push(handleCutout(sr, index))
@@ -564,7 +571,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     circuitElements.push(
       Soup.pcb_silkscreen_text.parse({
         type: "pcb_silkscreen_text",
-        pcb_silkscreen_text_id: `pcb_silkscreen_text_designator_fallback`,
+        pcb_silkscreen_text_id: "pcb_silkscreen_text_designator_fallback",
         pcb_component_id: "pcb_component_1",
         text: "{NAME}",
         anchor_position: {
