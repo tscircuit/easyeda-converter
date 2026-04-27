@@ -430,8 +430,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         // This is just a bug
         soupShape = "rect"
       } else if (pad.shape === "OVAL") {
-        // OVAL is often a rect, especially when holeRadius is 0
-        soupShape = "rect"
+        soupShape = "pill"
       } else if (pad.shape === "POLYGON") {
         soupShape = "polygon"
       }
@@ -445,7 +444,6 @@ export const convertEasyEdaJsonToCircuitJson = (
         rectSize.width = mil2mm(pad.height)
         rectSize.height = mil2mm(pad.width)
       }
-
       const parsedPcbSmtpad = pcb_smtpad.parse({
         type: "pcb_smtpad",
         pcb_smtpad_id: `pcb_smtpad_${index + 1}`,
@@ -456,14 +454,21 @@ export const convertEasyEdaJsonToCircuitJson = (
         }),
         ...(soupShape === "rect"
           ? rectSize
-          : soupShape === "polygon" && pad.points
+          : soupShape === "pill"
             ? {
-                points: pad.points.map((p) => ({
-                  x: milx10(p.x),
-                  y: milx10(p.y),
-                })),
+                ...rectSize,
+                radius: Math.min(rectSize.width, rectSize.height) / 2,
               }
-            : { radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2 }),
+            : soupShape === "polygon" && pad.points
+              ? {
+                  points: pad.points.map((p) => ({
+                    x: milx10(p.x),
+                    y: milx10(p.y),
+                  })),
+                }
+              : {
+                  radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2,
+                }),
         layer: "top",
         port_hints: [`pin${pinNumber}`],
         pcb_component_id: "pcb_component_1",

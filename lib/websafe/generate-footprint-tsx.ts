@@ -72,8 +72,18 @@ export const generateFootprintTsx = (
         `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle" />`,
       )
     } else if (smtPad.shape === "rect") {
+      const cornerRadius =
+        smtPad.corner_radius ?? smtPad.rect_border_radius ?? undefined
+      const cornerRadiusAttr =
+        cornerRadius !== undefined
+          ? ` cornerRadius="${mmStr(cornerRadius)}"`
+          : ""
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" shape="rect" />`,
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}"${cornerRadiusAttr} shape="rect" />`,
+      )
+    } else if (smtPad.shape === "pill") {
+      elementStrings.push(
+        `<smtpad portHints={${JSON.stringify(smtPad.port_hints)}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" radius="${mmStr(smtPad.radius)}" shape="pill" />`,
       )
     } else if (smtPad.shape === "polygon") {
       const pointsStr = smtPad.points
