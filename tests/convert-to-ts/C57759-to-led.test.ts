@@ -29,8 +29,8 @@ it("should convert led category components to led elements", async () => {
     }}
           manufacturerPartNumber="A_1N4148WS"
           footprint={<footprint>
-            <smtpad portHints={["pin2","cathode"]} pcbX="-1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />
-    <smtpad portHints={["pin1","anode"]} pcbX="1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />
+            <smtpad portHints={["pin1"]} pcbX="-1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />
+    <smtpad portHints={["pin2"]} pcbX="1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />
     <silkscreenpath route={[{"x":0.9012427999999773,"y":-0.726211400000011},{"x":0.9012427999999773,"y":-0.5199887999999646}]} />
     <silkscreenpath route={[{"x":0.9012427999999773,"y":0.726211400000011},{"x":0.9012427999999773,"y":0.5299964000000728}]} />
     <silkscreenpath route={[{"x":-0.8512047999998913,"y":0.726211400000011},{"x":0.9012427999999773,"y":0.726211400000011}]} />
