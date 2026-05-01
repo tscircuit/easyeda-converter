@@ -119,7 +119,7 @@ export const ViaSchema = BaseShapeSchema.extend({
   type: z.literal("VIA"),
   center: PointSchema,
   outerDiameter: z.number(),
-  holeDiameter: z.number(),
+  holeRadius: z.number(),
 })
 
 export const RectSchema = BaseShapeSchema.extend({
@@ -293,13 +293,13 @@ export const ShapeItemSchema = z
         })
       }
       case "VIA": {
-        const [x, y, outerDiameter, , holeDiameter, id] = shape.data.split("~")
+        const [x, y, outerDiameter, , holeRadius, id] = shape.data.split("~")
         const center: [number, number] = [Number(x), Number(y)]
         return ViaSchema.parse({
           type: "VIA",
           center,
           outerDiameter: Number(outerDiameter),
-          holeDiameter: Number(holeDiameter),
+          holeRadius: Number(holeRadius),
           id,
         })
       }

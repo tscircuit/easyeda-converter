@@ -172,13 +172,15 @@ const handleHoleCutout = (hole: z.infer<typeof HoleSchema>, index: number) => {
 }
 
 const handleVia = (via: z.infer<typeof ViaSchema>, index: number) => {
+  const holeDiameter = via.holeRadius * 2
+
   return pcb_via.parse({
     type: "pcb_via",
     pcb_via_id: `pcb_via_${index + 1}`,
     x: milx10(via.center.x),
     y: milx10(via.center.y),
     outer_diameter: milx10(via.outerDiameter),
-    hole_diameter: milx10(via.holeDiameter),
+    hole_diameter: milx10(holeDiameter),
     layers: ["top", "bottom"],
   } as PcbViaInput)
 }
