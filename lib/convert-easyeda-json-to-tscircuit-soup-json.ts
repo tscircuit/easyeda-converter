@@ -25,6 +25,7 @@ import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
   ArcSchema,
+  CircleSchema,
   HoleSchema,
   PadSchema,
   SVGNodeSchema,
@@ -121,6 +122,8 @@ const handleSilkscreenPath = (
 const isCourtyardLayer = (layer?: number) =>
   layer === 13 || layer === 14 || layer === 15
 
+const isSilkscreenLayer = (layer?: number) => layer === 3 || layer === 4
+
 const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   if (layer === 4 || layer === 14) return "bottom"
   return "top"
@@ -147,6 +150,33 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
       y: milx10(p.y),
     })),
     stroke_width: mil10ToMm(arc.width),
+  } as Soup.PcbSilkscreenPathInput)
+}
+
+const SILKSCREEN_CIRCLE_SEGMENTS = 24
+
+const handleSilkscreenCircle = (
+  circle: z.infer<typeof CircleSchema>,
+  index: number,
+) => {
+  const route = Array.from(
+    { length: SILKSCREEN_CIRCLE_SEGMENTS + 1 },
+    (_, segmentIndex) => {
+      const angle = (Math.PI * 2 * segmentIndex) / SILKSCREEN_CIRCLE_SEGMENTS
+      return {
+        x: milx10(circle.center.x + Math.cos(angle) * circle.radius),
+        y: milx10(circle.center.y + Math.sin(angle) * circle.radius),
+      }
+    },
+  )
+
+  return pcb_silkscreen_path.parse({
+    type: "pcb_silkscreen_path",
+    pcb_silkscreen_path_id: `pcb_silkscreen_circle_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: getSideFromLayer(circle.layer),
+    route,
+    stroke_width: mil10ToMm(circle.width),
   } as Soup.PcbSilkscreenPathInput)
 }
 
@@ -520,6 +550,10 @@ export const convertEasyEdaJsonToCircuitJson = (
     if (shape.type === "TRACK") {
       if (!isCourtyardLayer(shape.layer)) {
         circuitElements.push(handleSilkscreenPath(shape, index))
+      }
+    } else if (shape.type === "CIRCLE") {
+      if (isSilkscreenLayer(shape.layer)) {
+        circuitElements.push(handleSilkscreenCircle(shape, index))
       }
     } else if (shape.type === "ARC") {
       if (!isCourtyardLayer(shape.layer)) {
