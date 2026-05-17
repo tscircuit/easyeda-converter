@@ -13,14 +13,17 @@ it.skipIf(isCI)("should fetch correct part for C41430893", async () => {
   expect(result.dataStr?.head?.c_para?.["Supplier Part"]).toBe("C41430893")
 })
 
-it.skipIf(isCI)("C41430893 should generate Circuit Json without errors", async () => {
-  const rawEasy = await fetchEasyEDAComponent("C41430893")
-  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+it.skipIf(isCI)(
+  "C41430893 should generate Circuit Json without errors",
+  async () => {
+    const rawEasy = await fetchEasyEDAComponent("C41430893")
+    const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+    const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
 
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-  )
+    expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+      import.meta.path,
+    )
 
-  await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
-})
+    await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
+  },
+)
