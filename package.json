@@ -19,10 +19,10 @@
     "@tscircuit/mm": "^0.0.9",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
-    "circuit-json-to-gltf": "^0.0.93",
+    "circuit-json-to-gltf": "^0.0.102",
     "circuit-to-svg": "^0.0.340",
     "looks-same": "^9.0.1",
-    "poppygl": "^0.0.19",
+    "poppygl": "^0.0.24",
     "transformation-matrix": "^2.16.1",
     "tscircuit": "^0.0.1599",
     "tsup": "^8.5.0"

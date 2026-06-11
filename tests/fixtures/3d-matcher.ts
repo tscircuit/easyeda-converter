@@ -4,8 +4,8 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import looksSame from "looks-same"
 import {
-  renderGLTFToPNGBufferFromGLBBuffer,
-  type RenderGLTFToPNGBufferFromGLBBufferOptions as PoppyglOptions,
+  renderGLTFToPNGFromGLB,
+  type RenderGLTFToPNGFromGLBOptions as PoppyglOptions,
 } from "poppygl"
 import { convertCircuitJsonToGltf } from "circuit-json-to-gltf"
 
@@ -121,10 +121,7 @@ async function save3dSnapshotOfCircuitJson({
     ? gltfOrGlb
     : Buffer.from(gltfOrGlb as any)
   const resolvedRenderOpts = await resolvePoppyglOptions(soup, options)
-  const png = await renderGLTFToPNGBufferFromGLBBuffer(
-    glbBuffer,
-    resolvedRenderOpts,
-  )
+  const png = await renderGLTFToPNGFromGLB(glbBuffer, resolvedRenderOpts)
   const content = Buffer.isBuffer(png) ? png : Buffer.from(png)
 
   if (!fs.existsSync(snapshotDir)) {
