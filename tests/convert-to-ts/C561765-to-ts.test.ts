@@ -40,25 +40,25 @@ it("should convert C561765 into typescript file", async () => {
     }}
           manufacturerPartNumber="A_1053131104"
           footprint={<footprint>
-            <hole pcbX="-3.749929mm" pcbY="-4.0150351mm" diameter="1.5999968mm" />
-    <hole pcbX="3.749929mm" pcbY="-4.0150351mm" diameter="1.5999968mm" />
-    <platedhole  portHints={["pin4"]} pcbX="-3.749929mm" pcbY="3.1650369mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
-    <platedhole  portHints={["pin3"]} pcbX="-1.250061mm" pcbY="3.1650369mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
-    <platedhole  portHints={["pin2"]} pcbX="1.250061mm" pcbY="3.1650369mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
-    <platedhole  portHints={["pin1"]} pcbX="3.749929mm" pcbY="3.1650369mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
-    <silkscreenpath route={[{"x":2.5999694000000773,"y":-8.674969900000065},{"x":2.5999694000000773,"y":-7.234942300000171}]} />
-    <silkscreenpath route={[{"x":-2.5999947999998767,"y":-8.674969900000065},{"x":-2.5999947999998767,"y":-7.234942300000171}]} />
-    <silkscreenpath route={[{"x":-2.5999947999998767,"y":-8.674969900000065},{"x":2.5999694000000773,"y":-8.674969900000065}]} />
-    <silkscreenpath route={[{"x":5.450001800000109,"y":1.2650406999998722},{"x":-5.449976399999969,"y":1.2650406999998722},{"x":-5.449976399999969,"y":-7.234942300000171},{"x":5.450001800000109,"y":-7.234942300000171}]} />
-    <silkscreenpath route={[{"x":5.450001800000109,"y":1.2650406999998722},{"x":5.450001800000109,"y":-7.234942300000171}]} />
-    <silkscreentext text="{NAME}" pcbX="0.016129mm" pcbY="5.1048369mm" anchorAlignment="center" fontSize="1mm" />
-    <courtyardoutline outline={[{"x":-5.7202709999999115,"y":4.354836899999896},{"x":5.752528999999981,"y":4.354836899999896},{"x":5.752528999999981,"y":-8.946763100000226},{"x":-5.7202709999999115,"y":-8.946763100000226},{"x":-5.7202709999999115,"y":4.354836899999896}]} />
+            <hole pcbX="-3.749929mm" pcbY="-3.6400359mm" diameter="1.5999968mm" />
+    <hole pcbX="3.749929mm" pcbY="-3.6400359mm" diameter="1.5999968mm" />
+    <platedhole  portHints={["pin4"]} pcbX="-3.749929mm" pcbY="3.5400361mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
+    <platedhole  portHints={["pin3"]} pcbX="-1.250061mm" pcbY="3.5400361mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
+    <platedhole  portHints={["pin2"]} pcbX="1.250061mm" pcbY="3.5400361mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
+    <platedhole  portHints={["pin1"]} pcbX="3.749929mm" pcbY="3.5400361mm" outerDiameter="1.7999964mm" holeDiameter="1.1999976mm" shape="circle" />
+    <silkscreenpath route={[{"x":2.5999694000000773,"y":-8.299970700000017},{"x":2.5999694000000773,"y":-6.859943100000123}]} />
+    <silkscreenpath route={[{"x":-2.5999947999998767,"y":-8.299970700000017},{"x":-2.5999947999998767,"y":-6.859943100000123}]} />
+    <silkscreenpath route={[{"x":-2.5999947999998767,"y":-8.299970700000017},{"x":2.5999694000000773,"y":-8.299970700000017}]} />
+    <silkscreenpath route={[{"x":5.450001800000109,"y":1.6400398999999197},{"x":-5.449976399999969,"y":1.6400398999999197},{"x":-5.449976399999969,"y":-6.859943100000123},{"x":5.450001800000109,"y":-6.859943100000123}]} />
+    <silkscreenpath route={[{"x":5.450001800000109,"y":1.6400398999999197},{"x":5.450001800000109,"y":-6.859943100000123}]} />
+    <silkscreentext text="{NAME}" pcbX="0.016129mm" pcbY="5.4798361mm" anchorAlignment="center" fontSize="1mm" />
+    <courtyardoutline outline={[{"x":-5.7202709999999115,"y":4.729836099999943},{"x":5.752528999999981,"y":4.729836099999943},{"x":5.752528999999981,"y":-8.571763900000178},{"x":-5.7202709999999115,"y":-8.571763900000178},{"x":-5.7202709999999115,"y":4.729836099999943}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C561765.obj?uuid=b9df3af421404a02b675e13120fa0c0c",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C561765.step?uuid=b9df3af421404a02b675e13120fa0c0c",
             pcbRotationOffset: 0,
-            modelOriginPosition: { x: 0.0050000000000003375, y: 2.9399516000000676, z: -1.7900066000000003 },
+            modelOriginPosition: { x: 0.0050000000000003375, y: 2.56495240000002, z: -1.7900066000000003 },
           }}
           {...props}
         />
