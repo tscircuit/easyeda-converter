@@ -14,7 +14,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/alphabet": "^0.0.22",
-    "@tscircuit/circuit-json-util": "^0.0.90",
+    "@tscircuit/circuit-json-util": "^0.0.96",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
     "@types/bun": "latest",
