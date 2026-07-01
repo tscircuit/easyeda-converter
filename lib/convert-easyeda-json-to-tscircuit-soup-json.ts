@@ -110,7 +110,7 @@ const handleSilkscreenPath = (
     type: "pcb_silkscreen_path",
     pcb_silkscreen_path_id: `pcb_silkscreen_path_${index + 1}`,
     pcb_component_id: "pcb_component_1",
-    layer: "top", // Assuming all silkscreen is on top layer
+    layer: getSideFromLayer(track.layer),
     route: track.points.map((point) => ({
       x: milx10(point.x),
       y: milx10(point.y),
@@ -144,7 +144,7 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     type: "pcb_silkscreen_path",
     pcb_silkscreen_path_id: `pcb_silkscreen_arc_${index + 1}`,
     pcb_component_id: "pcb_component_1",
-    layer: "top", // Assuming all silkscreen is on top layer
+    layer: getSideFromLayer(arc.layer),
     route: arcPath.map((p) => ({
       x: milx10(p.x),
       y: milx10(p.y),
