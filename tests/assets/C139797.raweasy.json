@@ -1,0 +1,242 @@
+{
+  "lcsc": {
+    "id": 151122,
+    "number": "C139797",
+    "min": 1,
+    "price": 0.1691,
+    "stock": 3371,
+    "url": "https://lcsc.com/product-detail/Tactile-Switches_ALPS_SKRPACE010_SKRPACE010_C139797.html",
+    "pdf": "https://datasheet.lcsc.com/szlcsc/SKRPACE010_C139797.pdf"
+  },
+  "uuid": "2d44a45061784cca949017eb029031c6",
+  "title": "SKRPACE010",
+  "description": "",
+  "docType": 2,
+  "type": 3,
+  "thumb": "//image.easyeda.com/components/2d44a45061784cca949017eb029031c6.png",
+  "szlcsc": {
+    "id": 151122,
+    "number": "C139797",
+    "min": 1,
+    "price": 0.1691,
+    "stock": 32410,
+    "url": "http://www.szlcsc.com/product/details_151122.html",
+    "pdf": "https://datasheet.lcsc.com/szlcsc/SKRPACE010_C139797.pdf",
+    "image": "https://assets.lcsc.com/images/szlcsc/96x96/SKRPACE010_C139797_front_10.jpg"
+  },
+  "owner": {
+    "uuid": "0819f05c4eef4c71ace90d822a990e87",
+    "username": "LCSC",
+    "nickname": "LCSC",
+    "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png",
+    "team": false
+  },
+  "tags": [
+    "Tactile Switches"
+  ],
+  "updateTime": 1695117916,
+  "updated_at": "2026-07-04 04:46:43",
+  "dataStr": {
+    "head": {
+      "docType": "2",
+      "editorVersion": "6.3.10",
+      "c_para": {
+        "pre": "SW?",
+        "name": "SKRPACE010",
+        "package": "KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6",
+        "Contributor": "LCSC",
+        "Supplier": "LCSC",
+        "Manufacturer": "ALPSALPINE(阿尔卑斯阿尔派)",
+        "Manufacturer Part": "SKRPACE010",
+        "Supplier Part": "C139797",
+        "JLCPCB Part Class": "Extended Part"
+      },
+      "x": 400,
+      "y": 295,
+      "puuid": "6cecadb1e7764552b8e7c4700a6567b5",
+      "uuid": "2d44a45061784cca949017eb029031c6",
+      "importFlag": 0,
+      "c_spiceCmd": null,
+      "hasIdFlag": true,
+      "utime": 1574307713
+    },
+    "canvas": "CA~1000~1000~#FFFFFF~yes~#CCCCCC~5~1000~1000~line~5~pixel~5~400~295",
+    "shape": [
+      "PL~390 290 410 290~#880000~1~0~none~gge3~0",
+      "PL~390 310 410 310~#880000~1~0~none~gge4~0",
+      "PL~400 290 400 294~#880000~1~0~none~gge5~0",
+      "PL~400 310 400 303~#880000~1~0~none~gge6~0",
+      "PL~400 294 400 297~#880000~1~0~none~gge7~0",
+      "PL~397 295 397 304~#880000~1~0~none~gge8~0",
+      "PL~397 299 396 299 396 300 397 300~#880000~1~0~none~gge9~0",
+      "P~show~0~1~370~290~180~gge10~0^^370~290^^M 370 290 h 20~#880000^^0~392~293~0~1~start~~~#0000FF^^1~385~289~0~1~end~~~#0000FF^^0~387~290^^0~M 390 293 L 393 290 L 390 287",
+      "P~show~0~2~430~290~0~gge19~0^^430~290^^M 430 290 h -20~#880000^^0~408~293~0~2~end~~~#0000FF^^1~415~289~0~2~start~~~#0000FF^^0~413~290^^0~M 410 287 L 407 290 L 410 293",
+      "P~show~0~3~370~310~180~gge26~0^^370~310^^M 370 310 h 20~#880000^^0~392~313~0~3~start~~~#0000FF^^1~385~309~0~3~end~~~#0000FF^^0~387~310^^0~M 390 313 L 393 310 L 390 307",
+      "P~show~0~4~430~310~0~gge33~0^^430~310^^M 430 310 h -20~#880000^^0~408~313~0~4~end~~~#0000FF^^1~415~309~0~4~start~~~#0000FF^^0~413~310^^0~M 410 307 L 407 310 L 410 313"
+    ],
+    "BBox": {
+      "x": 368,
+      "y": 280,
+      "width": 64,
+      "height": 32
+    },
+    "colors": []
+  },
+  "verify": true,
+  "SMT": true,
+  "datastrid": "140ebb9437b94b6b81b3f23f7a965d5a",
+  "jlcOnSale": 1,
+  "writable": false,
+  "isFavorite": false,
+  "packageDetail": {
+    "uuid": "6cecadb1e7764552b8e7c4700a6567b5",
+    "title": "KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6",
+    "docType": 4,
+    "updateTime": 1663926870,
+    "owner": {
+      "uuid": "0819f05c4eef4c71ace90d822a990e87",
+      "username": "lcsc",
+      "nickname": "LCSC",
+      "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
+    },
+    "datastrid": "40c214fa36c745e78f91559bd4f8f551",
+    "writable": false,
+    "dataStr": {
+      "head": {
+        "docType": "4",
+        "editorVersion": "6.4.20.6",
+        "c_para": {
+          "package": "KEY-SMD_4P-L4.2-W3.2-P2.20-LS4.6",
+          "pre": "U?",
+          "Contributor": "lcsc",
+          "link": "https://item.szlcsc.com/157210.html",
+          "3DModel": "KEY-SMD_4P-L4.2-W3.2-H2.5-LS4.6-P2.2"
+        },
+        "hasIdFlag": true,
+        "x": 4000,
+        "y": 3000,
+        "uuid": "6cecadb1e7764552b8e7c4700a6567b5",
+        "utime": 1626490307,
+        "importFlag": 0,
+        "transformList": ""
+      },
+      "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~0.07874~mm~1~45~visible~0.07874~4000~3000~0~yes",
+      "shape": [
+        "CIRCLE~3990.945~2993.701~0.118~0.2362~101~gge146~0~~circle_gge147,circle_gge148",
+        "SOLIDREGION~99~~M 3991.7323 2993.7013 L 4008.2677 2993.7013 L 4008.2677 3006.2997 L 3991.7323 3006.2997 Z ~solid~gge55~~~~0",
+        "TRACK~1~3~~3998 2996 4002 2996~gge38~0",
+        "TRACK~1~3~~3998 3004 4002 3004~gge40~0",
+        "TRACK~1~3~~4008.661 2997.859 4008.661 3002.141~gge44~0",
+        "TRACK~1~3~~4005.3796 2994.0005 3994.6204 2994.0005~gge46~0",
+        "TRACK~1~3~~3991.339 2997.859 3991.339 3002.141~gge48~0",
+        "TRACK~1~3~~3994.5626 3006.102 4005.4374 3006.102~gge50~0",
+        "ARC~1~3~~M4002,2996 A4,4 0 0 1 4002,3004~~gge36~0",
+        "ARC~1~3~~M 3998 3004 A 4 4 0 0 1 3998 2996~~gge37~0",
+        "PAD~RECT~3991.732~2995.768~4.1339~2.7559~1~~1~0~3989.6651 2994.39 3993.799 2994.39 3993.799 2997.146 3989.6651 2997.146~0~gge5~0~~Y~0~0~0.2~3991.732,2995.7681",
+        "PAD~RECT~4008.268~2995.768~4.1339~2.7559~1~~2~0~4006.2011 2994.39 4010.335 2994.39 4010.335 2997.146 4006.2011 2997.146~0~gge8~0~~Y~0~0~0.2~4008.268,2995.7682",
+        "PAD~RECT~3991.732~3004.232~4.1339~2.7559~1~~3~0~3989.6651 3002.854 3993.799 3002.854 3993.799 3005.61 3989.6651 3005.61~0~gge11~0~~Y~0~0~0.2~3991.732,3004.2329",
+        "PAD~RECT~4008.268~3004.232~4.1339~2.7559~1~~4~0~4006.2011 3002.854 4010.335 3002.854 4010.335 3005.61 4006.2011 3005.61~0~gge14~0~~Y~0~0~0.2~4008.268,3004.2328",
+        "SOLIDREGION~100~~M 4006.4994 3003.1493 L 4009.2554 3003.1493 L 4009.2554 3005.3147 L 4006.4994 3005.3147 Z ~solid~gge151~~~~0",
+        "SOLIDREGION~100~~M 3990.7477 3003.1493 L 3993.5037 3003.1493 L 3993.5037 3005.3147 L 3990.7477 3005.3147 Z ~solid~gge152~~~~0",
+        "SOLIDREGION~100~~M 4006.4994 2994.6853 L 4009.2554 2994.6853 L 4009.2554 2996.8507 L 4006.4994 2996.8507 Z ~solid~gge153~~~~0",
+        "SOLIDREGION~100~~M 3990.7477 2994.6853 L 3993.5037 2994.6853 L 3993.5037 2996.8507 L 3990.7477 2996.8507 Z ~solid~gge154~~~~0",
+        "SVGNODE~{\"gId\":\"g1_outline\",\"nodeName\":\"g\",\"nodeType\":1,\"layerid\":\"19\",\"attrs\":{\"c_width\":\"18.49697088\",\"c_height\":\"12.5984\",\"c_rotation\":\"0,0,0\",\"z\":\"0\",\"c_origin\":\"4000,3000.0005\",\"uuid\":\"00d848a7e8384bbd9286566957e8bb9c\",\"c_etype\":\"outline3D\",\"id\":\"g1_outline\",\"title\":\"KEY-SMD_4P-L4.2-W3.2-H2.5-LS4.6-P2.2\",\"layerid\":\"19\",\"transform\":\"scale(1) translate(0, 0)\"},\"childNodes\":[{\"gId\":\"g1_outline_line0\",\"nodeName\":\"polyline\",\"nodeType\":1,\"attrs\":{\"fill\":\"none\",\"id\":\"g1_outline_line0\",\"c_shapetype\":\"line\",\"points\":\"3990.748 2994.6856 3990.748 2996.8509 3991.181 2996.8509 3991.2598 2996.8509 3991.3385 2996.8509 3991.4566 2996.8509 3991.5747 2996.8509 3991.6535 2996.8509 3991.7322 2996.8509 3991.7322 3000.5911 3991.6928 3003.1501 3991.6141 3003.1501 3991.5354 3003.1501 3991.4566 3003.1501 3991.3385 3003.1501 3991.2598 3003.1501 3991.1417 3003.1501 3990.748 3003.1501 3990.748 3005.3155 3991.181 3005.3155 3991.2598 3005.3155 3991.3385 3005.3155 3991.4566 3005.3155 3991.5747 3005.3155 3991.6535 3005.3155 3991.7322 3005.3155 3991.7322 3005.5123 3991.7322 3005.906 3991.7322 3006.0242 3991.7716 3006.1029 3991.8503 3006.1816 3991.9291 3006.2604 3992.0078 3006.2997 3992.1259 3006.2997 3992.5196 3006.2997 3994.8818 3006.2997 4000.5117 3006.2997 4005.118 3006.2997 4007.4802 3006.2997 4007.8739 3006.2997 4007.992 3006.2997 4008.0708 3006.2604 4008.1495 3006.1816 4008.2282 3006.1029 4008.2676 3006.0242 4008.2676 3005.906 4008.2676 3005.5123 4008.307 3005.3155 4008.3857 3005.3155 4008.4645 3005.3155 4008.5432 3005.3155 4008.6613 3005.3155 4008.74 3005.3155 4008.8582 3005.3155 4009.2519 3005.3155 4009.2519 3003.1501 4008.8188 3003.1501 4008.74 3003.1501 4008.6613 3003.1501 4008.5432 3003.1501 4008.4251 3003.1501 4008.3463 3003.1501 4008.2676 3003.1501 4008.2676 3000.5911 4008.307 2996.8509 4008.3857 2996.8509 4008.4645 2996.8509 4008.5432 2996.8509 4008.6613 2996.8509 4008.74 2996.8509 4008.8582 2996.8509 4009.2519 2996.8509 4009.2519 2994.6856 4008.8188 2994.6856 4008.74 2994.6856 4008.6613 2994.6856 4008.5432 2994.6856 4008.4251 2994.6856 4008.3463 2994.6856 4008.2676 2994.6856 4008.2676 2994.4887 4008.2676 2994.095 4008.2676 2993.9769 4008.2282 2993.8982 4008.1495 2993.8195 4008.0708 2993.7407 4007.992 2993.7013 4007.8739 2993.7013 4007.4802 2993.7013 4005.118 2993.7013 4000.5117 2993.7013 3994.8818 2993.7013 3992.5196 2993.7013 3992.1259 2993.7013 3992.0078 2993.7013 3991.9291 2993.7407 3991.8503 2993.8195 3991.7716 2993.8982 3991.7322 2993.9769 3991.7322 2994.095 3991.7322 2994.4887 3991.6928 2994.6856 3991.6141 2994.6856 3991.5354 2994.6856 3991.4566 2994.6856 3991.3385 2994.6856 3991.2598 2994.6856 3991.1417 2994.6856 3990.748 2994.6856 3990.748 2994.6856\"}}]}"
+      ],
+      "layers": [
+        "1~TopLayer~#FF0000~true~false~true~",
+        "2~BottomLayer~#0000FF~true~false~true~",
+        "3~TopSilkLayer~#FFCC00~true~false~true~",
+        "4~BottomSilkLayer~#66CC33~true~false~true~",
+        "5~TopPasteMaskLayer~#808080~true~false~true~",
+        "6~BottomPasteMaskLayer~#800000~true~false~true~",
+        "7~TopSolderMaskLayer~#800080~true~false~true~0.3",
+        "8~BottomSolderMaskLayer~#AA00FF~true~false~true~0.3",
+        "9~Ratlines~#6464FF~true~false~true~",
+        "10~BoardOutLine~#FF00FF~true~false~true~",
+        "11~Multi-Layer~#FFFFFF~true~false~true~0.5",
+        "12~Document~#FFFFFF~true~false~true~",
+        "13~TopAssembly~#33CC99~true~false~true~",
+        "14~BottomAssembly~#5555FF~true~false~true~",
+        "15~Mechanical~#F022F0~true~false~true~",
+        "19~3DModel~#66CCFF~true~false~true~",
+        "21~Inner1~#800000~false~false~false~~",
+        "22~Inner2~#008000~false~false~false~~",
+        "23~Inner3~#00FF00~false~false~false~~",
+        "24~Inner4~#BC8E00~false~false~false~~",
+        "25~Inner5~#70DBFA~false~false~false~~",
+        "26~Inner6~#00CC66~false~false~false~~",
+        "27~Inner7~#9966FF~false~false~false~~",
+        "28~Inner8~#800080~false~false~false~~",
+        "29~Inner9~#008080~false~false~false~~",
+        "30~Inner10~#15935F~false~false~false~~",
+        "31~Inner11~#000080~false~false~false~~",
+        "32~Inner12~#00B400~false~false~false~~",
+        "33~Inner13~#2E4756~false~false~false~~",
+        "34~Inner14~#99842F~false~false~false~~",
+        "35~Inner15~#FFFFAA~false~false~false~~",
+        "36~Inner16~#99842F~false~false~false~~",
+        "37~Inner17~#2E4756~false~false~false~~",
+        "38~Inner18~#3535FF~false~false~false~~",
+        "39~Inner19~#8000BC~false~false~false~~",
+        "40~Inner20~#43AE5F~false~false~false~~",
+        "41~Inner21~#C3ECCE~false~false~false~~",
+        "42~Inner22~#728978~false~false~false~~",
+        "43~Inner23~#39503F~false~false~false~~",
+        "44~Inner24~#0C715D~false~false~false~~",
+        "45~Inner25~#5A8A80~false~false~false~~",
+        "46~Inner26~#2B937E~false~false~false~~",
+        "47~Inner27~#23999D~false~false~false~~",
+        "48~Inner28~#45B4E3~false~false~false~~",
+        "49~Inner29~#215DA1~false~false~false~~",
+        "50~Inner30~#4564D7~false~false~false~~",
+        "51~Inner31~#6969E9~false~false~false~~",
+        "52~Inner32~#9069E9~false~false~false~~",
+        "99~ComponentShapeLayer~#00CCCC~true~false~true~0.4",
+        "100~LeadShapeLayer~#CC9999~true~true~true~",
+        "101~ComponentPolarityLayer~#66FFCC~true~false~true~",
+        "Hole~Hole~#222222~false~false~true~",
+        "DRCError~DRCError~#FAD609~false~false~true~"
+      ],
+      "objects": [
+        "All~true~false",
+        "Component~true~true",
+        "Prefix~true~true",
+        "Name~true~false",
+        "Track~true~true",
+        "Pad~true~true",
+        "Via~true~true",
+        "Hole~true~true",
+        "Copper_Area~true~true",
+        "Circle~true~true",
+        "Arc~true~true",
+        "Solid_Region~true~true",
+        "Text~true~true",
+        "Image~true~true",
+        "Rect~true~true",
+        "Dimension~true~true",
+        "Protractor~true~true"
+      ],
+      "BBox": {
+        "x": 3989.7,
+        "y": 2993.6,
+        "width": 20.7,
+        "height": 12.7
+      },
+      "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -2.34912,
+        "y": -1.6,
+        "z": -0.01
+      },
+      "max": {
+        "x": 2.34912,
+        "y": 1.6,
+        "z": 2.5
+      }
+    }
+  }
+}

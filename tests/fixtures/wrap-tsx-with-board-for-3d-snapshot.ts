@@ -4,12 +4,13 @@ export const wrapTsxWithBoardFor3dSnapshot = (tsx: string): string => {
     (line) =>
       line.includes("<chip") ||
       line.includes("<diode") ||
-      line.includes("<led"),
+      line.includes("<led") ||
+      line.includes("<pushbutton"),
   )
 
   if (componentLineIndex === -1) {
     throw new Error(
-      "Expected generated TSX to contain a root <chip>, <diode>, or <led> element",
+      "Expected generated TSX to contain a root <chip>, <diode>, <led>, or <pushbutton> element",
     )
   }
 
