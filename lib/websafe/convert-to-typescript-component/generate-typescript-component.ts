@@ -25,9 +25,19 @@ const getPinLabelValues = (labels: string | readonly string[]): string[] => {
   return [...labels]
 }
 
-const getPolarizedPortHintsMap = (
+const getPinKeySortValue = (pinKey: string): number => {
+  const match = /^pin(\d+)$/i.exec(pinKey)
+  return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER
+}
+
+const getPolarizedPinMetadata = (
   pinLabels: ChipProps["pinLabels"],
-): Record<string, string[]> | undefined => {
+):
+  | {
+      portHintsMap: Record<string, string[]>
+      pinLabels: Record<string, string[]>
+    }
+  | undefined => {
   const labelsByPin = Object.entries(pinLabels ?? {}).map(([pin, labels]) => ({
     pin,
     labels: getPinLabelValues(labels).map((label) => label.toLowerCase()),
@@ -42,9 +52,20 @@ const getPolarizedPortHintsMap = (
 
   if (!anodePin || !cathodePin) return undefined
 
+  const polarizedPinEntries = [
+    [anodePin, "anode"],
+    [cathodePin, "cathode"],
+  ].sort(
+    ([pinA], [pinB]) => getPinKeySortValue(pinA) - getPinKeySortValue(pinB),
+  )
+
   return {
-    [anodePin]: ["pin1", "anode"],
-    [cathodePin]: ["pin2", "cathode"],
+    portHintsMap: Object.fromEntries(
+      polarizedPinEntries.map(([pin, polarity]) => [pin, [pin, polarity]]),
+    ),
+    pinLabels: Object.fromEntries(
+      polarizedPinEntries.map(([pin, polarity]) => [pin, [polarity]]),
+    ),
   }
 }
 
@@ -60,11 +81,14 @@ export const generateTypescriptComponent = ({
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
+  const polarizedPinMetadata = getPolarizedPinMetadata(safePinLabels)
+  const polarizedPortHintsMap = polarizedPinMetadata?.portHintsMap
+  const polarizedPinLabels = polarizedPinMetadata?.pinLabels
   const cadComponent = circuitJson.find((item) => item.type === "cad_component")
   const footprintTsx = generateFootprintTsx(
     circuitJson,
     componentType === "diode" || componentType === "led"
-      ? { portHintsMap: getPolarizedPortHintsMap(safePinLabels) }
+      ? { portHintsMap: polarizedPortHintsMap }
       : undefined,
   )
 
@@ -82,6 +106,20 @@ export const generateTypescriptComponent = ({
   const pinLabelsString = Object.entries(simplifiedPinLabels)
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
+  const polarizedPinLabelsString = Object.entries(polarizedPinLabels ?? {})
+    .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
+    .join(",\n")
+  const polarizedPinLabelsBlock = polarizedPinLabels
+    ? `const pinLabels = {
+${polarizedPinLabelsString}
+} as const
+
+`
+    : ""
+  const polarizedPinLabelsProp = polarizedPinLabels
+    ? `      pinLabels={pinLabels}
+`
+    : ""
 
   const cadModelLines = [
     objUrl ? `objUrl: "${objUrl}",` : "",
@@ -97,12 +135,14 @@ export const generateTypescriptComponent = ({
     return `
 import type { DiodeProps } from "@tscircuit/props"
 
+${polarizedPinLabelsBlock}\
 export const ${componentName} = (props: DiodeProps) => {
   const { name = "D1", ...restProps } = props
 
   return (
     <diode
       name={name}
+${polarizedPinLabelsProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
@@ -124,12 +164,14 @@ ${cadModelLines}
     return `
 import type { LedProps } from "@tscircuit/props"
 
+${polarizedPinLabelsBlock}\
 export const ${componentName} = (props: LedProps) => {
   const { name = "LED1", ...restProps } = props
 
   return (
     <led
       name={name}
+${polarizedPinLabelsProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
