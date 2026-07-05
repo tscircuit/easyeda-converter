@@ -16,9 +16,7 @@ export const categoryValueContainsPushbutton = (value: unknown): boolean => {
       /pushbuttons?/.test(normalized) ||
       /tact(?:ile)?\s+switch(?:es)?/.test(normalized) ||
       /keyboard\s+(?:switch(?:es)?|shaft)/.test(normalized) ||
-      /mechanical\s+keyboard\s+shaft/.test(normalized) ||
-      /(?:slide|toggle|dip|key|micro|limit)\s+switch(?:es)?/.test(normalized) ||
-      /(^|[^a-z])switch(?:es)?([^a-z]|$)/.test(normalized)
+      /mechanical\s+keyboard\s+shaft/.test(normalized)
     )
   }
 

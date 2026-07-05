@@ -11,6 +11,7 @@ import type { GeneratedComponentType } from "./generate-typescript-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
 import { isPushbuttonCategoryComponent } from "./is-pushbutton-category-component"
+import { isSwitchCategoryComponent } from "./is-switch-category-component"
 
 const getGeneratedComponentType = (
   betterEasy: BetterEasyEdaJson,
@@ -18,6 +19,7 @@ const getGeneratedComponentType = (
   if (isLedCategoryComponent(betterEasy)) return "led"
   if (isDiodeCategoryComponent(betterEasy)) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
+  if (isSwitchCategoryComponent(betterEasy)) return "switch"
   return "chip"
 }
 

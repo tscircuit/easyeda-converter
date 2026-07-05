@@ -5,20 +5,33 @@ import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-f
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { categoryValueContainsPushbutton } from "lib/websafe/convert-to-typescript-component/category-value-contains-pushbutton"
+import { categoryValueContainsSwitch } from "lib/websafe/convert-to-typescript-component/category-value-contains-switch"
 
-it("should identify JLCPCB pushbutton and switch metadata as pushbuttons", () => {
+it("should identify JLCPCB pushbutton metadata as pushbuttons", () => {
   expect(categoryValueContainsPushbutton("Push Button Switches")).toBe(true)
   expect(categoryValueContainsPushbutton("Tactile Switches")).toBe(true)
   expect(categoryValueContainsPushbutton("Mechanical Keyboard Shaft")).toBe(
     true,
   )
+  expect(categoryValueContainsPushbutton("Slide Switches")).toBe(false)
   expect(
     categoryValueContainsPushbutton("Analog Switches / Multiplexers"),
   ).toBe(false)
   expect(categoryValueContainsPushbutton("Switching Diode")).toBe(false)
 })
 
-it("should convert JLCPCB switch metadata to pushbutton elements", async () => {
+it("should identify JLCPCB switch metadata as switches", () => {
+  expect(categoryValueContainsSwitch("Slide Switches")).toBe(true)
+  expect(categoryValueContainsSwitch("Toggle Switches")).toBe(true)
+  expect(categoryValueContainsSwitch("DIP Switches")).toBe(true)
+  expect(categoryValueContainsSwitch("Push Button Switches")).toBe(true)
+  expect(categoryValueContainsSwitch("Analog Switches / Multiplexers")).toBe(
+    false,
+  )
+  expect(categoryValueContainsSwitch("Switching Diode")).toBe(false)
+})
+
+it("should convert JLCPCB pushbutton metadata to pushbutton elements", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(c5184526RawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 

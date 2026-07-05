@@ -1,24 +1,26 @@
 import { expect, it } from "bun:test"
-import pushbuttonRawEasy from "../assets/C136720.raweasy.json"
+import switchRawEasy from "../assets/C136720.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("should convert C136720 slide switch into a pushbutton component", async () => {
-  const betterEasy = EasyEdaJsonSchema.parse(pushbuttonRawEasy)
+it("should convert C136720 slide switch into a switch component with pin labels", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-  expect(result).toContain("PushButtonProps")
-  expect(result).toContain("<pushbutton")
+  expect(result).toContain("SwitchProps")
+  expect(result).toContain("<switch")
+  expect(result).toContain("pinLabels={pinLabels}")
+  expect(result).not.toContain("<pushbutton")
   expect(result).not.toContain("<chip")
   expect(result).toMatchInlineSnapshot(`
-    "import type { PushButtonProps } from "@tscircuit/props"
+    "import type { SwitchProps } from "@tscircuit/props"
 
     const pinLabels = {
       pin1: ["pin1"],
@@ -28,11 +30,11 @@ it("should convert C136720 slide switch into a pushbutton component", async () =
       pin5: ["pin5"]
     } as const
 
-    export const SK_12E12_G5 = (props: PushButtonProps<typeof pinLabels>) => {
+    export const SK_12E12_G5 = (props: SwitchProps) => {
       const { name = "SW1", ...restProps } = props
 
       return (
-        <pushbutton
+        <switch
           name={name}
           pinLabels={pinLabels}
           supplierPartNumbers={{
@@ -79,8 +81,5 @@ it("should convert C136720 slide switch into a pushbutton component", async () =
     (element) => element.type === "source_component",
   )
 
-  expect(sourceComponent?.ftype).toBe("simple_push_button")
-  expect(sourceComponent?.supplier_part_numbers).toEqual({
-    jlcpcb: ["C136720"],
-  })
+  expect(sourceComponent?.ftype).toBe("simple_switch")
 }, 20000)

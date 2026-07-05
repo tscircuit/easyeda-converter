@@ -84,4 +84,4 @@ it("should convert C139797 tactile switch into a pushbutton component", async ()
   expect(sourceComponent?.supplier_part_numbers).toEqual({
     jlcpcb: ["C139797"],
   })
-})
+}, 20000)

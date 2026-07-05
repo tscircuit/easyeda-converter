@@ -17,6 +17,7 @@
     "@tscircuit/circuit-json-util": "^0.0.96",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
+    "@tscircuit/props": "^0.0.567",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
     "circuit-json-to-gltf": "^0.0.106",
@@ -24,7 +25,7 @@
     "looks-same": "^9.0.1",
     "poppygl": "^0.0.24",
     "transformation-matrix": "^2.16.1",
-    "tscircuit": "^0.0.1917",
+    "tscircuit": "^0.0.2002",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {
