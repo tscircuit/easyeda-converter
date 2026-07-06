@@ -25,6 +25,9 @@ const getPinLabelValues = (labels: string | readonly string[]): string[] => {
   return [...labels]
 }
 
+const stripEasyEdaPolarityHintDecoration = (label: string): string =>
+  label.toLowerCase().replace(/[^a-z0-9+-]/g, "")
+
 const getPinKeySortValue = (pinKey: string): number => {
   const match = /^pin(\d+)$/i.exec(pinKey)
   return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER
@@ -40,7 +43,7 @@ const getPolarizedPinMetadata = (
   | undefined => {
   const labelsByPin = Object.entries(pinLabels ?? {}).map(([pin, labels]) => ({
     pin,
-    labels: getPinLabelValues(labels).map((label) => label.toLowerCase()),
+    labels: getPinLabelValues(labels).map(stripEasyEdaPolarityHintDecoration),
   }))
 
   const anodePin = labelsByPin.find(({ labels }) =>
