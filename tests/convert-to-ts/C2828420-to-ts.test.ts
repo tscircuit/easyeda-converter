@@ -46,8 +46,8 @@ it("should convert C2828420 diode with metadata-derived pin labels", async () =>
     "import type { DiodeProps } from "@tscircuit/props"
 
     const pinLabels = {
-      pin1: ["cathode"],
-      pin2: ["anode"]
+      pin1: ["cathode","neg"],
+      pin2: ["anode","pos"]
     } as const
 
     export const A_1N5819W = (props: DiodeProps) => {
@@ -64,8 +64,8 @@ it("should convert C2828420 diode with metadata-derived pin labels", async () =>
     }}
           manufacturerPartNumber="A_1N5819W"
           footprint={<footprint>
-            <smtpad portHints={["pin2","anode"]} pcbX="1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />
-    <smtpad portHints={["pin1","cathode"]} pcbX="-1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />
+            <smtpad portHints={["pin2","anode","pos"]} pcbX="1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />
+    <smtpad portHints={["pin1","cathode","neg"]} pcbX="-1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />
     <silkscreenpath route={[{"x":1.3462000000000103,"y":-0.7061453999999969},{"x":1.3462000000000103,"y":-0.850010999999995}]} />
     <silkscreenpath route={[{"x":1.3462000000000103,"y":0.8500110000000092},{"x":1.3462000000000103,"y":0.7061454000000111}]} />
     <silkscreenpath route={[{"x":-1.346199999999996,"y":-0.850010999999995},{"x":-1.6379698000000076,"y":-0.850010999999995},{"x":-1.6389857999999862,"y":-0.848994999999988}]} />

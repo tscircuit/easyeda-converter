@@ -52,20 +52,20 @@ const getPolarizedPinMetadata = (
 
   if (!anodePin || !cathodePin) return undefined
 
-  const polarizedPinEntries = [
-    [anodePin, "anode"],
-    [cathodePin, "cathode"],
-  ].sort(
+  const polarizedPinEntries = (
+    [
+      [anodePin, ["anode", "pos"]],
+      [cathodePin, ["cathode", "neg"]],
+    ] satisfies Array<[string, string[]]>
+  ).sort(
     ([pinA], [pinB]) => getPinKeySortValue(pinA) - getPinKeySortValue(pinB),
   )
 
   return {
     portHintsMap: Object.fromEntries(
-      polarizedPinEntries.map(([pin, polarity]) => [pin, [pin, polarity]]),
+      polarizedPinEntries.map(([pin, labels]) => [pin, [pin, ...labels]]),
     ),
-    pinLabels: Object.fromEntries(
-      polarizedPinEntries.map(([pin, polarity]) => [pin, [polarity]]),
-    ),
+    pinLabels: Object.fromEntries(polarizedPinEntries),
   }
 }
 
