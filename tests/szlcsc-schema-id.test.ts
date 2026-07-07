@@ -9,10 +9,14 @@ describe("szlcsc/lcsc id accepts number or string", () => {
     ["LcscSchema", LcscSchema],
   ] as const) {
     test(`${name} accepts a numeric id`, () => {
-      expect(schema.safeParse({ id: 2384679, number: "C356849" }).success).toBe(true)
+      expect(schema.safeParse({ id: 2384679, number: "C356849" }).success).toBe(
+        true,
+      )
     })
     test(`${name} accepts a string id`, () => {
-      expect(schema.safeParse({ id: "2384679", number: "C356849" }).success).toBe(true)
+      expect(
+        schema.safeParse({ id: "2384679", number: "C356849" }).success,
+      ).toBe(true)
     })
   }
 })
