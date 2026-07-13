@@ -3,6 +3,7 @@ import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tsc
 import {
   type BetterEasyEdaJson,
   EasyEdaJsonSchema,
+  type RawEasyEdaJson,
 } from "lib/schemas/easy-eda-json-schema"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
@@ -23,7 +24,12 @@ const getGeneratedComponentType = (
   return "chip"
 }
 
-export const convertRawEasyToTsx = async ({ rawEasy }: { rawEasy: any }) => {
+type ConvertRawEasyToTsxInput = RawEasyEdaJson | { rawEasy: RawEasyEdaJson }
+
+export const convertRawEasyToTsx = async (input: ConvertRawEasyToTsxInput) => {
+  // The public API and CLI pass raw EasyEDA JSON directly. Keep accepting the
+  // temporary wrapped form too so existing callers are not broken.
+  const rawEasy = "rawEasy" in input ? input.rawEasy : input
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
