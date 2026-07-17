@@ -37,6 +37,20 @@ it("should convert C46749 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <schematicrect schX={0} schY={0} width={17.78} height={12.7} strokeWidth={0.254} color="#880000" />
+              <schematiccircle center={{ x: -7.62, y: 5.08 }} radius={0.381} strokeWidth={0.254} color="#880000" isFilled fillColor="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["GND"]} direction="left" schX={-11.43} schY={3.81} schStemLength={2.54} />
+              <port name="pin2" pinNumber={2} aliases={["TRIG"]} direction="left" schX={-11.43} schY={1.27} schStemLength={2.54} />
+              <port name="pin3" pinNumber={3} aliases={["OUT"]} direction="left" schX={-11.43} schY={-1.27} schStemLength={2.54} />
+              <port name="pin4" pinNumber={4} aliases={["RESET"]} direction="left" schX={-11.43} schY={-3.81} schStemLength={2.54} />
+              <port name="pin5" pinNumber={5} aliases={["CONT"]} direction="right" schX={11.43} schY={-3.81} schStemLength={2.54} />
+              <port name="pin6" pinNumber={6} aliases={["THRES"]} direction="right" schX={11.43} schY={-1.27} schStemLength={2.54} />
+              <port name="pin7" pinNumber={7} aliases={["DISCH"]} direction="right" schX={11.43} schY={1.27} schStemLength={2.54} />
+              <port name="pin8" pinNumber={8} aliases={["VCC"]} direction="right" schX={11.43} schY={3.81} schStemLength={2.54} />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C46749"

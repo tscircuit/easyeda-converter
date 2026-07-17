@@ -57,6 +57,14 @@ it("should normalize decorated C8598 diode polarity labels", async () => {
         <diode
           name={name}
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <schematicpath points={[{"x":-0.508,"y":-1.778},{"x":-0.508,"y":-2.286},{"x":-1.27,"y":-2.286},{"x":-1.27,"y":1.016},{"x":-1.27,"y":1.778},{"x":-2.032,"y":1.778},{"x":-2.032,"y":1.27}]} strokeWidth={0.254} strokeColor="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["_NEG"]} direction="left" schX={-5.08} schY={0} schStemLength={3.81} />
+              <port name="pin2" pinNumber={2} aliases={["_POS"]} direction="right" schX={5.08} schY={0} schStemLength={3.81} />
+              <schematicpath svgPath="M 1.27 1.524 L -1.27 0 L 1.27 -1.524 Z" strokeWidth={0.254} strokeColor="#880000" isFilled fillColor="#880000" />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C8598"

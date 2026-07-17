@@ -34,6 +34,15 @@ it("should convert C157929 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <schematicrect schX={1.27} schY={0} width={7.62} height={10.16} strokeWidth={0.254} color="#880000" />
+              <schematiccircle center={{ x: -1.27, y: 3.81 }} radius={0.381} strokeWidth={0.254} color="#880000" isFilled fillColor="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-5.08} schY={2.54} schStemLength={2.54} />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="left" schX={-5.08} schY={0} schStemLength={2.54} />
+              <port name="pin3" pinNumber={3} aliases={["3"]} direction="left" schX={-5.08} schY={-2.54} schStemLength={2.54} />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C157929"

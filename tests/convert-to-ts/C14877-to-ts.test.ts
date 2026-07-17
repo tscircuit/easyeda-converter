@@ -61,6 +61,44 @@ it("should convert C14877 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <schematicrect schX={0} schY={0} width={81.28} height={43.18} strokeWidth={0.254} color="#880000" />
+              <schematiccircle center={{ x: -39.37, y: 20.32 }} radius={0.381} strokeWidth={0.254} color="#880000" isFilled fillColor="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-43.18} schY={19.05} schStemLength={2.54} />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="left" schX={-43.18} schY={16.51} schStemLength={2.54} />
+              <port name="pin3" pinNumber={3} aliases={["GND3","GND"]} direction="left" schX={-43.18} schY={13.97} schStemLength={2.54} />
+              <port name="pin4" pinNumber={4} aliases={["VCC2","VCC"]} direction="left" schX={-43.18} schY={11.43} schStemLength={2.54} />
+              <port name="pin5" pinNumber={5} aliases={["GND2","GND"]} direction="left" schX={-43.18} schY={8.89} schStemLength={2.54} />
+              <port name="pin6" pinNumber={6} aliases={["VCC1","VCC"]} direction="left" schX={-43.18} schY={6.35} schStemLength={2.54} />
+              <port name="pin7" pinNumber={7} aliases={["7"]} direction="left" schX={-43.18} schY={3.81} schStemLength={2.54} />
+              <port name="pin8" pinNumber={8} aliases={["8"]} direction="left" schX={-43.18} schY={1.27} schStemLength={2.54} />
+              <port name="pin9" pinNumber={9} aliases={["9"]} direction="left" schX={-43.18} schY={-1.27} schStemLength={2.54} />
+              <port name="pin10" pinNumber={10} aliases={["10"]} direction="left" schX={-43.18} schY={-3.81} schStemLength={2.54} />
+              <port name="pin11" pinNumber={11} aliases={["11"]} direction="left" schX={-43.18} schY={-6.35} schStemLength={2.54} />
+              <port name="pin12" pinNumber={12} aliases={["12"]} direction="left" schX={-43.18} schY={-8.89} schStemLength={2.54} />
+              <port name="pin13" pinNumber={13} aliases={["13"]} direction="left" schX={-43.18} schY={-11.43} schStemLength={2.54} />
+              <port name="pin14" pinNumber={14} aliases={["14"]} direction="left" schX={-43.18} schY={-13.97} schStemLength={2.54} />
+              <port name="pin15" pinNumber={15} aliases={["15"]} direction="left" schX={-43.18} schY={-16.51} schStemLength={2.54} />
+              <port name="pin16" pinNumber={16} aliases={["16"]} direction="left" schX={-43.18} schY={-19.05} schStemLength={2.54} />
+              <port name="pin17" pinNumber={17} aliases={["17"]} direction="right" schX={43.18} schY={-19.05} schStemLength={2.54} />
+              <port name="pin18" pinNumber={18} aliases={["AVCC"]} direction="right" schX={43.18} schY={-16.51} schStemLength={2.54} />
+              <port name="pin19" pinNumber={19} aliases={["ADC6"]} direction="right" schX={43.18} schY={-13.97} schStemLength={2.54} />
+              <port name="pin20" pinNumber={20} aliases={["AREF"]} direction="right" schX={43.18} schY={-11.43} schStemLength={2.54} />
+              <port name="pin21" pinNumber={21} aliases={["GND1","GND"]} direction="right" schX={43.18} schY={-8.89} schStemLength={2.54} />
+              <port name="pin22" pinNumber={22} aliases={["ADC7"]} direction="right" schX={43.18} schY={-6.35} schStemLength={2.54} />
+              <port name="pin23" pinNumber={23} aliases={["23"]} direction="right" schX={43.18} schY={-3.81} schStemLength={2.54} />
+              <port name="pin24" pinNumber={24} aliases={["24"]} direction="right" schX={43.18} schY={-1.27} schStemLength={2.54} />
+              <port name="pin25" pinNumber={25} aliases={["25"]} direction="right" schX={43.18} schY={1.27} schStemLength={2.54} />
+              <port name="pin26" pinNumber={26} aliases={["26"]} direction="right" schX={43.18} schY={3.81} schStemLength={2.54} />
+              <port name="pin27" pinNumber={27} aliases={["27"]} direction="right" schX={43.18} schY={6.35} schStemLength={2.54} />
+              <port name="pin28" pinNumber={28} aliases={["28"]} direction="right" schX={43.18} schY={8.89} schStemLength={2.54} />
+              <port name="pin29" pinNumber={29} aliases={["29"]} direction="right" schX={43.18} schY={11.43} schStemLength={2.54} />
+              <port name="pin30" pinNumber={30} aliases={["30"]} direction="right" schX={43.18} schY={13.97} schStemLength={2.54} />
+              <port name="pin31" pinNumber={31} aliases={["31"]} direction="right" schX={43.18} schY={16.51} schStemLength={2.54} />
+              <port name="pin32" pinNumber={32} aliases={["32"]} direction="right" schX={43.18} schY={19.05} schStemLength={2.54} />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C14877"

@@ -38,6 +38,19 @@ it("should convert C23689428 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <port name="pin7" pinNumber={7} aliases={["7"]} direction="right" schX={6.35} schY={5.08} schStemLength={2.54} />
+              <port name="pin6" pinNumber={6} aliases={["6"]} direction="right" schX={6.35} schY={-5.08} schStemLength={2.54} />
+              <port name="pin5" pinNumber={5} aliases={["5"]} direction="left" schX={-6.35} schY={-5.08} schStemLength={2.54} />
+              <port name="pin4" pinNumber={4} aliases={["4"]} direction="left" schX={-6.35} schY={-2.54} schStemLength={2.54} />
+              <port name="pin3" pinNumber={3} aliases={["3"]} direction="left" schX={-6.35} schY={0} schStemLength={2.54} />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="left" schX={-6.35} schY={2.54} schStemLength={2.54} />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-6.35} schY={5.08} schStemLength={2.54} />
+              <schematiccircle center={{ x: -2.54, y: 6.35 }} radius={0.381} strokeWidth={0.254} color="#880000" isFilled fillColor="#880000" />
+              <schematicrect schX={0} schY={0} width={7.62} height={15.24} strokeWidth={0.254} color="#880000" />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C23689428"

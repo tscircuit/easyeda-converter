@@ -40,8 +40,8 @@ it("normalizes literal undefined optional text fields from EasyEDA text shapes",
     fontStyle: "normal",
     fontDecoration: "",
     backgroundColor: undefined,
-    content: "comment",
-    textType: "TR1",
+    content: "TR1",
+    textType: "comment",
   })
 })
 
@@ -51,4 +51,48 @@ it("still rejects unexpected fontStyle values", () => {
       "T~L~415~303~0~#0000FF~~5.5pt~~slanted~~comment~TR1~1~start~gge7~0~pinpart",
     ),
   ).toThrow(/fontStyle/)
+})
+
+it("parses schematic drawing colors, paths, and pin stems", () => {
+  expect(
+    SingleLetterShapeSchema.parse(
+      "PT~M 395 293 L 385 300 L 395 307 Z~#880000~1~0~none~gge10~0~",
+    ),
+  ).toMatchObject({
+    type: "PATH",
+    pathData: "M 395 293 L 385 300 L 395 307 Z",
+    strokeColor: "#880000",
+    strokeWidth: 0.254,
+    fillColor: "none",
+  })
+
+  expect(
+    SingleLetterShapeSchema.parse(
+      "PG~520 222 523 217 517 217~#880000~1~0~#880000~gge103~0",
+    ),
+  ).toMatchObject({
+    type: "POLYGON",
+    lineColor: "#880000",
+    fillColor: "#880000",
+  })
+
+  expect(SingleLetterShapeSchema.parse(examples[2])).toMatchObject({
+    type: "PIN",
+    path: "M355,285h10",
+  })
+
+  expect(
+    SingleLetterShapeSchema.parse(
+      "A~M 400 194 A 4 4 0 1 1 400 186~~#880000~1~0~none~gge79~0",
+    ),
+  ).toMatchObject({
+    type: "ARC",
+    pathData: "M 400 194 A 4 4 0 1 1 400 186",
+    start: { x: 400, y: 194 },
+    end: { x: 400, y: 186 },
+    color: "#880000",
+    lineWidth: 1,
+    sweepFlag: true,
+    id: "gge79",
+  })
 })

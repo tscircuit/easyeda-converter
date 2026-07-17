@@ -35,6 +35,15 @@ it("should convert C5248081 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <schematicrect schX={-1.27} schY={0} width={7.62} height={12.7} strokeWidth={0.254} color="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["GND"]} direction="right" schX={5.08} schY={-3.81} schStemLength={2.54} />
+              <port name="pin2" pinNumber={2} aliases={["VCC"]} direction="right" schX={5.08} schY={-1.27} schStemLength={2.54} />
+              <port name="pin3" pinNumber={3} aliases={["SCL"]} direction="right" schX={5.08} schY={1.27} schStemLength={2.54} />
+              <port name="pin4" pinNumber={4} aliases={["SDA"]} direction="right" schX={5.08} schY={3.81} schStemLength={2.54} />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C5248081"

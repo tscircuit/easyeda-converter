@@ -41,6 +41,23 @@ it("should convert C3178291 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <schematicrect schX={0} schY={0.635} width={27.94} height={19.05} strokeWidth={0.254} color="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["AVDDVCSEL"]} direction="right" schX={16.51} schY={7.62} schStemLength={2.54} />
+              <port name="pin2" pinNumber={2} aliases={["AVSSVCSEL"]} direction="right" schX={16.51} schY={2.54} schStemLength={2.54} />
+              <port name="pin3" pinNumber={3} aliases={["GND"]} direction="right" schX={16.51} schY={0} schStemLength={2.54} />
+              <port name="pin4" pinNumber={4} aliases={["GND2"]} direction="right" schX={16.51} schY={-2.54} schStemLength={2.54} />
+              <port name="pin5" pinNumber={5} aliases={["XSHUT"]} direction="left" schX={-16.51} schY={6.35} schStemLength={2.54} />
+              <port name="pin6" pinNumber={6} aliases={["GND3"]} direction="right" schX={16.51} schY={-5.08} schStemLength={2.54} />
+              <port name="pin7" pinNumber={7} aliases={["GPIO1"]} direction="left" schX={-16.51} schY={3.81} schStemLength={2.54} />
+              <port name="pin8" pinNumber={8} aliases={["DNC"]} direction="left" schX={-16.51} schY={-3.81} schStemLength={2.54} />
+              <port name="pin9" pinNumber={9} aliases={["SDA"]} direction="left" schX={-16.51} schY={1.27} schStemLength={2.54} />
+              <port name="pin10" pinNumber={10} aliases={["SCL"]} direction="left" schX={-16.51} schY={-1.27} schStemLength={2.54} />
+              <port name="pin11" pinNumber={11} aliases={["AVDD"]} direction="right" schX={16.51} schY={5.08} schStemLength={2.54} />
+              <port name="pin12" pinNumber={12} aliases={["GND4"]} direction="right" schX={16.51} schY={-7.62} schStemLength={2.54} />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C3178291"

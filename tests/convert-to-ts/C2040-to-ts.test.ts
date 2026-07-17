@@ -86,6 +86,70 @@ it("should convert C2040 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <port name="pin9" pinNumber={9} aliases={["GPIO7"]} direction="right" schX={31.75} schY={17.78} schStemLength={2.54} />
+              <port name="pin8" pinNumber={8} aliases={["GPIO6"]} direction="right" schX={31.75} schY={20.32} schStemLength={2.54} />
+              <port name="pin7" pinNumber={7} aliases={["GPIO5"]} direction="right" schX={31.75} schY={22.86} schStemLength={2.54} />
+              <port name="pin6" pinNumber={6} aliases={["GPIO4"]} direction="right" schX={31.75} schY={25.4} schStemLength={2.54} />
+              <port name="pin57" pinNumber={57} aliases={["GND"]} direction="down" schX={0} schY={-48.26} schStemLength={2.54} />
+              <port name="pin56" pinNumber={56} aliases={["QSPI_SS"]} direction="left" schX={-31.75} schY={34.29} schStemLength={2.54} />
+              <port name="pin55" pinNumber={55} aliases={["QSPI_SD1"]} direction="left" schX={-31.75} schY={27.94} schStemLength={2.54} />
+              <port name="pin54" pinNumber={54} aliases={["QSPI_SD2"]} direction="left" schX={-31.75} schY={25.4} schStemLength={2.54} />
+              <port name="pin53" pinNumber={53} aliases={["QSPI_SD0"]} direction="left" schX={-31.75} schY={30.48} schStemLength={2.54} />
+              <port name="pin52" pinNumber={52} aliases={["QSPI_SCLK"]} direction="left" schX={-31.75} schY={19.05} schStemLength={2.54} />
+              <port name="pin51" pinNumber={51} aliases={["QSPI_SD3"]} direction="left" schX={-31.75} schY={22.86} schStemLength={2.54} />
+              <port name="pin50" pinNumber={50} aliases={["DVDD1","DVDD"]} direction="up" schX={-20.32} schY={53.34} schStemLength={2.54} />
+              <port name="pin5" pinNumber={5} aliases={["GPIO3"]} direction="right" schX={31.75} schY={27.94} schStemLength={2.54} />
+              <port name="pin49" pinNumber={49} aliases={["IOVDD1","IOVDD"]} direction="up" schX={-3.81} schY={53.34} schStemLength={2.54} />
+              <port name="pin48" pinNumber={48} aliases={["USB_VDD"]} direction="up" schX={12.7} schY={53.34} schStemLength={2.54} />
+              <port name="pin47" pinNumber={47} aliases={["USB_DP"]} direction="right" schX={31.75} schY={45.72} schStemLength={2.54} />
+              <port name="pin46" pinNumber={46} aliases={["USB_DM"]} direction="right" schX={31.75} schY={43.18} schStemLength={2.54} />
+              <port name="pin45" pinNumber={45} aliases={["VREG_VOUT"]} direction="up" schX={-12.7} schY={53.34} schStemLength={2.54} />
+              <port name="pin44" pinNumber={44} aliases={["VREG_IN"]} direction="up" schX={-8.89} schY={53.34} schStemLength={2.54} />
+              <port name="pin43" pinNumber={43} aliases={["ADC_AVDD"]} direction="up" schX={16.51} schY={53.34} schStemLength={2.54} />
+              <port name="pin42" pinNumber={42} aliases={["IOVDD2","IOVDD"]} direction="up" schX={-1.27} schY={53.34} schStemLength={2.54} />
+              <port name="pin41" pinNumber={41} aliases={["GPIO29_ADC3"]} direction="right" schX={31.75} schY={-40.64} schStemLength={2.54} />
+              <port name="pin40" pinNumber={40} aliases={["GPIO28_ADC2"]} direction="right" schX={31.75} schY={-38.1} schStemLength={2.54} />
+              <port name="pin4" pinNumber={4} aliases={["GPIO2"]} direction="right" schX={31.75} schY={30.48} schStemLength={2.54} />
+              <port name="pin39" pinNumber={39} aliases={["GPIO27_ADC1"]} direction="right" schX={31.75} schY={-35.56} schStemLength={2.54} />
+              <port name="pin38" pinNumber={38} aliases={["GPIO26_ADC0"]} direction="right" schX={31.75} schY={-33.02} schStemLength={2.54} />
+              <port name="pin37" pinNumber={37} aliases={["GPIO25"]} direction="right" schX={31.75} schY={-27.94} schStemLength={2.54} />
+              <port name="pin36" pinNumber={36} aliases={["GPIO24"]} direction="right" schX={31.75} schY={-25.4} schStemLength={2.54} />
+              <port name="pin35" pinNumber={35} aliases={["GPIO23"]} direction="right" schX={31.75} schY={-22.86} schStemLength={2.54} />
+              <port name="pin34" pinNumber={34} aliases={["GPIO22"]} direction="right" schX={31.75} schY={-20.32} schStemLength={2.54} />
+              <port name="pin33" pinNumber={33} aliases={["IOVDD3","IOVDD"]} direction="up" schX={1.27} schY={53.34} schStemLength={2.54} />
+              <port name="pin32" pinNumber={32} aliases={["GPIO21"]} direction="right" schX={31.75} schY={-17.78} schStemLength={2.54} />
+              <port name="pin31" pinNumber={31} aliases={["GPIO20"]} direction="right" schX={31.75} schY={-15.24} schStemLength={2.54} />
+              <port name="pin30" pinNumber={30} aliases={["GPIO19"]} direction="right" schX={31.75} schY={-12.7} schStemLength={2.54} />
+              <port name="pin3" pinNumber={3} aliases={["GPIO1"]} direction="right" schX={31.75} schY={33.02} schStemLength={2.54} />
+              <port name="pin29" pinNumber={29} aliases={["GPIO18"]} direction="right" schX={31.75} schY={-10.16} schStemLength={2.54} />
+              <port name="pin28" pinNumber={28} aliases={["GPIO17"]} direction="right" schX={31.75} schY={-7.62} schStemLength={2.54} />
+              <port name="pin27" pinNumber={27} aliases={["GPIO16"]} direction="right" schX={31.75} schY={-5.08} schStemLength={2.54} />
+              <port name="pin26" pinNumber={26} aliases={["RUN"]} direction="left" schX={-31.75} schY={-17.78} schStemLength={2.54} />
+              <port name="pin25" pinNumber={25} aliases={["SWD"]} direction="left" schX={-31.75} schY={-31.75} schStemLength={2.54} />
+              <port name="pin24" pinNumber={24} aliases={["SWCLK"]} direction="left" schX={-31.75} schY={-29.21} schStemLength={2.54} />
+              <port name="pin23" pinNumber={23} aliases={["DVDD2","DVDD"]} direction="up" schX={-17.78} schY={53.34} schStemLength={2.54} />
+              <port name="pin22" pinNumber={22} aliases={["IOVDD4","IOVDD"]} direction="up" schX={3.81} schY={53.34} schStemLength={2.54} />
+              <port name="pin21" pinNumber={21} aliases={["XOUT"]} direction="left" schX={-31.75} schY={-5.08} schStemLength={2.54} />
+              <port name="pin20" pinNumber={20} aliases={["XIN"]} direction="left" schX={-31.75} schY={0} schStemLength={2.54} />
+              <port name="pin2" pinNumber={2} aliases={["GPIO0"]} direction="right" schX={31.75} schY={35.56} schStemLength={2.54} />
+              <port name="pin19" pinNumber={19} aliases={["TESTEN"]} direction="down" schX={-12.7} schY={-48.26} schStemLength={2.54} />
+              <port name="pin18" pinNumber={18} aliases={["GPIO15"]} direction="right" schX={31.75} schY={-2.54} schStemLength={2.54} />
+              <port name="pin17" pinNumber={17} aliases={["GPIO14"]} direction="right" schX={31.75} schY={0} schStemLength={2.54} />
+              <port name="pin16" pinNumber={16} aliases={["GPIO13"]} direction="right" schX={31.75} schY={2.54} schStemLength={2.54} />
+              <port name="pin15" pinNumber={15} aliases={["GPIO12"]} direction="right" schX={31.75} schY={5.08} schStemLength={2.54} />
+              <port name="pin14" pinNumber={14} aliases={["GPIO11"]} direction="right" schX={31.75} schY={7.62} schStemLength={2.54} />
+              <port name="pin13" pinNumber={13} aliases={["GPIO10"]} direction="right" schX={31.75} schY={10.16} schStemLength={2.54} />
+              <port name="pin12" pinNumber={12} aliases={["GPIO9"]} direction="right" schX={31.75} schY={12.7} schStemLength={2.54} />
+              <port name="pin11" pinNumber={11} aliases={["GPIO8"]} direction="right" schX={31.75} schY={15.24} schStemLength={2.54} />
+              <port name="pin10" pinNumber={10} aliases={["IOVDD5","IOVDD"]} direction="up" schX={6.35} schY={53.34} schStemLength={2.54} />
+              <port name="pin1" pinNumber={1} aliases={["IOVDD6","IOVDD"]} direction="up" schX={8.89} schY={53.34} schStemLength={2.54} />
+              <schematictext schX={0} schY={2.54} text="RP2040" fontSize={4.056944} anchor="left" color="#0000FF" schRotation={0} />
+              <schematictext schX={0} schY={7.62} text="Raspberry Pi" fontSize={4.056944} anchor="left" color="#0000FF" schRotation={0} />
+              <schematicrect schX={0} schY={2.54} width={58.42} height={96.52} strokeWidth={0.254} color="#000000" />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C2040"

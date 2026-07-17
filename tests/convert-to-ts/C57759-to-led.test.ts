@@ -28,6 +28,14 @@ it("should convert led category components to led elements", async () => {
         <led
           name={name}
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <schematicpath points={[{"x":-1.27,"y":-1.524},{"x":-1.27,"y":1.524}]} strokeWidth={0.254} strokeColor="#880000" />
+              <port name="pin2" pinNumber={2} aliases={["A"]} direction="right" schX={5.08} schY={0} schStemLength={3.81} />
+              <port name="pin1" pinNumber={1} aliases={["C"]} direction="left" schX={-5.08} schY={0} schStemLength={3.81} />
+              <schematicpath svgPath="M 1.27 1.524 L -1.27 0 L 1.27 -1.524 Z" strokeWidth={0.254} strokeColor="#880000" isFilled fillColor="#880000" />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C57759"
