@@ -33,13 +33,6 @@ it("should convert C131337 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicrect schX={-2.54} schY={0} width={7.62} height={10.16} strokeWidth={0.254} color="#880000" isFilled fillColor="#EFEFEF" />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={6.35} schY={2.54} schStemLength={5.08} />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={6.35} schY={-2.54} schStemLength={5.08} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C131337"

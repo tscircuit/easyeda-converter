@@ -389,3 +389,28 @@ export const generateSymbolTsx = (
 ${shapeTsx.map((tsx) => `  ${tsx}`).join("\n")}
 </symbol>`
 }
+
+/**
+ * EasyEDA commonly represents chips as a rectangle with ports, plus optional
+ * text and pin-one dots. tscircuit already generates that box representation
+ * from a chip's pin labels, so it does not need a custom symbol prop.
+ */
+export const hasNonBoxSchematicSymbol = (
+  easyEdaJson: BetterEasyEdaJson,
+): boolean => {
+  const drawableShapes = easyEdaJson.dataStr.shape.filter(
+    (shape) => shape.type !== "PIN" && shape.type !== "TEXT",
+  )
+  if (drawableShapes.length === 0) return false
+
+  const rectangles = drawableShapes.filter(
+    (shape) => shape.type === "RECTANGLE",
+  )
+  const onlyBoxPrimitives = drawableShapes.every(
+    (shape) =>
+      shape.type === "RECTANGLE" ||
+      (shape.type === "ELLIPSE" && shape.radiusX <= 2 && shape.radiusY <= 2),
+  )
+
+  return rectangles.length !== 1 || !onlyBoxPrimitives
+}

@@ -40,21 +40,6 @@ it("should convert C19076967 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <port name="pin9" pinNumber={9} aliases={["0"]} direction="up" schX={0} schY={10.16} schStemLength={5.08} />
-              <port name="pin6" pinNumber={6} aliases={["6"]} direction="left" schX={-10.16} schY={-5.08} schStemLength={5.08} />
-              <port name="pin5" pinNumber={5} aliases={["3"]} direction="right" schX={10.16} schY={-2.54} schStemLength={5.08} />
-              <port name="pin4" pinNumber={4} aliases={["2"]} direction="right" schX={10.16} schY={2.54} schStemLength={5.08} />
-              <port name="pin3" pinNumber={3} aliases={["1"]} direction="right" schX={10.16} schY={5.08} schStemLength={5.08} />
-              <port name="pin10" pinNumber={10} aliases={["10"]} direction="right" schX={5.08} schY={0} schStemLength={5.08} />
-              <port name="pin5" pinNumber={5} aliases={["4"]} direction="right" schX={10.16} schY={-5.08} schStemLength={5.08} />
-              <port name="pin5" pinNumber={5} aliases={["5"]} direction="down" schX={0} schY={-10.16} schStemLength={5.08} />
-              <port name="pin6" pinNumber={6} aliases={["7"]} direction="left" schX={-10.16} schY={-2.54} schStemLength={5.08} />
-              <port name="pin8" pinNumber={8} aliases={["8"]} direction="left" schX={-10.16} schY={2.54} schStemLength={5.08} />
-              <port name="pin9" pinNumber={9} aliases={["9"]} direction="left" schX={-10.16} schY={5.08} schStemLength={5.08} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C19076967"

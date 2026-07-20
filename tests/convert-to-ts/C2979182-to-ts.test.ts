@@ -31,14 +31,6 @@ it("should convert C2979182 / MY-18650-02 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicrect schX={0} schY={0} width={7.62} height={7.62} strokeWidth={0.254} color="#880000" />
-              <schematiccircle center={{ x: -2.54, y: 2.54 }} radius={0.381} strokeWidth={0.254} color="#880000" isFilled fillColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-6.35} schY={1.27} schStemLength={2.54} />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="left" schX={-6.35} schY={-1.27} schStemLength={2.54} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C2979182"

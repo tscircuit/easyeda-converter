@@ -44,20 +44,6 @@ it("should convert C12084 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicrect schX={0} schY={0} width={15.24} height={12.7} strokeWidth={0.254} color="#880000" />
-              <schematiccircle center={{ x: -6.35, y: 5.08 }} radius={0.381} strokeWidth={0.254} color="#880000" isFilled fillColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["D"]} direction="left" schX={-10.16} schY={3.81} schStemLength={2.54} />
-              <port name="pin2" pinNumber={2} aliases={["GND"]} direction="left" schX={-10.16} schY={1.27} schStemLength={2.54} />
-              <port name="pin3" pinNumber={3} aliases={["VCC"]} direction="left" schX={-10.16} schY={-1.27} schStemLength={2.54} />
-              <port name="pin4" pinNumber={4} aliases={["R"]} direction="left" schX={-10.16} schY={-3.81} schStemLength={2.54} />
-              <port name="pin5" pinNumber={5} aliases={["VREF"]} direction="right" schX={10.16} schY={-3.81} schStemLength={2.54} />
-              <port name="pin6" pinNumber={6} aliases={["CANL"]} direction="right" schX={10.16} schY={-1.27} schStemLength={2.54} />
-              <port name="pin7" pinNumber={7} aliases={["CANH"]} direction="right" schX={10.16} schY={1.27} schStemLength={2.54} />
-              <port name="pin8" pinNumber={8} aliases={["RS"]} direction="right" schX={10.16} schY={3.81} schStemLength={2.54} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C12084"

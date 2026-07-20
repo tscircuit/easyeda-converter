@@ -33,13 +33,6 @@ it("should convert C8465 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicrect schX={0} schY={2.54} width={7.62} height={5.08} strokeWidth={0.254} color="#000000" />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="down" schX={-1.27} schY={-5.08} schStemLength={5.08} />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="down" schX={1.27} schY={-5.08} schStemLength={5.08} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C8465"

@@ -57,16 +57,6 @@ it("should convert C2828420 diode with metadata-derived pin labels", async () =>
         <diode
           name={name}
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicpath svgPath="M 1.27 1.778 L -1.27 0 L 1.27 -1.778 Z" strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":-1.27,"y":1.778},{"x":-1.27,"y":-1.778}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":2.54,"y":0},{"x":1.27,"y":0}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":-1.27,"y":0},{"x":-2.54,"y":0}]} strokeWidth={0.254} strokeColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["K"]} direction="left" schX={-5.08} schY={0} schStemLength={2.54} />
-              <port name="pin2" pinNumber={2} aliases={["A"]} direction="right" schX={5.08} schY={0} schStemLength={2.54} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C2828420"

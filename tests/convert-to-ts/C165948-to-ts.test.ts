@@ -45,27 +45,6 @@ it("should convert C165948 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicrect schX={0} schY={0} width={12.7} height={33.02} strokeWidth={0.254} color="#880000" />
-              <port name="pin13" pinNumber={13} aliases={["A1B12","GND1","GND"]} direction="left" schX={-8.89} schY={13.97} schStemLength={2.54} />
-              <port name="pin16" pinNumber={16} aliases={["A4B9","VBUS2","VBUS"]} direction="left" schX={-8.89} schY={11.43} schStemLength={2.54} />
-              <port name="pin5" pinNumber={5} aliases={["B8","SBU2"]} direction="left" schX={-8.89} schY={8.89} schStemLength={2.54} />
-              <port name="pin6" pinNumber={6} aliases={["A5","CC1"]} direction="left" schX={-8.89} schY={6.35} schStemLength={2.54} />
-              <port name="pin7" pinNumber={7} aliases={["B7","DN2"]} direction="left" schX={-8.89} schY={3.81} schStemLength={2.54} />
-              <port name="pin8" pinNumber={8} aliases={["A6","DP1"]} direction="left" schX={-8.89} schY={1.27} schStemLength={2.54} />
-              <port name="pin9" pinNumber={9} aliases={["A7","DN1"]} direction="left" schX={-8.89} schY={-1.27} schStemLength={2.54} />
-              <port name="pin10" pinNumber={10} aliases={["B6","DP2"]} direction="left" schX={-8.89} schY={-3.81} schStemLength={2.54} />
-              <port name="pin11" pinNumber={11} aliases={["A8","SBU1"]} direction="left" schX={-8.89} schY={-6.35} schStemLength={2.54} />
-              <port name="pin12" pinNumber={12} aliases={["B5","CC2"]} direction="left" schX={-8.89} schY={-8.89} schStemLength={2.54} />
-              <port name="pin15" pinNumber={15} aliases={["B4A9","VBUS1","VBUS"]} direction="left" schX={-8.89} schY={-11.43} schStemLength={2.54} />
-              <port name="pin14" pinNumber={14} aliases={["B1A12","GND2","GND"]} direction="left" schX={-8.89} schY={-13.97} schStemLength={2.54} />
-              <port name="pin4" pinNumber={4} aliases={["EH3","EH"]} direction="right" schX={8.89} schY={-6.35} schStemLength={2.54} />
-              <port name="pin3" pinNumber={3} aliases={["EH4","EH"]} direction="right" schX={8.89} schY={-8.89} schStemLength={2.54} />
-              <port name="pin2" pinNumber={2} aliases={["EH1","EH"]} direction="right" schX={8.89} schY={-11.43} schStemLength={2.54} />
-              <port name="pin1" pinNumber={1} aliases={["EH2","EH"]} direction="right" schX={8.89} schY={-13.97} schStemLength={2.54} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C165948"

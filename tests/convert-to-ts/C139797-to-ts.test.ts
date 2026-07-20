@@ -34,21 +34,6 @@ it("should convert C139797 tactile switch into a pushbutton component", async ()
         <pushbutton
           name={name}
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicpath points={[{"x":-2.54,"y":1.27},{"x":2.54,"y":1.27}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":-2.54,"y":-3.81},{"x":2.54,"y":-3.81}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":1.27},{"x":0,"y":0.254}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":-3.81},{"x":0,"y":-2.032}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":0.254},{"x":0,"y":-0.508}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.762,"y":0},{"x":-0.762,"y":-2.286}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.762,"y":-1.016},{"x":-1.016,"y":-1.016},{"x":-1.016,"y":-1.27},{"x":-0.762,"y":-1.27}]} strokeWidth={0.254} strokeColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-7.62} schY={1.27} schStemLength={5.08} />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={7.62} schY={1.27} schStemLength={5.08} />
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="left" schX={-7.62} schY={-3.81} schStemLength={5.08} />
-              <port name="pin4" pinNumber={4} aliases={["4"]} direction="right" schX={7.62} schY={-3.81} schStemLength={5.08} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C139797"

@@ -1,7 +1,11 @@
 import { expect, test } from "bun:test"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { generateSymbolTsx } from "lib/websafe/convert-to-typescript-component/generate-symbol-tsx"
+import {
+  generateSymbolTsx,
+  hasNonBoxSchematicSymbol,
+} from "lib/websafe/convert-to-typescript-component/generate-symbol-tsx"
+import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
 import ne555RawEasy from "./assets/C46749.raweasy.json"
 import rp2040RawEasy from "./assets/C2040.raweasy.json"
 import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
@@ -48,4 +52,19 @@ test("uses the symbol bounds when EasyEDA head coordinates are stale", () => {
     '<port name="pin2" pinNumber={2} aliases={["2"]} direction="up" schX={0} schY={2.794}',
   )
   expect(symbolTsx).not.toContain("-101.854")
+})
+
+test("distinguishes custom symbols from chip box representations", () => {
+  expect(hasNonBoxSchematicSymbol(EasyEdaJsonSchema.parse(ne555RawEasy))).toBe(
+    false,
+  )
+  expect(
+    hasNonBoxSchematicSymbol(EasyEdaJsonSchema.parse(pinsOnlyRawEasy)),
+  ).toBe(false)
+  expect(hasNonBoxSchematicSymbol(EasyEdaJsonSchema.parse(rp2040RawEasy))).toBe(
+    false,
+  )
+  expect(
+    hasNonBoxSchematicSymbol(EasyEdaJsonSchema.parse(symbolWithArcRawEasy)),
+  ).toBe(true)
 })

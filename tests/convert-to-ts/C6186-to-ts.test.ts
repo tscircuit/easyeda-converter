@@ -33,16 +33,6 @@ it("should convert C6186 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <schematicrect schX={0} schY={0} width={17.78} height={10.16} strokeWidth={0.254} color="#880000" />
-              <schematiccircle center={{ x: -7.62, y: 3.81 }} radius={0.381} strokeWidth={0.254} color="#880000" isFilled fillColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["GND"]} direction="left" schX={-11.43} schY={2.54} schStemLength={2.54} />
-              <port name="pin2" pinNumber={2} aliases={["VOUT1","VOUT"]} direction="left" schX={-11.43} schY={0} schStemLength={2.54} />
-              <port name="pin3" pinNumber={3} aliases={["VIN"]} direction="left" schX={-11.43} schY={-2.54} schStemLength={2.54} />
-              <port name="pin4" pinNumber={4} aliases={["VOUT2","VOUT"]} direction="right" schX={11.43} schY={0} schStemLength={2.54} />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C6186"

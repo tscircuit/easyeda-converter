@@ -37,17 +37,6 @@ it("should convert C136720 slide switch into a switch component with pin labels"
         <switch
           name={name}
           pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="left" schX={-8.89} schY={0} schStemLength={4.826} />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={8.89} schY={-1.27} schStemLength={4.826} />
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={8.89} schY={1.27} schStemLength={4.826} />
-              <port name="pin4" pinNumber={4} aliases={["4"]} direction="down" schX={3.81} schY={-3.81} schStemLength={1.27} />
-              <port name="pin5" pinNumber={5} aliases={["5"]} direction="down" schX={-3.81} schY={-3.81} schStemLength={1.27} />
-              <schematicpath points={[{"x":-2.54,"y":0},{"x":2.54,"y":-1.27}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":-5.08,"y":0},{"x":-5.08,"y":2.54},{"x":5.08,"y":2.54},{"x":5.08,"y":-2.54},{"x":-5.08,"y":-2.54},{"x":-5.08,"y":0}]} strokeWidth={0.254} strokeColor="#000000" />
-            </symbol>
-          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C136720"
