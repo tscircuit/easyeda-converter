@@ -75,13 +75,15 @@ const RectangleShapeOutputSchema = z.object({
   height: z.number(),
   color: z.string(),
   lineWidth: z.number(),
+  fillColor: z.string().optional(),
   id: z.string(),
 })
 
 const parseRectangle = (
   str: string,
 ): z.infer<typeof RectangleShapeOutputSchema> => {
-  const [, x, y, , , width, height, color, lineWidth, , , id] = str.split("~")
+  const [, x, y, , , width, height, color, lineWidth, , fillColor, id] =
+    str.split("~")
   return {
     type: "RECTANGLE",
     position: { x: Number(x), y: Number(y) },
@@ -89,6 +91,7 @@ const parseRectangle = (
     height: Number(height),
     color,
     lineWidth: Number(lineWidth),
+    fillColor,
     id,
   }
 }
@@ -106,13 +109,15 @@ const EllipseShapeOutputSchema = z.object({
   radiusY: z.number(),
   color: z.string(),
   lineWidth: z.number(),
+  fillColor: z.string().optional(),
   id: z.string(),
 })
 
 const parseEllipse = (
   str: string,
 ): z.infer<typeof EllipseShapeOutputSchema> => {
-  const [, x, y, radiusX, radiusY, color, lineWidth, , , id] = str.split("~")
+  const [, x, y, radiusX, radiusY, color, lineWidth, , fillColor, id] =
+    str.split("~")
   return {
     type: "ELLIPSE",
     center: { x: Number(x), y: Number(y) },
@@ -120,6 +125,7 @@ const parseEllipse = (
     radiusY: Number(radiusY),
     color,
     lineWidth: Number(lineWidth),
+    fillColor,
     id,
   }
 }
@@ -132,6 +138,7 @@ export const EllipseShapeSchema = z
 
 const ArcShapeOutputSchema = z.object({
   type: z.literal("ARC"),
+  pathData: z.string(),
   start: PointSchema,
   end: PointSchema,
   radius: z.number(),
@@ -143,16 +150,18 @@ const ArcShapeOutputSchema = z.object({
 
 const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
   // Format: A~M x1 y1 A radius radius 0 1 0 x2 y2~#880000~1~0~none~gge49~0
-  const [, pathData, color, lineWidth, , , id] = str.split("~")
-  const parts = pathData.split(" ")
+  const [, pathData, ...fields] = str.split("~")
+  const colorIndex = fields.findIndex((field) => /^#[0-9a-f]{6}$/i.test(field))
+  const color = fields[colorIndex] || "#880000"
+  const lineWidth = fields[colorIndex + 1]
+  const id = fields.find((field) => /^(?:gge|rep)/.test(field)) || "gge1"
+  const numbers =
+    pathData.match(/[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g)?.map(Number) ??
+    []
 
   // Handle potential NaN values by defaulting to 0
-  const x1 = Number(parts[1]) || 0
-  const y1 = Number(parts[2]) || 0
-  const radius = Number(parts[4]) || 0
-  const sweepFlag = parts[7] === "1" // The sweep flag is the 8th parameter
-  const x2 = Number(parts[8]) || 0
-  const y2 = Number(parts[9]) || 0
+  const [x1 = 0, y1 = 0, radius = 0, , , , sweepFlag = 0, x2 = 0, y2 = 0] =
+    numbers
 
   // Handle empty or invalid line width
   const parsedLineWidth = Number(lineWidth)
@@ -160,13 +169,14 @@ const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
 
   return {
     type: "ARC",
+    pathData,
     start: { x: x1, y: y1 },
     end: { x: x2, y: y2 },
     radius,
-    sweepFlag,
-    color: color || "#880000", // Default color
+    sweepFlag: sweepFlag === 1,
+    color,
     lineWidth: finalLineWidth,
-    id: id || "gge1",
+    id,
   }
 }
 
@@ -204,8 +214,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const colorMatch = pinString.match(/#[0-9A-F]{6}/)
   const labelColor = colorMatch ? colorMatch[0] : ""
 
-  const pathMatch = pinString.match(/\^\^([^~]+)/)
-  const path = pathMatch ? pathMatch[1] : ""
+  const path = pinString.split("^^")[2]?.split("~")[0] ?? ""
 
   const arrowMatch = pinString.match(/\^\^0~(.+)$/)
   const arrow = arrowMatch ? arrowMatch[1] : ""
@@ -287,7 +296,7 @@ const parsePolygon = (
   str: string,
 ): z.infer<typeof PolygonShapeOutputSchema> => {
   const [, ...rest] = str.split("~")
-  const [pointsStr, fillColor, lineWidth, lineColor, , id] = rest
+  const [pointsStr, lineColor, lineWidth, , fillColor, id] = rest
 
   return {
     type: "POLYGON",
@@ -315,7 +324,7 @@ const PathShapeOutputSchema = z.object({
 })
 
 const parsePath = (str: string): z.infer<typeof PathShapeOutputSchema> => {
-  const [, pathData, fillColor, strokeWidth, strokeColor, , id] = str.split("~")
+  const [, pathData, strokeColor, strokeWidth, , fillColor, id] = str.split("~")
   return {
     type: "PATH",
     pathData,
@@ -379,8 +388,8 @@ const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
     fontWeight,
     fontStyle,
     fontDecoration,
-    content,
     textType,
+    content,
     visibility,
     mirror,
     id,

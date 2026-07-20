@@ -46,6 +46,21 @@ it("should convert C2961147 into typescript file", async () => {
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={7.62} schY={0} schStemLength={5.08} />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={7.62} schY={-2.54} schStemLength={5.08} />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={7.62} schY={2.54} schStemLength={5.08} />
+              <schematicpath points={[{"x":-1.778,"y":-2.54},{"x":-1.524,"y":-1.27}]} strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath points={[{"x":2.54,"y":0},{"x":-1.778,"y":0},{"x":-1.778,"y":-2.54},{"x":-2.032,"y":-1.27}]} strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath points={[{"x":2.54,"y":-2.54},{"x":-4.826,"y":-2.54},{"x":-5.334,"y":-1.524},{"x":-5.842,"y":-2.54}]} strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath svgPath="M -5.08 1.524 A 1.016 1.016 0 1 0 -5.08 3.556" strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":1.524},{"x":-5.08,"y":1.524}]} strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":3.556},{"x":-5.08,"y":3.556}]} strokeWidth={0.254} strokeColor="#880000" />
+              <schematicrect schX={0.508} schY={2.54} width={1.016} height={3.048} strokeWidth={0.254} color="#880000" />
+              <schematicpath points={[{"x":2.54,"y":2.54},{"x":1.016,"y":2.54}]} strokeWidth={0.254} strokeColor="#880000" />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C2961147"

@@ -18,6 +18,7 @@ interface Params {
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
+  symbolTsx?: string
 }
 
 const getPinLabelValues = (labels: string | readonly string[]): string[] => {
@@ -81,6 +82,7 @@ export const generateTypescriptComponent = ({
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
+  symbolTsx,
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
@@ -123,6 +125,15 @@ ${polarizedPinLabelsString}
     ? `      pinLabels={pinLabels}
 `
     : ""
+  const symbolProp = symbolTsx
+    ? `      symbol={
+${symbolTsx
+  .split("\n")
+  .map((line) => `        ${line}`)
+  .join("\n")}
+      }
+`
+    : ""
 
   const cadModelLines = [
     objUrl ? `objUrl: "${objUrl}",` : "",
@@ -146,6 +157,7 @@ export const ${componentName} = (props: DiodeProps) => {
     <diode
       name={name}
 ${polarizedPinLabelsProp}\
+${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
@@ -175,6 +187,7 @@ export const ${componentName} = (props: LedProps) => {
     <led
       name={name}
 ${polarizedPinLabelsProp}\
+${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
@@ -207,6 +220,7 @@ export const ${componentName} = (props: PushButtonProps<typeof pinLabels>) => {
     <pushbutton
       name={name}
       pinLabels={pinLabels}
+${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
@@ -239,6 +253,7 @@ export const ${componentName} = (props: SwitchProps) => {
     <switch
       name={name}
       pinLabels={pinLabels}
+${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
@@ -267,6 +282,7 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
       pinLabels={pinLabels}
+${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}

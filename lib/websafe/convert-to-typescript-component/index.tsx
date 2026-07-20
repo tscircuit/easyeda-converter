@@ -12,6 +12,10 @@ import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
 import { isPushbuttonCategoryComponent } from "./is-pushbutton-category-component"
 import { isSwitchCategoryComponent } from "./is-switch-category-component"
+import {
+  generateSymbolTsx,
+  hasNonBoxSchematicSymbol,
+} from "./generate-symbol-tsx"
 
 const getGeneratedComponentType = (
   betterEasy: BetterEasyEdaJson,
@@ -86,6 +90,11 @@ export const convertBetterEasyToTsx = async ({
   const supplierPartNumbers: Record<string, string[]> = {
     jlcpcb: [betterEasy.lcsc.number],
   }
+  const componentType = getGeneratedComponentType(betterEasy)
+  const symbolTsx =
+    componentType === "chip" && hasNonBoxSchematicSymbol(betterEasy)
+      ? generateSymbolTsx(betterEasy, circuitJson)
+      : undefined
 
   return generateTypescriptComponent({
     componentName: pn,
@@ -96,7 +105,8 @@ export const convertBetterEasyToTsx = async ({
     stepUrl: modelStepUrl,
     circuitJson,
     supplierPartNumbers,
-    componentType: getGeneratedComponentType(betterEasy),
+    componentType,
+    symbolTsx,
   })
 }
 
