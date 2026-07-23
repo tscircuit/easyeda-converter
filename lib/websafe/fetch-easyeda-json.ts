@@ -107,12 +107,12 @@ export async function fetchEasyEDAComponent(
   })
 
   if (!searchResponse.ok) {
-    throw new Error("Failed to search for the component")
+    throw new Error(`Failed to search for component ${jlcpcbPartNumber} from EasyEDA API`)
   }
 
   const searchResult = await searchResponse.json()
   if (!searchResult.success || !searchResult.result.lists.lcsc.length) {
-    throw new Error("Component not found")
+    throw new Error(`Component with JLCPCB part number ${jlcpcbPartNumber} not found in EasyEDA database. This part may exist on JLCPCB but lacks EasyEDA footprint data.`)
   }
 
   const bestMatchComponent =
@@ -133,7 +133,7 @@ export async function fetchEasyEDAComponent(
   })
 
   if (!componentResponse.ok) {
-    throw new Error("Failed to fetch the component details")
+    throw new Error(`Failed to fetch component details for ${jlcpcbPartNumber} from EasyEDA API`)
   }
 
   const componentResult = await componentResponse.json()
