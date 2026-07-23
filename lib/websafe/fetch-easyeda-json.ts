@@ -107,7 +107,14 @@ export async function fetchEasyEDAComponent(
   })
 
   if (!searchResponse.ok) {
-    throw new Error("Failed to search for the component")
+    if (searchResponse.status === 403) {
+      throw new Error(
+        `EasyEDA API rate limit exceeded while searching for "${jlcpcbPartNumber}" (HTTP 403). EasyEDA rate-limits by IP — the part number is likely fine. Wait ~2 minutes and try again.`,
+      )
+    }
+    throw new Error(
+      `Failed to search for the component (HTTP ${searchResponse.status})`,
+    )
   }
 
   const searchResult = await searchResponse.json()
@@ -133,7 +140,14 @@ export async function fetchEasyEDAComponent(
   })
 
   if (!componentResponse.ok) {
-    throw new Error("Failed to fetch the component details")
+    if (componentResponse.status === 403) {
+      throw new Error(
+        `EasyEDA API rate limit exceeded while fetching "${jlcpcbPartNumber}" (HTTP 403). EasyEDA rate-limits by IP — the part number is likely fine. Wait ~2 minutes and try again.`,
+      )
+    }
+    throw new Error(
+      `Failed to fetch the component details (HTTP ${componentResponse.status})`,
+    )
   }
 
   const componentResult = await componentResponse.json()
