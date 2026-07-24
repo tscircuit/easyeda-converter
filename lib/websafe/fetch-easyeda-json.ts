@@ -119,7 +119,12 @@ export async function fetchEasyEDAComponent(
 
   const searchResult = await searchResponse.json()
   if (!searchResult.success || !searchResult.result.lists.lcsc.length) {
-    throw new Error("Component not found")
+    if (/^C99\d{6,}$/i.test(jlcpcbPartNumber)) {
+      throw new Error(
+        `Component not found: "${jlcpcbPartNumber}" is a JLCPCB assembly-catalog part number (C99xxxxxxx). These parts frequently have no EasyEDA symbol/footprint behind them, so there is nothing to convert — try searching for the underlying manufacturer part number instead.`,
+      )
+    }
+    throw new Error(`Component not found: "${jlcpcbPartNumber}"`)
   }
 
   const bestMatchComponent =
