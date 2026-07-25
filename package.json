@@ -20,10 +20,10 @@
     "@tscircuit/props": "^0.0.567",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
+    "circuit-json-to-3d-png": "^0.0.7",
     "circuit-json-to-gltf": "^0.0.106",
     "circuit-to-svg": "^0.0.392",
     "looks-same": "^9.0.1",
-    "poppygl": "^0.0.24",
     "transformation-matrix": "^2.16.1",
     "tscircuit": "^0.0.2002",
     "tsup": "^8.5.0"

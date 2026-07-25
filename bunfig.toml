@@ -1,5 +1,6 @@
 [test]
 preload = ["./tests/fixtures/preload.ts"]
+timeout = 20000
 
 [install.lockfile]
 save = false

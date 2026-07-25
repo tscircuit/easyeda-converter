@@ -1,80 +1,32 @@
 import { expect, type MatcherResult } from "bun:test"
-import type { AnyCircuitElement, PcbBoard } from "circuit-json"
+import type { AnyCircuitElement } from "circuit-json"
+import {
+  convertCircuitJsonTo3dGlb,
+  getDefaultCameraForCircuitJson,
+  renderCircuitJsonTo3dPng,
+} from "circuit-json-to-3d-png"
 import * as fs from "node:fs"
 import * as path from "node:path"
 import looksSame from "looks-same"
-import {
-  renderGLTFToPNGFromGLB,
-  type RenderGLTFToPNGFromGLBOptions as PoppyglOptions,
-} from "poppygl"
-import { convertCircuitJsonToGltf } from "circuit-json-to-gltf"
 
 /** [0,1] percentage of the image that is different */
 const ACCEPTABLE_DIFF_FRACTION = 0.01
 
-type CameraPosition = [number, number, number]
-
 export type Match3dSnapshotOptions = {
   diffTolerance?: number
-  gltf?: Record<string, unknown>
-  poppygl?: PoppyglOptions
-  camPos?: CameraPosition
-  cameraPreset?: "bottom_angled"
+  camPos?: readonly [number, number, number]
 }
 
-export async function resolvePoppyglOptions(
+const writeSnapshot = async (
+  filePath: string,
+  content: Buffer,
   soup: AnyCircuitElement[],
-  options?: Match3dSnapshotOptions,
-): Promise<PoppyglOptions> {
-  const resolvedOpts: PoppyglOptions = {
-    width: 1024,
-    height: 1024,
-    lookAt: [0, 0, 0],
-    backgroundColor: [0, 0, 0],
-    grid: {
-      cellSize: 1,
-      color: [128, 128, 128],
-      infiniteGrid: true,
-    },
-    ...(options?.poppygl ?? {}),
+): Promise<void> => {
+  fs.writeFileSync(filePath, content)
+  if (process.env.SAVE_3D_DEBUG_SNAPSHOT === "1") {
+    const debugPath = filePath.replace(/\.png$/, ".glb")
+    fs.writeFileSync(debugPath, await convertCircuitJsonTo3dGlb(soup))
   }
-
-  const explicitCamPos = options?.camPos ?? resolvedOpts.camPos
-  if (explicitCamPos) {
-    resolvedOpts.camPos = explicitCamPos
-  }
-
-  const board = soup.find(
-    (element): element is PcbBoard => element.type === "pcb_board",
-  )
-
-  const cameraPreset = options?.cameraPreset
-  if (cameraPreset) {
-    if (!board) {
-      throw new Error("Can't use cameraPreset without pcb_board")
-    }
-    switch (cameraPreset) {
-      case "bottom_angled":
-        resolvedOpts.camPos = [
-          board.width! / 2,
-          -(board.width! + board.height!) / 2,
-          board.height! / 2,
-        ]
-        break
-      default:
-        throw new Error(`Unknown camera preset: ${cameraPreset}`)
-    }
-  }
-
-  if (!resolvedOpts.camPos && board) {
-    resolvedOpts.camPos = [
-      board.width! / 2,
-      (board.width! + board.height!) / 2,
-      board.height! / 2,
-    ]
-  }
-
-  return resolvedOpts
 }
 
 async function save3dSnapshotOfCircuitJson({
@@ -95,34 +47,15 @@ async function save3dSnapshotOfCircuitJson({
   const snapshotName = `${path.basename(testPath || "")}-simple-3d.snap.png`
   const filePath = path.join(snapshotDir, snapshotName)
 
-  const gltfOrGlb = await convertCircuitJsonToGltf(soup, {
-    boardTextureResolution: 512,
-    includeModels: true,
-    showBoundingBoxes: false,
-    ...(options?.gltf ?? {}),
-    format: "glb",
-  })
-
-  if (
-    !(
-      gltfOrGlb instanceof Uint8Array ||
-      Buffer.isBuffer(gltfOrGlb) ||
-      gltfOrGlb instanceof ArrayBuffer
-    )
-  ) {
-    throw new Error(
-      `circuit-json-to-gltf did not produce a GLB file. Snapshots require a GLB. Received type: ${
-        (gltfOrGlb as any)?.constructor?.name ?? typeof gltfOrGlb
-      }`,
-    )
-  }
-
-  const glbBuffer = Buffer.isBuffer(gltfOrGlb)
-    ? gltfOrGlb
-    : Buffer.from(gltfOrGlb as any)
-  const resolvedRenderOpts = await resolvePoppyglOptions(soup, options)
-  const png = await renderGLTFToPNGFromGLB(glbBuffer, resolvedRenderOpts)
-  const content = Buffer.isBuffer(png) ? png : Buffer.from(png)
+  const camera = options?.camPos
+    ? {
+        ...(await getDefaultCameraForCircuitJson(soup)),
+        camPos: options.camPos,
+      }
+    : undefined
+  const content = Buffer.from(
+    await renderCircuitJsonTo3dPng(soup, camera ? { camera } : undefined),
+  )
 
   if (!fs.existsSync(snapshotDir)) {
     fs.mkdirSync(snapshotDir, { recursive: true })
@@ -130,11 +63,7 @@ async function save3dSnapshotOfCircuitJson({
 
   if (!fs.existsSync(filePath) || forceUpdateSnapshot) {
     console.log("Writing snapshot at", filePath)
-    fs.writeFileSync(filePath, content)
-    if (process.env.SAVE_3D_DEBUG_SNAPSHOT === "1") {
-      const debugPath = filePath.replace(/\.png$/, ".glb")
-      fs.writeFileSync(debugPath, glbBuffer)
-    }
+    await writeSnapshot(filePath, content, soup)
     return {
       message: () => `Snapshot created at ${filePath}`,
       pass: true,
@@ -159,11 +88,7 @@ async function save3dSnapshotOfCircuitJson({
   if (lsResult.equal) {
     if (forceUpdateSnapshot) {
       console.log("Updating snapshot at", filePath)
-      fs.writeFileSync(filePath, content)
-      if (process.env.SAVE_3D_DEBUG_SNAPSHOT === "1") {
-        const debugPath = filePath.replace(/\.png$/, ".glb")
-        fs.writeFileSync(debugPath, glbBuffer)
-      }
+      await writeSnapshot(filePath, content, soup)
     }
     return {
       message: () => "Snapshot matches",
@@ -190,11 +115,7 @@ async function save3dSnapshotOfCircuitJson({
 
   if (updateSnapshot) {
     console.log("Updating snapshot at", filePath)
-    fs.writeFileSync(filePath, content)
-    if (process.env.SAVE_3D_DEBUG_SNAPSHOT === "1") {
-      const debugPath = filePath.replace(/\.png$/, ".glb")
-      fs.writeFileSync(debugPath, glbBuffer)
-    }
+    await writeSnapshot(filePath, content, soup)
     return {
       message: () =>
         `Snapshot updated at ${filePath}(was ${(diffFraction * 100).toFixed(2)}% different)`,
