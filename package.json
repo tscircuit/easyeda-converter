@@ -1,7 +1,7 @@
 {
   "name": "easyeda",
   "type": "module",
-  "version": "0.0.276",
+  "version": "0.0.277",
   "files": [
     "dist"
   ],
