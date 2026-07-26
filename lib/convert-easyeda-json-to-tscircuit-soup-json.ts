@@ -2,7 +2,7 @@ import {
   findBoundsAndCenter,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
-import { mm, mil2mm } from "@tscircuit/mm"
+import { mil2mm, mm } from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbComponentInput,
@@ -21,6 +21,7 @@ import {
 import * as Soup from "circuit-json"
 import { applyToPoint, compose, scale, translate } from "transformation-matrix"
 import type { z } from "zod"
+import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
@@ -34,10 +35,9 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
-import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
-import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
+import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
 
 const EASYEDA_STEP_MODEL_URL =
   "https://modules.easyeda.com/qAxj6KHrDKw4blvCG8QJPs7Y"
@@ -321,7 +321,37 @@ export const convertEasyEdaJsonToCircuitJson = (
     return labels
   })
 
-  const normalizedPinLabels = normalizePinLabels(pinLabelSets)
+  // Duplicate pad numbers are multiple physical geometries for the SAME
+  // logical pin (e.g. C5656610's four polygon pads all numbered "3" are one
+  // GND terminal). Normalize one label set per *unique* pad number so the
+  // duplicates share a logical pin instead of being renumbered into
+  // synthetic pins (#411).
+  const padNumberKeys = pads.map((pad, index) =>
+    pad.number !== undefined && pad.number !== null && `${pad.number}` !== ""
+      ? `num:${pad.number}`
+      : `idx:${index}`,
+  )
+  const uniquePadKeys: string[] = []
+  const uniqueLabelSets: string[][] = []
+  const padKeyToUniqueIndex = new Map<string, number>()
+  pads.forEach((pad, index) => {
+    const key = padNumberKeys[index]!
+    if (!padKeyToUniqueIndex.has(key)) {
+      padKeyToUniqueIndex.set(key, uniquePadKeys.length)
+      uniquePadKeys.push(key)
+      uniqueLabelSets.push(pinLabelSets[index]!)
+    }
+  })
+  const normalizedUniquePinLabels = normalizePinLabels(uniqueLabelSets)
+  const normalizedPinLabels = pads.map(
+    (_, index) =>
+      normalizedUniquePinLabels[
+        padKeyToUniqueIndex.get(padNumberKeys[index]!)!
+      ]!,
+  )
+
+  // Only emit one source port per logical pin
+  const sourcePortEmittedForUniqueIndex = new Set<number>()
 
   // Add source ports and pcb_smtpads
   pads.forEach((pad, index) => {
@@ -330,15 +360,19 @@ export const convertEasyEdaJsonToCircuitJson = (
       portHints.find((hint) => hint.match(/pin\d+/))!.replace("pin", ""),
     )
 
-    // Add source port
-    circuitElements.push({
-      type: "source_port",
-      source_port_id: `source_port_${index + 1}`,
-      source_component_id: "source_component_1",
-      name: `pin${pinNumber}`,
-      pin_number: pinNumber,
-      port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
-    })
+    // Add source port (one per logical pin — duplicate pad geometries share it)
+    const uniqueIndex = padKeyToUniqueIndex.get(padNumberKeys[index]!)!
+    if (!sourcePortEmittedForUniqueIndex.has(uniqueIndex)) {
+      sourcePortEmittedForUniqueIndex.add(uniqueIndex)
+      circuitElements.push({
+        type: "source_port",
+        source_port_id: `source_port_${index + 1}`,
+        source_component_id: "source_component_1",
+        name: `pin${pinNumber}`,
+        pin_number: pinNumber,
+        port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
+      })
+    }
 
     if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
       // Add pcb_plated_hole
