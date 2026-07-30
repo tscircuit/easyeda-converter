@@ -40,7 +40,7 @@ export const OwnerSchema = z.object({
 
 export const HeadSchema = z.object({
   docType: z.preprocess((val) => (val == null ? val : String(val)), z.string()),
-  editorVersion: z.string(),
+  editorVersion: z.string().default(""),
   c_para: z.record(z.string(), z.string().nullable()),
   x: z.number(),
   y: z.number(),
@@ -53,7 +53,7 @@ export const HeadSchema = z.object({
   }, z.number()),
   importFlag: z.number().optional(),
   c_spiceCmd: z.any().optional(),
-  hasIdFlag: z.boolean(),
+  hasIdFlag: z.boolean().default(false),
 })
 
 export const BBoxSchema = z.object({
@@ -78,13 +78,23 @@ export const ObjectItemSchema = z.object({
   locked: z.boolean(),
 })
 
-export const DataStrSchema = z.object({
-  head: HeadSchema,
-  canvas: z.string(),
-  shape: z.array(SingleLetterShapeSchema),
-  BBox: BBoxSchema,
-  colors: z.union([z.array(z.string()), z.record(z.string())]),
-})
+export const DataStrSchema = z
+  .object({
+    head: HeadSchema,
+    canvas: z.string(),
+    shape: z.array(SingleLetterShapeSchema),
+    BBox: BBoxSchema.optional(),
+    colors: z.union([z.array(z.string()), z.record(z.string())]).default([]),
+  })
+  .transform((data) => ({
+    ...data,
+    BBox: data.BBox ?? {
+      x: data.head.x,
+      y: data.head.y,
+      width: 0,
+      height: 0,
+    },
+  }))
 
 export const PackageDetailDataStrSchema = z.object({
   head: HeadSchema,

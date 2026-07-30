@@ -6,7 +6,7 @@ const safeNumber = (defaultValue = 0) =>
     .union([z.number(), z.string()])
     .transform((val) => {
       const num = Number(val)
-      return isNaN(num) ? defaultValue : num
+      return Number.isNaN(num) ? defaultValue : num
     })
     .default(defaultValue)
 
@@ -191,6 +191,7 @@ export const ShapeItemSchema = z
       }
       case "PAD": {
         const [padShape, ...params] = shape.data.split("~")
+        const rawPadNumber = params[6]
         const [
           centerX,
           centerY,
@@ -198,10 +199,13 @@ export const ShapeItemSchema = z
           height,
           layermask,
           net,
-          number,
+          numericPadNumber,
           holeRadius,
           ...rest
         ] = params.map((p) => (Number.isNaN(Number(p)) ? p : Number(p)))
+        const padNumber = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(rawPadNumber)
+          ? numericPadNumber
+          : rawPadNumber
         const center = { x: centerX, y: centerY }
         let points: number[][] | undefined
 
@@ -221,7 +225,7 @@ export const ShapeItemSchema = z
           height,
           layermask,
           net,
-          number,
+          number: padNumber,
           holeRadius,
           points,
           rotation,
