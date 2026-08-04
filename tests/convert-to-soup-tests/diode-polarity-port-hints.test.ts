@@ -12,7 +12,7 @@ test("preserves normalized diode polarity hints on PCB pads", () => {
   )
   const padHints = su(circuitJson)
     .pcb_smtpad.list()
-    .map((pad) => pad.port_hints)
+    .map((pad) => pad.port_hints ?? [])
     .sort(([left], [right]) => left.localeCompare(right))
 
   expect(padHints).toEqual([
