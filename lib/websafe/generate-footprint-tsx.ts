@@ -1,6 +1,6 @@
+import { su } from "@tscircuit/circuit-json-util"
 import { mmStr } from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
-import { su } from "@tscircuit/circuit-json-util"
 
 interface GenerateFootprintTsxOptions {
   portHintsMap?: Record<string, string[]>
@@ -12,7 +12,7 @@ const mapPortHints = (
 ): string[] | undefined => {
   if (!portHintsMap || !portHints) return portHints
 
-  return portHints.flatMap((hint) => portHintsMap[hint] ?? [hint])
+  return [...new Set(portHints.flatMap((hint) => portHintsMap[hint] ?? [hint]))]
 }
 
 export const generateFootprintTsx = (

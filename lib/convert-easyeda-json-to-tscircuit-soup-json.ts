@@ -2,7 +2,7 @@ import {
   findBoundsAndCenter,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
-import { mm, mil2mm } from "@tscircuit/mm"
+import { mil2mm, mm } from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbComponentInput,
@@ -21,6 +21,7 @@ import {
 import * as Soup from "circuit-json"
 import { applyToPoint, compose, scale, translate } from "transformation-matrix"
 import type { z } from "zod"
+import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
@@ -34,10 +35,12 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
-import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
+import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
-import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
+import { isDiodeCategoryComponent } from "./websafe/convert-to-typescript-component/is-diode-category-component"
+import { isLedCategoryComponent } from "./websafe/convert-to-typescript-component/is-led-category-component"
+import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
 
 const EASYEDA_STEP_MODEL_URL =
   "https://modules.easyeda.com/qAxj6KHrDKw4blvCG8QJPs7Y"
@@ -322,6 +325,18 @@ export const convertEasyEdaJsonToCircuitJson = (
   })
 
   const normalizedPinLabels = normalizePinLabels(pinLabelSets)
+  const normalizedPinLabelsByPin = Object.fromEntries(
+    normalizedPinLabels.map((labels) => {
+      const pin = labels.find((label) => /^pin\d+$/i.test(label))!
+      return [pin, labels.filter((label) => label !== pin)]
+    }),
+  )
+  const polarizedPinMetadata =
+    pads.length === 2 &&
+    (isDiodeCategoryComponent(easyEdaJson) ||
+      isLedCategoryComponent(easyEdaJson))
+      ? getPolarizedPinMetadata(normalizedPinLabelsByPin)
+      : undefined
 
   // Add source ports and pcb_smtpads
   pads.forEach((pad, index) => {
@@ -329,6 +344,10 @@ export const convertEasyEdaJsonToCircuitJson = (
     const pinNumber = Number.parseInt(
       portHints.find((hint) => hint.match(/pin\d+/))!.replace("pin", ""),
     )
+    const canonicalPinName = `pin${pinNumber}`
+    const pcbPortHints = polarizedPinMetadata?.portHintsMap[
+      canonicalPinName
+    ] ?? [canonicalPinName]
 
     // Add source port
     circuitElements.push({
@@ -353,7 +372,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
         layers: ["top"],
-        port_hints: [`pin${pinNumber}`],
+        port_hints: pcbPortHints,
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
       }
@@ -509,7 +528,7 @@ export const convertEasyEdaJsonToCircuitJson = (
                   radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2,
                 }),
         layer: "top",
-        port_hints: [`pin${pinNumber}`],
+        port_hints: pcbPortHints,
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
       } as PcbSmtPad)
