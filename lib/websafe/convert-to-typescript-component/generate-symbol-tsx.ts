@@ -291,31 +291,31 @@ const generateShapeTsx = ({
       x: shape.position.x + shape.width / 2,
       y: shape.position.y + shape.height / 2,
     })
-    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toMillimeters(shape.width)}} height={${toMillimeters(shape.height)}} strokeWidth={${toMillimeters(shape.lineWidth)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toMillimeters(shape.width)}} height={${toMillimeters(shape.height)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "ELLIPSE") {
     const center = transformPoint(shape.center)
-    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toMillimeters(Math.max(shape.radiusX, shape.radiusY))}} strokeWidth={${toMillimeters(shape.lineWidth)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toMillimeters(Math.max(shape.radiusX, shape.radiusY))}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "POLYLINE" || shape.type === "POLYGON") {
     const isPolygon = shape.type === "POLYGON"
     const points = shape.points.map(transformPoint)
     if (isPolygon && points.length > 0) points.push(points[0])
-    return `<schematicpath points={${JSON.stringify(points)}} strokeWidth={${toMillimeters(shape.lineWidth)}} strokeColor=${JSON.stringify(isPolygon ? shape.lineColor : shape.color)}${isPolygon && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematicpath points={${JSON.stringify(points)}} strokeColor=${JSON.stringify(isPolygon ? shape.lineColor : shape.color)}${isPolygon && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "PATH") {
     const transformedPath = transformSvgPath(shape.pathData, origin)
     if (!transformedPath) return undefined
-    return `<schematicpath svgPath=${JSON.stringify(transformedPath)} strokeWidth={${shape.strokeWidth}} strokeColor=${JSON.stringify(shape.strokeColor)}${shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematicpath svgPath=${JSON.stringify(transformedPath)} strokeColor=${JSON.stringify(shape.strokeColor)}${shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "ARC") {
     const transformedPath = transformSvgPath(shape.pathData, origin)
     if (!transformedPath) return undefined
-    return `<schematicpath svgPath=${JSON.stringify(transformedPath)} strokeWidth={${toMillimeters(shape.lineWidth)}} strokeColor=${JSON.stringify(shape.color)} />`
+    return `<schematicpath svgPath=${JSON.stringify(transformedPath)} strokeColor=${JSON.stringify(shape.color)} />`
   }
 
   if (shape.type === "TEXT") {

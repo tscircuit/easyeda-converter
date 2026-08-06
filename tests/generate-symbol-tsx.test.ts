@@ -34,12 +34,17 @@ test("generates a centered symbol with positioned, aliased ports", () => {
 })
 
 test("transforms EasyEDA paths, arcs, and text into symbol-local coordinates", () => {
-  expect(generateSymbolFromRawEasy(symbolWithPathRawEasy)).toContain(
-    '<schematicpath svgPath="M 1.27 1.778 L -1.27 0 L 1.27 -1.778 Z" strokeWidth={0.254} strokeColor="#880000" />',
+  const pathSymbolTsx = generateSymbolFromRawEasy(symbolWithPathRawEasy)
+  const arcSymbolTsx = generateSymbolFromRawEasy(symbolWithArcRawEasy)
+
+  expect(pathSymbolTsx).toContain(
+    '<schematicpath svgPath="M 1.27 1.778 L -1.27 0 L 1.27 -1.778 Z" strokeColor="#880000" />',
   )
-  expect(generateSymbolFromRawEasy(symbolWithArcRawEasy)).toContain(
-    '<schematicpath svgPath="M -5.08 1.524 A 1.016 1.016 0 1 0 -5.08 3.556" strokeWidth={0.254} strokeColor="#880000" />',
+  expect(arcSymbolTsx).toContain(
+    '<schematicpath svgPath="M -5.08 1.524 A 1.016 1.016 0 1 0 -5.08 3.556" strokeColor="#880000" />',
   )
+  expect(pathSymbolTsx).not.toContain("strokeWidth")
+  expect(arcSymbolTsx).not.toContain("strokeWidth")
   expect(generateSymbolFromRawEasy(rp2040RawEasy)).toContain(
     '<schematictext schX={0} schY={2.54} text="RP2040" fontSize={4.056944} anchor="left" color="#0000FF" schRotation={0} />',
   )

@@ -31,10 +31,10 @@ it("should include both obj and step cad model urls", async () => {
             <symbol>
               <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={5.08} schY={0} schStemLength={0.762} />
               <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-5.08} schY={0} schStemLength={0.762} />
-              <schematicpath svgPath="M -4.28752 0.01778 A 1.016 0.9906 0 1 0 -2.26568 0.01524" strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath svgPath="M -2.1336 0.01778 A 1.016 0.9906 0 1 0 -0.11176 0.01778" strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath svgPath="M 0.01778 0.01778 A 1.016 0.9906 0 1 0 2.03962 0.01778" strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath svgPath="M 2.2098 0.01778 A 1.016 0.9906 0 1 0 4.23418 0.01524" strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath svgPath="M -4.28752 0.01778 A 1.016 0.9906 0 1 0 -2.26568 0.01524" strokeColor="#880000" />
+              <schematicpath svgPath="M -2.1336 0.01778 A 1.016 0.9906 0 1 0 -0.11176 0.01778" strokeColor="#880000" />
+              <schematicpath svgPath="M 0.01778 0.01778 A 1.016 0.9906 0 1 0 2.03962 0.01778" strokeColor="#880000" />
+              <schematicpath svgPath="M 2.2098 0.01778 A 1.016 0.9906 0 1 0 4.23418 0.01524" strokeColor="#880000" />
             </symbol>
           }
           supplierPartNumbers={{
