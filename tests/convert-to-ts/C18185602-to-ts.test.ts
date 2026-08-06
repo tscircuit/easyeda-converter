@@ -41,11 +41,11 @@ it("should convert C18185602 into typescript file", async () => {
               <port name="pin3" pinNumber={3} aliases={["B"]} direction="right" schX={2.54} schY={-5.08} schStemLength={2.54} />
               <port name="pin2" pinNumber={2} aliases={["C"]} direction="right" schX={2.54} schY={-2.54} schStemLength={2.54} />
               <port name="pin4" pinNumber={4} aliases={["A"]} direction="right" schX={2.54} schY={2.54} schStemLength={2.54} />
-              <schematicpath points={[{"x":0,"y":-5.08},{"x":-6.858,"y":-5.08},{"x":-7.366,"y":-3.81},{"x":-7.874,"y":-5.08}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":0},{"x":-2.54,"y":0},{"x":-3.048,"y":1.27},{"x":-3.556,"y":0}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicrect schX={-9.144} schY={-2.54} width={1.016} height={4.064} strokeWidth={0.254} color="#880000" />
-              <schematicpath points={[{"x":0,"y":2.54},{"x":-9.144,"y":2.54},{"x":-9.144,"y":-0.508}]} strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":-2.54},{"x":-4.572,"y":-2.54},{"x":-5.08,"y":-1.27},{"x":-5.588,"y":-2.54}]} strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":-5.08},{"x":-6.858,"y":-5.08},{"x":-7.366,"y":-3.81},{"x":-7.874,"y":-5.08}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":0},{"x":-2.54,"y":0},{"x":-3.048,"y":1.27},{"x":-3.556,"y":0}]} strokeColor="#880000" />
+              <schematicrect schX={-9.144} schY={-2.54} width={1.016} height={4.064} color="#880000" />
+              <schematicpath points={[{"x":0,"y":2.54},{"x":-9.144,"y":2.54},{"x":-9.144,"y":-0.508}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":-2.54},{"x":-4.572,"y":-2.54},{"x":-5.08,"y":-1.27},{"x":-5.588,"y":-2.54}]} strokeColor="#880000" />
             </symbol>
           }
           supplierPartNumbers={{

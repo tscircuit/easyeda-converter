@@ -35,10 +35,10 @@ it("should convert C281113 into typescript file", async () => {
             <symbol>
               <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={5.08} schY={0} schStemLength={0.762} />
               <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-5.08} schY={0} schStemLength={0.762} />
-              <schematicpath svgPath="M -4.288282 0.017272 A 1.016 0.9906 0 1 0 -2.265172 0.016256" strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath svgPath="M -2.1336 0.018034 A 1.016 0.9906 0 1 0 -0.11049 0.016764" strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath svgPath="M 0.017018 0.018034 A 1.016 0.9906 0 1 0 2.040128 0.016764" strokeWidth={0.254} strokeColor="#880000" />
-              <schematicpath svgPath="M 2.2098 0.017526 A 1.016 0.9906 0 1 0 4.23291 0.016256" strokeWidth={0.254} strokeColor="#880000" />
+              <schematicpath svgPath="M -4.288282 0.017272 A 1.016 0.9906 0 1 0 -2.265172 0.016256" strokeColor="#880000" />
+              <schematicpath svgPath="M -2.1336 0.018034 A 1.016 0.9906 0 1 0 -0.11049 0.016764" strokeColor="#880000" />
+              <schematicpath svgPath="M 0.017018 0.018034 A 1.016 0.9906 0 1 0 2.040128 0.016764" strokeColor="#880000" />
+              <schematicpath svgPath="M 2.2098 0.017526 A 1.016 0.9906 0 1 0 4.23291 0.016256" strokeColor="#880000" />
             </symbol>
           }
           supplierPartNumbers={{
