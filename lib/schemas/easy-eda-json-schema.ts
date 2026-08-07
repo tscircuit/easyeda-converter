@@ -11,7 +11,9 @@ export const maybeNumber = z
   .pipe(z.number().nullable().optional())
 
 export const SzlcscSchema = z.object({
-  id: z.number(),
+  // EasyEDA returns this id as a number for some parts and a string for others
+  // (e.g. C356849); the value is unused, so accept either to avoid import crashes.
+  id: z.union([z.number(), z.string()]),
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),
@@ -22,7 +24,7 @@ export const SzlcscSchema = z.object({
 })
 
 export const LcscSchema = z.object({
-  id: z.number(),
+  id: z.union([z.number(), z.string()]),
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),
