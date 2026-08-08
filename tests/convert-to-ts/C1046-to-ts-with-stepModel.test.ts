@@ -2,6 +2,9 @@ import { expect, it } from "bun:test"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import chipRawEasy from "../assets/C1046.raweasy.json"
+import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
 it("should include both obj and step cad model urls", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -14,6 +17,14 @@ it("should include both obj and step cad model urls", async () => {
   expect(result).not.toContain("NaNmm")
   expect(result).toContain("objUrl")
   expect(result).toContain("stepUrl")
+
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C1046-to-ts-with-stepModel-schematic",
+  )
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"

@@ -3,7 +3,10 @@ import chipRawEasy from "../assets/C2961147.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import {
+  convertCircuitJsonToPcbSvg,
+  convertCircuitJsonToSchematicSvg,
+} from "circuit-to-svg"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
@@ -30,6 +33,10 @@ it("should convert C2961147 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C2961147-to-ts-schematic",
   )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 

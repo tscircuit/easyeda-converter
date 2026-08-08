@@ -4,6 +4,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
 it("should convert C75749 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -16,6 +17,10 @@ it("should convert C75749 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C75749-to-ts-schematic",
   )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path, {
     camPos: [30, 15, 10],
