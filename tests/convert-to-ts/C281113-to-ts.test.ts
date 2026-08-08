@@ -4,6 +4,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
 it("should convert C281113 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -16,6 +17,10 @@ it("should convert C281113 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C281113-to-ts-schematic",
   )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
@@ -33,12 +38,12 @@ it("should convert C281113 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={5.08} schY={0} schStemLength={0.762} />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-5.08} schY={0} schStemLength={0.762} />
-              <schematicpath svgPath="M -4.288282 0.017272 A 1.016 0.9906 0 1 0 -2.265172 0.016256" strokeColor="#880000" />
-              <schematicpath svgPath="M -2.1336 0.018034 A 1.016 0.9906 0 1 0 -0.11049 0.016764" strokeColor="#880000" />
-              <schematicpath svgPath="M 0.017018 0.018034 A 1.016 0.9906 0 1 0 2.040128 0.016764" strokeColor="#880000" />
-              <schematicpath svgPath="M 2.2098 0.017526 A 1.016 0.9906 0 1 0 4.23291 0.016256" strokeColor="#880000" />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
+              <schematicpath svgPath="M -0.33766 0.00136 A 0.08 0.078 0 1 0 -0.17836 0.00128" strokeColor="#880000" />
+              <schematicpath svgPath="M -0.168 0.00142 A 0.08 0.078 0 1 0 -0.0087 0.00132" strokeColor="#880000" />
+              <schematicpath svgPath="M 0.00134 0.00142 A 0.08 0.078 0 1 0 0.16064 0.00132" strokeColor="#880000" />
+              <schematicpath svgPath="M 0.174 0.00138 A 0.08 0.078 0 1 0 0.3333 0.00128" strokeColor="#880000" />
             </symbol>
           }
           supplierPartNumbers={{

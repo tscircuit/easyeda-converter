@@ -1,16 +1,24 @@
 import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
-import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
 import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
 
 const round = (value: number): number => Number(value.toFixed(6))
-const toMillimeters = (value: number): number => round(mil10ToMm(value))
+
+/**
+ * EasyEDA schematic coordinates use a 10 mil grid unit. A normal 100 mil pin
+ * grid is therefore 10 EasyEDA units, which corresponds to tscircuit's 0.2
+ * schematic pin spacing. Schematic coordinates are intentionally not physical
+ * millimeters; PCB and CAD conversion must continue to use mil10ToMm instead.
+ */
+const EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT = 0.02
+const toSchematicUnits = (value: number): number =>
+  round(value * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT)
 
 const getPointTransformer =
   (origin: { x: number; y: number }) => (point: { x: number; y: number }) => ({
-    x: toMillimeters(point.x - origin.x),
-    y: toMillimeters(origin.y - point.y),
+    x: toSchematicUnits(point.x - origin.x),
+    y: toSchematicUnits(origin.y - point.y),
   })
 
 const formatNumber = (value: number): string => String(round(value))
@@ -30,7 +38,7 @@ const SVG_PATH_COMMAND_PARAMETER_COUNTS: Record<string, number> = {
 
 /**
  * Convert an EasyEDA SVG path from its global, Y-down 10 mil coordinate space
- * into the local, Y-up millimeter coordinate space used by <symbol />.
+ * into the local, Y-up schematic coordinate space used by <symbol />.
  */
 const transformSvgPath = (
   pathData: string,
@@ -143,8 +151,8 @@ const transformSvgPath = (
       output.push(
         [
           "A",
-          formatNumber(toMillimeters(Math.abs(values[0]))),
-          formatNumber(toMillimeters(Math.abs(values[1]))),
+          formatNumber(toSchematicUnits(Math.abs(values[0]))),
+          formatNumber(toSchematicUnits(Math.abs(values[1]))),
           formatNumber(-values[2]),
           String(values[3]),
           String(values[4] === 0 ? 1 : 0),
@@ -173,16 +181,13 @@ const getPinDirection = (
 const getPinStemLength = (path: string): number | undefined => {
   const segment = path.match(/[hHvV]\s*(-?(?:\d*\.\d+|\d+\.?))/)
   if (!segment) return undefined
-  return toMillimeters(Math.abs(Number(segment[1])))
+  return toSchematicUnits(Math.abs(Number(segment[1])))
 }
 
-const getTextFontSizeMm = (fontSize: string): number => {
+const getTextFontSize = (fontSize: string): number => {
   const numericFontSize = Number.parseFloat(fontSize)
-  if (!Number.isFinite(numericFontSize)) return 1
-  if (fontSize.toLowerCase().endsWith("pt")) {
-    return round((numericFontSize * 25.4) / 72)
-  }
-  return toMillimeters(numericFontSize)
+  if (!Number.isFinite(numericFontSize)) return 0.2
+  return toSchematicUnits(numericFontSize)
 }
 
 const getTextAnchor = (
@@ -291,12 +296,12 @@ const generateShapeTsx = ({
       x: shape.position.x + shape.width / 2,
       y: shape.position.y + shape.height / 2,
     })
-    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toMillimeters(shape.width)}} height={${toMillimeters(shape.height)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toSchematicUnits(shape.width)}} height={${toSchematicUnits(shape.height)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "ELLIPSE") {
     const center = transformPoint(shape.center)
-    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toMillimeters(Math.max(shape.radiusX, shape.radiusY))}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toSchematicUnits(Math.max(shape.radiusX, shape.radiusY))}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "POLYLINE" || shape.type === "POLYGON") {
@@ -321,7 +326,7 @@ const generateShapeTsx = ({
   if (shape.type === "TEXT") {
     if (shape.visibility !== "1") return undefined
     const position = transformPoint({ x: shape.x, y: shape.y })
-    return `<schematictext schX={${position.x}} schY={${position.y}} text=${JSON.stringify(shape.content)} fontSize={${getTextFontSizeMm(shape.fontSize)}} anchor=${JSON.stringify(getTextAnchor(shape.alignment))} color=${JSON.stringify(shape.fontColor)} schRotation={${round(-shape.rotation)}} />`
+    return `<schematictext schX={${position.x}} schY={${position.y}} text=${JSON.stringify(shape.content)} fontSize={${getTextFontSize(shape.fontSize)}} anchor=${JSON.stringify(getTextAnchor(shape.alignment))} color=${JSON.stringify(shape.fontColor)} schRotation={${round(-shape.rotation)}} />`
   }
 
   if (shape.type === "PIN" && portMetadata) {

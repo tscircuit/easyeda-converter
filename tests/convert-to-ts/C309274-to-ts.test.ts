@@ -4,6 +4,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
 it("should convert C309274 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -16,6 +17,10 @@ it("should convert C309274 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C309274-to-ts-schematic",
   )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path, {
     camPos: [20, -20, 20],
@@ -39,23 +44,23 @@ it("should convert C309274 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <schematicrect schX={-5.842} schY={1.27} width={1.524} height={7.62} color="#880000" />
-              <schematicpath points={[{"x":5.08,"y":5.08},{"x":2.54,"y":5.08},{"x":2.54,"y":7.62},{"x":2.794,"y":6.096}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":2.54,"y":7.62},{"x":2.286,"y":6.096}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":5.08,"y":0},{"x":2.54,"y":0},{"x":2.54,"y":2.54},{"x":2.286,"y":1.27}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":2.54,"y":2.54},{"x":2.794,"y":1.27}]} strokeColor="#880000" />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={7.62} schY={7.62} schStemLength={2.54} />
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={7.62} schY={5.08} schStemLength={2.54} />
-              <port name="pin4" pinNumber={4} aliases={["4"]} direction="right" schX={7.62} schY={2.54} schStemLength={2.54} />
-              <port name="pin5" pinNumber={5} aliases={["5"]} direction="right" schX={7.62} schY={0} schStemLength={2.54} />
-              <port name="pin6" pinNumber={6} aliases={["6"]} direction="right" schX={7.62} schY={-2.54} schStemLength={2.54} />
-              <port name="pin7" pinNumber={7} aliases={["7"]} direction="right" schX={7.62} schY={-5.08} schStemLength={2.54} />
-              <schematicpath points={[{"x":5.08,"y":7.62},{"x":-2.54,"y":7.62},{"x":-2.54,"y":2.54}]} strokeColor="#880000" />
-              <schematicpath svgPath="M -3.556 2.54 C -3.556 1.778 -2.54 1.778 -2.54 2.54" strokeColor="#880000" />
-              <schematicpath points={[{"x":5.08,"y":-5.08},{"x":2.54,"y":-5.08},{"x":2.54,"y":-2.54},{"x":2.286,"y":-3.81}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":2.54,"y":-2.54},{"x":2.794,"y":-3.81}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":5.08,"y":2.54},{"x":0.508,"y":2.54},{"x":0,"y":3.556},{"x":-0.508,"y":2.54}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":5.08,"y":-2.54},{"x":1.778,"y":-2.54},{"x":1.27,"y":-1.524},{"x":0.762,"y":-2.54}]} strokeColor="#880000" />
+              <schematicrect schX={-0.46} schY={0.1} width={0.12} height={0.6} color="#880000" />
+              <schematicpath points={[{"x":0.4,"y":0.4},{"x":0.2,"y":0.4},{"x":0.2,"y":0.6},{"x":0.22,"y":0.48}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.2,"y":0.6},{"x":0.18,"y":0.48}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.4,"y":0},{"x":0.2,"y":0},{"x":0.2,"y":0.2},{"x":0.18,"y":0.1}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.2,"y":0.2},{"x":0.22,"y":0.1}]} strokeColor="#880000" />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.6} schY={0.6} schStemLength={0.2} />
+              <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={0.6} schY={0.4} schStemLength={0.2} />
+              <port name="pin4" pinNumber={4} aliases={["4"]} direction="right" schX={0.6} schY={0.2} schStemLength={0.2} />
+              <port name="pin5" pinNumber={5} aliases={["5"]} direction="right" schX={0.6} schY={0} schStemLength={0.2} />
+              <port name="pin6" pinNumber={6} aliases={["6"]} direction="right" schX={0.6} schY={-0.2} schStemLength={0.2} />
+              <port name="pin7" pinNumber={7} aliases={["7"]} direction="right" schX={0.6} schY={-0.4} schStemLength={0.2} />
+              <schematicpath points={[{"x":0.4,"y":0.6},{"x":-0.2,"y":0.6},{"x":-0.2,"y":0.2}]} strokeColor="#880000" />
+              <schematicpath svgPath="M -0.28 0.2 C -0.28 0.14 -0.2 0.14 -0.2 0.2" strokeColor="#880000" />
+              <schematicpath points={[{"x":0.4,"y":-0.4},{"x":0.2,"y":-0.4},{"x":0.2,"y":-0.2},{"x":0.18,"y":-0.3}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.2,"y":-0.2},{"x":0.22,"y":-0.3}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.4,"y":0.2},{"x":0.04,"y":0.2},{"x":0,"y":0.28},{"x":-0.04,"y":0.2}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.4,"y":-0.2},{"x":0.14,"y":-0.2},{"x":0.1,"y":-0.12},{"x":0.06,"y":-0.2}]} strokeColor="#880000" />
             </symbol>
           }
           supplierPartNumbers={{
