@@ -36,21 +36,21 @@ it("should convert C5830143 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="up" schX={0} schY={2.794} schStemLength={2.54} />
-              <schematiccircle center={{ x: 2.794, y: -1.524 }} radius={0.254} color="#A00000" />
-              <schematicpath points={[{"x":-0.508,"y":0.254},{"x":0,"y":-0.762},{"x":0.508,"y":0.254},{"x":-0.508,"y":0.254}]} strokeColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={5.08} schY={-2.286} schStemLength={2.54} />
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="left" schX={-5.08} schY={-2.286} schStemLength={2.54} />
-              <schematicpath points={[{"x":0,"y":0.254},{"x":0,"y":-0.762}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":2.286,"y":-3.302},{"x":2.54,"y":-2.286}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":1.524,"y":-1.27},{"x":2.286,"y":-3.302}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":1.016,"y":-3.302},{"x":1.524,"y":-1.27}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":0.254,"y":-1.27},{"x":1.016,"y":-3.302}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":-0.254,"y":-3.302},{"x":0.254,"y":-1.27}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":-0.762,"y":-1.27},{"x":-0.254,"y":-3.302}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":-1.524,"y":-3.302},{"x":-0.762,"y":-1.27}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":-2.032,"y":-1.27},{"x":-1.524,"y":-3.302}]} strokeColor="#8D2323" />
-              <schematicpath points={[{"x":-2.54,"y":-2.286},{"x":-2.032,"y":-1.27}]} strokeColor="#8D2323" />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="up" schX={0} schY={0.22} schStemLength={0.2} />
+              <schematiccircle center={{ x: 0.22, y: -0.12 }} radius={0.02} color="#A00000" />
+              <schematicpath points={[{"x":-0.04,"y":0.02},{"x":0,"y":-0.06},{"x":0.04,"y":0.02},{"x":-0.04,"y":0.02}]} strokeColor="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={0.4} schY={-0.18} schStemLength={0.2} />
+              <port name="pin3" pinNumber={3} aliases={["3"]} direction="left" schX={-0.4} schY={-0.18} schStemLength={0.2} />
+              <schematicpath points={[{"x":0,"y":0.02},{"x":0,"y":-0.06}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.18,"y":-0.26},{"x":0.2,"y":-0.18}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":0.12,"y":-0.1},{"x":0.18,"y":-0.26}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":0.08,"y":-0.26},{"x":0.12,"y":-0.1}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":0.02,"y":-0.1},{"x":0.08,"y":-0.26}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":-0.02,"y":-0.26},{"x":0.02,"y":-0.1}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":-0.06,"y":-0.1},{"x":-0.02,"y":-0.26}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":-0.12,"y":-0.26},{"x":-0.06,"y":-0.1}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":-0.16,"y":-0.1},{"x":-0.12,"y":-0.26}]} strokeColor="#8D2323" />
+              <schematicpath points={[{"x":-0.2,"y":-0.18},{"x":-0.16,"y":-0.1}]} strokeColor="#8D2323" />
             </symbol>
           }
           supplierPartNumbers={{
