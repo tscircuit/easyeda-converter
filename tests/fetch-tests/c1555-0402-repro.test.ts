@@ -99,7 +99,7 @@ const misleadingDetailResult = {
   },
 }
 
-it("reproduces C1555 resolving to a non-0402 value match", async () => {
+it("rejects C1555 when EasyEDA only returns fuzzy value matches", async () => {
   const requests: string[] = []
   const fakeFetchImplementation = async (
     input: RequestInfo | URL,
@@ -148,17 +148,19 @@ it("reproduces C1555 resolving to a non-0402 value match", async () => {
     preconnect: globalThis.fetch.preconnect,
   })
 
-  const result = await fetchEasyEDAComponent("C1555", {
-    fetch: fakeFetch,
-    includeModelMetadata: false,
-  })
+  await expect(
+    fetchEasyEDAComponent("C1555", {
+      fetch: fakeFetch,
+      includeModelMetadata: false,
+    }),
+  ).rejects.toThrow('No exact EasyEDA component match for "C1555"')
 
-  expect(requests).toHaveLength(2)
-  expect(result.dataStr.head.c_para["Supplier Part"]).toBe("C6083536")
-  expect(result.lcsc.number).toBe("C6083536")
-  expect(result.dataStr.head.c_para.package).toContain("OSC-SMD_6P")
+  // The misleading result must not be followed to the component-details API.
+  expect(requests).toHaveLength(1)
+})
 
-  const betterResult = EasyEdaJsonSchema.parse(result)
+it("snapshots the misleading C1555 search candidate", () => {
+  const betterResult = EasyEdaJsonSchema.parse(misleadingDetailResult)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterResult, {
     useModelCdn: false,
   })
