@@ -122,11 +122,28 @@ export async function fetchEasyEDAComponent(
     throw new Error("Component not found")
   }
 
-  const bestMatchComponent =
-    searchResult.result.lists.lcsc.find(
-      (component: any) =>
-        component.dataStr.head.c_para["Supplier Part"] === jlcpcbPartNumber,
-    ) ?? searchResult.result.lists.lcsc[0]
+  const requestedPartNumber = jlcpcbPartNumber.trim().toUpperCase()
+  const bestMatchComponent = searchResult.result.lists.lcsc.find(
+    (component: any) => {
+      const candidatePartNumbers = [
+        component.dataStr?.head?.c_para?.["Supplier Part"],
+        component.lcsc?.number,
+        component.szlcsc?.number,
+      ]
+
+      return candidatePartNumbers.some(
+        (partNumber) =>
+          typeof partNumber === "string" &&
+          partNumber.trim().toUpperCase() === requestedPartNumber,
+      )
+    },
+  )
+
+  if (!bestMatchComponent) {
+    throw new Error(
+      `No exact EasyEDA component match for "${jlcpcbPartNumber}"`,
+    )
+  }
 
   const componentUUID = bestMatchComponent.uuid
 
