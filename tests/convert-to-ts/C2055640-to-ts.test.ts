@@ -51,8 +51,10 @@ test.failing(
   "repro: C2055640 should preserve circular EasyEDA BGA pads",
   () => {
     const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+    type PackageShape = (typeof betterEasy.packageDetail.dataStr.shape)[number]
+    type PadShape = Extract<PackageShape, { type: "PAD" }>
     const originalEllipsePads = betterEasy.packageDetail.dataStr.shape.filter(
-      (shape) =>
+      (shape): shape is PadShape =>
         shape.type === "PAD" &&
         shape.shape === "ELLIPSE" &&
         shape.holeRadius === "0mil",
