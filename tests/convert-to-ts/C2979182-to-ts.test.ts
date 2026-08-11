@@ -36,7 +36,7 @@ it("should convert C2979182 / MY-18650-02 into typescript file", async () => {
         "C2979182"
       ]
     }}
-          manufacturerPartNumber="MY_18650_02"
+          manufacturerPartNumber="MY-18650-02"
           footprint={<footprint>
             <smtpad portHints={["pin2"]} pcbX="8.499983mm" pcbY="0mm" width="4.99999mm" height="5.499989mm" shape="rect" />
     <smtpad portHints={["pin1"]} pcbX="-8.499983mm" pcbY="0mm" width="4.99999mm" height="3.499993mm" shape="rect" />

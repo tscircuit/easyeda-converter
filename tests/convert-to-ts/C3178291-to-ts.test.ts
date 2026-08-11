@@ -46,7 +46,7 @@ it("should convert C3178291 into typescript file", async () => {
         "C3178291"
       ]
     }}
-          manufacturerPartNumber="VL53L4CDV0DH_1"
+          manufacturerPartNumber="VL53L4CDV0DH/1"
           footprint={<footprint>
             <smtpad portHints={["pin10"]} pcbX="0.7682738mm" pcbY="0.7999984mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin11"]} pcbX="1.5683738mm" pcbY="0.7999984mm" width="0.508mm" height="0.508mm" shape="rect" />

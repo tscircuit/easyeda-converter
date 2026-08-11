@@ -38,7 +38,7 @@ it("should convert C6186 into typescript file", async () => {
         "C6186"
       ]
     }}
-          manufacturerPartNumber="AMS1117_3_3"
+          manufacturerPartNumber="AMS1117-3.3"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="2.92995985mm" pcbY="-2.29997mm" width="2.499995mm" height="1.0999978mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="2.92995985mm" pcbY="0mm" width="2.499995mm" height="1.0999978mm" shape="rect" />

@@ -97,7 +97,7 @@ it("should convert C2838502 into typescript file", async () => {
         "C2838502"
       ]
     }}
-          manufacturerPartNumber="ESP32_C3_MINI_1_N4"
+          manufacturerPartNumber="ESP32-C3-MINI-1-N4"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-5.899912mm" pcbY="3.999992mm" width="0.7999984mm" height="0.3999992mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="-5.899912mm" pcbY="3.199892mm" width="0.7999984mm" height="0.3999992mm" shape="rect" />
