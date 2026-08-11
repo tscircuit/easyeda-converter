@@ -45,6 +45,21 @@ it("normalizes literal undefined optional text fields from EasyEDA text shapes",
   })
 })
 
+it("normalizes whitespace-only text metadata from C60708", () => {
+  const shape = SingleLetterShapeSchema.parse(
+    "T~L~355~335~0~#000000~times New Roman~5~ ~ ~~comment~1.2-3.6V~1~start~gge98~0~pinpart",
+  )
+
+  expect(shape).toMatchObject({
+    type: "TEXT",
+    fontWeight: "normal",
+    fontStyle: "normal",
+    fontDecoration: "",
+    content: "1.2-3.6V",
+    textType: "comment",
+  })
+})
+
 it("still rejects unexpected fontStyle values", () => {
   expect(() =>
     SingleLetterShapeSchema.parse(

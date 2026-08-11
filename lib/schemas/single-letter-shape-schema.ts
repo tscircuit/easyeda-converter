@@ -342,13 +342,18 @@ export const PathShapeSchema = z
   .pipe(PathShapeOutputSchema)
 
 /**
- * EasyEDA sometimes serializes absent optional text fields as the literal string
- * "undefined" instead of omitting them or leaving them empty.
+ * EasyEDA sometimes serializes absent optional text fields as whitespace or the
+ * literal string "undefined" instead of omitting them or leaving them empty.
  */
 const optionalEasyEdaTextField = <T extends z.ZodTypeAny>(fieldSchema: T) =>
   z.preprocess((textField) => {
-    if (textField == null || textField === "" || textField === "undefined") {
-      return undefined
+    if (textField == null) return undefined
+
+    if (typeof textField === "string") {
+      const trimmedTextField = textField.trim()
+      if (trimmedTextField === "" || trimmedTextField === "undefined") {
+        return undefined
+      }
     }
 
     return textField
