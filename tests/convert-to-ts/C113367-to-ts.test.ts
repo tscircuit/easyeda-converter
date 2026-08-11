@@ -105,3 +105,31 @@ it("should convert C113367 into typescript file", async () => {
   const pcbSvg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(pcbSvg).toMatchSvgSnapshot(import.meta.path)
 }, 50000)
+
+it.failing(
+  "repro: C113367 should generate one schematic port for each footprint pin",
+  async () => {
+    const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
+    const result = await convertBetterEasyToTsx({ betterEasy })
+    const circuitJson = await runTscircuitCode(
+      wrapTsxWithBoardFor3dSnapshot(result),
+    )
+
+    expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+      import.meta.path,
+      "C113367-duplicate-schematic-pin-repro",
+    )
+
+    const schematicPinNumbers = [
+      ...result.matchAll(/<port\b[^>]*\bpinNumber=\{(\d+)\}/g),
+    ]
+      .map((match) => Number(match[1]))
+      .sort((a, b) => a - b)
+
+    // The footprint has pins 1 through 8. The EasyEDA symbol payload assigns
+    // both VO_NEG and NC to pin 8, so the converter currently emits
+    // [1, 2, 3, 5, 6, 7, 8, 8] and omits pin 4 from the schematic.
+    expect(schematicPinNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
+  },
+  50000,
+)
