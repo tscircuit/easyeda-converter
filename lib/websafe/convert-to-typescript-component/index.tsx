@@ -8,6 +8,7 @@ import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacture
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
+import { isCrystalComponent } from "./is-crystal-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
 import { isPushbuttonCategoryComponent } from "./is-pushbutton-category-component"
@@ -24,6 +25,7 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy)) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
+  if (isCrystalComponent(betterEasy)) return "crystal"
   return "chip"
 }
 
@@ -91,6 +93,18 @@ export const convertBetterEasyToTsx = async ({
     jlcpcb: [betterEasy.lcsc.number],
   }
   const componentType = getGeneratedComponentType(betterEasy)
+  const crystalFrequency =
+    componentType === "crystal"
+      ? betterEasy.dataStr.head.c_para.Value?.trim()
+      : undefined
+  const crystalPinVariant =
+    componentType !== "crystal"
+      ? undefined
+      : sourcePorts.length === 4
+        ? "four_pin"
+        : sourcePorts.length === 2
+          ? "two_pin"
+          : undefined
   const symbolTsx =
     componentType === "chip" && hasNonBoxSchematicSymbol(betterEasy)
       ? generateSymbolTsx(betterEasy, circuitJson)
@@ -106,6 +120,8 @@ export const convertBetterEasyToTsx = async ({
     circuitJson,
     supplierPartNumbers,
     componentType,
+    crystalFrequency,
+    crystalPinVariant,
     symbolTsx,
   })
 }
