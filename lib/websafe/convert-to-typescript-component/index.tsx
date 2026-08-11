@@ -57,9 +57,12 @@ export const convertBetterEasyToTsx = async ({
   }
   const manufacturerPartNumber =
     betterEasy.dataStr.head.c_para["Manufacturer Part"]
-  const componentName = normalizeManufacturerPartNumber(
-    manufacturerPartNumber || betterEasy.lcsc.number,
-  )
+  if (!manufacturerPartNumber) {
+    throw new Error(
+      `Missing manufacturer part number for ${betterEasy.lcsc.number}`,
+    )
+  }
+  const componentName = normalizeManufacturerPartNumber(manufacturerPartNumber)
   const sourcePorts = su(circuitJson).source_port.list()
 
   const pinLabels: Record<string, string[]> = {}
