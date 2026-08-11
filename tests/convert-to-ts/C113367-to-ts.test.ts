@@ -111,6 +111,14 @@ it.failing(
   async () => {
     const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
     const result = await convertBetterEasyToTsx({ betterEasy })
+    const circuitJson = await runTscircuitCode(
+      wrapTsxWithBoardFor3dSnapshot(result),
+    )
+
+    expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+      import.meta.path,
+      "C113367-duplicate-schematic-pin-repro",
+    )
 
     const schematicPinNumbers = [
       ...result.matchAll(/<port\b[^>]*\bpinNumber=\{(\d+)\}/g),
