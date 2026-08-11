@@ -98,7 +98,7 @@ export const convertBetterEasyToTsx = async ({
 
   return generateTypescriptComponent({
     componentName: pn,
-    manufacturerPartNumber: pn,
+    manufacturerPartNumber: rawPn || "unknown",
     pinLabels,
 
     objUrl: modelObjUrl,

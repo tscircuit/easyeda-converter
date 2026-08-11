@@ -42,7 +42,7 @@ it("should convert C136720 slide switch into a switch component with pin labels"
         "C136720"
       ]
     }}
-          manufacturerPartNumber="SK_12E12_G5"
+          manufacturerPartNumber="SK-12E12-G5"
           footprint={<footprint>
             <platedhole  portHints={["pin2"]} pcbX="0mm" pcbY="0.127mm" outerDiameter="1.524mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin3"]} pcbX="0mm" pcbY="-2.921mm" outerDiameter="1.524mm" holeDiameter="0.999998mm" shape="circle" />
