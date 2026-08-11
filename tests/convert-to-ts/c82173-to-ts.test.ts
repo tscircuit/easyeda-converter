@@ -3,10 +3,11 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import chipRawEasy from "../assets/C82173.raweasy.json"
 
-it("reproduces C82173 being generated as a discrete LED", async () => {
+it("generates the C82173 LED driver IC as a chip", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  expect(result).toContain('import type { LedProps } from "@tscircuit/props"')
-  expect(result).toContain("<led")
+  expect(result).toContain('import type { ChipProps } from "@tscircuit/props"')
+  expect(result).toContain("<chip")
+  expect(result).not.toContain("<led")
 })
