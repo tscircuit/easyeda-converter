@@ -10,3 +10,17 @@ it("preserves the exact C9972 manufacturer part number", async () => {
   expect(result).toContain("export const XC6206P302MR_G")
   expect(result).toContain('manufacturerPartNumber="XC6206P302MR-G"')
 })
+
+it("omits missing manufacturer part number metadata", async () => {
+  const rawEasyWithoutManufacturerPartNumber = structuredClone(chipRawEasy)
+  rawEasyWithoutManufacturerPartNumber.dataStr.head.c_para[
+    "Manufacturer Part"
+  ] = null
+  const betterEasy = EasyEdaJsonSchema.parse(
+    rawEasyWithoutManufacturerPartNumber,
+  )
+  const result = await convertBetterEasyToTsx({ betterEasy })
+
+  expect(result).toContain("export const C9972")
+  expect(result).not.toContain("manufacturerPartNumber=")
+})
