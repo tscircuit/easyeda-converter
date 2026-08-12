@@ -13,9 +13,10 @@ it("preserves the exact C9972 manufacturer part number", async () => {
 
 it("reports missing manufacturer part number metadata", async () => {
   const rawEasyWithoutManufacturerPartNumber = structuredClone(chipRawEasy)
-  rawEasyWithoutManufacturerPartNumber.dataStr.head.c_para[
-    "Manufacturer Part"
-  ] = null
+  Reflect.deleteProperty(
+    rawEasyWithoutManufacturerPartNumber.dataStr.head.c_para,
+    "Manufacturer Part",
+  )
   const betterEasy = EasyEdaJsonSchema.parse(
     rawEasyWithoutManufacturerPartNumber,
   )
