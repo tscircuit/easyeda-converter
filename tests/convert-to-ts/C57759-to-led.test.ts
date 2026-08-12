@@ -33,7 +33,7 @@ it("should convert led category components to led elements", async () => {
         "C57759"
       ]
     }}
-          manufacturerPartNumber="A_1N4148WS"
+          manufacturerPartNumber="1N4148WS"
           footprint={<footprint>
             <smtpad portHints={["pin1","cathode","neg"]} pcbX="-1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />
     <smtpad portHints={["pin2","anode","pos"]} pcbX="1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />

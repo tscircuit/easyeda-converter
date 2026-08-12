@@ -10,6 +10,7 @@ export type GeneratedComponentType =
   | "pushbutton"
   | "switch"
   | "inductor"
+  | "crystal"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -21,6 +22,8 @@ interface Params {
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
   inductance?: string
+  crystalFrequency?: string
+  crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
 }
 
@@ -34,6 +37,8 @@ export const generateTypescriptComponent = ({
   manufacturerPartNumber,
   componentType = "chip",
   inductance,
+  crystalFrequency,
+  crystalPinVariant,
   symbolTsx,
 }: Params) => {
   // Ensure pinLabels is defined
@@ -246,6 +251,41 @@ ${cadModelLines}
           : ""
       }
       {...props}
+    />
+  )
+}
+`.trim()
+  }
+
+  if (componentType === "crystal") {
+    if (!crystalFrequency || !crystalPinVariant) {
+      throw new Error("Crystal frequency and pin variant are required")
+    }
+
+    return `
+import type { CrystalProps } from "@tscircuit/props"
+
+type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
+
+export const ${componentName} = (props: ImportedCrystalProps) => {
+  const { name = "X1", ...restProps } = props
+
+  return (
+    <crystal
+      name={name}
+      frequency=${JSON.stringify(crystalFrequency)}
+      pinVariant=${JSON.stringify(crystalPinVariant)}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...restProps}
     />
   )
 }

@@ -50,7 +50,7 @@ it("should convert C165948 into typescript file", async () => {
         "C165948"
       ]
     }}
-          manufacturerPartNumber="TYPE_C_31_M_12"
+          manufacturerPartNumber="TYPE-C-31-M-12"
           footprint={<footprint>
             <hole pcbX="-2.899918mm" pcbY="0.9055672mm" diameter="0.7500112mm" />
     <hole pcbX="2.899918mm" pcbY="0.9055672mm" diameter="0.7500112mm" />

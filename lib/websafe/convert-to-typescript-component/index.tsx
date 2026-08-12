@@ -8,6 +8,7 @@ import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacture
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
+import { isCrystalComponent } from "./is-crystal-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isInductorComponent } from "./is-inductor-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
@@ -26,6 +27,7 @@ const getGeneratedComponentType = (
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
   if (isInductorComponent(betterEasy)) return "inductor"
+  if (isCrystalComponent(betterEasy)) return "crystal"
   return "chip"
 }
 
@@ -57,8 +59,14 @@ export const convertBetterEasyToTsx = async ({
     cadComponent.position.x = 0
     cadComponent.position.y = 0
   }
-  const rawPn = betterEasy.dataStr.head.c_para["Manufacturer Part"]
-  const pn = rawPn ? normalizeManufacturerPartNumber(rawPn) : "unknown"
+  const manufacturerPartNumber =
+    betterEasy.dataStr.head.c_para["Manufacturer Part"]
+  if (!manufacturerPartNumber) {
+    throw new Error(
+      `Missing manufacturer part number for ${betterEasy.lcsc.number}`,
+    )
+  }
+  const componentName = normalizeManufacturerPartNumber(manufacturerPartNumber)
   const sourcePorts = su(circuitJson).source_port.list()
 
   const pinLabels: Record<string, string[]> = {}
@@ -97,14 +105,26 @@ export const convertBetterEasyToTsx = async ({
     componentType === "inductor"
       ? betterEasy.dataStr.head.c_para.Value?.trim()
       : undefined
+  const crystalFrequency =
+    componentType === "crystal"
+      ? betterEasy.dataStr.head.c_para.Value?.trim()
+      : undefined
+  const crystalPinVariant =
+    componentType !== "crystal"
+      ? undefined
+      : sourcePorts.length === 4
+        ? "four_pin"
+        : sourcePorts.length === 2
+          ? "two_pin"
+          : undefined
   const symbolTsx =
     componentType === "chip" && hasNonBoxSchematicSymbol(betterEasy)
       ? generateSymbolTsx(betterEasy, circuitJson)
       : undefined
 
   return generateTypescriptComponent({
-    componentName: pn,
-    manufacturerPartNumber: pn,
+    componentName,
+    manufacturerPartNumber,
     pinLabels,
 
     objUrl: modelObjUrl,
@@ -113,6 +133,8 @@ export const convertBetterEasyToTsx = async ({
     supplierPartNumbers,
     componentType,
     inductance,
+    crystalFrequency,
+    crystalPinVariant,
     symbolTsx,
   })
 }

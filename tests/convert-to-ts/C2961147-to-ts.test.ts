@@ -73,7 +73,7 @@ it("should convert C2961147 into typescript file", async () => {
         "C2961147"
       ]
     }}
-          manufacturerPartNumber="PJ_002AH"
+          manufacturerPartNumber="PJ-002AH"
           footprint={<footprint>
             <platedhole  portHints={["pin3"]} pcbX="-0mm" pcbY="2.350008mm" holeWidth="0.999998mm" holeHeight="3.1999936mm" outerWidth="1.7999964mm" outerHeight="3.999992mm" pcbRotation="90deg" shape="pill" />
     <platedhole  portHints={["pin2"]} pcbX="2.999994mm" pcbY="-2.350008mm" holeWidth="0.999998mm" holeHeight="3.1999936mm" outerWidth="1.7999964mm" outerHeight="3.999992mm" shape="pill" />
