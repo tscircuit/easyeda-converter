@@ -47,35 +47,31 @@ test("C2055640 should preserve courtyard outlines when round-tripping through TS
   expect(pcbSvg).toMatchSvgSnapshot(import.meta.path)
 }, 20000)
 
-test.failing(
-  "repro: C2055640 should preserve circular EasyEDA BGA pads",
-  () => {
-    const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
-    type PackageShape = (typeof betterEasy.packageDetail.dataStr.shape)[number]
-    type PadShape = Extract<PackageShape, { type: "PAD" }>
-    const originalEllipsePads = betterEasy.packageDetail.dataStr.shape.filter(
-      (shape): shape is PadShape =>
-        shape.type === "PAD" &&
-        shape.shape === "ELLIPSE" &&
-        shape.holeRadius === "0mil",
-    )
+test("repro: C2055640 should preserve circular EasyEDA BGA pads", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+  type PackageShape = (typeof betterEasy.packageDetail.dataStr.shape)[number]
+  type PadShape = Extract<PackageShape, { type: "PAD" }>
+  const originalEllipsePads = betterEasy.packageDetail.dataStr.shape.filter(
+    (shape): shape is PadShape =>
+      shape.type === "PAD" &&
+      shape.shape === "ELLIPSE" &&
+      shape.holeRadius === "0mil",
+  )
 
-    expect(originalEllipsePads).toHaveLength(100)
-    expect(originalEllipsePads.every((pad) => pad.width === pad.height)).toBe(
-      true,
-    )
+  expect(originalEllipsePads).toHaveLength(100)
+  expect(originalEllipsePads.every((pad) => pad.width === pad.height)).toBe(
+    true,
+  )
 
-    const convertedCircuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-    const convertedPads = convertedCircuitJson.filter(
-      (element) => element.type === "pcb_smtpad",
-    )
+  const convertedCircuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const convertedPads = convertedCircuitJson.filter(
+    (element) => element.type === "pcb_smtpad",
+  )
 
-    expect(
-      convertCircuitJsonToPcbSvg(convertedCircuitJson as any),
-    ).toMatchSvgSnapshot(import.meta.path, "C2055640-circular-bga-pad-repro")
+  expect(
+    convertCircuitJsonToPcbSvg(convertedCircuitJson as any),
+  ).toMatchSvgSnapshot(import.meta.path, "C2055640-circular-bga-pad-repro")
 
-    expect(convertedPads).toHaveLength(100)
-    expect(convertedPads.every((pad) => pad.shape === "circle")).toBe(true)
-  },
-  20000,
-)
+  expect(convertedPads).toHaveLength(100)
+  expect(convertedPads.every((pad) => pad.shape === "circle")).toBe(true)
+}, 20000)

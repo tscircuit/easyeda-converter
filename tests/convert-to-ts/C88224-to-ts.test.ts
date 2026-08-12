@@ -58,7 +58,7 @@ it("should convert C88224 into typescript file", async () => {
         "C88224"
       ]
     }}
-          manufacturerPartNumber="TB6612FNG_O_C_8_EL"
+          manufacturerPartNumber="TB6612FNG(O,C,8,EL"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-3.57505mm" pcbY="-3.490976mm" width="0.3640074mm" height="2.0820126mm" radius="0.1820037mm" shape="pill" />
     <smtpad portHints={["pin2"]} pcbX="-2.925064mm" pcbY="-3.490976mm" width="0.3640074mm" height="2.0820126mm" radius="0.1820037mm" shape="pill" />

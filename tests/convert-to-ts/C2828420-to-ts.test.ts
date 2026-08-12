@@ -62,7 +62,7 @@ it("should convert C2828420 diode with metadata-derived pin labels", async () =>
         "C2828420"
       ]
     }}
-          manufacturerPartNumber="A_1N5819W"
+          manufacturerPartNumber="1N5819W"
           footprint={<footprint>
             <smtpad portHints={["pin2","anode","pos"]} pcbX="1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />
     <smtpad portHints={["pin1","cathode","neg"]} pcbX="-1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />

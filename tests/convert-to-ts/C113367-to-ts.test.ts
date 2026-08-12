@@ -1,13 +1,13 @@
-import { it, expect } from "bun:test"
-import chipRawEasy from "../assets/C113367.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { runTscircuitCode } from "tscircuit"
-import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { expect, it } from "bun:test"
 import {
   convertCircuitJsonToPcbSvg,
   convertCircuitJsonToSchematicSvg,
 } from "circuit-to-svg"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { runTscircuitCode } from "tscircuit"
+import chipRawEasy from "../assets/C113367.raweasy.json"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C113367 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -63,7 +63,7 @@ it("should convert C113367 into typescript file", async () => {
               <port name="pin5" pinNumber={5} aliases={["VO_POS"]} direction="right" schX={0.8} schY={-0.1} schStemLength={0.4} />
               <port name="pin6" pinNumber={6} aliases={["VDD"]} direction="up" schX={0} schY={0.7} schStemLength={0.4} />
               <port name="pin8" pinNumber={8} aliases={["VO_NEG"]} direction="right" schX={0.8} schY={-0.5} schStemLength={0.4} />
-              <port name="pin8" pinNumber={8} aliases={["VO_NEG","NC"]} direction="left" schX={-0.8} schY={-0.7} schStemLength={0.4} />
+              <port name="pin4" pinNumber={4} aliases={["NC"]} direction="left" schX={-0.8} schY={-0.7} schStemLength={0.4} />
               <schematictext schX={0.72} schY={-0.02} text="+" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
               <schematictext schX={0.76} schY={-0.46} text="-" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
             </symbol>
@@ -106,30 +106,26 @@ it("should convert C113367 into typescript file", async () => {
   expect(pcbSvg).toMatchSvgSnapshot(import.meta.path)
 }, 50000)
 
-it.failing(
-  "repro: C113367 should generate one schematic port for each footprint pin",
-  async () => {
-    const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-    const result = await convertBetterEasyToTsx({ betterEasy })
-    const circuitJson = await runTscircuitCode(
-      wrapTsxWithBoardFor3dSnapshot(result),
-    )
+it("C113367 generates one schematic port for each footprint pin", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
+  const result = await convertBetterEasyToTsx({ betterEasy })
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
 
-    expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
-      import.meta.path,
-      "C113367-duplicate-schematic-pin-repro",
-    )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C113367-duplicate-schematic-pin-repro",
+  )
 
-    const schematicPinNumbers = [
-      ...result.matchAll(/<port\b[^>]*\bpinNumber=\{(\d+)\}/g),
-    ]
-      .map((match) => Number(match[1]))
-      .sort((a, b) => a - b)
+  const schematicPinNumbers = [
+    ...result.matchAll(/<port\b[^>]*\bpinNumber=\{(\d+)\}/g),
+  ]
+    .map((match) => Number(match[1]))
+    .sort((a, b) => a - b)
 
-    // The footprint has pins 1 through 8. The EasyEDA symbol payload assigns
-    // both VO_NEG and NC to pin 8, so the converter currently emits
-    // [1, 2, 3, 5, 6, 7, 8, 8] and omits pin 4 from the schematic.
-    expect(schematicPinNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
-  },
-  50000,
-)
+  // The footprint has pins 1 through 8. The EasyEDA symbol payload assigns
+  // both VO_NEG and NC to pin 8, so the converter previously emitted
+  // [1, 2, 3, 5, 6, 7, 8, 8] and omits pin 4 from the schematic.
+  expect(schematicPinNumbers).toEqual([1, 2, 3, 4, 5, 6, 7, 8])
+}, 50000)

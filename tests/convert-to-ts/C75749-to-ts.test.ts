@@ -95,7 +95,7 @@ it("should convert C75749 into typescript file", async () => {
         "C75749"
       ]
     }}
-          manufacturerPartNumber="DS1037_09FNAKT74_0CC"
+          manufacturerPartNumber="DS1037-09FNAKT74-0CC"
           footprint={<footprint>
             <platedhole  portHints={["pin3"]} pcbX="-1.41986mm" pcbY="-0.000127mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin11"]} pcbX="0mm" pcbY="-12.499975mm" outerDiameter="4.99999mm" holeDiameter="3.2500316mm" shape="circle" />
