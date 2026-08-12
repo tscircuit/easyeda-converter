@@ -38,7 +38,7 @@ it("should convert C561765 into typescript file", async () => {
         "C561765"
       ]
     }}
-          manufacturerPartNumber="A_1053131104"
+          manufacturerPartNumber="1053131104"
           footprint={<footprint>
             <hole pcbX="-3.749929mm" pcbY="-3.6400359mm" diameter="1.5999968mm" />
     <hole pcbX="3.749929mm" pcbY="-3.6400359mm" diameter="1.5999968mm" />

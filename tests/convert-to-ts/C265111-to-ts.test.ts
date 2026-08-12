@@ -44,7 +44,7 @@ it("should convert C265111 into typescript file", async () => {
         "C265111"
       ]
     }}
-          manufacturerPartNumber="SM08B_GHS_TB_LF__SN_"
+          manufacturerPartNumber="SM08B-GHS-TB(LF)(SN)"
           footprint={<footprint>
             <smtpad portHints={["pin10"]} pcbX="6.225032mm" pcbY="-1.3499465mm" width="1.2100052mm" height="2.6999946mm" shape="rect" />
     <smtpad portHints={["pin9"]} pcbX="-6.225032mm" pcbY="-1.3499465mm" width="1.2100052mm" height="2.6999946mm" shape="rect" />

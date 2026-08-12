@@ -40,7 +40,7 @@ it("should convert C160354 into typescript file", async () => {
         "C160354"
       ]
     }}
-          manufacturerPartNumber="B4B_PH_SM4_TB_LF__SN_"
+          manufacturerPartNumber="B4B-PH-SM4-TB(LF)(SN)"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="2.996946mm" pcbY="0.5079873mm" width="0.999998mm" height="5.999988mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="0.99695mm" pcbY="0.5079873mm" width="0.999998mm" height="5.999988mm" shape="rect" />

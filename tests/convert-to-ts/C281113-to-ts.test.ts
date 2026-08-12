@@ -51,7 +51,7 @@ it("should convert C281113 into typescript file", async () => {
         "C281113"
       ]
     }}
-          manufacturerPartNumber="MGFL2012F100MT_LF"
+          manufacturerPartNumber="MGFL2012F100MT-LF"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />

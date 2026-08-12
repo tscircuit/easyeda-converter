@@ -51,7 +51,7 @@ it("should convert C22446580 into typescript file", async () => {
         "C22446580"
       ]
     }}
-          manufacturerPartNumber="A_74HC4051LQ_TR"
+          manufacturerPartNumber="74HC4051LQ/TR"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-1.499997mm" pcbY="0.750062mm" width="0.7999984mm" height="0.2800096mm" radius="0.1400048mm" shape="pill" />
     <smtpad portHints={["pin2"]} pcbX="-1.499997mm" pcbY="0.249936mm" width="0.7999984mm" height="0.2800096mm" radius="0.1400048mm" shape="pill" />

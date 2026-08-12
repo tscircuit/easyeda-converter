@@ -67,7 +67,7 @@ it("should convert C2998002 into typescript file", async () => {
         "C2998002"
       ]
     }}
-          manufacturerPartNumber="BCM62B_215"
+          manufacturerPartNumber="BCM62B,215"
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="1.099947mm" pcbY="-0.72501125mm" width="0.6999986mm" height="1.0999978mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="1.099947mm" pcbY="0.97501075mm" width="0.6999986mm" height="0.5999988mm" shape="rect" />

@@ -58,7 +58,7 @@ it("should convert C18185602 into typescript file", async () => {
         "C18185602"
       ]
     }}
-          manufacturerPartNumber="PJ_320A_4P_DIP"
+          manufacturerPartNumber="PJ-320A-4P DIP"
           footprint={<footprint>
             <hole pcbX="2.4249824mm" pcbY="0mm" diameter="1.1999976mm" />
     <hole pcbX="-4.5750036mm" pcbY="0mm" diameter="1.1999976mm" />

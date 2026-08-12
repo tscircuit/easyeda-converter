@@ -38,7 +38,7 @@ it("should convert C158012 into typescript file", async () => {
         "C158012"
       ]
     }}
-          manufacturerPartNumber="B2B_XH_A_LF__SN_"
+          manufacturerPartNumber="B2B-XH-A(LF)(SN)"
           footprint={<footprint>
             <platedhole  portHints={["pin1"]} pcbX="1.2499975mm" pcbY="0mm" outerDiameter="1.6999966mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin2"]} pcbX="-1.2499975mm" pcbY="0mm" outerDiameter="1.6999966mm" holeDiameter="0.999998mm" shape="circle" />
