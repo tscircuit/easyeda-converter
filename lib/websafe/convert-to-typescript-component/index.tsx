@@ -24,7 +24,7 @@ const getGeneratedComponentType = (
   betterEasy: BetterEasyEdaJson,
   pinCount: number,
 ): GeneratedComponentType => {
-  if (isLedCategoryComponent(betterEasy)) return "led"
+  if (isLedCategoryComponent(betterEasy) && pinCount === 2) return "led"
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"

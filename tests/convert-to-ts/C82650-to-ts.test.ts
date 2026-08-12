@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import ledDriverRawEasy from "../assets/C82650.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C82650 LED display driver being emitted as an LED", async () => {
+it("converts C82650 LED display driver into a chip", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(ledDriverRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
@@ -17,10 +17,10 @@ it("reproduces C82650 LED display driver being emitted as an LED", async () => {
     "SOP-28_L17.9-W7.5-P1.27-LS10.3-BL",
   )
 
-  // Reproduce the bug: category matching turns this IC into a simple LED.
-  expect(result).toContain('import type { LedProps } from "@tscircuit/props"')
-  expect(result).toContain("<led")
-  expect(result).not.toContain("<chip")
+  expect(result).toContain('import type { ChipProps } from "@tscircuit/props"')
+  expect(result).toContain("<chip")
+  expect(result).not.toContain("<led")
+  expect(result).toContain("pin28:")
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
@@ -29,13 +29,16 @@ it("reproduces C82650 LED display driver being emitted as an LED", async () => {
     (element) => element.type === "source_component",
   )
 
-  expect(sourceComponent?.ftype).toBe("simple_led")
+  expect(sourceComponent?.ftype).toBe("simple_chip")
+  expect(
+    circuitJson.filter((element) => element.type === "source_port"),
+  ).toHaveLength(28)
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),
   ).toHaveLength(28)
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
-    "C82650-led-driver-misclassification",
+    "C82650-led-driver-chip",
   )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })
