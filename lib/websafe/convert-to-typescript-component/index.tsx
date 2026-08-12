@@ -12,6 +12,7 @@ import { isCrystalComponent } from "./is-crystal-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isInductorComponent } from "./is-inductor-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
+import { isMicroUsbConnectorComponent } from "./is-micro-usb-connector-component"
 import { isPushbuttonCategoryComponent } from "./is-pushbutton-category-component"
 import { isSwitchCategoryComponent } from "./is-switch-category-component"
 import {
@@ -28,6 +29,7 @@ const getGeneratedComponentType = (
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
   if (isInductorComponent(betterEasy)) return "inductor"
   if (isCrystalComponent(betterEasy)) return "crystal"
+  if (isMicroUsbConnectorComponent(betterEasy)) return "connector"
   return "chip"
 }
 
