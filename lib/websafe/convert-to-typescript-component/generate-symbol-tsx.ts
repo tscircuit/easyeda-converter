@@ -255,12 +255,16 @@ const getPortMetadataByShapeId = (
     const numericPinNumber = Number(pin.pinNumber)
     if (!portName && Number.isInteger(numericPinNumber)) {
       const numericPortName = `pin${numericPinNumber}`
-      if (sourcePorts.some((port) => port.name === numericPortName)) {
+      if (
+        !usedPortNames.has(numericPortName) &&
+        sourcePorts.some((port) => port.name === numericPortName)
+      ) {
         portName = numericPortName
       }
     }
 
-    portName ??= sourcePorts[pinIndex]?.name ?? `pin${pinIndex + 1}`
+    portName ??= sourcePorts.find((port) => !usedPortNames.has(port.name))?.name
+    portName ??= `pin${pinIndex + 1}`
     usedPortNames.add(portName)
     const sourcePort = sourcePorts.find((port) => port.name === portName)
 
