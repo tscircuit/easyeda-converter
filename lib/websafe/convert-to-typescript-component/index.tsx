@@ -9,6 +9,7 @@ import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
+import { isInductorComponent } from "./is-inductor-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
 import { isPushbuttonCategoryComponent } from "./is-pushbutton-category-component"
 import { isSwitchCategoryComponent } from "./is-switch-category-component"
@@ -24,6 +25,7 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy)) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
+  if (isInductorComponent(betterEasy)) return "inductor"
   return "chip"
 }
 
@@ -91,6 +93,10 @@ export const convertBetterEasyToTsx = async ({
     jlcpcb: [betterEasy.lcsc.number],
   }
   const componentType = getGeneratedComponentType(betterEasy)
+  const inductance =
+    componentType === "inductor"
+      ? betterEasy.dataStr.head.c_para.Value?.trim()
+      : undefined
   const symbolTsx =
     componentType === "chip" && hasNonBoxSchematicSymbol(betterEasy)
       ? generateSymbolTsx(betterEasy, circuitJson)
@@ -106,6 +112,7 @@ export const convertBetterEasyToTsx = async ({
     circuitJson,
     supplierPartNumbers,
     componentType,
+    inductance,
     symbolTsx,
   })
 }
