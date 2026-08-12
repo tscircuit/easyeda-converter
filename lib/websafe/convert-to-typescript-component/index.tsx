@@ -22,9 +22,10 @@ import {
 
 const getGeneratedComponentType = (
   betterEasy: BetterEasyEdaJson,
+  pinCount: number,
 ): GeneratedComponentType => {
   if (isLedCategoryComponent(betterEasy)) return "led"
-  if (isDiodeCategoryComponent(betterEasy)) return "diode"
+  if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
   if (isInductorComponent(betterEasy)) return "inductor"
@@ -102,7 +103,10 @@ export const convertBetterEasyToTsx = async ({
   const supplierPartNumbers: Record<string, string[]> = {
     jlcpcb: [betterEasy.lcsc.number],
   }
-  const componentType = getGeneratedComponentType(betterEasy)
+  const componentType = getGeneratedComponentType(
+    betterEasy,
+    sourcePorts.length,
+  )
   const inductance =
     componentType === "inductor"
       ? betterEasy.dataStr.head.c_para.Value?.trim()
@@ -119,8 +123,12 @@ export const convertBetterEasyToTsx = async ({
         : sourcePorts.length === 2
           ? "two_pin"
           : undefined
+  const isMultiPinDiode =
+    isDiodeCategoryComponent(betterEasy) && sourcePorts.length !== 2
   const symbolTsx =
-    componentType === "chip" && hasNonBoxSchematicSymbol(betterEasy)
+    componentType === "chip" &&
+    !isMultiPinDiode &&
+    hasNonBoxSchematicSymbol(betterEasy)
       ? generateSymbolTsx(betterEasy, circuitJson)
       : undefined
 
