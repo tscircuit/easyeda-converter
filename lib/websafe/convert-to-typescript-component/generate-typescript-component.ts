@@ -9,6 +9,7 @@ export type GeneratedComponentType =
   | "led"
   | "pushbutton"
   | "switch"
+  | "inductor"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -19,6 +20,7 @@ interface Params {
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
+  inductance?: string
   symbolTsx?: string
 }
 
@@ -31,6 +33,7 @@ export const generateTypescriptComponent = ({
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
+  inductance,
   symbolTsx,
 }: Params) => {
   // Ensure pinLabels is defined
@@ -214,6 +217,35 @@ ${cadModelLines}
           : ""
       }
       {...restProps}
+    />
+  )
+}
+`.trim()
+  }
+
+  if (componentType === "inductor") {
+    if (!inductance) {
+      throw new Error("Inductance is required for inductor components")
+    }
+
+    return `
+import type { InductorProps } from "@tscircuit/props"
+
+export const ${componentName} = (props: Omit<InductorProps, "inductance">) => {
+  return (
+    <inductor
+      inductance=${JSON.stringify(inductance)}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...props}
     />
   )
 }
