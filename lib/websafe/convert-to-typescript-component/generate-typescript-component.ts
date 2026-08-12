@@ -9,6 +9,7 @@ export type GeneratedComponentType =
   | "led"
   | "pushbutton"
   | "switch"
+  | "connector"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -214,6 +215,35 @@ ${cadModelLines}
           : ""
       }
       {...restProps}
+    />
+  )
+}
+`.trim()
+  }
+
+  if (componentType === "connector") {
+    return `
+import type { ConnectorProps } from "@tscircuit/props"
+
+const pinLabels = {
+${pinLabelsString}
+} as const
+
+export const ${componentName} = (props: ConnectorProps) => {
+  return (
+    <connector
+      pinLabels={pinLabels}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...props}
     />
   )
 }

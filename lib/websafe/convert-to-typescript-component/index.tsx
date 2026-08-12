@@ -10,6 +10,7 @@ import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
+import { isMicroUsbConnectorComponent } from "./is-micro-usb-connector-component"
 import { isPushbuttonCategoryComponent } from "./is-pushbutton-category-component"
 import { isSwitchCategoryComponent } from "./is-switch-category-component"
 import {
@@ -24,6 +25,7 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy)) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
+  if (isMicroUsbConnectorComponent(betterEasy)) return "connector"
   return "chip"
 }
 
