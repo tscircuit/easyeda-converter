@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import diodeArrayRawEasy from "../assets/C96225.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C96225 diode array being emitted as a simple diode", async () => {
+it("converts C96225 diode array into a six-pin chip", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(diodeArrayRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
@@ -16,10 +16,11 @@ it("reproduces C96225 diode array being emitted as a simple diode", async () => 
     "SOT-363_L2.0-W1.3-P0.65-LS2.1-TL",
   )
 
-  // Reproduce the bug: category matching turns the array into one diode.
-  expect(result).toContain('import type { DiodeProps } from "@tscircuit/props"')
-  expect(result).toContain("<diode")
-  expect(result).not.toContain("<chip")
+  expect(result).toContain('import type { ChipProps } from "@tscircuit/props"')
+  expect(result).toContain("<chip")
+  expect(result).not.toContain("<diode")
+  expect(result).toContain("pin6:")
+  expect(result).not.toContain("symbol={")
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
@@ -27,23 +28,16 @@ it("reproduces C96225 diode array being emitted as a simple diode", async () => 
   const sourceComponent = circuitJson.find(
     (element) => element.type === "source_component",
   )
-  const schematicComponent = circuitJson.find(
-    (element) => element.type === "schematic_component",
-  )
-
-  expect(sourceComponent?.ftype).toBe("simple_diode")
-  expect(schematicComponent?.symbol_name).toBe("diode_right")
+  expect(sourceComponent?.ftype).toBe("simple_chip")
+  expect(
+    circuitJson.filter((element) => element.type === "source_port"),
+  ).toHaveLength(6)
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),
   ).toHaveLength(6)
-  expect(
-    circuitJson.filter(
-      (element) => element.type === "source_pin_missing_trace_warning",
-    ),
-  ).toHaveLength(6)
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
-    "C96225-diode-array-misclassification",
+    "C96225-diode-array-chip",
   )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 })
