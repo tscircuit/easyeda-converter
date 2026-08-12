@@ -5,13 +5,14 @@ import {
   generateSymbolTsx,
   hasNonBoxSchematicSymbol,
 } from "lib/websafe/convert-to-typescript-component/generate-symbol-tsx"
-import crystalRawEasy from "./assets/C1985372.raweasy.json"
-import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
-import ne555RawEasy from "./assets/C46749.raweasy.json"
 import rp2040RawEasy from "./assets/C2040.raweasy.json"
-import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
+import ne555RawEasy from "./assets/C46749.raweasy.json"
+import duplicateSymbolPinRawEasy from "./assets/C113367.raweasy.json"
+import crystalRawEasy from "./assets/C1985372.raweasy.json"
 import symbolWithPathRawEasy from "./assets/C2828420.raweasy.json"
+import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
 import symbolWithStaleHeadOriginRawEasy from "./assets/C5830143.raweasy.json"
+import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
 
 const generateSymbolFromRawEasy = (rawEasy: unknown): string => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
@@ -70,6 +71,15 @@ test("uses the symbol bounds when EasyEDA head coordinates are stale", () => {
     '<port name="pin2" pinNumber={2} aliases={["2"]} direction="up" schX={0} schY={0.22}',
   )
   expect(symbolTsx).not.toContain("-101.854")
+})
+
+test("maps duplicate EasyEDA symbol pin numbers to unused footprint ports", () => {
+  const symbolTsx = generateSymbolFromRawEasy(duplicateSymbolPinRawEasy)
+
+  expect(symbolTsx).toContain(
+    '<port name="pin4" pinNumber={4} aliases={["NC"]}',
+  )
+  expect(symbolTsx.match(/name="pin8"/g)).toHaveLength(1)
 })
 
 test("distinguishes custom symbols from chip box representations", () => {
