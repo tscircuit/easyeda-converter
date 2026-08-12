@@ -485,8 +485,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       if (pad.shape === "RECT") {
         soupShape = "rect"
       } else if (pad.shape === "ELLIPSE") {
-        // This is just a bug
-        soupShape = "rect"
+        soupShape = "circle"
       } else if (pad.shape === "OVAL") {
         soupShape = "pill"
       } else if (pad.shape === "POLYGON") {
