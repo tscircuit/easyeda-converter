@@ -8,7 +8,10 @@ import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacture
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
-import { isCapacitorComponent } from "./is-capacitor-component"
+import {
+  isCapacitorComponent,
+  normalizeCapacitanceValue,
+} from "./is-capacitor-component"
 import { isCrystalComponent } from "./is-crystal-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isInductorComponent } from "./is-inductor-component"
@@ -115,7 +118,7 @@ export const convertBetterEasyToTsx = async ({
       : undefined
   const capacitance =
     componentType === "capacitor"
-      ? betterEasy.dataStr.head.c_para.Value?.trim()
+      ? normalizeCapacitanceValue(betterEasy.dataStr.head.c_para.Value)
       : undefined
   const crystalFrequency =
     componentType === "crystal"

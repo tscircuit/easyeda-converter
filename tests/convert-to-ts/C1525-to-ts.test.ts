@@ -4,6 +4,30 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import capacitorRawEasy from "../assets/C1525.raweasy.json"
 
+for (const microSymbol of [
+  { character: "µ", codePoint: "U+00B5" },
+  { character: "μ", codePoint: "U+03BC" },
+]) {
+  it(`normalizes the ${microSymbol.codePoint} micro symbol`, async () => {
+    const rawEasy = structuredClone(capacitorRawEasy)
+    rawEasy.dataStr.head.c_para.Value = `1${microSymbol.character}F`
+    const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+    const result = await convertBetterEasyToTsx({ betterEasy })
+
+    expect(result).toContain("<capacitor")
+    expect(result).toContain('capacitance="1uF"')
+
+    const circuitJson = await runTscircuitCode(result)
+    expect(circuitJson).toContainEqual(
+      expect.objectContaining({
+        type: "source_component",
+        ftype: "simple_capacitor",
+        capacitance: 1e-6,
+      }),
+    )
+  })
+}
+
 it("converts C1525 to a capacitor with its exact footprint", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(capacitorRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
