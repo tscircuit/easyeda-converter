@@ -9,6 +9,7 @@ export type GeneratedComponentType =
   | "led"
   | "pushbutton"
   | "switch"
+  | "resistor"
   | "inductor"
   | "crystal"
   | "connector"
@@ -22,6 +23,7 @@ interface Params {
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
+  resistance?: string
   inductance?: string
   crystalFrequency?: string
   crystalPinVariant?: "two_pin" | "four_pin"
@@ -37,6 +39,7 @@ export const generateTypescriptComponent = ({
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
+  resistance,
   inductance,
   crystalFrequency,
   crystalPinVariant,
@@ -212,6 +215,38 @@ export const ${componentName} = (props: SwitchProps) => {
       name={name}
       pinLabels={pinLabels}
 ${symbolProp}\
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...restProps}
+    />
+  )
+}
+`.trim()
+  }
+
+  if (componentType === "resistor") {
+    if (!resistance) {
+      throw new Error("Resistance is required for resistor components")
+    }
+
+    return `
+import type { ResistorProps } from "@tscircuit/props"
+
+export const ${componentName} = (props: Omit<ResistorProps, "resistance">) => {
+  const { name = "R1", ...restProps } = props
+
+  return (
+    <resistor
+      name={name}
+      resistance=${JSON.stringify(resistance)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
