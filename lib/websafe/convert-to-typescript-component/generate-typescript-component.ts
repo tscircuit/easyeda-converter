@@ -9,6 +9,7 @@ export type GeneratedComponentType =
   | "led"
   | "pushbutton"
   | "switch"
+  | "capacitor"
   | "resistor"
   | "inductor"
   | "crystal"
@@ -23,6 +24,7 @@ interface Params {
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
+  capacitance?: string
   resistance?: string
   inductance?: string
   crystalFrequency?: string
@@ -39,6 +41,7 @@ export const generateTypescriptComponent = ({
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
+  capacitance,
   resistance,
   inductance,
   crystalFrequency,
@@ -215,6 +218,38 @@ export const ${componentName} = (props: SwitchProps) => {
       name={name}
       pinLabels={pinLabels}
 ${symbolProp}\
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...restProps}
+    />
+  )
+}
+`.trim()
+  }
+
+  if (componentType === "capacitor") {
+    if (!capacitance) {
+      throw new Error("Capacitance is required for capacitor components")
+    }
+
+    return `
+import type { CapacitorProps } from "@tscircuit/props"
+
+export const ${componentName} = (props: Omit<CapacitorProps, "capacitance">) => {
+  const { name = "C1", ...restProps } = props
+
+  return (
+    <capacitor
+      name={name}
+      capacitance=${JSON.stringify(capacitance)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}

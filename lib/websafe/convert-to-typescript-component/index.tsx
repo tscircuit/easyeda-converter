@@ -8,6 +8,10 @@ import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacture
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
+import {
+  isCapacitorComponent,
+  normalizeCapacitanceValue,
+} from "./is-capacitor-component"
 import { isCrystalComponent } from "./is-crystal-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isInductorComponent } from "./is-inductor-component"
@@ -32,6 +36,7 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
+  if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
   if (isInductorComponent(betterEasy)) return "inductor"
   if (isCrystalComponent(betterEasy)) return "crystal"
@@ -116,6 +121,10 @@ export const convertBetterEasyToTsx = async ({
     componentType === "inductor"
       ? betterEasy.dataStr.head.c_para.Value?.trim()
       : undefined
+  const capacitance =
+    componentType === "capacitor"
+      ? normalizeCapacitanceValue(betterEasy.dataStr.head.c_para.Value)
+      : undefined
   const resistance =
     componentType === "resistor"
       ? normalizeResistorValue(betterEasy.dataStr.head.c_para.Value)
@@ -151,6 +160,7 @@ export const convertBetterEasyToTsx = async ({
     circuitJson,
     supplierPartNumbers,
     componentType,
+    capacitance,
     resistance,
     inductance,
     crystalFrequency,
