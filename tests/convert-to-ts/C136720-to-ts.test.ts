@@ -5,6 +5,32 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+
+it("repro: C136720 converts a document-layer track to top silkscreen", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
+  const tracks = betterEasy.packageDetail.dataStr.shape.filter(
+    (shape) => shape.type === "TRACK",
+  )
+
+  expect(tracks.filter((track) => track.layer === 3)).toHaveLength(2)
+  expect(tracks.filter((track) => track.layer === 12)).toHaveLength(1)
+
+  const convertedCircuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const convertedSilkscreenPaths = convertedCircuitJson.filter(
+    (element) => element.type === "pcb_silkscreen_path",
+  )
+
+  // The third path is the white right-side bracket shown on EasyEDA's
+  // document layer, but it is emitted as top silkscreen by the converter.
+  expect(convertedSilkscreenPaths).toHaveLength(3)
+  expect(
+    convertCircuitJsonToPcbSvg(convertedCircuitJson as any),
+  ).toMatchSvgSnapshot(
+    import.meta.path,
+    "C136720-document-track-as-silkscreen-repro",
+  )
+})
 
 it("should convert C136720 slide switch into a switch component with pin labels", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
