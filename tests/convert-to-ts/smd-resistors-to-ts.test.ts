@@ -95,7 +95,9 @@ for (const resistorCase of resistorCases) {
     expect(result).toContain(`resistance="${resistorCase.resistance}"`)
     expect(result).not.toContain("<chip")
     expect(result).not.toContain("ChipProps")
-    expect(result).not.toContain("<symbol")
+    expect(result).toContain("symbol={")
+    expect(result).toContain("<symbol>")
+    expect(result).toContain("<schematicrect")
     expect(result).toContain(
       `manufacturerPartNumber="${resistorCase.manufacturerPartNumber}"`,
     )
@@ -125,6 +127,9 @@ for (const resistorCase of resistorCases) {
     )
     expect(
       circuitJson.filter((element) => element.type === "source_port"),
+    ).toHaveLength(2)
+    expect(
+      circuitJson.filter((element) => element.type === "schematic_port"),
     ).toHaveLength(2)
     expect(
       circuitJson.filter((element) => element.type === "pcb_smtpad"),

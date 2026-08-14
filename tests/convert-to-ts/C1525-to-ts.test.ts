@@ -40,7 +40,9 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
   expect(result).toContain('capacitance="100nF"')
   expect(result).not.toContain("<chip")
   expect(result).not.toContain("ChipProps")
-  expect(result).not.toContain("<symbol")
+  expect(result).toContain("symbol={")
+  expect(result).toContain("<symbol>")
+  expect(result).toContain("<schematicpath")
   expect(result).toContain('manufacturerPartNumber="CL05B104KO5NNNC"')
   expect(result).toContain('"C1525"')
   expect(result.match(/<smtpad /g)).toHaveLength(2)
@@ -65,6 +67,9 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
   )
   expect(
     circuitJson.filter((element) => element.type === "source_port"),
+  ).toHaveLength(2)
+  expect(
+    circuitJson.filter((element) => element.type === "schematic_port"),
   ).toHaveLength(2)
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),

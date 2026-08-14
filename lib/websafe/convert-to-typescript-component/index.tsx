@@ -143,11 +143,17 @@ export const convertBetterEasyToTsx = async ({
           : undefined
   const isMultiPinDiode =
     isDiodeCategoryComponent(betterEasy) && sourcePorts.length !== 2
+  const isPassiveWithCustomSymbol =
+    componentType === "capacitor" || componentType === "resistor"
   const symbolTsx =
-    componentType === "chip" &&
-    !isMultiPinDiode &&
-    hasNonBoxSchematicSymbol(betterEasy)
-      ? generateSymbolTsx(betterEasy, circuitJson)
+    isPassiveWithCustomSymbol ||
+    (componentType === "chip" &&
+      !isMultiPinDiode &&
+      hasNonBoxSchematicSymbol(betterEasy))
+      ? generateSymbolTsx(betterEasy, circuitJson, {
+          // Passive primitives already create their two source ports.
+          includePorts: !isPassiveWithCustomSymbol,
+        })
       : undefined
 
   return generateTypescriptComponent({
