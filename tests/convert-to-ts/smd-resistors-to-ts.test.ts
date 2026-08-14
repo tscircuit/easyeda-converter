@@ -98,6 +98,7 @@ for (const resistorCase of resistorCases) {
     expect(result).toContain("symbol={")
     expect(result).toContain("<symbol>")
     expect(result).toContain("<schematicrect")
+    expect(result.match(/<port /g)).toHaveLength(2)
     expect(result).toContain(
       `manufacturerPartNumber="${resistorCase.manufacturerPartNumber}"`,
     )
@@ -125,11 +126,21 @@ for (const resistorCase of resistorCases) {
         supplier_part_numbers: { jlcpcb: [resistorCase.partNumber] },
       }),
     )
+    const importedSourcePorts = circuitJson
+      .filter((element) => element.type === "source_port")
+      // Older core versions also create the passive's two native ports. The
+      // explicit symbol ports are appended after them.
+      .slice(-2)
+    const importedSourcePortIds = new Set(
+      importedSourcePorts.map((port) => port.source_port_id),
+    )
+    expect(importedSourcePorts).toHaveLength(2)
     expect(
-      circuitJson.filter((element) => element.type === "source_port"),
-    ).toHaveLength(2)
-    expect(
-      circuitJson.filter((element) => element.type === "schematic_port"),
+      circuitJson.filter(
+        (element) =>
+          element.type === "schematic_port" &&
+          importedSourcePortIds.has(element.source_port_id),
+      ),
     ).toHaveLength(2)
     expect(
       circuitJson.filter((element) => element.type === "pcb_smtpad"),

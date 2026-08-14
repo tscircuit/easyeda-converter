@@ -151,8 +151,7 @@ export const convertBetterEasyToTsx = async ({
       !isMultiPinDiode &&
       hasNonBoxSchematicSymbol(betterEasy))
       ? generateSymbolTsx(betterEasy, circuitJson, {
-          // Passive primitives already create their two source ports.
-          includePorts: !isPassiveWithCustomSymbol,
+          alignPortsToDrawing: isPassiveWithCustomSymbol,
         })
       : undefined
 

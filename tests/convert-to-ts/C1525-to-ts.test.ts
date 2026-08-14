@@ -43,6 +43,7 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
   expect(result).toContain("symbol={")
   expect(result).toContain("<symbol>")
   expect(result).toContain("<schematicpath")
+  expect(result.match(/<port /g)).toHaveLength(2)
   expect(result).toContain('manufacturerPartNumber="CL05B104KO5NNNC"')
   expect(result).toContain('"C1525"')
   expect(result.match(/<smtpad /g)).toHaveLength(2)
@@ -65,11 +66,21 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
       supplier_part_numbers: { jlcpcb: ["C1525"] },
     }),
   )
+  const importedSourcePorts = circuitJson
+    .filter((element) => element.type === "source_port")
+    // Older core versions also create the passive's two native ports. The
+    // explicit symbol ports are appended after them.
+    .slice(-2)
+  const importedSourcePortIds = new Set(
+    importedSourcePorts.map((port) => port.source_port_id),
+  )
+  expect(importedSourcePorts).toHaveLength(2)
   expect(
-    circuitJson.filter((element) => element.type === "source_port"),
-  ).toHaveLength(2)
-  expect(
-    circuitJson.filter((element) => element.type === "schematic_port"),
+    circuitJson.filter(
+      (element) =>
+        element.type === "schematic_port" &&
+        importedSourcePortIds.has(element.source_port_id),
+    ),
   ).toHaveLength(2)
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),

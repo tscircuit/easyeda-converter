@@ -1,4 +1,9 @@
 import type { AnyCircuitElement } from "circuit-json"
+import {
+  distance,
+  getUnitVectorFromDirection,
+  type Point,
+} from "@tscircuit/math-utils"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
 import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
@@ -184,6 +189,52 @@ const getPinStemLength = (path: string): number | undefined => {
   return toSchematicUnits(Math.abs(Number(segment[1])))
 }
 
+const getOpenPolylineEndpoints = (
+  shapes: SingleLetterShape[],
+  transformPoint: (point: Point) => Point,
+): Point[] =>
+  shapes.flatMap((shape) => {
+    if (shape.type !== "POLYLINE" || shape.points.length < 2) return []
+    const first = shape.points[0]!
+    const last = shape.points[shape.points.length - 1]!
+    if (first.x === last.x && first.y === last.y) return []
+    return [transformPoint(first), transformPoint(last)]
+  })
+
+const alignPortToDrawing = ({
+  position,
+  direction,
+  stemLength,
+  drawingEndpoints,
+}: {
+  position: Point
+  direction: "up" | "down" | "left" | "right"
+  stemLength: number | undefined
+  drawingEndpoints: Point[]
+}): Point => {
+  if (stemLength === undefined) return position
+
+  const outwardDirection = getUnitVectorFromDirection(direction)
+  const expectedBodyConnection = {
+    x: position.x - outwardDirection.x * stemLength,
+    y: position.y - outwardDirection.y * stemLength,
+  }
+  const alignmentTolerance = Math.max(0.02, stemLength * 0.25)
+  const nearestEndpoint = drawingEndpoints
+    .map((endpoint) => ({
+      endpoint,
+      distance: distance(endpoint, expectedBodyConnection),
+    }))
+    .filter((candidate) => candidate.distance <= alignmentTolerance)
+    .sort((a, b) => a.distance - b.distance)[0]?.endpoint
+
+  if (!nearestEndpoint) return position
+  return {
+    x: round(nearestEndpoint.x + outwardDirection.x * stemLength),
+    y: round(nearestEndpoint.y + outwardDirection.y * stemLength),
+  }
+}
+
 const getTextFontSize = (fontSize: string): number => {
   const numericFontSize = Number.parseFloat(fontSize)
   if (!Number.isFinite(numericFontSize)) return 0.2
@@ -288,10 +339,12 @@ const generateShapeTsx = ({
   shape,
   origin,
   portMetadata,
+  drawingEndpoints = [],
 }: {
   shape: SingleLetterShape
   origin: { x: number; y: number }
   portMetadata?: PortMetadata
+  drawingEndpoints?: Point[]
 }): string | undefined => {
   const transformPoint = getPointTransformer(origin)
 
@@ -334,7 +387,14 @@ const generateShapeTsx = ({
   }
 
   if (shape.type === "PIN" && portMetadata) {
-    const position = transformPoint({ x: shape.x, y: shape.y })
+    const direction = getPinDirection(shape.rotation)
+    const stemLength = getPinStemLength(shape.path)
+    const position = alignPortToDrawing({
+      position: transformPoint({ x: shape.x, y: shape.y }),
+      direction,
+      stemLength,
+      drawingEndpoints,
+    })
     const pinNumberProp =
       portMetadata.pinNumber === undefined
         ? ""
@@ -343,10 +403,9 @@ const generateShapeTsx = ({
       portMetadata.aliases.length === 0
         ? ""
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
-    const stemLength = getPinStemLength(shape.path)
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
-    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(getPinDirection(shape.rotation))} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
   }
 
   return undefined
@@ -355,7 +414,10 @@ const generateShapeTsx = ({
 export const generateSymbolTsx = (
   easyEdaJson: BetterEasyEdaJson,
   circuitJson: AnyCircuitElement[],
-  { includePorts = true }: { includePorts?: boolean } = {},
+  {
+    includePorts = true,
+    alignPortsToDrawing = false,
+  }: { includePorts?: boolean; alignPortsToDrawing?: boolean } = {},
 ): string | undefined => {
   const shapes = easyEdaJson.dataStr.shape
   if (shapes.length === 0) return undefined
@@ -380,6 +442,10 @@ export const generateSymbolTsx = (
     easyEdaJson,
     circuitJson,
   )
+  const transformPoint = getPointTransformer(origin)
+  const drawingEndpoints = alignPortsToDrawing
+    ? getOpenPolylineEndpoints(shapes, transformPoint)
+    : []
   const shapeTsx = shapes
     .filter((shape) => includePorts || shape.type !== "PIN")
     .map((shape) =>
@@ -390,6 +456,7 @@ export const generateSymbolTsx = (
           shape.type === "PIN"
             ? portMetadataByShapeId.get(shape.id)
             : undefined,
+        drawingEndpoints,
       }),
     )
     .filter((tsx): tsx is string => Boolean(tsx))
