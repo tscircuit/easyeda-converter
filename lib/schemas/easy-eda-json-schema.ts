@@ -11,7 +11,12 @@ export const maybeNumber = z
   .pipe(z.number().nullable().optional())
 
 export const SzlcscSchema = z.object({
-  id: z.number(),
+  id: z.preprocess((value) => {
+    if (typeof value === "string" && /^\d+$/.test(value)) {
+      return Number(value)
+    }
+    return value
+  }, z.number()),
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),
@@ -47,10 +52,10 @@ export const HeadSchema = z.object({
   puuid: z.string().optional(),
   uuid: z.string(),
   utime: z.preprocess((val) => {
-    if (val === "") return 0
+    if (val == null || val === "") return undefined
     if (typeof val === "string") return Number(val)
     return val
-  }, z.number()),
+  }, z.number().optional()),
   importFlag: z.number().optional(),
   c_spiceCmd: z.any().optional(),
   hasIdFlag: z.boolean().default(false),

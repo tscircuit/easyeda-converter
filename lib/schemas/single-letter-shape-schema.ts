@@ -402,7 +402,8 @@ const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
 
   return {
     type: "TEXT",
-    alignment: alignment as "L" | "C" | "R",
+    // Some EasyEDA component payloads use "P" for start-aligned text.
+    alignment: (alignment === "P" ? "L" : alignment) as "L" | "C" | "R",
     x: Number(x),
     y: Number(y),
     rotation: Number(rotation),
