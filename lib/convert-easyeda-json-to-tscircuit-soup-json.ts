@@ -35,6 +35,7 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { getEasyEdaPinData } from "./utils/get-easyeda-pin-data"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
@@ -312,14 +313,14 @@ export const convertEasyEdaJsonToCircuitJson = (
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
+  const pinData = getEasyEdaPinData({ symbolPins: pins, packagePads: pads })
 
   // Prepare pin labels for normalization
-  const pinLabelSets = pads.map((pad) => {
+  const pinLabelSets = pinData.assignments.map(({ packagePad, symbolPin }) => {
     const labels = []
-    if (pad.number) labels.push(pad.number.toString())
+    if (packagePad.number) labels.push(packagePad.number.toString())
 
-    const pin = pins.find((p) => p.pinNumber === pad.number)
-    if (pin) labels.push(normalizeSymbolName(pin.label))
+    if (symbolPin) labels.push(normalizeSymbolName(symbolPin.label))
 
     return labels
   })

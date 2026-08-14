@@ -1,6 +1,7 @@
 import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
+import type { EasyEdaPinDataDiagnostic } from "../../utils/get-easyeda-pin-data"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 
 export type GeneratedComponentType =
@@ -30,6 +31,7 @@ interface Params {
   crystalFrequency?: string
   crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
+  pinDataDiagnostics?: EasyEdaPinDataDiagnostic[]
 }
 
 export const generateTypescriptComponent = ({
@@ -47,6 +49,7 @@ export const generateTypescriptComponent = ({
   crystalFrequency,
   crystalPinVariant,
   symbolTsx,
+  pinDataDiagnostics = [],
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
@@ -98,6 +101,15 @@ ${symbolTsx
       }
 `
     : ""
+  const pinDataWarnings = pinDataDiagnostics.filter(
+    (diagnostic) => diagnostic.severity === "warning",
+  )
+  const pinDataWarningComment =
+    pinDataWarnings.length === 0
+      ? ""
+      : `/**\n * WARNING: Imported pin data is incomplete.\n${pinDataWarnings
+          .map((diagnostic) => ` * - ${diagnostic.message}`)
+          .join("\n")}\n */\n`
 
   const cadModelLines = [
     objUrl ? `objUrl: "${objUrl}",` : "",
@@ -395,6 +407,7 @@ ${cadModelLines}
   }
 
   return `
+${pinDataWarningComment}\
 import type { ChipProps } from "@tscircuit/props"
 
 const pinLabels = {

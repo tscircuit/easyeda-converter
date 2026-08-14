@@ -20,7 +20,11 @@ it("should convert C14877 into typescript file", async () => {
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
-    "import type { ChipProps } from "@tscircuit/props"
+    "/**
+     * WARNING: Imported pin data is incomplete.
+     * - EasyEDA has no semantic pin name for physical pad(s) 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 2, 1; verify these aliases against the manufacturer pin table before use.
+     */
+    import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
       pin1: ["pin1"],
