@@ -36,7 +36,7 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
-  if (isCapacitorComponent(betterEasy)) return "capacitor"
+  if (isCapacitorComponent(betterEasy) && pinCount === 2) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
   if (isInductorComponent(betterEasy)) return "inductor"
   if (isCrystalComponent(betterEasy)) return "crystal"
@@ -145,6 +145,8 @@ export const convertBetterEasyToTsx = async ({
     isDiodeCategoryComponent(betterEasy) && sourcePorts.length !== 2
   const isPassiveWithCustomSymbol =
     componentType === "capacitor" || componentType === "resistor"
+  const isMultiPinCapacitor =
+    isCapacitorComponent(betterEasy) && sourcePorts.length !== 2
   const symbolTsx =
     isPassiveWithCustomSymbol ||
     (componentType === "chip" &&
@@ -172,6 +174,7 @@ export const convertBetterEasyToTsx = async ({
     crystalFrequency,
     crystalPinVariant,
     symbolTsx,
+    symbolReplacesPinLabels: isMultiPinCapacitor,
   })
 }
 

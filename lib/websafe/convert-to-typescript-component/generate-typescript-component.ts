@@ -30,6 +30,7 @@ interface Params {
   crystalFrequency?: string
   crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
+  symbolReplacesPinLabels?: boolean
 }
 
 export const generateTypescriptComponent = ({
@@ -47,6 +48,7 @@ export const generateTypescriptComponent = ({
   crystalFrequency,
   crystalPinVariant,
   symbolTsx,
+  symbolReplacesPinLabels = false,
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
@@ -98,6 +100,9 @@ ${symbolTsx
       }
 `
     : ""
+  const chipPinLabelsProp = symbolReplacesPinLabels
+    ? ""
+    : "      pinLabels={pinLabels}\n"
 
   const cadModelLines = [
     objUrl ? `objUrl: "${objUrl}",` : "",
@@ -404,7 +409,7 @@ ${pinLabelsString}
 export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
-      pinLabels={pinLabels}
+${chipPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
