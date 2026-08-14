@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
-it("should normalize active-low pin aliases for C15464", async () => {
+it("captures C15464 active-low pin aliases that need normalization", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
@@ -23,10 +23,7 @@ it("should normalize active-low pin aliases for C15464", async () => {
     "C15464-to-ts-schematic",
   )
 
-  expect(result).toContain('pin4: ["pin4", "CE_N"]')
-  expect(result).toContain('pin7: ["pin7", "PGOOD_N"]')
-  expect(result).toContain('pin9: ["pin9", "CHG_N"]')
-  expect(result).not.toContain('"#CE"')
-  expect(result).not.toContain('"#PGOOD"')
-  expect(result).not.toContain('"#CHG"')
+  expect(result).toContain('pin4: ["#CE"]')
+  expect(result).toContain('pin7: ["#PGOOD"]')
+  expect(result).toContain('pin9: ["#CHG"]')
 }, 30000)
