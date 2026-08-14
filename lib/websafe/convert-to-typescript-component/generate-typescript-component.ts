@@ -250,6 +250,7 @@ export const ${componentName} = (props: Omit<CapacitorProps, "capacitance">) => 
     <capacitor
       name={name}
       capacitance=${JSON.stringify(capacitance)}
+${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
@@ -282,6 +283,7 @@ export const ${componentName} = (props: Omit<ResistorProps, "resistance">) => {
     <resistor
       name={name}
       resistance=${JSON.stringify(resistance)}
+${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}

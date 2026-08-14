@@ -355,6 +355,7 @@ const generateShapeTsx = ({
 export const generateSymbolTsx = (
   easyEdaJson: BetterEasyEdaJson,
   circuitJson: AnyCircuitElement[],
+  { includePorts = true }: { includePorts?: boolean } = {},
 ): string | undefined => {
   const shapes = easyEdaJson.dataStr.shape
   if (shapes.length === 0) return undefined
@@ -380,6 +381,7 @@ export const generateSymbolTsx = (
     circuitJson,
   )
   const shapeTsx = shapes
+    .filter((shape) => includePorts || shape.type !== "PIN")
     .map((shape) =>
       generateShapeTsx({
         shape,
