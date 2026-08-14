@@ -3,5 +3,11 @@ export * from "./websafe/fetch-easyeda-json"
 export { convertRawEasyToTsx as convertRawEasyEdaToTs } from "./websafe/convert-to-typescript-component"
 export { normalizeManufacturerPartNumber } from "./utils/normalize-manufacturer-part-number"
 export { normalizePinLabels } from "./utils/normalize-pin-labels"
+export {
+  getEasyEdaPinData,
+  type EasyEdaPinAssignment,
+  type EasyEdaPinData,
+  type EasyEdaPinDataDiagnostic,
+} from "./utils/get-easyeda-pin-data"
 export * from "./schemas/easy-eda-json-schema"
 export { convertEasyEdaJsonToVariousFormats } from "./convert-easyeda-json-to-various-formats"

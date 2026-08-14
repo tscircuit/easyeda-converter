@@ -5,6 +5,7 @@ import {
   EasyEdaJsonSchema,
 } from "lib/schemas/easy-eda-json-schema"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
+import { getEasyEdaPinData } from "lib/utils/get-easyeda-pin-data"
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
@@ -81,6 +82,14 @@ export const convertBetterEasyToTsx = async ({
   }
   const componentName = normalizeManufacturerPartNumber(manufacturerPartNumber)
   const sourcePorts = su(circuitJson).source_port.list()
+  const pinData = getEasyEdaPinData({
+    symbolPins: betterEasy.dataStr.shape.filter(
+      (shape) => shape.type === "PIN",
+    ),
+    packagePads: betterEasy.packageDetail.dataStr.shape.filter(
+      (shape) => shape.type === "PAD",
+    ),
+  })
 
   const pinLabels: Record<string, string[]> = {}
   const sortedPorts = sourcePorts.sort((a, b) => {
@@ -172,6 +181,7 @@ export const convertBetterEasyToTsx = async ({
     crystalFrequency,
     crystalPinVariant,
     symbolTsx,
+    pinDataDiagnostics: pinData.diagnostics,
   })
 }
 

@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C702367.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C702367's misplaced exposed-pad and incomplete pin data", async () => {
+it("reconciles C702367's exposed pad and reports incomplete pin names", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(
@@ -18,14 +18,12 @@ it("reproduces C702367's misplaced exposed-pad and incomplete pin data", async (
     "C702367-incorrect-pin-data",
   )
 
-  // The EasyEDA symbol inserts EP at symbol pin 12 even though the package's
-  // central exposed pad is physical pin 33. The converter currently trusts
-  // those symbol numbers, shifting DP1 and every following label.
-  expect(result).toContain('pin12: ["EP"]')
-  expect(result).toContain('pin13: ["DP1"]')
+  expect(result).toContain('pin12: ["DP1"]')
+  expect(result).toContain('pin33: ["EP"]')
 
-  // Numeric-only labels are emitted without any diagnostic, so incomplete
-  // source data such as EEDATA/GANGED appears to be a valid generic pin.
   expect(result).toContain('pin6: ["pin6"]')
+  expect(result).toContain(
+    "EasyEDA has no semantic pin name for physical pad(s) 6, 20, 27",
+  )
   expect(result).not.toContain("EEDATA")
 })

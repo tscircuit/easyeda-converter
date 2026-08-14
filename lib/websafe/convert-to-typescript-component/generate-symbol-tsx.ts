@@ -1,6 +1,7 @@
 import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
+import { getEasyEdaPinData } from "lib/utils/get-easyeda-pin-data"
 import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
 
 const round = (value: number): number => Number(value.toFixed(6))
@@ -218,30 +219,23 @@ const getPortMetadataByShapeId = (
   const sourcePorts = circuitJson.filter(
     (element) => element.type === "source_port",
   )
-  const sourcePortNamesByPadNumber = new Map<string, string[]>()
+  const pinData = getEasyEdaPinData({ symbolPins: pins, packagePads: pads })
+  const sourcePortNameBySymbolShapeId = new Map<string, string>()
 
-  pads.forEach((pad, padIndex) => {
+  pinData.assignments.forEach(({ symbolPin }, padIndex) => {
+    if (!symbolPin) return
     const sourcePort = sourcePorts.find(
       (port) => port.source_port_id === `source_port_${padIndex + 1}`,
     )
     if (!sourcePort) return
-    const padNumber = String(pad.number)
-    sourcePortNamesByPadNumber.set(padNumber, [
-      ...(sourcePortNamesByPadNumber.get(padNumber) ?? []),
-      sourcePort.name,
-    ])
+    sourcePortNameBySymbolShapeId.set(symbolPin.id, sourcePort.name)
   })
 
-  const usedPortNamesByPadNumber = new Map<string, number>()
   const usedPortNames = new Set<string>()
   const metadataByShapeId = new Map<string, PortMetadata>()
 
   pins.forEach((pin, pinIndex) => {
-    const pinNumberKey = String(pin.pinNumber)
-    const matchingPortNames = sourcePortNamesByPadNumber.get(pinNumberKey) ?? []
-    const matchingPortIndex = usedPortNamesByPadNumber.get(pinNumberKey) ?? 0
-    let portName: string | undefined = matchingPortNames[matchingPortIndex]
-    usedPortNamesByPadNumber.set(pinNumberKey, matchingPortIndex + 1)
+    let portName = sourcePortNameBySymbolShapeId.get(pin.id)
 
     if (!portName && pin.label) {
       const normalizedLabel = normalizeSymbolName(pin.label)

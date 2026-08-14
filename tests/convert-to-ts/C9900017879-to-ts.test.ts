@@ -22,7 +22,11 @@ it("should convert C9900017879 into typescript file", async () => {
   })
 
   expect(result).toMatchInlineSnapshot(`
-    "import type { ChipProps } from "@tscircuit/props"
+    "/**
+     * WARNING: Imported pin data is incomplete.
+     * - EasyEDA has no semantic pin name for physical pad(s) 1, 2; verify these aliases against the manufacturer pin table before use.
+     */
+    import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
       pin1: ["pin1"],
