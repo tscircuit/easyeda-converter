@@ -1,9 +1,6 @@
 import rawJson from "tests/assets/C14877.raweasy.json"
 import { expect, test } from "bun:test"
-import {
-  convertEasyEdaJsonToCircuitJson,
-  EasyEdaJsonSchema,
-} from "lib/index"
+import { convertEasyEdaJsonToCircuitJson, EasyEdaJsonSchema } from "lib/index"
 import type { AnyCircuitElement } from "circuit-json"
 
 test("preserves the side of bottom-layer arcs", () => {
