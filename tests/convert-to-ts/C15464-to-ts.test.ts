@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
-it("captures C15464 active-low pin aliases that need normalization", async () => {
+it("normalizes C15464 active-low pin aliases", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
@@ -23,9 +23,12 @@ it("captures C15464 active-low pin aliases that need normalization", async () =>
     "C15464-to-ts-schematic",
   )
 
-  expect(result).toContain('pin4: ["#CE"]')
-  expect(result).toContain('pin7: ["#PGOOD"]')
-  expect(result).toContain('pin9: ["#CHG"]')
+  expect(result).toContain('pin4: ["N_CE"]')
+  expect(result).toContain('pin7: ["N_PGOOD"]')
+  expect(result).toContain('pin9: ["N_CHG"]')
+  expect(result).not.toContain('"#CE"')
+  expect(result).not.toContain('"#PGOOD"')
+  expect(result).not.toContain('"#CHG"')
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
 
@@ -33,12 +36,12 @@ it("captures C15464 active-low pin aliases that need normalization", async () =>
       pin1: ["TS"],
       pin2: ["BAT1"],
       pin3: ["BAT2"],
-      pin4: ["#CE"],
+      pin4: ["N_CE"],
       pin5: ["EN2"],
       pin6: ["EN1"],
-      pin7: ["#PGOOD"],
+      pin7: ["N_PGOOD"],
       pin8: ["VSS"],
-      pin9: ["#CHG"],
+      pin9: ["N_CHG"],
       pin10: ["OUT1"],
       pin11: ["OUT2"],
       pin12: ["ILIM"],

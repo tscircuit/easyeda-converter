@@ -32,6 +32,32 @@ describe("normalizePinLabels", () => {
     ])
   })
 
+  test("normalizes leading hash active-low labels", () => {
+    const input = [
+      ["4", "#CE"],
+      ["7", "#PGOOD"],
+      ["9", "#CHG"],
+    ]
+
+    expect(normalizePinLabels(input)).toEqual([
+      ["pin4", "N_CE"],
+      ["pin7", "N_PGOOD"],
+      ["pin9", "N_CHG"],
+    ])
+  })
+
+  test("deduplicates normalized active-low labels", () => {
+    const input = [
+      ["1", "#RESET"],
+      ["2", "#RESET"],
+    ]
+
+    expect(normalizePinLabels(input)).toEqual([
+      ["pin1", "N_RESET1"],
+      ["pin2", "N_RESET2"],
+    ])
+  })
+
   test("handles multiple labels per pin", () => {
     const input = [
       ["1", "VCC", "PWR"],
