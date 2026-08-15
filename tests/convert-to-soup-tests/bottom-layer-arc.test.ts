@@ -1,7 +1,8 @@
-import rawJson from "tests/assets/C14877.raweasy.json"
 import { expect, test } from "bun:test"
-import { convertEasyEdaJsonToCircuitJson, EasyEdaJsonSchema } from "lib/index"
 import type { AnyCircuitElement } from "circuit-json"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { EasyEdaJsonSchema, convertEasyEdaJsonToCircuitJson } from "lib/index"
+import rawJson from "tests/assets/C14877.raweasy.json"
 
 test("preserves the side of bottom-layer arcs", () => {
   const rawWithBottomLayerArcs = structuredClone(rawJson)
@@ -25,4 +26,7 @@ test("preserves the side of bottom-layer arcs", () => {
 
   expect(arcPaths.length).toBeGreaterThan(0)
   expect(arcPaths.every((arc) => arc.layer === "bottom")).toBe(true)
+  expect(convertCircuitJsonToPcbSvg(arcPaths)).toMatchSvgSnapshot(
+    import.meta.path,
+  )
 })
