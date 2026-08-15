@@ -1,5 +1,17 @@
+const normalizeActiveLowPinLabel = (label: string): string => {
+  if (!label.startsWith("#")) return label
+
+  const activeLowLabel = label.slice(1)
+  if (activeLowLabel.length === 0) return label
+
+  return `N_${activeLowLabel}`
+}
+
 export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
-  const uniqueInputPinLabels = inputPinLabels.map((labels) => [
+  const normalizedInputPinLabels = inputPinLabels.map((labels) =>
+    labels.map(normalizeActiveLowPinLabel),
+  )
+  const uniqueInputPinLabels = normalizedInputPinLabels.map((labels) => [
     ...new Set(labels),
   ])
   const result = uniqueInputPinLabels.map(() => [] as string[])
