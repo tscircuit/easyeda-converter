@@ -349,6 +349,10 @@ const generateShapeTsx = ({
     return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(getPinDirection(shape.rotation))} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
   }
 
+  // AR arrowheads and I image annotations are intentionally ignored by the
+  // schema parser because tscircuit does not have an equivalent primitive.
+  if (shape.type === "IGNORED") return undefined
+
   return undefined
 }
 
@@ -410,7 +414,8 @@ export const hasNonBoxSchematicSymbol = (
   easyEdaJson: BetterEasyEdaJson,
 ): boolean => {
   const drawableShapes = easyEdaJson.dataStr.shape.filter(
-    (shape) => shape.type !== "PIN" && shape.type !== "TEXT",
+    (shape) =>
+      shape.type !== "PIN" && shape.type !== "TEXT" && shape.type !== "IGNORED",
   )
   if (drawableShapes.length === 0) return false
 

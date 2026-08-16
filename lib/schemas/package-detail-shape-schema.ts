@@ -93,7 +93,7 @@ export const SolidRegionSchema = BaseShapeSchema.extend({
   type: z.literal("SOLIDREGION"),
   layermask: z.number(),
   points: z.array(PointSchema),
-  fillStyle: z.string(),
+  fillStyle: z.string().default("none"),
 })
 
 export const SVGNodeSchema = BaseShapeSchema.extend({
@@ -129,7 +129,7 @@ export const RectSchema = BaseShapeSchema.extend({
   width: tenthmil,
   height: tenthmil,
   lineWidth: z.number(),
-  fillStyle: z.string(),
+  fillStyle: z.string().default("none"),
   rotation: z.number().optional(),
 })
 
@@ -319,7 +319,7 @@ export const ShapeItemSchema = z
           type: "SOLIDREGION",
           layermask: Number(layermask),
           points,
-          fillStyle,
+          fillStyle: fillStyle || undefined,
           id,
         })
       }

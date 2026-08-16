@@ -341,6 +341,34 @@ export const PathShapeSchema = z
   .transform(parsePath)
   .pipe(PathShapeOutputSchema)
 
+const IgnoredShapeOutputSchema = z.object({
+  type: z.literal("IGNORED"),
+  sourceType: z.enum(["AR", "I"]),
+})
+
+/**
+ * EasyEDA uses AR for display-only arrowheads and I for embedded schematic
+ * images. The converter does not currently render either annotation, but
+ * they are safe to ignore instead of making an otherwise usable payload
+ * retryable.
+ */
+const IgnoredShapeSchema = z
+  .string()
+  .transform((shape) => {
+    const sourceType = shape.startsWith("AR~")
+      ? "AR"
+      : shape.startsWith("I~")
+        ? "I"
+        : undefined
+
+    if (!sourceType) {
+      throw new Error(`Invalid ignored shape: ${shape}`)
+    }
+
+    return { type: "IGNORED" as const, sourceType }
+  })
+  .pipe(IgnoredShapeOutputSchema)
+
 /**
  * EasyEDA sometimes serializes absent optional text fields as whitespace or the
  * literal string "undefined" instead of omitting them or leaving them empty.
@@ -438,6 +466,9 @@ export const SingleLetterShapeSchema = z
     if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
     if (x.startsWith("PT~")) return PathShapeSchema.parse(x)
     if (x.startsWith("T~")) return TextShapeSchema.parse(x)
+    if (x.startsWith("AR~") || x.startsWith("I~")) {
+      return IgnoredShapeSchema.parse(x)
+    }
     if (x.startsWith("A~")) return ArcShapeSchema.parse(x)
     throw new Error(`Invalid shape type: ${x}`)
   })
@@ -450,6 +481,7 @@ export const SingleLetterShapeSchema = z
       PolygonShapeOutputSchema,
       PathShapeOutputSchema,
       TextShapeOutputSchema,
+      IgnoredShapeOutputSchema,
       ArcShapeOutputSchema,
     ]),
   )
