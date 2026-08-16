@@ -10,6 +10,12 @@ export const maybeNumber = z
   .transform((k) => (k === "nan" || Number.isNaN(k) ? null : k))
   .pipe(z.number().nullable().optional())
 
+const optionalNumberWithNumericString = z.preprocess((value) => {
+  if (typeof value !== "string") return value
+  if (value.trim() === "") return undefined
+  return Number(value)
+}, z.number().optional())
+
 export const SzlcscSchema = z.object({
   id: z.preprocess((value) => {
     if (typeof value === "string" && /^\d+$/.test(value)) {
@@ -20,7 +26,7 @@ export const SzlcscSchema = z.object({
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),
-  price: z.number().optional(),
+  price: optionalNumberWithNumericString,
   stock: z.number().optional(),
   url: z.string().url().optional(),
   image: z.string().optional().optional(),
@@ -31,7 +37,7 @@ export const LcscSchema = z.object({
   number: z.string(),
   step: z.number().optional(),
   min: z.number().optional(),
-  price: z.number().optional(),
+  price: optionalNumberWithNumericString,
   stock: z.number().optional(),
   url: z.string().url().optional(),
 })
