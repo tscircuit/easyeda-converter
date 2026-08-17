@@ -3,6 +3,7 @@ import chipRawEasy from "../assets/C9900017879.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C9900017879 into typescript file", async () => {
@@ -16,6 +17,10 @@ it("should convert C9900017879 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C9900017879-to-ts-rotation",
   )
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path, {
     camPos: [0, 20, 50],
