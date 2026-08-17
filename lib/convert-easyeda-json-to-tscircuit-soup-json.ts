@@ -29,6 +29,7 @@ import type {
   CircleSchema,
   HoleSchema,
   PadSchema,
+  RectSchema,
   SVGNodeSchema,
   SolidRegionSchema,
   TrackSchema,
@@ -181,6 +182,43 @@ const handleSilkscreenCircle = (
     route,
     stroke_width: mil10ToMm(circle.width),
   } as Soup.PcbSilkscreenPathInput)
+}
+
+const handleRect = (rect: z.infer<typeof RectSchema>, index: number) => {
+  const width = milx10(rect.width)
+  const height = milx10(rect.height)
+  const center = {
+    x: milx10(rect.x) + width / 2,
+    y: milx10(rect.y) + height / 2,
+  }
+  const layer = getSideFromLayer(rect.layer)
+
+  if (isCourtyardLayer(rect.layer)) {
+    return Soup.pcb_courtyard_rect.parse({
+      type: "pcb_courtyard_rect",
+      pcb_courtyard_rect_id: `pcb_courtyard_rect_${index + 1}`,
+      pcb_component_id: "pcb_component_1",
+      center,
+      width,
+      height,
+      layer,
+      ccw_rotation: rect.rotation,
+    } as Soup.PcbCourtyardRectInput)
+  }
+
+  return Soup.pcb_silkscreen_rect.parse({
+    type: "pcb_silkscreen_rect",
+    pcb_silkscreen_rect_id: `pcb_silkscreen_rect_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    center,
+    width,
+    height,
+    layer,
+    stroke_width: mil2mm(rect.lineWidth),
+    is_filled: rect.fillStyle !== "none",
+    has_stroke: rect.lineWidth > 0,
+    ccw_rotation: rect.rotation,
+  } as Soup.PcbSilkscreenRectInput)
 }
 
 const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
@@ -573,6 +611,8 @@ export const convertEasyEdaJsonToCircuitJson = (
       if (isSilkscreenLayer(shape.layer)) {
         circuitElements.push(handleSilkscreenCircle(shape, index))
       }
+    } else if (shape.type === "RECT") {
+      circuitElements.push(handleRect(shape, index))
     } else if (shape.type === "ARC") {
       if (!isCourtyardLayer(shape.layer)) {
         circuitElements.push(handleSilkscreenArc(shape, index))
@@ -649,7 +689,9 @@ export const convertEasyEdaJsonToCircuitJson = (
       e.type === "pcb_hole" ||
       e.type === "pcb_via" ||
       e.type === "pcb_courtyard_outline" ||
+      e.type === "pcb_courtyard_rect" ||
       e.type === "pcb_silkscreen_path" ||
+      e.type === "pcb_silkscreen_rect" ||
       e.type === "pcb_silkscreen_text",
   )
 
