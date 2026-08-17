@@ -35,7 +35,9 @@ export const generateFootprintTsx = (
         `<hole pcbX="${mmStr(hole.x)}" pcbY="${mmStr(hole.y)}" diameter="${mmStr(hole.hole_diameter)}" />`,
       )
     } else if (hole.hole_shape === "oval") {
-      console.warn("Unhandled oval hole in conversion (needs implementation)")
+      elementStrings.push(
+        `<hole pcbX="${mmStr(hole.x)}" pcbY="${mmStr(hole.y)}" width="${mmStr(hole.hole_width)}" height="${mmStr(hole.hole_height)}" shape="oval" />`,
+      )
     }
   }
 
