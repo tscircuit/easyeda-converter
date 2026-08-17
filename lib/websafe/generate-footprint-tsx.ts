@@ -115,9 +115,11 @@ export const generateFootprintTsx = (
     const textValue = isRefDes
       ? JSON.stringify("{NAME}")
       : JSON.stringify(silkscreenText.text)
+    const rotation = silkscreenText.ccw_rotation || 0
+    const rotationAttr = rotation ? ` pcbRotation="${rotation}deg"` : ""
 
     elementStrings.push(
-      `<silkscreentext text=${textValue} pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}" ${silkscreenText.font_size ? `fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,
+      `<silkscreentext text=${textValue} pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}"${rotationAttr}${silkscreenText.font_size ? ` fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,
     )
   }
 
