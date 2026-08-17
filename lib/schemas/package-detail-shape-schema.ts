@@ -345,8 +345,18 @@ export const ShapeItemSchema = z
         })
       }
       case "TEXT": {
-        const [textAnchor, x, y, size, layer, id, rotation, , font, text] =
-          shape.data.split("~")
+        const [
+          textAnchor,
+          x,
+          y,
+          size,
+          rotation,
+          _mirror,
+          layer,
+          _net,
+          font,
+          text,
+        ] = shape.data.split("~")
         const r = rotation ? Number(rotation) : undefined
         return TextSchema.parse({
           type: "TEXT",
@@ -355,7 +365,6 @@ export const ShapeItemSchema = z
           y,
           size_mm: Number(size) * 2.54, // empirically this seems to match, C5248081 is a good test case
           layer: layer ? Number(layer) : undefined,
-          id,
           rotation: Number.isNaN(r as number) ? undefined : r,
           textAnchor: textAnchor as "L" | "C" | "R" | undefined,
           font: font || undefined,

@@ -151,36 +151,36 @@ it("should convert C9900017879 into typescript file", async () => {
     <silkscreenpath route={[{"x":-21.590000000000003,"y":2.794000000000011},{"x":-17.7038,"y":2.794000000000011}]} />
     <silkscreenpath route={[{"x":-17.7038,"y":2.540101600000014},{"x":-17.7038,"y":-2.539999999999992}]} />
     <silkscreenpath route={[{"x":-21.666200000000003,"y":8.966174600000016},{"x":21.66612380000001,"y":8.966174600000016},{"x":21.66612380000001,"y":-8.966199999999986},{"x":-21.666200000000003,"y":-8.966199999999986},{"x":-21.666200000000003,"y":8.966174600000016}]} />
-    <silkscreentext text="D13" pcbX="-17.232122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="3V3" pcbX="-14.692122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="REF" pcbX="-12.152122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A0" pcbX="-9.612122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A1" pcbX="-7.072122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A2" pcbX="-4.532122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A3" pcbX="-1.992122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A4" pcbX="0.547878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A5" pcbX="3.087878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A6" pcbX="5.627878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="A7" pcbX="8.167878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="5V" pcbX="10.707878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="RST" pcbX="13.247878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="GND" pcbX="15.787878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="VIN" pcbX="18.327878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D12" pcbX="-17.251934mm" pcbY="3.8989mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D11" pcbX="-14.711934mm" pcbY="4.30784mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D10" pcbX="-12.171934mm" pcbY="3.8989mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D9" pcbX="-9.631934mm" pcbY="4.47294mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D8" pcbX="-7.091934mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D7" pcbX="-4.551934mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D6" pcbX="-2.011934mm" pcbY="4.47294mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D5" pcbX="0.528066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D4" pcbX="3.068066mm" pcbY="4.3815mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D3" pcbX="5.608066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="D2" pcbX="8.148066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="GND" pcbX="10.688066mm" pcbY="3.44424mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="RST" pcbX="13.228066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="RXD" pcbX="15.768066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
-    <silkscreentext text="TXD" pcbX="18.308066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" pcbRotation="3deg" fontSize="1.500124mm" />
+    <silkscreentext text="D13" pcbX="-17.232122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="3V3" pcbX="-14.692122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="REF" pcbX="-12.152122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A0" pcbX="-9.612122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A1" pcbX="-7.072122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A2" pcbX="-4.532122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A3" pcbX="-1.992122mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A4" pcbX="0.547878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A5" pcbX="3.087878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A6" pcbX="5.627878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="A7" pcbX="8.167878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="5V" pcbX="10.707878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="RST" pcbX="13.247878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="GND" pcbX="15.787878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="VIN" pcbX="18.327878mm" pcbY="-5.990082mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D12" pcbX="-17.251934mm" pcbY="3.8989mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D11" pcbX="-14.711934mm" pcbY="4.30784mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D10" pcbX="-12.171934mm" pcbY="3.8989mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D9" pcbX="-9.631934mm" pcbY="4.47294mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D8" pcbX="-7.091934mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D7" pcbX="-4.551934mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D6" pcbX="-2.011934mm" pcbY="4.47294mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D5" pcbX="0.528066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D4" pcbX="3.068066mm" pcbY="4.3815mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D3" pcbX="5.608066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="D2" pcbX="8.148066mm" pcbY="4.42722mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="GND" pcbX="10.688066mm" pcbY="3.44424mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="RST" pcbX="13.228066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="RXD" pcbX="15.768066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
+    <silkscreentext text="TXD" pcbX="18.308066mm" pcbY="3.48996mm" anchorAlignment="bottom_left" pcbRotation="90deg" fontSize="1.500124mm" />
     <silkscreentext text="{NAME}" pcbX="-1.0033mm" pcbY="9.9916mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-23.97359999999999,"y":9.24160000000002},{"x":21.967000000000013,"y":9.24160000000002},{"x":21.967000000000013,"y":-9.266999999999982},{"x":-23.97359999999999,"y":-9.266999999999982},{"x":-23.97359999999999,"y":9.24160000000002}]} />
           </footprint>}
