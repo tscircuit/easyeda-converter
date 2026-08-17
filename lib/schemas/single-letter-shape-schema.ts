@@ -195,6 +195,9 @@ const PinShapeOutputSchema = z.object({
   rotation: z.number(),
   id: z.string(),
   label: z.string(),
+  labelPosition: PointSchema.optional(),
+  labelRotation: z.number().optional(),
+  labelAlignment: z.enum(["start", "end"]).optional(),
   labelColor: z.string(),
   path: z.string(),
   arrow: z.string(),
@@ -211,8 +214,15 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   if (label.endsWith("#")) label = label.slice(0, -1)
   if (/^\+\d+(?:\.\d+)?V$/i.test(label)) label = `V${label.slice(1, -1)}`
 
-  const colorMatch = pinString.match(/#[0-9A-F]{6}/)
-  const labelColor = colorMatch ? colorMatch[0] : ""
+  const labelPart = pinString
+    .split("^^")
+    .find((part) =>
+      part.includes(`~${nameMatch?.[1] ?? ""}~${nameMatch?.[2] ?? ""}~`),
+    )
+  const [, labelX, labelY, labelRotation, , labelAlignment] =
+    labelPart?.split("~") ?? []
+  const labelColorMatch = labelPart?.match(/#[0-9A-F]{6}/)
+  const labelColor = labelColorMatch ? labelColorMatch[0] : ""
 
   const path = pinString.split("^^")[2]?.split("~")[0] ?? ""
 
@@ -229,6 +239,18 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     y: Number.parseFloat(y),
     rotation: Number.isNaN(r) ? 0 : r,
     label,
+    labelPosition:
+      labelX === undefined || labelY === undefined
+        ? undefined
+        : { x: Number.parseFloat(labelX), y: Number.parseFloat(labelY) },
+    labelRotation:
+      labelRotation === undefined
+        ? undefined
+        : Number.parseFloat(labelRotation),
+    labelAlignment:
+      labelAlignment === "start" || labelAlignment === "end"
+        ? labelAlignment
+        : undefined,
     labelColor,
     path,
     arrow,

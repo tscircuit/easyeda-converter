@@ -190,6 +190,21 @@ const getTextFontSize = (fontSize: string): number => {
   return toSchematicUnits(numericFontSize)
 }
 
+const PIN_LABEL_FONT_SIZE = 0.12
+const MOSFET_DRAIN_SOURCE_LABEL_FONT_SIZE = 0.16
+const PIN_LABEL_COLOR = "rgb(0, 100, 100)"
+const MOSFET_LABEL_PLACEMENTS: Record<
+  string,
+  {
+    position: { x: number; y: number }
+    fontSize: number
+  }
+> = {
+  G: { position: { x: -0.18, y: -0.12 }, fontSize: 0.14 },
+  D: { position: { x: 0.3, y: 0.2 }, fontSize: 0.14 },
+  S: { position: { x: 0.28, y: -0.1 }, fontSize: 0.14 },
+}
+
 const getTextAnchor = (
   alignment: "L" | "C" | "R",
 ): "left" | "center" | "right" => {
@@ -202,6 +217,7 @@ interface PortMetadata {
   name: string
   pinNumber?: number
   aliases: string[]
+  displayLabel?: string
 }
 
 const getPortMetadataByShapeId = (
@@ -236,6 +252,10 @@ const getPortMetadataByShapeId = (
   const usedPortNames = new Set<string>()
   const metadataByShapeId = new Map<string, PortMetadata>()
 
+  const hasMosfetPinLabels = ["G", "S", "D"].every((label) =>
+    pins.some((pin) => normalizeSymbolName(pin.label) === label),
+  )
+
   pins.forEach((pin, pinIndex) => {
     const pinNumberKey = String(pin.pinNumber)
     const matchingPortNames = sourcePortNamesByPadNumber.get(pinNumberKey) ?? []
@@ -267,13 +287,15 @@ const getPortMetadataByShapeId = (
     portName ??= `pin${pinIndex + 1}`
     usedPortNames.add(portName)
     const sourcePort = sourcePorts.find((port) => port.name === portName)
+    const normalizedPinLabel = pin.label ? normalizeSymbolName(pin.label) : ""
 
     metadataByShapeId.set(pin.id, {
       name: portName,
       pinNumber: sourcePort?.pin_number,
+      displayLabel: hasMosfetPinLabels ? normalizedPinLabel : undefined,
       aliases: [
         ...(sourcePort?.port_hints ?? []),
-        ...(pin.label ? [normalizeSymbolName(pin.label)] : []),
+        ...(pin.label ? [normalizedPinLabel] : []),
       ].filter(
         (alias, index, aliases) =>
           alias !== portName && aliases.indexOf(alias) === index,
@@ -340,13 +362,39 @@ const generateShapeTsx = ({
         ? ""
         : ` pinNumber={${portMetadata.pinNumber}}`
     const aliasesProp =
-      portMetadata.aliases.length === 0
+      portMetadata.aliases.length === 0 || portMetadata.displayLabel
         ? ""
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
     const stemLength = getPinStemLength(shape.path)
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
-    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(getPinDirection(shape.rotation))} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    const portTsx = `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(getPinDirection(shape.rotation))} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    const pinLabel = portMetadata.displayLabel
+    if (!pinLabel || !shape.labelPosition) return portTsx
+
+    const labelPosition = transformPoint(shape.labelPosition)
+    const mosfetLabelPlacement = MOSFET_LABEL_PLACEMENTS[pinLabel]
+    const adjustedLabelPosition =
+      mosfetLabelPlacement?.position ?? labelPosition
+    const labelFontSize =
+      mosfetLabelPlacement?.fontSize ??
+      (pinLabel === "D" || pinLabel === "S"
+        ? MOSFET_DRAIN_SOURCE_LABEL_FONT_SIZE
+        : PIN_LABEL_FONT_SIZE)
+    const labelAnchor =
+      shape.labelAlignment === "end"
+        ? "right"
+        : shape.labelAlignment === "start"
+          ? "left"
+          : "center"
+    const labelRotation =
+      pinLabel === "D" || pinLabel === "S"
+        ? 270
+        : shape.labelRotation === undefined
+          ? 0
+          : round((360 - shape.labelRotation) % 360 || 0)
+    const labelTsx = `<schematictext schX={${adjustedLabelPosition.x}} schY={${adjustedLabelPosition.y}} text=${JSON.stringify(pinLabel)} fontSize={${labelFontSize}} anchor=${JSON.stringify(labelAnchor)} color=${JSON.stringify(PIN_LABEL_COLOR)} schRotation={${labelRotation}} />`
+    return `${labelTsx}\n  ${portTsx}`
   }
 
   // AR arrowheads and I image annotations are intentionally ignored by the
