@@ -27,9 +27,13 @@ it("converts C62857 capacitor array with its EasyEDA symbol", async () => {
   expect(result).toContain("symbol={")
   expect(result).toContain("<symbol>")
   expect(result.match(/<schematicpath /g)).toHaveLength(17)
-  // The capacitor primitive owns the electrical ports, so the custom symbol
-  // contains only EasyEDA drawing primitives and does not duplicate them.
-  expect(result).not.toContain("<port ")
+  expect(result.match(/<port /g)).toHaveLength(8)
+  expect(result).toContain(
+    '<port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.7} schY={0.46} schStemLength={0.4} />',
+  )
+  expect(result).toContain(
+    '<port name="pin8" pinNumber={8} aliases={["8"]} direction="right" schX={0.7} schY={0.46} schStemLength={0.4} />',
+  )
   expect(result.match(/<smtpad /g)).toHaveLength(8)
 
   const circuitJson = await runTscircuitCode(result)
@@ -38,17 +42,38 @@ it("converts C62857 capacitor array with its EasyEDA symbol", async () => {
   )
 
   expect(sourceComponent?.ftype).toBe("simple_capacitor")
-  expect(
-    circuitJson.filter((element) => element.type === "source_port"),
-  ).toHaveLength(8)
+  const importedSourcePorts = circuitJson
+    .filter((element) => element.type === "source_port")
+    // Older core versions also create the passive's two native ports. The
+    // explicit symbol ports are appended after them.
+    .slice(-8)
+  const importedSourcePortIds = new Set(
+    importedSourcePorts.map((port) => port.source_port_id),
+  )
+  const importedSchematicPorts = circuitJson.filter(
+    (element) =>
+      element.type === "schematic_port" &&
+      importedSourcePortIds.has(element.source_port_id),
+  )
+
+  expect(importedSourcePorts).toHaveLength(8)
+  expect(importedSchematicPorts).toHaveLength(8)
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),
   ).toHaveLength(8)
   expect(
     circuitJson.filter((element) => element.type.endsWith("_error")),
   ).toHaveLength(0)
-  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-    "C62857-capacitor-array-symbol",
+  const circuitJsonWithImportedPorts = circuitJson.filter(
+    (element) =>
+      (element.type !== "source_port" ||
+        importedSourcePortIds.has(element.source_port_id)) &&
+      (element.type !== "schematic_port" ||
+        importedSourcePortIds.has(element.source_port_id)),
   )
+  expect(
+    convertCircuitJsonToSchematicSvg(circuitJsonWithImportedPorts, {
+      css: ".schematic-port-hover circle { opacity: 1; fill: none; stroke: rgb(132, 0, 0); stroke-width: 2px; }",
+    }),
+  ).toMatchSvgSnapshot(import.meta.path, "C62857-capacitor-array-symbol")
 })
