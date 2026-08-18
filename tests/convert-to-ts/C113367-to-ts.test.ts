@@ -53,25 +53,25 @@ it("should convert C113367 into typescript file", async () => {
           pinAttributes={pinAttributes}
           symbol={
             <symbol>
-              <schematicpath points={[{"x":-0.4,"y":-0.5},{"x":0.4,"y":-0.1},{"x":-0.4,"y":0.3},{"x":-0.4,"y":-0.5}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.32,"y":0.1},{"x":-0.2,"y":0.1}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.32,"y":-0.3},{"x":-0.2,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.26,"y":-0.24},{"x":-0.26,"y":-0.36}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":0.3},{"x":0,"y":0.1}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":-0.3},{"x":0,"y":-0.5}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0.2,"y":-0.2},{"x":0.4,"y":-0.5}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.28,"y":0.24},{"x":-0.4,"y":0.5}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.28,"y":-0.44},{"x":-0.4,"y":-0.7}]} strokeColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["N_SD"]} direction="left" schX={-0.8} schY={0.5} schStemLength={0.4} />
-              <port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} />
-              <port name="pin3" pinNumber={3} aliases={["IN_POS"]} direction="left" schX={-0.8} schY={-0.3} schStemLength={0.4} />
-              <port name="pin7" pinNumber={7} aliases={["GND"]} direction="down" schX={0} schY={-0.9} schStemLength={0.4} />
-              <port name="pin5" pinNumber={5} aliases={["VO_POS"]} direction="right" schX={0.8} schY={-0.1} schStemLength={0.4} />
-              <port name="pin6" pinNumber={6} aliases={["VDD"]} direction="up" schX={0} schY={0.7} schStemLength={0.4} />
-              <port name="pin8" pinNumber={8} aliases={["VO_NEG"]} direction="right" schX={0.8} schY={-0.5} schStemLength={0.4} />
-              <port name="pin4" pinNumber={4} aliases={["NC"]} direction="left" schX={-0.8} schY={-0.7} schStemLength={0.4} />
-              <schematictext schX={0.72} schY={-0.02} text="+" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
-              <schematictext schX={0.76} schY={-0.46} text="-" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
+              <schematicpath points={[{"x":-0.84,"y":-1.05},{"x":0.84,"y":-0.21},{"x":-0.84,"y":0.63},{"x":-0.84,"y":-1.05}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.672,"y":0.21},{"x":-0.42,"y":0.21}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.672,"y":-0.63},{"x":-0.42,"y":-0.63}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.546,"y":-0.504},{"x":-0.546,"y":-0.756}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":0.63},{"x":0,"y":0.21}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":-0.63},{"x":0,"y":-1.05}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.42,"y":-0.42},{"x":0.84,"y":-1.05}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.588,"y":0.504},{"x":-0.84,"y":1.05}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.588,"y":-0.924},{"x":-0.84,"y":-1.47}]} strokeColor="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["N_SD"]} direction="left" schX={-1.68} schY={1.05} schStemLength={0.84} />
+              <port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-1.68} schY={0.21} schStemLength={0.84} />
+              <port name="pin3" pinNumber={3} aliases={["IN_POS"]} direction="left" schX={-1.68} schY={-0.63} schStemLength={0.84} />
+              <port name="pin7" pinNumber={7} aliases={["GND"]} direction="down" schX={0} schY={-1.89} schStemLength={0.84} />
+              <port name="pin5" pinNumber={5} aliases={["VO_POS"]} direction="right" schX={1.68} schY={-0.21} schStemLength={0.84} />
+              <port name="pin6" pinNumber={6} aliases={["VDD"]} direction="up" schX={0} schY={1.47} schStemLength={0.84} />
+              <port name="pin8" pinNumber={8} aliases={["VO_NEG"]} direction="right" schX={1.68} schY={-1.05} schStemLength={0.84} />
+              <port name="pin4" pinNumber={4} aliases={["NC"]} direction="left" schX={-1.68} schY={-1.47} schStemLength={0.84} />
+              <schematictext schX={1.512} schY={-0.042} text="+" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
+              <schematictext schX={1.596} schY={-0.966} text="-" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
             </symbol>
           }
           supplierPartNumbers={{

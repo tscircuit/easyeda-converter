@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C113367.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces overlapping pin labels in the C113367 custom symbol", async () => {
+it("renders readable pin labels in the C113367 custom symbol", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(
