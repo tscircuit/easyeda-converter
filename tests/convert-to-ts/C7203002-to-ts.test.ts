@@ -58,7 +58,7 @@ it("should convert C7203002 into typescript file", async () => {
       pin33: ["GND5"],
       pin34: ["GP28"],
       pin35: ["ADC_VREF"],
-      pin36: ["3V3(OUT)"],
+      pin36: ["3V3","OUT"],
       pin37: ["3V3_EN"],
       pin38: ["GND7"],
       pin39: ["VSYS"],
