@@ -45,7 +45,7 @@ it("should convert C51950748 into typescript file", async () => {
       pin16: ["IO5"],
       pin17: ["IO4"],
       pin18: ["IO27"],
-      pin19: ["NC/IO15"],
+      pin19: ["NC","IO15"],
       pin20: ["NC1"],
       pin21: ["IO23"],
       pin22: ["NC2"],
@@ -59,14 +59,14 @@ it("should convert C51950748 into typescript file", async () => {
       pin30: ["GND3"],
       pin31: ["ANT2"],
       pin32: ["GND4"],
-      pin33: ["pin29_alt1"],
-      pin34: ["pin29_alt1"],
-      pin35: ["pin29_alt1"],
-      pin36: ["pin29_alt1"],
-      pin37: ["pin29_alt1"],
-      pin38: ["pin29_alt1"],
-      pin39: ["pin29_alt1"],
-      pin40: ["pin29_alt1"]
+      pin33: ["pin29_alt1","EPAD2"],
+      pin34: ["pin29_alt1","EPAD3"],
+      pin35: ["pin29_alt1","EPAD4"],
+      pin36: ["pin29_alt1","EPAD5"],
+      pin37: ["pin29_alt1","EPAD6"],
+      pin38: ["pin29_alt1","EPAD7"],
+      pin39: ["pin29_alt1","EPAD8"],
+      pin40: ["pin29_alt1","EPAD9"]
     } as const
 
     export const ESP32_C5_WROOM_1U_N8R8 = (props: ChipProps<typeof pinLabels>) => {

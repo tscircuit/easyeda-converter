@@ -23,8 +23,8 @@ it("should convert C2979182 / MY-18650-02 into typescript file", async () => {
     "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
-      pin1: ["+/_NEG2"],
-      pin2: ["+/_NEG1"]
+      pin1: ["+","_NEG2"],
+      pin2: ["+","_NEG1"]
     } as const
 
     export const MY_18650_02 = (props: ChipProps<typeof pinLabels>) => {

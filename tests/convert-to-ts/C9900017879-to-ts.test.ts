@@ -30,8 +30,8 @@ it("should convert C9900017879 into typescript file", async () => {
     "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
-      pin1: ["D1/TX"],
-      pin2: ["D0/RX"],
+      pin1: ["D1","TX"],
+      pin2: ["D0","RX"],
       pin3: ["RESET1"],
       pin4: ["GND2"],
       pin5: ["D2"],

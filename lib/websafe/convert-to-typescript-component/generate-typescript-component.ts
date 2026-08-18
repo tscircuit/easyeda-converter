@@ -61,14 +61,22 @@ export const generateTypescriptComponent = ({
       : undefined,
   )
 
-  // Simplify pin labels to include only the second element
+  // Drop the generated pin name while preserving multiplexed EasyEDA pin
+  // functions as individual aliases. tscircuit treats a slash as invalid in a
+  // single port name, but accepts each function as a separate label.
   const simplifiedPinLabels = Object.fromEntries(
     Object.entries(safePinLabels).map(([pin, labels]) => {
-      // Ensure labels is an array and has a second element
       if (Array.isArray(labels) && labels.length > 1) {
-        return [pin, [labels[1]]]
+        return [
+          pin,
+          labels
+            .slice(1)
+            .flatMap((label) => label.split("/"))
+            .map((label) => label.trim())
+            .filter(Boolean),
+        ]
       }
-      return [pin, labels] // Fallback to original if not an array or missing second element
+      return [pin, labels]
     }),
   )
 
