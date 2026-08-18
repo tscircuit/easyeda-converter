@@ -12,7 +12,5 @@ test("through-hole pads span both outer copper layers", () => {
 
   expect(platedHoles.length).toBeGreaterThan(0)
   expect(platedHoles.every((hole) => hole.layers.includes("top"))).toBe(true)
-  expect(platedHoles.every((hole) => hole.layers.includes("bottom"))).toBe(
-    true,
-  )
+  expect(platedHoles.every((hole) => hole.layers.includes("bottom"))).toBe(true)
 })
