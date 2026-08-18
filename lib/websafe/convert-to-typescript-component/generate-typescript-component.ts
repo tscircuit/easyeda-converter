@@ -84,10 +84,7 @@ export const generateTypescriptComponent = ({
       if (Array.isArray(labels) && labels.length > 1) {
         return [
           pin,
-          labels
-            .slice(1)
-            .flatMap(splitMultiplexedPinLabel)
-            .filter(Boolean),
+          labels.slice(1).flatMap(splitMultiplexedPinLabel).filter(Boolean),
         ]
       }
       return [pin, labels]
