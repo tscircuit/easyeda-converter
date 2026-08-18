@@ -26,7 +26,7 @@ it("should convert C393941 into typescript file", async () => {
 
     const pinLabels = {
       pin1: ["DAT2"],
-      pin2: ["pin2"],
+      pin2: ["CD/DAT3"],
       pin3: ["CMD"],
       pin4: ["VDD"],
       pin5: ["CLX"],

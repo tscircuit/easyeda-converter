@@ -45,7 +45,7 @@ it("should convert C51950748 into typescript file", async () => {
       pin16: ["IO5"],
       pin17: ["IO4"],
       pin18: ["IO27"],
-      pin19: ["pin19"],
+      pin19: ["NC/IO15"],
       pin20: ["NC1"],
       pin21: ["IO23"],
       pin22: ["NC2"],
