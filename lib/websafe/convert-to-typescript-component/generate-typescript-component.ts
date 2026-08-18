@@ -32,6 +32,21 @@ interface Params {
   symbolTsx?: string
 }
 
+const splitMultiplexedPinLabel = (label: string): string[] => {
+  const leadingFunctions = label.match(/^\(([^)]*)\)(.+)$/)
+  const trailingFunctions = label.match(/^([^()]+)\(([^)]*)\)$/)
+  const labels = leadingFunctions
+    ? [leadingFunctions[2], ...leadingFunctions[1].split("/")]
+    : trailingFunctions
+      ? [trailingFunctions[1], ...trailingFunctions[2].split("/")]
+      : label.split("/")
+
+  return labels
+    .map((alias) => alias.trim())
+    .filter(Boolean)
+    .map((alias) => (alias.endsWith("#") ? alias.slice(0, -1) : alias))
+}
+
 export const generateTypescriptComponent = ({
   pinLabels,
   componentName,
@@ -71,8 +86,7 @@ export const generateTypescriptComponent = ({
           pin,
           labels
             .slice(1)
-            .flatMap((label) => label.split("/"))
-            .map((label) => label.trim())
+            .flatMap(splitMultiplexedPinLabel)
             .filter(Boolean),
         ]
       }
