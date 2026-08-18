@@ -6,7 +6,7 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C3273487 coupled inductor losing schematic terminals", async () => {
+it("converts C3273487 coupled inductor without losing terminals", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
@@ -15,7 +15,8 @@ it("reproduces C3273487 coupled inductor losing schematic terminals", async () =
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
   expect(betterEasy.lcsc.number).toBe("C3273487")
-  expect(result).toContain("<inductor")
+  expect(result).toContain("<chip")
+  expect(result).not.toContain("<inductor")
   expect(result.match(/<smtpad /g)).toHaveLength(4)
 
   const circuitJson = await runTscircuitCode(
@@ -30,22 +31,29 @@ it("reproduces C3273487 coupled inductor losing schematic terminals", async () =
   ).toHaveLength(4)
   expect(
     circuitJson.filter((element) => element.type === "schematic_port"),
-  ).toHaveLength(2)
+  ).toHaveLength(4)
 
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
-    "C3273487-missing-coupled-inductor-terminals",
+    "C3273487-coupled-inductor-chip",
   )
 
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
-    "import type { InductorProps } from "@tscircuit/props"
+    "import type { ChipProps } from "@tscircuit/props"
 
-    export const SRF1280_101M = (props: Omit<InductorProps, "inductance">) => {
+    const pinLabels = {
+      pin1: ["pin1"],
+      pin2: ["pin2"],
+      pin3: ["pin3"],
+      pin4: ["pin4"]
+    } as const
+
+    export const SRF1280_101M = (props: ChipProps<typeof pinLabels>) => {
       return (
-        <inductor
-          inductance="100uH"
+        <chip
+          pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [
         "C3273487"

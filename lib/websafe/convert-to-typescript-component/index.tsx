@@ -38,7 +38,7 @@ const getGeneratedComponentType = (
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
   if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
-  if (isInductorComponent(betterEasy)) return "inductor"
+  if (isInductorComponent(betterEasy) && pinCount === 2) return "inductor"
   if (isCrystalComponent(betterEasy)) return "crystal"
   if (isMicroUsbConnectorComponent(betterEasy)) return "connector"
   return "chip"
@@ -143,12 +143,15 @@ export const convertBetterEasyToTsx = async ({
           : undefined
   const isMultiPinDiode =
     isDiodeCategoryComponent(betterEasy) && sourcePorts.length !== 2
+  const isMultiPinInductor =
+    isInductorComponent(betterEasy) && sourcePorts.length !== 2
   const isPassiveWithCustomSymbol =
     componentType === "capacitor" || componentType === "resistor"
   const symbolTsx =
     isPassiveWithCustomSymbol ||
     (componentType === "chip" &&
       !isMultiPinDiode &&
+      !isMultiPinInductor &&
       hasNonBoxSchematicSymbol(betterEasy))
       ? generateSymbolTsx(betterEasy, circuitJson, {
           alignPortsToDrawing: isPassiveWithCustomSymbol,
