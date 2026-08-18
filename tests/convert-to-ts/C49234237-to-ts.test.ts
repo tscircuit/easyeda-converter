@@ -1,4 +1,3 @@
-
 import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C49234237.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
@@ -10,7 +9,7 @@ it("should convert C49234237 into a pushbutton component", async () => {
     betterEasy,
   })
 
-  expect(result).toContain('import type { PushButtonProps }')
-  expect(result).toContain('<pushbutton')
-  expect(result).not.toContain('<chip')
+  expect(result).toContain("import type { PushButtonProps }")
+  expect(result).toContain("<pushbutton")
+  expect(result).not.toContain("<chip")
 })
