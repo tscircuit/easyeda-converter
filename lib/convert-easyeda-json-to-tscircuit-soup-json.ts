@@ -409,7 +409,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         pcb_plated_hole_id: platedHoleId,
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
-        layers: ["top"],
+        // Through-hole pads are plated on both outer copper layers.
+        layers: ["top", "bottom"],
         port_hints: pcbPortHints,
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
