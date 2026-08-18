@@ -27,18 +27,18 @@ it("should convert C165948 into typescript file", async () => {
       pin2: ["EH1"],
       pin3: ["EH4"],
       pin4: ["EH3"],
-      pin5: ["B8"],
-      pin6: ["A5"],
-      pin7: ["B7"],
-      pin8: ["A6"],
-      pin9: ["A7"],
-      pin10: ["B6"],
-      pin11: ["A8"],
-      pin12: ["B5"],
-      pin13: ["A1B12"],
-      pin14: ["B1A12"],
-      pin15: ["B4A9"],
-      pin16: ["A4B9"]
+      pin5: ["B8","SBU2"],
+      pin6: ["A5","CC1"],
+      pin7: ["B7","DN2"],
+      pin8: ["A6","DP1"],
+      pin9: ["A7","DN1"],
+      pin10: ["B6","DP2"],
+      pin11: ["A8","SBU1"],
+      pin12: ["B5","CC2"],
+      pin13: ["A1B12","GND1"],
+      pin14: ["B1A12","GND2"],
+      pin15: ["B4A9","VBUS1"],
+      pin16: ["A4B9","VBUS2"]
     } as const
 
     export const TYPE_C_31_M_12 = (props: ChipProps<typeof pinLabels>) => {

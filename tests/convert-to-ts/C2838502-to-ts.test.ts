@@ -78,14 +78,14 @@ it("should convert C2838502 into typescript file", async () => {
       pin51: ["GND19"],
       pin52: ["GND20"],
       pin53: ["GND21"],
-      pin54: ["pin49_alt1"],
-      pin55: ["pin49_alt1"],
-      pin56: ["pin49_alt1"],
-      pin57: ["pin49_alt1"],
-      pin58: ["pin49_alt1"],
-      pin59: ["pin49_alt1"],
-      pin60: ["pin49_alt1"],
-      pin61: ["pin49_alt1"]
+      pin54: ["pin49_alt1","GND23"],
+      pin55: ["pin49_alt1","GND24"],
+      pin56: ["pin49_alt1","GND25"],
+      pin57: ["pin49_alt1","GND26"],
+      pin58: ["pin49_alt1","GND27"],
+      pin59: ["pin49_alt1","GND28"],
+      pin60: ["pin49_alt1","GND29"],
+      pin61: ["pin49_alt1","GND30"]
     } as const
 
     export const ESP32_C3_MINI_1_N4 = (props: ChipProps<typeof pinLabels>) => {
