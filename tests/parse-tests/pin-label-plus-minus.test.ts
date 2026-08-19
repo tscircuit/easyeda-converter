@@ -7,6 +7,8 @@ const minusPinStr =
   "P~show~0~2~355~295~180~gge6~0^^355~295^^M355,295h10~#880000^^1~368.7~299~0~C2-~start~~~#0000FF^^1~364.5~294~0~2~end~~~#0000FF^^0~362~295^^0~M 365 298 L 368 295 L 365 292"
 const voltagePinStr =
   "P~show~0~27~450~260~0~gge31~0^^450~260^^M450,260h-10~#880000^^1~436.3~264~0~+5V~end~~~#0000FF^^1~440.5~259~0~27~start~~~#0000FF^^0~443~260^^0~M 440 257 L 437 260 L 440 263"
+const polarityPinStr =
+  "P~show~0~1~375~295~180~gge41~0^^375~295^^M375,295h10~#880000^^1~388.7~299~0~+/-~start~~~#0000FF^^1~384.5~294~0~1~end~~~#0000FF^^0~382~295^^0~M 385 298 L 388 295 L 385 292"
 
 it("converts trailing plus and minus in pin labels", () => {
   const plusPin = PinShapeSchema.parse(plusPinStr)
@@ -18,4 +20,8 @@ it("converts trailing plus and minus in pin labels", () => {
 it("normalizes voltage pin labels with leading plus", () => {
   const pin = PinShapeSchema.parse(voltagePinStr)
   expect(pin.label).toBe("V5")
+})
+
+it("preserves a bare polarity label for alias expansion", () => {
+  expect(PinShapeSchema.parse(polarityPinStr).label).toBe("+/-")
 })

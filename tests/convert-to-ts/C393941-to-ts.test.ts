@@ -26,7 +26,7 @@ it("should convert C393941 into typescript file", async () => {
 
     const pinLabels = {
       pin1: ["DAT2"],
-      pin2: ["CD","DAT3"],
+      pin2: ["CD1","DAT3"],
       pin3: ["CMD"],
       pin4: ["VDD"],
       pin5: ["CLX"],
@@ -37,7 +37,7 @@ it("should convert C393941 into typescript file", async () => {
       pin11: ["pin11"],
       pin12: ["pin12"],
       pin13: ["pin13"],
-      pin14: ["CD"]
+      pin14: ["CD2"]
     } as const
 
     export const TF_PUSH = (props: ChipProps<typeof pinLabels>) => {

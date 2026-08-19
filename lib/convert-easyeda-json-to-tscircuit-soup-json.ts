@@ -36,9 +36,9 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { expandPinLabelAliases } from "./utils/expand-pin-label-aliases"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
-import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 import { isDiodeCategoryComponent } from "./websafe/convert-to-typescript-component/is-diode-category-component"
 import { isLedCategoryComponent } from "./websafe/convert-to-typescript-component/is-led-category-component"
 import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
@@ -357,7 +357,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     if (pad.number) labels.push(pad.number.toString())
 
     const pin = pins.find((p) => p.pinNumber === pad.number)
-    if (pin) labels.push(normalizeSymbolName(pin.label))
+    if (pin) labels.push(...expandPinLabelAliases(pin.label))
 
     return labels
   })

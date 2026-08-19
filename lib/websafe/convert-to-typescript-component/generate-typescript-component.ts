@@ -32,21 +32,6 @@ interface Params {
   symbolTsx?: string
 }
 
-const splitMultiplexedPinLabel = (label: string): string[] => {
-  const leadingFunctions = label.match(/^\(([^)]*)\)(.+)$/)
-  const trailingFunctions = label.match(/^([^()]+)\(([^)]*)\)$/)
-  const labels = leadingFunctions
-    ? [leadingFunctions[2], ...leadingFunctions[1].split("/")]
-    : trailingFunctions
-      ? [trailingFunctions[1], ...trailingFunctions[2].split("/")]
-      : label.split("/")
-
-  return labels
-    .map((alias) => alias.trim())
-    .filter(Boolean)
-    .map((alias) => (alias.endsWith("#") ? alias.slice(0, -1) : alias))
-}
-
 export const generateTypescriptComponent = ({
   pinLabels,
   componentName,
@@ -76,16 +61,12 @@ export const generateTypescriptComponent = ({
       : undefined,
   )
 
-  // Drop the generated pin name while preserving multiplexed EasyEDA pin
-  // functions as individual aliases. tscircuit treats a slash as invalid in a
-  // single port name, but accepts each function as a separate label.
+  // Drop the generated pin name. EasyEDA aliases are expanded and normalized
+  // before the circuit JSON reaches the TypeScript generator.
   const simplifiedPinLabels = Object.fromEntries(
     Object.entries(safePinLabels).map(([pin, labels]) => {
       if (Array.isArray(labels) && labels.length > 1) {
-        return [
-          pin,
-          labels.slice(1).flatMap(splitMultiplexedPinLabel).filter(Boolean),
-        ]
+        return [pin, labels.slice(1)]
       }
       return [pin, labels]
     }),
