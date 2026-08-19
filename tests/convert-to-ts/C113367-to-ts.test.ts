@@ -41,10 +41,16 @@ it("should convert C113367 into typescript file", async () => {
       pin8: ["VO_NEG"]
     } as const
 
+    const pinAttributes = {
+      pin6: {requiresPower: true},
+      pin7: {requiresGround: true}
+    } as const
+
     export const PAM8302AASCR = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           symbol={
             <symbol>
               <schematicpath points={[{"x":-0.4,"y":-0.5},{"x":0.4,"y":-0.1},{"x":-0.4,"y":0.3},{"x":-0.4,"y":-0.5}]} strokeColor="#880000" />
