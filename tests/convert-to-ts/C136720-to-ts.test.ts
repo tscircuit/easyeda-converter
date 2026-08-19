@@ -5,6 +5,34 @@ import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+
+it("converts C136720 document-layer tracks to fabrication notes", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
+  const tracks = betterEasy.packageDetail.dataStr.shape.filter(
+    (shape) => shape.type === "TRACK",
+  )
+
+  expect(tracks.filter((track) => track.layer === 3)).toHaveLength(2)
+  expect(tracks.filter((track) => track.layer === 12)).toHaveLength(1)
+
+  const convertedCircuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const convertedSilkscreenPaths = convertedCircuitJson.filter(
+    (element) => element.type === "pcb_silkscreen_path",
+  )
+  const convertedFabricationNotePaths = convertedCircuitJson.filter(
+    (element) => element.type === "pcb_fabrication_note_path",
+  )
+
+  expect(convertedSilkscreenPaths).toHaveLength(2)
+  expect(convertedFabricationNotePaths).toHaveLength(1)
+  expect(
+    convertCircuitJsonToPcbSvg(convertedCircuitJson as any),
+  ).toMatchSvgSnapshot(
+    import.meta.path,
+    "C136720-document-track-as-silkscreen-repro",
+  )
+})
 
 it("should convert C136720 slide switch into a switch component with pin labels", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
@@ -51,8 +79,8 @@ it("should convert C136720 slide switch into a switch component with pin labels"
     <platedhole  portHints={["pin5"]} pcbX="0mm" pcbY="6.477mm" outerDiameter="2.1999956mm" holeDiameter="1.5000224mm" shape="circle" />
     <silkscreenpath route={[{"x":2.793999999999997,"y":-6.477000000000004},{"x":-2.793999999999997,"y":-6.477000000000004},{"x":-2.793999999999997,"y":6.477000000000004},{"x":2.793999999999997,"y":6.477000000000004},{"x":2.793999999999997,"y":-6.477000000000004}]} />
     <silkscreenpath route={[{"x":2.0319999999999965,"y":3.174999999999997},{"x":2.0319999999999965,"y":0.12699999999999534}]} />
-    <silkscreenpath route={[{"x":2.793999999999997,"y":3.174999999999997},{"x":8.127999999999986,"y":3.174999999999997},{"x":8.127999999999986,"y":0.12699999999999534},{"x":2.793999999999997,"y":0.12699999999999534}]} />
     <silkscreentext text="{NAME}" pcbX="2.667mm" pcbY="8.6708mm" anchorAlignment="center" fontSize="1mm" />
+    <fabricationnotepath route={[{"x":2.793999999999997,"y":3.174999999999997},{"x":8.128,"y":3.174999999999997},{"x":8.128,"y":0.12699999999999534},{"x":2.793999999999997,"y":0.12699999999999534}]} strokeWidth="0.254mm" />
     <courtyardoutline outline={[{"x":-3.043999999999997,"y":7.9208},{"x":8.377999999999986,"y":7.9208},{"x":8.377999999999986,"y":-7.946200000000005},{"x":-3.043999999999997,"y":-7.946200000000005},{"x":-3.043999999999997,"y":7.9208}]} />
           </footprint>}
           cadModel={{
@@ -82,4 +110,12 @@ it("should convert C136720 slide switch into a switch component with pin labels"
   )
 
   expect(sourceComponent?.ftype).toBe("simple_switch")
+  expect(
+    circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
+  ).toHaveLength(2)
+  expect(
+    circuitJson.filter(
+      (element) => element.type === "pcb_fabrication_note_path",
+    ),
+  ).toHaveLength(1)
 }, 20000)

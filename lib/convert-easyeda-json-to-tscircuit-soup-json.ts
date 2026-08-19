@@ -12,6 +12,7 @@ import type {
 import {
   any_source_component,
   pcb_courtyard_outline,
+  pcb_fabrication_note_path,
   pcb_hole,
   pcb_plated_hole,
   pcb_silkscreen_path,
@@ -114,7 +115,7 @@ const handleSilkscreenPath = (
     type: "pcb_silkscreen_path",
     pcb_silkscreen_path_id: `pcb_silkscreen_path_${index + 1}`,
     pcb_component_id: "pcb_component_1",
-    layer: "top", // Assuming all silkscreen is on top layer
+    layer: getSideFromLayer(track.layer),
     route: track.points.map((point) => ({
       x: milx10(point.x),
       y: milx10(point.y),
@@ -127,6 +128,24 @@ const isCourtyardLayer = (layer?: number) =>
   layer === 13 || layer === 14 || layer === 15
 
 const isSilkscreenLayer = (layer?: number) => layer === 3 || layer === 4
+
+const isDocumentLayer = (layer?: number) => layer === 12
+
+const handleFabricationNotePath = (
+  track: z.infer<typeof TrackSchema>,
+  index: number,
+) =>
+  pcb_fabrication_note_path.parse({
+    type: "pcb_fabrication_note_path",
+    pcb_fabrication_note_path_id: `pcb_fabrication_note_path_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: "top",
+    route: track.points.map((point) => ({
+      x: mil10ToMm(point.x),
+      y: mil10ToMm(point.y),
+    })),
+    stroke_width: mil10ToMm(track.width),
+  })
 
 const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   if (layer === 4 || layer === 14) return "bottom"
@@ -409,7 +428,8 @@ export const convertEasyEdaJsonToCircuitJson = (
         pcb_plated_hole_id: platedHoleId,
         x: mil2mm(pad.center.x),
         y: mil2mm(pad.center.y),
-        layers: ["top"],
+        // Through-hole pads are plated on both outer copper layers.
+        layers: ["top", "bottom"],
         port_hints: pcbPortHints,
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
@@ -604,8 +624,10 @@ export const convertEasyEdaJsonToCircuitJson = (
   let hasFoundDesignator = false
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
-      if (!isCourtyardLayer(shape.layer)) {
+      if (isSilkscreenLayer(shape.layer)) {
         circuitElements.push(handleSilkscreenPath(shape, index))
+      } else if (isDocumentLayer(shape.layer)) {
+        circuitElements.push(handleFabricationNotePath(shape, index))
       }
     } else if (shape.type === "CIRCLE") {
       if (isSilkscreenLayer(shape.layer)) {
