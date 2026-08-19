@@ -84,7 +84,7 @@ export const convertEasyEdaJsonToVariousFormats = async ({
       outputFilename.endsWith(".tsx") ||
       outputFilename.endsWith(".ts")
     ) {
-      const tsComp = await convertRawEasyToTsx(rawEasyEdaJson)
+      const tsComp = await convertRawEasyToTsx({ rawEasy: rawEasyEdaJson })
       await fs.writeFile(outputFilename, tsComp)
       console.log(
         `[${jlcpcbPartNumberOrFilepath}] Saved TypeScript component: ${outputFilename}`,
