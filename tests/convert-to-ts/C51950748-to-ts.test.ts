@@ -2,7 +2,10 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C51950748.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import {
+  convertCircuitJsonToPcbSvg,
+  convertCircuitJsonToSchematicSvg,
+} from "circuit-to-svg"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
@@ -17,6 +20,10 @@ it("should convert C51950748 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C51950748-to-ts-schematic",
   )
   expect(
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
