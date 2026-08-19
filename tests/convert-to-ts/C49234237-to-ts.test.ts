@@ -6,16 +6,15 @@ import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
-it("reproduces C49234237 being imported as a generic chip", async () => {
+it("converts C49234237 into a pushbutton component", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
   })
 
-  // This is the current incorrect output. The eventual fix should change
-  // this to PushButtonProps/<pushbutton>.
-  expect(result).toContain("import type { ChipProps }")
-  expect(result).toContain("<chip")
+  expect(result).toContain("import type { PushButtonProps }")
+  expect(result).toContain("<pushbutton")
+  expect(result).not.toContain("<chip")
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),

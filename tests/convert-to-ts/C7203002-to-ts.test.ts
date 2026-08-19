@@ -74,10 +74,23 @@ it("should convert C7203002 into typescript file", async () => {
       pin49: ["TP6"]
     } as const
 
+    const pinAttributes = {
+      pin3: {requiresGround: true},
+      pin8: {requiresGround: true},
+      pin13: {requiresGround: true},
+      pin18: {requiresGround: true},
+      pin23: {requiresGround: true},
+      pin28: {requiresGround: true},
+      pin33: {requiresGround: true},
+      pin38: {requiresGround: true},
+      pin42: {requiresGround: true}
+    } as const
+
     export const PICO = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C7203002"

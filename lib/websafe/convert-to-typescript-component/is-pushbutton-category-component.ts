@@ -7,10 +7,14 @@ export const isPushbuttonCategoryComponent = (
   const cPara = betterEasy.dataStr.head.c_para
   return [
     betterEasy.tags,
+    betterEasy.title,
+    betterEasy.description,
     cPara.category,
     cPara.Category,
     cPara["LCSC Category"],
     cPara["JLCPCB Category"],
+    cPara.package,
+    cPara.pre,
     betterEasy.category,
   ].some(categoryValueContainsPushbutton)
 }

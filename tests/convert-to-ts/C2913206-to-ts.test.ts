@@ -98,10 +98,46 @@ it("should convert C2913206 into typescript file", async () => {
       pin73: ["GND32"]
     } as const
 
+    const pinAttributes = {
+      pin1: {requiresGround: true},
+      pin2: {requiresGround: true},
+      pin42: {requiresGround: true},
+      pin43: {requiresGround: true},
+      pin46: {requiresGround: true},
+      pin47: {requiresGround: true},
+      pin48: {requiresGround: true},
+      pin49: {requiresGround: true},
+      pin50: {requiresGround: true},
+      pin51: {requiresGround: true},
+      pin52: {requiresGround: true},
+      pin53: {requiresGround: true},
+      pin54: {requiresGround: true},
+      pin55: {requiresGround: true},
+      pin56: {requiresGround: true},
+      pin57: {requiresGround: true},
+      pin58: {requiresGround: true},
+      pin59: {requiresGround: true},
+      pin60: {requiresGround: true},
+      pin61: {requiresGround: true},
+      pin62: {requiresGround: true},
+      pin63: {requiresGround: true},
+      pin64: {requiresGround: true},
+      pin65: {requiresGround: true},
+      pin66: {requiresGround: true},
+      pin67: {requiresGround: true},
+      pin68: {requiresGround: true},
+      pin69: {requiresGround: true},
+      pin70: {requiresGround: true},
+      pin71: {requiresGround: true},
+      pin72: {requiresGround: true},
+      pin73: {requiresGround: true}
+    } as const
+
     export const ESP32_S3_MINI_1_N8 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C2913206"

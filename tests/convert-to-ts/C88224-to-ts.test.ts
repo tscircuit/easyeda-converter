@@ -49,10 +49,20 @@ it("should convert C88224 into typescript file", async () => {
       pin24: ["VM1"]
     } as const
 
+    const pinAttributes = {
+      pin3: {requiresGround: true},
+      pin4: {requiresGround: true},
+      pin9: {requiresGround: true},
+      pin10: {requiresGround: true},
+      pin18: {requiresGround: true},
+      pin20: {requiresPower: true}
+    } as const
+
     export const TB6612FNG_O_C_8_EL = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C88224"

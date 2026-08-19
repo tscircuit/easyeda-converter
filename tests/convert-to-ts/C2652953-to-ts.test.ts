@@ -55,10 +55,17 @@ it("should convert C2652953 into typescript file", async () => {
       pin14: ["VCCB"]
     } as const
 
+    const pinAttributes = {
+      pin6: {doNotConnect: true},
+      pin7: {requiresGround: true},
+      pin9: {doNotConnect: true}
+    } as const
+
     export const TXS0104EQPWRQ1 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C2652953"
