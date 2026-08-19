@@ -20,12 +20,11 @@ it("should convert C46749 into typescript file", async () => {
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
   )
-  const groundPort = circuitJson.find(
-    (element) => element.type === "source_port" && element.pin_number === 1,
+  const sourcePorts = circuitJson.filter(
+    (element) => element.type === "source_port",
   )
-  const powerPort = circuitJson.find(
-    (element) => element.type === "source_port" && element.pin_number === 8,
-  )
+  const groundPort = sourcePorts.find((element) => element.pin_number === 1)
+  const powerPort = sourcePorts.find((element) => element.pin_number === 8)
 
   expect(groundPort?.requires_ground).toBe(true)
   expect(powerPort?.requires_power).toBe(true)

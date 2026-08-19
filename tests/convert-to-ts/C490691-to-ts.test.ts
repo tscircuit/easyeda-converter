@@ -17,9 +17,10 @@ it("should convert C490691 into typescript file", async () => {
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
   )
-  const noConnectPort = circuitJson.find(
-    (element) => element.type === "source_port" && element.pin_number === 8,
+  const sourcePorts = circuitJson.filter(
+    (element) => element.type === "source_port",
   )
+  const noConnectPort = sourcePorts.find((element) => element.pin_number === 8)
 
   expect(noConnectPort?.do_not_connect).toBe(true)
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
