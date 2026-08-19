@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C490691.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C490691 losing trailing-hash active-low pin names", async () => {
+it("preserves C490691 trailing-hash active-low pin names", async () => {
   expect(
     chipRawEasy.dataStr.shape.some((shape) => shape.includes("~DTR#~")),
   ).toBeTrue()
@@ -17,10 +17,8 @@ it("reproduces C490691 losing trailing-hash active-low pin names", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  expect(result).toContain('pin2: ["DTR"]')
-  expect(result).toContain('pin19: ["RESET"]')
-  expect(result).not.toContain('pin2: ["N_DTR"]')
-  expect(result).not.toContain('pin19: ["N_RESET"]')
+  expect(result).toContain('pin2: ["N_DTR"]')
+  expect(result).toContain('pin19: ["N_RESET"]')
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
@@ -28,6 +26,6 @@ it("reproduces C490691 losing trailing-hash active-low pin names", async () => {
 
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
-    "C490691-active-low-labels-stripped",
+    "C490691-active-low-labels-preserved",
   )
 })

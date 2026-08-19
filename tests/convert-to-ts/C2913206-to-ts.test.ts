@@ -106,19 +106,7 @@ it("should convert C2913206 into typescript file", async () => {
       pin58: {requiresGround: true},
       pin59: {requiresGround: true},
       pin60: {requiresGround: true},
-      pin61: {requiresGround: true},
-      pin62: {requiresGround: true},
-      pin63: {requiresGround: true},
-      pin64: {requiresGround: true},
-      pin65: {requiresGround: true},
-      pin66: {requiresGround: true},
-      pin67: {requiresGround: true},
-      pin68: {requiresGround: true},
-      pin69: {requiresGround: true},
-      pin70: {requiresGround: true},
-      pin71: {requiresGround: true},
-      pin72: {requiresGround: true},
-      pin73: {requiresGround: true}
+      pin61: {requiresGround: true}
     } as const
 
     export const ESP32_S3_MINI_1_N8 = (props: ChipProps<typeof pinLabels>) => {

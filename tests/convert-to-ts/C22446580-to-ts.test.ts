@@ -28,7 +28,7 @@ it("should convert C22446580 into typescript file", async () => {
       pin3: ["Z"],
       pin4: ["Y7"],
       pin5: ["Y5"],
-      pin6: ["E"],
+      pin6: ["N_E"],
       pin7: ["VEE"],
       pin8: ["VSS"],
       pin9: ["A2"],
