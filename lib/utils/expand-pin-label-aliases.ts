@@ -5,8 +5,13 @@ const cleanAlias = (alias: string): string => {
   const withoutActiveLowSuffix = trimmedAlias.endsWith("#")
     ? trimmedAlias.slice(0, -1)
     : trimmedAlias
+  const withoutPolaritySuffix = withoutActiveLowSuffix.endsWith("+")
+    ? `${withoutActiveLowSuffix.slice(0, -1)}_POS`
+    : withoutActiveLowSuffix.endsWith("-")
+      ? `${withoutActiveLowSuffix.slice(0, -1)}_NEG`
+      : withoutActiveLowSuffix
 
-  return normalizeSymbolName(withoutActiveLowSuffix)
+  return normalizeSymbolName(withoutPolaritySuffix)
 }
 
 export const expandPinLabelAliases = (rawLabel: string): string[] => {

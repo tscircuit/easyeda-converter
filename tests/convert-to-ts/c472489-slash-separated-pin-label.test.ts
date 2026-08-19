@@ -17,7 +17,10 @@ it("preserves C472489's slash-separated pin 20 aliases", async () => {
   const result = await convertBetterEasyToTsx({ betterEasy })
 
   expect(result).toContain('pin20: ["N_RST","NMI","SBWTDIO"]')
+  expect(result).toContain('"VREF_POS"')
+  expect(result).toContain('"VREF_NEG"')
   expect(result).not.toContain("RST/NMI/SBWTDIO")
+  expect(result).not.toMatch(/"[^"]*[+-]"/)
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),

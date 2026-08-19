@@ -11,6 +11,11 @@ test("expands EasyEDA pin aliases before normalization", () => {
     "PCINT8",
   ])
   expect(expandPinLabelAliases("3V3(OUT)")).toEqual(["3V3"])
+  expect(expandPinLabelAliases("A/VREF+/VREF-")).toEqual([
+    "A",
+    "VREF_POS",
+    "VREF_NEG",
+  ])
 })
 
 test("does not create textual aliases for polarized pin labels", () => {
