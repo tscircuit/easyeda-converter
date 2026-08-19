@@ -52,10 +52,15 @@ it("normalizes C15464 active-low pin aliases", async () => {
       pin17: ["EP"]
     } as const
 
+    const pinAttributes = {
+      pin8: {requiresGround: true}
+    } as const
+
     export const BQ24075RGTR = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C15464"

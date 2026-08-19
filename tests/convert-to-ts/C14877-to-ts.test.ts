@@ -57,10 +57,19 @@ it("should convert C14877 into typescript file", async () => {
       pin32: ["pin32"]
     } as const
 
+    const pinAttributes = {
+      pin3: {requiresGround: true},
+      pin4: {requiresPower: true},
+      pin5: {requiresGround: true},
+      pin6: {requiresPower: true},
+      pin21: {requiresGround: true}
+    } as const
+
     export const ATMEGA328P_AU = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C14877"

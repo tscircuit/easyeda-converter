@@ -37,10 +37,16 @@ it("should convert C105419 into typescript file", async () => {
       pin12: ["pin12"]
     } as const
 
+    const pinAttributes = {
+      pin4: {requiresPower: true},
+      pin6: {requiresGround: true}
+    } as const
+
     export const TF_02A = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C105419"

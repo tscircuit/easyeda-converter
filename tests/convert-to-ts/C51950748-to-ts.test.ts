@@ -69,10 +69,20 @@ it("should convert C51950748 into typescript file", async () => {
       pin40: ["pin29_alt1"]
     } as const
 
+    const pinAttributes = {
+      pin1: {requiresGround: true},
+      pin20: {doNotConnect: true},
+      pin22: {doNotConnect: true},
+      pin28: {requiresGround: true},
+      pin30: {requiresGround: true},
+      pin32: {requiresGround: true}
+    } as const
+
     export const ESP32_C5_WROOM_1U_N8R8 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C51950748"

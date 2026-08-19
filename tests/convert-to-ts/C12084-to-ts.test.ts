@@ -40,10 +40,16 @@ it("should convert C12084 into typescript file", async () => {
       pin8: ["RS"]
     } as const
 
+    const pinAttributes = {
+      pin2: {requiresGround: true},
+      pin3: {requiresPower: true}
+    } as const
+
     export const SN65HVD230DR = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C12084"

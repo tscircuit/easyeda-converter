@@ -62,10 +62,17 @@ it("should convert C9900017879 into typescript file", async () => {
       pin30: ["VIN"]
     } as const
 
+    const pinAttributes = {
+      pin4: {requiresGround: true},
+      pin29: {requiresGround: true},
+      pin30: {requiresPower: true}
+    } as const
+
     export const ARDUINO_NANO = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C9900017879"
