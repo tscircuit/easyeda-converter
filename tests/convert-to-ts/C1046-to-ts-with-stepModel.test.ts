@@ -1,10 +1,10 @@
 import { expect, it } from "bun:test"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import chipRawEasy from "../assets/C1046.raweasy.json"
 import { runTscircuitCode } from "tscircuit"
+import chipRawEasy from "../assets/C1046.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
-import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 
 it("should include both obj and step cad model urls", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -40,6 +40,7 @@ it("should include both obj and step cad model urls", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
+              <schematictext schX={-0.48} schY={0.218} text="{NAME}" fontSize={0.18} anchor="left" color="#006464" />
               <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
               <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
               <schematicpath svgPath="M -0.3376 0.0014 A 0.08 0.078 0 1 0 -0.1784 0.0012" strokeColor="#880000" />

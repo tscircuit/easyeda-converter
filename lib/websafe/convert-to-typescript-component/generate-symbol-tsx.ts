@@ -1,9 +1,9 @@
-import type { AnyCircuitElement } from "circuit-json"
 import {
+  type Point,
   distance,
   getUnitVectorFromDirection,
-  type Point,
 } from "@tscircuit/math-utils"
+import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
 import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
@@ -19,6 +19,11 @@ const round = (value: number): number => Number(value.toFixed(6))
 const EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT = 0.02
 const toSchematicUnits = (value: number): number =>
   round(value * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT)
+
+const getStrokeWidthProp = (lineWidth: number): string =>
+  Number.isFinite(lineWidth) && lineWidth > 0
+    ? ` strokeWidth={${toSchematicUnits(lineWidth)}}`
+    : ""
 
 const getPointTransformer =
   (origin: { x: number; y: number }) => (point: { x: number; y: number }) => ({
@@ -353,7 +358,7 @@ const generateShapeTsx = ({
       x: shape.position.x + shape.width / 2,
       y: shape.position.y + shape.height / 2,
     })
-    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toSchematicUnits(shape.width)}} height={${toSchematicUnits(shape.height)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toSchematicUnits(shape.width)}} height={${toSchematicUnits(shape.height)}} color=${JSON.stringify(shape.color)}${getStrokeWidthProp(shape.lineWidth)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "ELLIPSE") {
@@ -466,6 +471,19 @@ export const generateSymbolTsx = (
     .filter((tsx): tsx is string => Boolean(tsx))
 
   if (shapeTsx.length === 0) return undefined
+
+  const hasReferenceDesignator = shapes.some(
+    (shape) =>
+      shape.type === "TEXT" &&
+      shape.visibility === "1" &&
+      /\{(?:NAME|REF|REFERENCE)\}/i.test(shape.content),
+  )
+  if (!hasReferenceDesignator) {
+    const topLeft = transformPoint({ x: bounds.x, y: bounds.y })
+    shapeTsx.unshift(
+      `<schematictext schX={${topLeft.x}} schY={${round(topLeft.y + 0.13)}} text="{NAME}" fontSize={0.18} anchor="left" color="#006464" />`,
+    )
+  }
 
   return `<symbol>
 ${shapeTsx.map((tsx) => `  ${tsx}`).join("\n")}
