@@ -1,4 +1,3 @@
-
 import { it, expect } from "bun:test"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import chipRawEasy from "../assets/C90683.raweasy.json"
