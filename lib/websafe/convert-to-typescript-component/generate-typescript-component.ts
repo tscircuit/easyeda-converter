@@ -62,11 +62,11 @@ export const generateTypescriptComponent = ({
       : undefined,
   )
 
-  // Drop the generated pin name. EasyEDA aliases are expanded and normalized
-  // before the circuit JSON reaches the TypeScript generator.
+  // The first label is the internal canonical pin name. Exclude it from the
+  // public aliases while preserving every EasyEDA label that follows it.
   const simplifiedPinLabels = Object.fromEntries(
     Object.entries(safePinLabels).map(([pin, labels]) => {
-      if (Array.isArray(labels) && labels.length > 1) {
+      if (Array.isArray(labels) && labels.length > 1 && labels[0] === pin) {
         return [pin, labels.slice(1)]
       }
       return [pin, labels]

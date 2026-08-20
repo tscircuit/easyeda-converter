@@ -11,7 +11,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C165948.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("preserves all C165948 pin aliases", async () => {
+it("preserves all C165948 pin aliases in generated TSX", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
   const sourcePorts = su(circuitJson).source_port.list()
