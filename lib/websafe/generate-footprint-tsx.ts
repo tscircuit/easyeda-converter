@@ -24,6 +24,7 @@ export const generateFootprintTsx = (
   const smtPads = su(circuitJson).pcb_smtpad.list()
   const vias = su(circuitJson).pcb_via.list()
   const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
+  const silkscreenRects = su(circuitJson).pcb_silkscreen_rect.list()
   const silkscreenTexts = su(circuitJson).pcb_silkscreen_text.list()
   const fabricationNotePaths = su(circuitJson).pcb_fabrication_note_path.list()
   const courtyardOutlines = su(circuitJson).pcb_courtyard_outline.list()
@@ -107,6 +108,18 @@ export const generateFootprintTsx = (
   for (const silkscreenPath of silkscreenPaths) {
     elementStrings.push(
       `<silkscreenpath route={${JSON.stringify(silkscreenPath.route)}} />`,
+    )
+  }
+
+  for (const silkscreenRect of silkscreenRects) {
+    const rotation = silkscreenRect.ccw_rotation || 0
+    const rotationAttr = rotation ? ` pcbRotation="${rotation}deg"` : ""
+    const filledAttr = silkscreenRect.is_filled ? " isFilled" : ""
+    const strokeAttr =
+      silkscreenRect.has_stroke === false ? " hasStroke={false}" : ""
+
+    elementStrings.push(
+      `<silkscreenrect pcbX="${mmStr(silkscreenRect.center.x)}" pcbY="${mmStr(silkscreenRect.center.y)}" width="${mmStr(silkscreenRect.width)}" height="${mmStr(silkscreenRect.height)}" strokeWidth="${mmStr(silkscreenRect.stroke_width)}"${filledAttr}${strokeAttr}${rotationAttr} />`,
     )
   }
 
