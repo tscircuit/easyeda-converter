@@ -26,6 +26,7 @@ export const generateFootprintTsx = (
   const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
   const silkscreenTexts = su(circuitJson).pcb_silkscreen_text.list()
   const fabricationNotePaths = su(circuitJson).pcb_fabrication_note_path.list()
+  const courtyardRects = su(circuitJson).pcb_courtyard_rect.list()
   const courtyardOutlines = su(circuitJson).pcb_courtyard_outline.list()
 
   const elementStrings: string[] = []
@@ -127,6 +128,15 @@ export const generateFootprintTsx = (
   for (const fabricationNotePath of fabricationNotePaths) {
     elementStrings.push(
       `<fabricationnotepath route={${JSON.stringify(fabricationNotePath.route)}} strokeWidth="${mmStr(fabricationNotePath.stroke_width)}" />`,
+    )
+  }
+
+  for (const courtyardRect of courtyardRects) {
+    const rotation = courtyardRect.ccw_rotation || 0
+    const rotationAttr = rotation ? ` pcbRotation="${rotation}deg"` : ""
+
+    elementStrings.push(
+      `<courtyardrect pcbX="${mmStr(courtyardRect.center.x)}" pcbY="${mmStr(courtyardRect.center.y)}" width="${mmStr(courtyardRect.width)}" height="${mmStr(courtyardRect.height)}"${rotationAttr} />`,
     )
   }
 
