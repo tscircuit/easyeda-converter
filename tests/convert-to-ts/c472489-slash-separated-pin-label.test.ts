@@ -1,5 +1,8 @@
 import { expect, it } from "bun:test"
-import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
+import {
+  convertCircuitJsonToPcbSvg,
+  convertCircuitJsonToSchematicSvg,
+} from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
@@ -23,6 +26,10 @@ it("reproduces C472489 losing its slash-separated pin 20 label", async () => {
     wrapTsxWithBoardFor3dSnapshot(result),
   )
 
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C472489-pin20-label-missing-pcb",
+  )
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "C472489-pin20-label-missing",
