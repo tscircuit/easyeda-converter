@@ -17,6 +17,12 @@ it("should convert C490691 into typescript file", async () => {
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
   )
+  const sourcePorts = circuitJson.filter(
+    (element) => element.type === "source_port",
+  )
+  const noConnectPort = sourcePorts.find((element) => element.pin_number === 8)
+
+  expect(noConnectPort?.do_not_connect).toBe(true)
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
@@ -24,16 +30,16 @@ it("should convert C490691 into typescript file", async () => {
 
     const pinLabels = {
       pin1: ["TXD"],
-      pin2: ["DTR"],
-      pin3: ["RTS"],
+      pin2: ["N_DTR"],
+      pin3: ["N_RTS"],
       pin4: ["VCCIO"],
       pin5: ["RXD"],
-      pin6: ["RI"],
+      pin6: ["N_RI"],
       pin7: ["GND1"],
       pin8: ["NC1"],
-      pin9: ["DSR"],
-      pin10: ["DCD"],
-      pin11: ["CTS"],
+      pin9: ["N_DSR"],
+      pin10: ["N_DCD"],
+      pin11: ["N_CTS"],
       pin12: ["CBUS4"],
       pin13: ["CBUS2"],
       pin14: ["CBUS3"],
@@ -41,7 +47,7 @@ it("should convert C490691 into typescript file", async () => {
       pin16: ["USBDM"],
       pin17: ["3V3OUT"],
       pin18: ["GND3"],
-      pin19: ["RESET"],
+      pin19: ["N_RESET"],
       pin20: ["VCC"],
       pin21: ["GND2"],
       pin22: ["CBUS1"],
@@ -53,10 +59,21 @@ it("should convert C490691 into typescript file", async () => {
       pin28: ["OSCO"]
     } as const
 
+    const pinAttributes = {
+      pin7: {requiresGround: true},
+      pin8: {doNotConnect: true},
+      pin18: {requiresGround: true},
+      pin20: {requiresPower: true},
+      pin21: {requiresGround: true},
+      pin24: {doNotConnect: true},
+      pin25: {requiresGround: true}
+    } as const
+
     export const FT232RL = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C490691"

@@ -2,6 +2,7 @@ import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
+import { inferPinAttributes } from "./infer-pin-attributes"
 
 export type GeneratedComponentType =
   | "chip"
@@ -75,6 +76,31 @@ export const generateTypescriptComponent = ({
   const pinLabelsString = Object.entries(simplifiedPinLabels)
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
+  const inferredPinAttributes =
+    componentType === "chip" ? inferPinAttributes(simplifiedPinLabels) : {}
+  const pinAttributesString = Object.entries(inferredPinAttributes)
+    .map(([pin, attributes]) => {
+      const attributesString = Object.entries(attributes)
+        .map(
+          ([attributeName, value]) =>
+            `${attributeName}: ${JSON.stringify(value)}`,
+        )
+        .join(", ")
+
+      return `  ${pin}: {${attributesString}}`
+    })
+    .join(",\n")
+  const pinAttributesBlock = pinAttributesString
+    ? `const pinAttributes = {
+${pinAttributesString}
+} as const
+
+`
+    : ""
+  const pinAttributesProp = pinAttributesString
+    ? `      pinAttributes={pinAttributes}
+`
+    : ""
   const polarizedPinLabelsString = Object.entries(polarizedPinLabels ?? {})
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
@@ -401,10 +427,12 @@ const pinLabels = {
 ${pinLabelsString}
 } as const
 
+${pinAttributesBlock}\
 export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
       pinLabels={pinLabels}
+${pinAttributesProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"

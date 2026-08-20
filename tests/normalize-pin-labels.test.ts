@@ -46,6 +46,20 @@ describe("normalizePinLabels", () => {
     ])
   })
 
+  test("normalizes trailing hash active-low labels without double-prefixing", () => {
+    const input = [
+      ["1", "RESET#"],
+      ["2", "N_ENABLE#"],
+      ["3", "#"],
+    ]
+
+    expect(normalizePinLabels(input)).toEqual([
+      ["pin1", "N_RESET"],
+      ["pin2", "N_ENABLE"],
+      ["pin3", "#"],
+    ])
+  })
+
   test("deduplicates normalized active-low labels", () => {
     const input = [
       ["1", "#RESET"],

@@ -1,8 +1,10 @@
-const normalizeActiveLowPinLabel = (label: string): string => {
-  if (!label.startsWith("#")) return label
+export const normalizeActiveLowPinLabel = (label: string): string => {
+  const hasActiveLowMarker = label.startsWith("#") || label.endsWith("#")
+  if (!hasActiveLowMarker) return label
 
-  const activeLowLabel = label.slice(1)
+  const activeLowLabel = label.replace(/^#/, "").replace(/#$/, "")
   if (activeLowLabel.length === 0) return label
+  if (activeLowLabel.startsWith("N_")) return activeLowLabel
 
   return `N_${activeLowLabel}`
 }

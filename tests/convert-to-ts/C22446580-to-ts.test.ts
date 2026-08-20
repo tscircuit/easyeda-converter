@@ -28,7 +28,7 @@ it("should convert C22446580 into typescript file", async () => {
       pin3: ["Z"],
       pin4: ["Y7"],
       pin5: ["Y5"],
-      pin6: ["E"],
+      pin6: ["N_E"],
       pin7: ["VEE"],
       pin8: ["VSS"],
       pin9: ["A2"],
@@ -42,10 +42,17 @@ it("should convert C22446580 into typescript file", async () => {
       pin17: ["GND"]
     } as const
 
+    const pinAttributes = {
+      pin8: {requiresGround: true},
+      pin16: {requiresPower: true},
+      pin17: {requiresGround: true}
+    } as const
+
     export const A_74HC4051LQ_TR = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C22446580"

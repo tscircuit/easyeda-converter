@@ -29,10 +29,16 @@ it("should convert C6186 into typescript file", async () => {
       pin4: ["VOUT2"]
     } as const
 
+    const pinAttributes = {
+      pin1: {requiresGround: true},
+      pin3: {requiresPower: true}
+    } as const
+
     export const AMS1117_3_3 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C6186"

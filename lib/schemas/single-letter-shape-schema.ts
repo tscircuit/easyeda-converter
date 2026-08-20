@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
+import { normalizeActiveLowPinLabel } from "lib/utils/normalize-pin-labels"
 
 /**
  I'll break down the elements in the `dataStr.head.shape` array and explain what they represent. This array contains instructions for drawing the schematic symbol of the component.
@@ -213,7 +214,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   if (label !== "+/-" && label.endsWith("-")) {
     label = `${label.slice(0, -1)}_NEG`
   }
-  if (label.endsWith("#")) label = label.slice(0, -1)
+  label = normalizeActiveLowPinLabel(label)
   if (/^\+\d+(?:\.\d+)?V$/i.test(label)) label = `V${label.slice(1, -1)}`
 
   const colorMatch = pinString.match(/#[0-9A-F]{6}/)

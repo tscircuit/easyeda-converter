@@ -39,10 +39,17 @@ it("should convert C60708 into typescript file", async () => {
       pin14: ["VCCB"]
     } as const
 
+    const pinAttributes = {
+      pin6: {doNotConnect: true},
+      pin7: {requiresGround: true},
+      pin9: {doNotConnect: true}
+    } as const
+
     export const TXB0104PWR = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           symbol={
             <symbol>
               <schematicpath points={[{"x":-1,"y":1.1},{"x":1,"y":1.1}]} strokeColor="#8D2323" />

@@ -381,9 +381,29 @@ export const convertEasyEdaJsonToCircuitJson = (
     return labels
   })
 
-  const normalizedPinLabels = normalizePinLabels(pinLabelSets)
+  // Repeated EasyEDA pad numbers are multiple copper geometries for one
+  // logical pin. Unnumbered pads remain independent.
+  const padNumberKeys = pads.map((pad, index) => {
+    const padNumber = String(pad.number ?? "").trim()
+    return padNumber ? `number:${padNumber}` : `index:${index}`
+  })
+  const uniquePinLabelSets: string[][] = []
+  const uniquePinIndexByKey = new Map<string, number>()
+  const uniquePinIndexByPad = padNumberKeys.map((key, padIndex) => {
+    const existingIndex = uniquePinIndexByKey.get(key)
+    if (existingIndex !== undefined) return existingIndex
+
+    const uniquePinIndex = uniquePinLabelSets.length
+    uniquePinIndexByKey.set(key, uniquePinIndex)
+    uniquePinLabelSets.push(pinLabelSets[padIndex])
+    return uniquePinIndex
+  })
+  const normalizedUniquePinLabels = normalizePinLabels(uniquePinLabelSets)
+  const normalizedPinLabels = uniquePinIndexByPad.map(
+    (uniquePinIndex) => normalizedUniquePinLabels[uniquePinIndex],
+  )
   const normalizedPinLabelsByPin = Object.fromEntries(
-    normalizedPinLabels.map((labels) => {
+    normalizedUniquePinLabels.map((labels) => {
       const pin = labels.find((label) => /^pin\d+$/i.test(label))!
       return [pin, labels.filter((label) => label !== pin)]
     }),
@@ -394,6 +414,8 @@ export const convertEasyEdaJsonToCircuitJson = (
       isLedCategoryComponent(easyEdaJson))
       ? getPolarizedPinMetadata(normalizedPinLabelsByPin)
       : undefined
+
+  const emittedSourcePinIndexes = new Set<number>()
 
   // Add source ports and pcb_smtpads
   pads.forEach((pad, index) => {
@@ -406,15 +428,18 @@ export const convertEasyEdaJsonToCircuitJson = (
       canonicalPinName
     ] ?? [canonicalPinName]
 
-    // Add source port
-    circuitElements.push({
-      type: "source_port",
-      source_port_id: `source_port_${index + 1}`,
-      source_component_id: "source_component_1",
-      name: `pin${pinNumber}`,
-      pin_number: pinNumber,
-      port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
-    })
+    const uniquePinIndex = uniquePinIndexByPad[index]
+    if (!emittedSourcePinIndexes.has(uniquePinIndex)) {
+      emittedSourcePinIndexes.add(uniquePinIndex)
+      circuitElements.push({
+        type: "source_port",
+        source_port_id: `source_port_${index + 1}`,
+        source_component_id: "source_component_1",
+        name: `pin${pinNumber}`,
+        pin_number: pinNumber,
+        port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
+      })
+    }
 
     if (pad.holeRadius !== undefined && mil2mm(pad.holeRadius) !== 0) {
       // Add pcb_plated_hole

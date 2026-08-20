@@ -13,6 +13,7 @@ it("should identify JLCPCB pushbutton metadata as pushbuttons", () => {
   expect(categoryValueContainsPushbutton("Mechanical Keyboard Shaft")).toBe(
     true,
   )
+  expect(categoryValueContainsPushbutton("KEY-TH_CPG151101D06")).toBe(true)
   expect(categoryValueContainsPushbutton("Slide Switches")).toBe(false)
   expect(
     categoryValueContainsPushbutton("Analog Switches / Multiplexers"),

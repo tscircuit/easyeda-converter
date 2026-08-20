@@ -83,25 +83,37 @@ it("should convert C2913206 into typescript file", async () => {
       pin58: ["GND17"],
       pin59: ["GND18"],
       pin60: ["GND19"],
-      pin61: ["GND20"],
-      pin62: ["GND21"],
-      pin63: ["GND22"],
-      pin64: ["GND23"],
-      pin65: ["GND24"],
-      pin66: ["GND25"],
-      pin67: ["GND26"],
-      pin68: ["GND27"],
-      pin69: ["GND28"],
-      pin70: ["GND29"],
-      pin71: ["GND30"],
-      pin72: ["GND31"],
-      pin73: ["GND32"]
+      pin61: ["GND20"]
+    } as const
+
+    const pinAttributes = {
+      pin1: {requiresGround: true},
+      pin2: {requiresGround: true},
+      pin42: {requiresGround: true},
+      pin43: {requiresGround: true},
+      pin46: {requiresGround: true},
+      pin47: {requiresGround: true},
+      pin48: {requiresGround: true},
+      pin49: {requiresGround: true},
+      pin50: {requiresGround: true},
+      pin51: {requiresGround: true},
+      pin52: {requiresGround: true},
+      pin53: {requiresGround: true},
+      pin54: {requiresGround: true},
+      pin55: {requiresGround: true},
+      pin56: {requiresGround: true},
+      pin57: {requiresGround: true},
+      pin58: {requiresGround: true},
+      pin59: {requiresGround: true},
+      pin60: {requiresGround: true},
+      pin61: {requiresGround: true}
     } as const
 
     export const ESP32_S3_MINI_1_N8 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C2913206"
@@ -170,18 +182,18 @@ it("should convert C2913206 into typescript file", async () => {
     <smtpad portHints={["pin59"]} pcbX="-5.100066mm" pcbY="7.025005mm" width="0.3999992mm" height="0.7999984mm" shape="rect" />
     <smtpad portHints={["pin60"]} pcbX="-5.94995mm" pcbY="7.025005mm" width="0.3999992mm" height="0.7999984mm" shape="rect" />
     <smtpad portHints={["pin61"]} pcbX="-6.999986mm" pcbY="7.000113mm" width="0.7999984mm" height="0.7999984mm" shape="rect" />
-    <smtpad portHints={["pin62"]} pcbX="6.999986mm" pcbY="7.000113mm" width="0.7999984mm" height="0.7999984mm" shape="rect" />
-    <smtpad portHints={["pin63"]} pcbX="-6.999986mm" pcbY="-6.999859mm" width="0.7999984mm" height="0.7999984mm" shape="rect" />
-    <smtpad portHints={["pin64"]} pcbX="6.999986mm" pcbY="-6.999859mm" width="0.7999984mm" height="0.7999984mm" shape="rect" />
-    <smtpad portHints={["pin65"]} pcbX="-1.649984mm" pcbY="1.650111mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin66"]} pcbX="0mm" pcbY="1.650111mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin67"]} pcbX="1.649984mm" pcbY="1.650111mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin68"]} pcbX="-1.649984mm" pcbY="0.000127mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin69"]} pcbX="0mm" pcbY="0.000127mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin70"]} pcbX="1.649984mm" pcbY="0.000127mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin71"]} pcbX="-1.649984mm" pcbY="-1.649857mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin72"]} pcbX="0mm" pcbY="-1.649857mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin73"]} pcbX="1.649984mm" pcbY="-1.649857mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="6.999986mm" pcbY="7.000113mm" width="0.7999984mm" height="0.7999984mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="-6.999986mm" pcbY="-6.999859mm" width="0.7999984mm" height="0.7999984mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="6.999986mm" pcbY="-6.999859mm" width="0.7999984mm" height="0.7999984mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="-1.649984mm" pcbY="1.650111mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="0mm" pcbY="1.650111mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="1.649984mm" pcbY="1.650111mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="-1.649984mm" pcbY="0.000127mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="0mm" pcbY="0.000127mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="1.649984mm" pcbY="0.000127mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="-1.649984mm" pcbY="-1.649857mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="0mm" pcbY="-1.649857mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin61"]} pcbX="1.649984mm" pcbY="-1.649857mm" width="1.1999976mm" height="1.1999976mm" shape="rect" />
     <silkscreenpath route={[{"x":-4.8999902000000475,"y":12.100128199999858},{"x":-3.3999932000001536,"y":12.100128199999858},{"x":-3.3999932000001536,"y":10.500131399999987},{"x":-1.1999976000000743,"y":10.500131399999987},{"x":-1.1999976000000743,"y":12.100128199999858},{"x":0.9999979999998914,"y":12.100128199999858},{"x":0.9999979999998914,"y":10.500131399999987},{"x":3.1999935999999707,"y":10.500131399999987},{"x":3.1999935999999707,"y":12.100128199999858},{"x":5.300014799999872,"y":12.100128199999858},{"x":5.300014799999872,"y":9.400133600000004}]} />
     <silkscreenpath route={[{"x":-6.50001240000006,"y":9.400133600000004},{"x":-6.50001240000006,"y":12.100128199999858},{"x":-4.8999902000000475,"y":12.100128199999858},{"x":-4.8999902000000475,"y":9.400133600000004}]} />
     <silkscreenpath route={[{"x":-7.70001000000002,"y":7.749743199999898},{"x":7.800009799999998,"y":7.749743199999898},{"x":7.800009799999998,"y":7.786014399999885}]} />

@@ -31,7 +31,7 @@ it("should convert C113367 into typescript file", async () => {
     "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
-      pin1: ["SD"],
+      pin1: ["N_SD"],
       pin2: ["IN_NEG"],
       pin3: ["IN_POS"],
       pin4: ["pin4"],
@@ -41,10 +41,16 @@ it("should convert C113367 into typescript file", async () => {
       pin8: ["VO_NEG"]
     } as const
 
+    const pinAttributes = {
+      pin6: {requiresPower: true},
+      pin7: {requiresGround: true}
+    } as const
+
     export const PAM8302AASCR = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           symbol={
             <symbol>
               <schematicpath points={[{"x":-0.4,"y":-0.5},{"x":0.4,"y":-0.1},{"x":-0.4,"y":0.3},{"x":-0.4,"y":-0.5}]} strokeColor="#880000" />
@@ -56,7 +62,7 @@ it("should convert C113367 into typescript file", async () => {
               <schematicpath points={[{"x":0.2,"y":-0.2},{"x":0.4,"y":-0.5}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.28,"y":0.24},{"x":-0.4,"y":0.5}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.28,"y":-0.44},{"x":-0.4,"y":-0.7}]} strokeColor="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["SD"]} direction="left" schX={-0.8} schY={0.5} schStemLength={0.4} />
+              <port name="pin1" pinNumber={1} aliases={["N_SD"]} direction="left" schX={-0.8} schY={0.5} schStemLength={0.4} />
               <port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} />
               <port name="pin3" pinNumber={3} aliases={["IN_POS"]} direction="left" schX={-0.8} schY={-0.3} schStemLength={0.4} />
               <port name="pin7" pinNumber={7} aliases={["GND"]} direction="down" schX={0} schY={-0.9} schStemLength={0.4} />

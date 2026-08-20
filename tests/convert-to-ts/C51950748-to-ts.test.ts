@@ -2,7 +2,10 @@ import { it, expect } from "bun:test"
 import chipRawEasy from "../assets/C51950748.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import {
+  convertCircuitJsonToPcbSvg,
+  convertCircuitJsonToSchematicSvg,
+} from "circuit-to-svg"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
@@ -17,6 +20,10 @@ it("should convert C51950748 into typescript file", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C51950748-to-ts-schematic",
   )
   expect(
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
@@ -55,24 +62,26 @@ it("should convert C51950748 into typescript file", async () => {
       pin26: ["IO25"],
       pin27: ["IO26"],
       pin28: ["GND2"],
-      pin29: ["EPAD1"],
+      pin29: ["EPAD"],
       pin30: ["GND3"],
       pin31: ["ANT2"],
-      pin32: ["GND4"],
-      pin33: ["pin29_alt1","EPAD2"],
-      pin34: ["pin29_alt1","EPAD3"],
-      pin35: ["pin29_alt1","EPAD4"],
-      pin36: ["pin29_alt1","EPAD5"],
-      pin37: ["pin29_alt1","EPAD6"],
-      pin38: ["pin29_alt1","EPAD7"],
-      pin39: ["pin29_alt1","EPAD8"],
-      pin40: ["pin29_alt1","EPAD9"]
+      pin32: ["GND4"]
+    } as const
+
+    const pinAttributes = {
+      pin1: {requiresGround: true},
+      pin20: {doNotConnect: true},
+      pin22: {doNotConnect: true},
+      pin28: {requiresGround: true},
+      pin30: {requiresGround: true},
+      pin32: {requiresGround: true}
     } as const
 
     export const ESP32_C5_WROOM_1U_N8R8 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
+          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C51950748"
@@ -109,14 +118,14 @@ it("should convert C51950748 into typescript file", async () => {
     <smtpad portHints={["pin27"]} pcbX="8.877046mm" pcbY="6.1351033mm" width="1.499997mm" height="0.8999982mm" shape="rect" />
     <smtpad portHints={["pin28"]} pcbX="8.877046mm" pcbY="7.4051033mm" width="1.499997mm" height="0.8999982mm" shape="rect" />
     <smtpad portHints={["pin29"]} pcbX="-0.86995mm" pcbY="0.4970653mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin33"]} pcbX="0.830072mm" pcbY="0.4970653mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin34"]} pcbX="2.530094mm" pcbY="-1.2029567mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin35"]} pcbX="2.530094mm" pcbY="0.4970653mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin36"]} pcbX="0.830072mm" pcbY="-1.2029567mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin37"]} pcbX="-0.86995mm" pcbY="-1.2029567mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin38"]} pcbX="-0.86995mm" pcbY="-2.9029787mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin39"]} pcbX="0.830072mm" pcbY="-2.9029787mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
-    <smtpad portHints={["pin40"]} pcbX="2.530094mm" pcbY="-2.9029787mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="0.830072mm" pcbY="0.4970653mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="2.530094mm" pcbY="-1.2029567mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="2.530094mm" pcbY="0.4970653mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="0.830072mm" pcbY="-1.2029567mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="-0.86995mm" pcbY="-1.2029567mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="-0.86995mm" pcbY="-2.9029787mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="0.830072mm" pcbY="-2.9029787mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="2.530094mm" pcbY="-2.9029787mm" width="1.2999974mm" height="1.2999974mm" shape="rect" />
     <smtpad portHints={["pin30"]} pcbX="3.999992mm" pcbY="8.8249633mm" width="0.8999982mm" height="1.499997mm" shape="rect" />
     <smtpad portHints={["pin31"]} pcbX="2.729992mm" pcbY="8.8249633mm" width="0.8999982mm" height="1.499997mm" shape="rect" />
     <smtpad portHints={["pin32"]} pcbX="1.459992mm" pcbY="8.8249633mm" width="0.8999982mm" height="1.499997mm" shape="rect" />
