@@ -11,7 +11,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C165948.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C165948 silently dropping additional pin aliases", async () => {
+it("preserves all C165948 pin aliases", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
   const sourcePorts = su(circuitJson).source_port.list()
@@ -31,12 +31,9 @@ it("reproduces C165948 silently dropping additional pin aliases", async () => {
 
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  expect(result).toContain('pin5: ["B8"]')
-  expect(result).toContain('pin6: ["A5"]')
-  expect(result).toContain('pin7: ["B7"]')
-  expect(result).not.toContain("SBU2")
-  expect(result).not.toContain("CC1")
-  expect(result).not.toContain("DN2")
+  expect(result).toContain('pin5: ["B8","SBU2"]')
+  expect(result).toContain('pin6: ["A5","CC1"]')
+  expect(result).toContain('pin7: ["B7","DN2"]')
 
   const generatedCircuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
@@ -60,18 +57,18 @@ it("reproduces C165948 silently dropping additional pin aliases", async () => {
       pin2: ["EH1"],
       pin3: ["EH4"],
       pin4: ["EH3"],
-      pin5: ["B8"],
-      pin6: ["A5"],
-      pin7: ["B7"],
-      pin8: ["A6"],
-      pin9: ["A7"],
-      pin10: ["B6"],
-      pin11: ["A8"],
-      pin12: ["B5"],
-      pin13: ["A1B12"],
-      pin14: ["B1A12"],
-      pin15: ["B4A9"],
-      pin16: ["A4B9"]
+      pin5: ["B8","SBU2"],
+      pin6: ["A5","CC1"],
+      pin7: ["B7","DN2"],
+      pin8: ["A6","DP1"],
+      pin9: ["A7","DN1"],
+      pin10: ["B6","DP2"],
+      pin11: ["A8","SBU1"],
+      pin12: ["B5","CC2"],
+      pin13: ["A1B12","GND1"],
+      pin14: ["B1A12","GND2"],
+      pin15: ["B4A9","VBUS1"],
+      pin16: ["A4B9","VBUS2"]
     } as const
 
     export const TYPE_C_31_M_12 = (props: ChipProps<typeof pinLabels>) => {
