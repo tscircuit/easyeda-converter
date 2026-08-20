@@ -62,14 +62,14 @@ export const generateTypescriptComponent = ({
       : undefined,
   )
 
-  // Simplify pin labels to include only the second element
+  // The first label is the internal canonical pin name. Exclude it from the
+  // public aliases while preserving every EasyEDA label that follows it.
   const simplifiedPinLabels = Object.fromEntries(
     Object.entries(safePinLabels).map(([pin, labels]) => {
-      // Ensure labels is an array and has a second element
-      if (Array.isArray(labels) && labels.length > 1) {
-        return [pin, [labels[1]]]
+      if (Array.isArray(labels) && labels.length > 1 && labels[0] === pin) {
+        return [pin, labels.slice(1)]
       }
-      return [pin, labels] // Fallback to original if not an array or missing second element
+      return [pin, labels]
     }),
   )
 
