@@ -1,10 +1,10 @@
-import { it, expect } from "bun:test"
-import chipRawEasy from "../assets/C2998002.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { runTscircuitCode } from "tscircuit"
-import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { expect, it } from "bun:test"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { runTscircuitCode } from "tscircuit"
+import chipRawEasy from "../assets/C2998002.raweasy.json"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C2998002 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -40,10 +40,11 @@ it("should convert C2998002 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
+              <schematictext schX={-0.606} schY={0.552} text="{NAME}" fontSize={0.18} anchor="left" color="#006464" />
               <schematictext schX={0.3} schY={-0.06} text="TR1" fontSize={0.11} anchor="left" color="#0000FF" schRotation={0} />
               <schematictext schX={-0.58} schY={-0.06} text="TR2" fontSize={0.11} anchor="left" color="#0000FF" schRotation={0} />
               <schematiccircle center={{ x: 0, y: 0 }} radius={0.01} color="#880000" />
-              <schematicrect schX={0} schY={0} width={1.2} height={0.4} color="#880000" />
+              <schematicrect schX={0} schY={0} width={1.2} height={0.4} color="#880000" strokeWidth={0.02} />
               <schematicpath points={[{"x":0,"y":0},{"x":0,"y":-0.14},{"x":-0.4,"y":-0.14}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":-0.06},{"x":0.4,"y":-0.14},{"x":0.4,"y":-0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.2,"y":-0.06},{"x":-0.4,"y":-0.14},{"x":-0.4,"y":-0.2}]} strokeColor="#880000" />

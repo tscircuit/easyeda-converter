@@ -1,10 +1,10 @@
-import { it, expect } from "bun:test"
-import chipRawEasy from "../assets/C309274.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { runTscircuitCode } from "tscircuit"
-import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import { expect, it } from "bun:test"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { runTscircuitCode } from "tscircuit"
+import chipRawEasy from "../assets/C309274.raweasy.json"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C309274 into typescript file", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
@@ -44,7 +44,8 @@ it("should convert C309274 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <schematicrect schX={-0.46} schY={0.1} width={0.12} height={0.6} color="#880000" />
+              <schematictext schX={-0.52} schY={0.95} text="{NAME}" fontSize={0.18} anchor="left" color="#006464" />
+              <schematicrect schX={-0.46} schY={0.1} width={0.12} height={0.6} color="#880000" strokeWidth={0.02} />
               <schematicpath points={[{"x":0.4,"y":0.4},{"x":0.2,"y":0.4},{"x":0.2,"y":0.6},{"x":0.22,"y":0.48}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":0.6},{"x":0.18,"y":0.48}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":0},{"x":0.2,"y":0},{"x":0.2,"y":0.2},{"x":0.18,"y":0.1}]} strokeColor="#880000" />

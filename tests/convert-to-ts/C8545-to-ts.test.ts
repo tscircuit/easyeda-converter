@@ -1,12 +1,12 @@
-import { it, expect } from "bun:test"
-import chipRawEasy from "../assets/C8545.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { runTscircuitCode } from "tscircuit"
+import { expect, it } from "bun:test"
 import {
   convertCircuitJsonToPcbSvg,
   convertCircuitJsonToSchematicSvg,
 } from "circuit-to-svg"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { runTscircuitCode } from "tscircuit"
+import chipRawEasy from "../assets/C8545.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("repro: imports C8545 with its custom schematic symbol", async () => {
@@ -46,6 +46,7 @@ it("repro: imports C8545 with its custom schematic symbol", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
+              <schematictext schX={-0.44} schY={0.57} text="{NAME}" fontSize={0.18} anchor="left" color="#006464" />
               <schematicpath points={[{"x":0,"y":0},{"x":0.12,"y":-0.04},{"x":0.12,"y":0.04},{"x":0,"y":0}]} strokeColor="#880000" isFilled fillColor="#FEFEFE" />
               <schematicpath points={[{"x":0.4,"y":0.04},{"x":0.34,"y":-0.06},{"x":0.46,"y":-0.06},{"x":0.4,"y":0.04}]} strokeColor="#880000" isFilled fillColor="#FEFEFE" />
               <schematicpath points={[{"x":0,"y":0.14},{"x":0.2,"y":0.14},{"x":0.2,"y":0.2},{"x":0.4,"y":0.2},{"x":0.4,"y":0.04}]} strokeColor="#880000" />
