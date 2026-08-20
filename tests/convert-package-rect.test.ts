@@ -1,10 +1,10 @@
 import { expect, it } from "bun:test"
 import "bun-match-svg"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import rawEasyEdaJson from "./assets/C124375.raweasy.json"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import rawEasyEdaJson from "./assets/C124375.raweasy.json"
 
 it("emits package RECT shapes as silkscreen rectangles", () => {
   const circuitJson = convertEasyEdaJsonToCircuitJson(
