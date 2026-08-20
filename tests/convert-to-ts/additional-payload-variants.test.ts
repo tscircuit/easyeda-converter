@@ -31,18 +31,12 @@ it("renders a payload with issue #464 variants", async () => {
     wrapTsxWithBoardFor3dSnapshot(result),
   )
 
-  expect(
-    circuitJson.filter((element) => element.type === "pcb_silkscreen_rect"),
-  ).toHaveLength(1)
-
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "additional-payload-variants-schematic",
   )
-  const circuitJsonWithoutVariantRect = circuitJson.filter(
-    (element) => element.type !== "pcb_silkscreen_rect",
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "additional-payload-variants-pcb",
   )
-  expect(
-    convertCircuitJsonToPcbSvg(circuitJsonWithoutVariantRect),
-  ).toMatchSvgSnapshot(import.meta.path, "additional-payload-variants-pcb")
 }, 50000)
