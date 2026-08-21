@@ -205,10 +205,15 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const parts = pinString.split("~")
   const [, visibility, , pinNumber, x, y, rotation, id] = parts
 
-  const nameMatch = pinString.match(/~([\w+#-]+)~(start|end)~/)
-  let label = nameMatch ? nameMatch[1] : ""
+  // The first text immediately followed by an EasyEDA alignment marker is the
+  // pin name. Matching the delimiter avoids relying on optional section or
+  // field positions while still distinguishing it from the later pin number.
+  const nameMatch = pinString.match(/~([^~]*)~(?:start|end)~/)
+  let label = nameMatch?.[1] ?? ""
   if (label.endsWith("+")) label = `${label.slice(0, -1)}_POS`
-  if (label.endsWith("-")) label = `${label.slice(0, -1)}_NEG`
+  if (label !== "+/-" && label.endsWith("-")) {
+    label = `${label.slice(0, -1)}_NEG`
+  }
   label = normalizeActiveLowPinLabel(label)
   if (/^\+\d+(?:\.\d+)?V$/i.test(label)) label = `V${label.slice(1, -1)}`
   if (label.startsWith("+")) label = `${label.slice(1)}_POS`
