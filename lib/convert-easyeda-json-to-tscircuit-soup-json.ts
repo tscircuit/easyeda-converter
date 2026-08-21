@@ -148,6 +148,37 @@ const handleFabricationNotePath = (
     stroke_width: mil10ToMm(track.width),
   })
 
+const handleFabricationNoteSolidRegion = (
+  solidRegion: z.infer<typeof SolidRegionSchema>,
+  index: number,
+) => {
+  const route = solidRegion.points.map((point) => ({
+    x: mil10ToMm(point.x),
+    y: mil10ToMm(point.y),
+  }))
+  const firstPoint = route[0]
+  const lastPoint = route.at(-1)
+
+  if (
+    firstPoint &&
+    lastPoint &&
+    (firstPoint.x !== lastPoint.x || firstPoint.y !== lastPoint.y)
+  ) {
+    route.push({ ...firstPoint })
+  }
+
+  return pcb_fabrication_note_path.parse({
+    type: "pcb_fabrication_note_path",
+    pcb_fabrication_note_path_id: `pcb_fabrication_note_solid_region_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: "top",
+    route,
+    // EasyEDA solid regions have no stroke width. Use its standard 1-unit
+    // document stroke so the closed region remains visible as a note path.
+    stroke_width: mil10ToMm(1),
+  })
+}
+
 const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   if (layer === 4 || layer === 14) return "bottom"
   return "top"
@@ -646,6 +677,11 @@ export const convertEasyEdaJsonToCircuitJson = (
       } else if (isDocumentLayer(shape.layer)) {
         circuitElements.push(handleFabricationNotePath(shape, index))
       }
+    } else if (
+      shape.type === "SOLIDREGION" &&
+      isDocumentLayer(shape.layermask)
+    ) {
+      circuitElements.push(handleFabricationNoteSolidRegion(shape, index))
     } else if (shape.type === "CIRCLE") {
       if (isSilkscreenLayer(shape.layer)) {
         circuitElements.push(handleSilkscreenCircle(shape, index))
