@@ -14,8 +14,8 @@ it("reproduces overlapping pin labels in the C113367 custom symbol", async () =>
   )
   const schematicSvg = convertCircuitJsonToSchematicSvg(circuitJson)
 
-  expect(schematicSvg).toContain("IN_NEG")
-  expect(schematicSvg).toContain("VO_POS")
+  expect(schematicSvg).toContain("IN-")
+  expect(schematicSvg).toContain("VO+")
   expect(schematicSvg).toMatchSvgSnapshot(
     import.meta.path,
     "C113367-overlapping-pin-labels",

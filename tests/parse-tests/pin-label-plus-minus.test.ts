@@ -1,4 +1,4 @@
-import { it, expect } from "bun:test"
+import { expect, it } from "bun:test"
 import { PinShapeSchema } from "lib/schemas/single-letter-shape-schema"
 
 const plusPinStr =
@@ -11,6 +11,8 @@ const voltagePinStr =
 it("converts trailing plus and minus in pin labels", () => {
   const plusPin = PinShapeSchema.parse(plusPinStr)
   const minusPin = PinShapeSchema.parse(minusPinStr)
+  expect(plusPin.rawLabel).toBe("C1+")
+  expect(minusPin.rawLabel).toBe("C2-")
   expect(plusPin.label).toBe("C1_POS")
   expect(minusPin.label).toBe("C2_NEG")
 })

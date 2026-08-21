@@ -52,7 +52,7 @@ it("should convert C113367 into typescript file", async () => {
           pinLabels={pinLabels}
           pinAttributes={pinAttributes}
           symbol={
-            <symbol>
+            <symbol width={2.541} height={2.463}>
               <schematicpath points={[{"x":-0.4,"y":-0.5},{"x":0.4,"y":-0.1},{"x":-0.4,"y":0.3},{"x":-0.4,"y":-0.5}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.32,"y":0.1},{"x":-0.2,"y":0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.32,"y":-0.3},{"x":-0.2,"y":-0.3}]} strokeColor="#880000" />
@@ -63,12 +63,12 @@ it("should convert C113367 into typescript file", async () => {
               <schematicpath points={[{"x":-0.28,"y":0.24},{"x":-0.4,"y":0.5}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.28,"y":-0.44},{"x":-0.4,"y":-0.7}]} strokeColor="#880000" />
               <port name="pin1" pinNumber={1} aliases={["N_SD"]} direction="left" schX={-0.8} schY={0.5} schStemLength={0.4} />
-              <port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} />
-              <port name="pin3" pinNumber={3} aliases={["IN_POS"]} direction="left" schX={-0.8} schY={-0.3} schStemLength={0.4} />
+              <port name="pin2" pinNumber={2} aliases={["IN-","IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} />
+              <port name="pin3" pinNumber={3} aliases={["IN+","IN_POS"]} direction="left" schX={-0.8} schY={-0.3} schStemLength={0.4} />
               <port name="pin7" pinNumber={7} aliases={["GND"]} direction="down" schX={0} schY={-0.9} schStemLength={0.4} />
-              <port name="pin5" pinNumber={5} aliases={["VO_POS"]} direction="right" schX={0.8} schY={-0.1} schStemLength={0.4} />
+              <port name="pin5" pinNumber={5} aliases={["VO+","VO_POS"]} direction="right" schX={0.8} schY={-0.1} schStemLength={0.4} />
               <port name="pin6" pinNumber={6} aliases={["VDD"]} direction="up" schX={0} schY={0.7} schStemLength={0.4} />
-              <port name="pin8" pinNumber={8} aliases={["VO_NEG"]} direction="right" schX={0.8} schY={-0.5} schStemLength={0.4} />
+              <port name="pin8" pinNumber={8} aliases={["VO-","VO_NEG"]} direction="right" schX={0.8} schY={-0.5} schStemLength={0.4} />
               <port name="pin4" pinNumber={4} aliases={["NC"]} direction="left" schX={-0.8} schY={-0.7} schStemLength={0.4} />
               <schematictext schX={0.72} schY={-0.02} text="+" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
               <schematictext schX={0.76} schY={-0.46} text="-" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />

@@ -1,9 +1,9 @@
-import type { AnyCircuitElement } from "circuit-json"
 import {
+  type Point,
   distance,
   getUnitVectorFromDirection,
-  type Point,
 } from "@tscircuit/math-utils"
+import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
 import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
@@ -17,6 +17,9 @@ const round = (value: number): number => Number(value.toFixed(6))
  * millimeters; PCB and CAD conversion must continue to use mil10ToMm instead.
  */
 const EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT = 0.02
+// Port labels use a fixed font size, so compact symbols whose polarity names
+// expand during normalization need extra coordinate-space separation.
+const POLARITY_LABEL_SYMBOL_SCALE = 1.5
 const toSchematicUnits = (value: number): number =>
   round(value * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT)
 
@@ -255,6 +258,21 @@ interface PortMetadata {
   aliases: string[]
 }
 
+const getSchematicDisplayLabel = (
+  pin: Extract<SingleLetterShape, { type: "PIN" }>,
+): string => {
+  const rawLabel = pin.rawLabel.trim()
+  const usesPolaritySymbol =
+    rawLabel.startsWith("+") ||
+    rawLabel.startsWith("-") ||
+    rawLabel.endsWith("+") ||
+    rawLabel.endsWith("-")
+
+  // Keep normalized aliases for selectors, but display the shorter EasyEDA
+  // polarity notation so labels remain faithful to the source symbol.
+  return usesPolaritySymbol ? rawLabel : normalizeSymbolName(pin.label)
+}
+
 const getPortMetadataByShapeId = (
   easyEdaJson: BetterEasyEdaJson,
   circuitJson: AnyCircuitElement[],
@@ -318,13 +336,18 @@ const getPortMetadataByShapeId = (
     portName ??= `pin${pinIndex + 1}`
     usedPortNames.add(portName)
     const sourcePort = sourcePorts.find((port) => port.name === portName)
+    const normalizedLabel = pin.label
+      ? normalizeSymbolName(pin.label)
+      : undefined
+    const displayLabel = pin.label ? getSchematicDisplayLabel(pin) : undefined
 
     metadataByShapeId.set(pin.id, {
       name: portName,
       pinNumber: sourcePort?.pin_number,
       aliases: [
+        ...(displayLabel ? [displayLabel] : []),
         ...(sourcePort?.port_hints ?? []),
-        ...(pin.label ? [normalizeSymbolName(pin.label)] : []),
+        ...(normalizedLabel ? [normalizedLabel] : []),
       ].filter(
         (alias, index, aliases) =>
           alias !== portName && aliases.indexOf(alias) === index,
@@ -450,6 +473,17 @@ export const generateSymbolTsx = (
   const drawingEndpoints = alignPortsToDrawing
     ? getOpenPolylineEndpoints(shapes, transformPoint)
     : []
+  const hasExpandedPolarityLabel = shapes.some(
+    (shape) =>
+      shape.type === "PIN" &&
+      shape.rawLabel !== shape.label &&
+      getSchematicDisplayLabel(shape) === shape.rawLabel,
+  )
+  // Explicit symbol dimensions scale port and primitive positions without
+  // scaling the renderer's label font, which creates the needed clearance.
+  const symbolSizeProps = hasExpandedPolarityLabel
+    ? ` width={${toSchematicUnits(bounds.width * POLARITY_LABEL_SYMBOL_SCALE)}} height={${toSchematicUnits(bounds.height * POLARITY_LABEL_SYMBOL_SCALE)}}`
+    : ""
   const shapeTsx = shapes
     .filter((shape) => includePorts || shape.type !== "PIN")
     .map((shape) =>
@@ -467,7 +501,7 @@ export const generateSymbolTsx = (
 
   if (shapeTsx.length === 0) return undefined
 
-  return `<symbol>
+  return `<symbol${symbolSizeProps}>
 ${shapeTsx.map((tsx) => `  ${tsx}`).join("\n")}
 </symbol>`
 }
