@@ -15,6 +15,7 @@ import {
   pcb_fabrication_note_path,
   pcb_hole,
   pcb_plated_hole,
+  pcb_silkscreen_circle,
   pcb_silkscreen_path,
   pcb_smtpad,
   pcb_via,
@@ -176,31 +177,22 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
   } as Soup.PcbSilkscreenPathInput)
 }
 
-const SILKSCREEN_CIRCLE_SEGMENTS = 24
-
 const handleSilkscreenCircle = (
   circle: z.infer<typeof CircleSchema>,
   index: number,
 ) => {
-  const route = Array.from(
-    { length: SILKSCREEN_CIRCLE_SEGMENTS + 1 },
-    (_, segmentIndex) => {
-      const angle = (Math.PI * 2 * segmentIndex) / SILKSCREEN_CIRCLE_SEGMENTS
-      return {
-        x: milx10(circle.center.x + Math.cos(angle) * circle.radius),
-        y: milx10(circle.center.y + Math.sin(angle) * circle.radius),
-      }
-    },
-  )
-
-  return pcb_silkscreen_path.parse({
-    type: "pcb_silkscreen_path",
-    pcb_silkscreen_path_id: `pcb_silkscreen_circle_${index + 1}`,
+  return pcb_silkscreen_circle.parse({
+    type: "pcb_silkscreen_circle",
+    pcb_silkscreen_circle_id: `pcb_silkscreen_circle_${index + 1}`,
     pcb_component_id: "pcb_component_1",
     layer: getSideFromLayer(circle.layer),
-    route,
+    center: {
+      x: milx10(circle.center.x),
+      y: milx10(circle.center.y),
+    },
+    radius: milx10(circle.radius),
     stroke_width: mil10ToMm(circle.width),
-  } as Soup.PcbSilkscreenPathInput)
+  } as Soup.PcbSilkscreenCircleInput)
 }
 
 const handleRect = (rect: z.infer<typeof RectSchema>, index: number) => {
@@ -741,6 +733,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       e.type === "pcb_courtyard_outline" ||
       e.type === "pcb_courtyard_rect" ||
       e.type === "pcb_silkscreen_path" ||
+      e.type === "pcb_silkscreen_circle" ||
       e.type === "pcb_silkscreen_rect" ||
       e.type === "pcb_silkscreen_text",
   )
@@ -830,9 +823,14 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   if (shouldRecenter) {
-    // exclude pcb_component (its center is wrong; we'll set it to 0,0)
+    // Exclude component centers because they are not reliable inputs for
+    // recentering. Silkscreen circles are presentation geometry and should
+    // not move the CAD model origin.
     const elementsForBounds = circuitElements.filter(
-      (e) => e.type !== "pcb_component" && e.type !== "cad_component",
+      (e) =>
+        e.type !== "pcb_component" &&
+        e.type !== "cad_component" &&
+        e.type !== "pcb_silkscreen_circle",
     )
 
     const bounds = findBoundsAndCenter(elementsForBounds)

@@ -24,6 +24,7 @@ export const generateFootprintTsx = (
   const smtPads = su(circuitJson).pcb_smtpad.list()
   const vias = su(circuitJson).pcb_via.list()
   const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
+  const silkscreenCircles = su(circuitJson).pcb_silkscreen_circle.list()
   const silkscreenRects = su(circuitJson).pcb_silkscreen_rect.list()
   const silkscreenTexts = su(circuitJson).pcb_silkscreen_text.list()
   const fabricationNotePaths = su(circuitJson).pcb_fabrication_note_path.list()
@@ -108,6 +109,12 @@ export const generateFootprintTsx = (
   for (const silkscreenPath of silkscreenPaths) {
     elementStrings.push(
       `<silkscreenpath route={${JSON.stringify(silkscreenPath.route)}} />`,
+    )
+  }
+
+  for (const silkscreenCircle of silkscreenCircles) {
+    elementStrings.push(
+      `<silkscreencircle pcbX="${mmStr(silkscreenCircle.center.x)}" pcbY="${mmStr(silkscreenCircle.center.y)}" radius="${mmStr(silkscreenCircle.radius)}" />`,
     )
   }
 
