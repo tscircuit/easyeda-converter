@@ -703,7 +703,7 @@ export const convertEasyEdaJsonToCircuitJson = (
           ...(shape.rotation !== undefined && {
             ccw_rotation: shape.rotation,
           }),
-          layer: "top",
+          layer: getSideFromLayer(shape.layer),
         } as Soup.PcbSilkscreenTextInput),
       )
     }
