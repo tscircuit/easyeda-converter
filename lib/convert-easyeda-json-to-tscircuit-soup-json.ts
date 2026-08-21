@@ -795,11 +795,12 @@ export const convertEasyEdaJsonToCircuitJson = (
   }
 
   // Generate courtyard outline from packageDetail.dataStr.BBox when no explicit
-  // courtyard TRACK (layers 13/14/15) exists. The BBox is EasyEDA's own bounding
+  // courtyard TRACK or RECT (layers 13/14/15) exists. The BBox is EasyEDA's own bounding
   // box for the footprint in canvas coordinates (milx10 units). It is added before
   // recentering so it gets transformed automatically with all other elements.
   const hasExplicitCourtyard = circuitElements.some(
-    (e) => e.type === "pcb_courtyard_outline",
+    (e) =>
+      e.type === "pcb_courtyard_outline" || e.type === "pcb_courtyard_rect",
   )
   if (!hasExplicitCourtyard) {
     const bbox = easyEdaJson.packageDetail.dataStr.BBox
