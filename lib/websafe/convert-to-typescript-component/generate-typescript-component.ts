@@ -31,6 +31,7 @@ interface Params {
   crystalFrequency?: string
   crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
+  schPinArrangement?: ChipProps["schPinArrangement"]
 }
 
 export const generateTypescriptComponent = ({
@@ -48,6 +49,7 @@ export const generateTypescriptComponent = ({
   crystalFrequency,
   crystalPinVariant,
   symbolTsx,
+  schPinArrangement,
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
@@ -122,6 +124,10 @@ ${symbolTsx
   .map((line) => `        ${line}`)
   .join("\n")}
       }
+`
+    : ""
+  const schPinArrangementProp = schPinArrangement
+    ? `      schPinArrangement={${JSON.stringify(schPinArrangement)}}
 `
     : ""
 
@@ -434,6 +440,7 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
       pinLabels={pinLabels}
 ${pinAttributesProp}\
 ${symbolProp}\
+${schPinArrangementProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
       footprint={${footprintTsx}}
