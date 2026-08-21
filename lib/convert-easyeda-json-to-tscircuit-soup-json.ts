@@ -148,6 +148,82 @@ const handleFabricationNotePath = (
     stroke_width: mil10ToMm(track.width),
   })
 
+const handleFabricationNoteSolidRegion = (
+  solidRegion: z.infer<typeof SolidRegionSchema>,
+  index: number,
+) => {
+  const rawRoute: Array<{ x: number; y: number }> = []
+  let currentPoint: { x: number; y: number } | undefined
+
+  for (const commandMatch of solidRegion.pathData.matchAll(
+    /([MLAZ])([^MLAZ]*)/gi,
+  )) {
+    const command = commandMatch[1]?.toUpperCase()
+    const values =
+      commandMatch[2]
+        ?.match(/[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g)
+        ?.map(Number) ?? []
+
+    if ((command === "M" || command === "L") && values.length >= 2) {
+      currentPoint = { x: values[0]!, y: values[1]! }
+      rawRoute.push(currentPoint)
+    } else if (command === "A" && currentPoint && values.length >= 7) {
+      const [radiusX, , , largeArcFlag, sweepFlag, endX, endY] = values
+      const generatedArcRoute = generateArcFromSweep(
+        currentPoint.x,
+        currentPoint.y,
+        endX!,
+        endY!,
+        radiusX!,
+        largeArcFlag === 1,
+        sweepFlag === 1,
+      )
+      const maxArcSegments = 16
+      const arcRoute =
+        generatedArcRoute.length <= maxArcSegments + 1
+          ? generatedArcRoute
+          : Array.from({ length: maxArcSegments + 1 }, (_, pointIndex) =>
+              generatedArcRoute.at(
+                Math.round(
+                  (pointIndex * (generatedArcRoute.length - 1)) /
+                    maxArcSegments,
+                ),
+              ),
+            ).filter((point): point is { x: number; y: number } => !!point)
+      rawRoute.push(...arcRoute.slice(1))
+      currentPoint = { x: endX!, y: endY! }
+    }
+  }
+
+  const route = rawRoute.map((point) => ({
+    x: mil10ToMm(point.x),
+    y: mil10ToMm(point.y),
+  }))
+  const firstPoint = route[0]
+  const lastPoint = route.at(-1)
+
+  if (
+    firstPoint &&
+    lastPoint &&
+    (firstPoint.x !== lastPoint.x || firstPoint.y !== lastPoint.y)
+  ) {
+    route.push({ ...firstPoint })
+  }
+
+  if (route.length < 2) return null
+
+  return pcb_fabrication_note_path.parse({
+    type: "pcb_fabrication_note_path",
+    pcb_fabrication_note_path_id: `pcb_fabrication_note_solid_region_${index + 1}`,
+    pcb_component_id: "pcb_component_1",
+    layer: "top",
+    route,
+    // EasyEDA solid regions have no stroke width. Use its standard 1-unit
+    // document stroke so the closed region remains visible as a note path.
+    stroke_width: mil10ToMm(1),
+  })
+}
+
 const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   if (layer === 4 || layer === 14) return "bottom"
   return "top"
@@ -646,6 +722,12 @@ export const convertEasyEdaJsonToCircuitJson = (
       } else if (isDocumentLayer(shape.layer)) {
         circuitElements.push(handleFabricationNotePath(shape, index))
       }
+    } else if (
+      shape.type === "SOLIDREGION" &&
+      isDocumentLayer(shape.layermask)
+    ) {
+      const fabricationNote = handleFabricationNoteSolidRegion(shape, index)
+      if (fabricationNote) circuitElements.push(fabricationNote)
     } else if (shape.type === "CIRCLE") {
       if (isSilkscreenLayer(shape.layer)) {
         circuitElements.push(handleSilkscreenCircle(shape, index))

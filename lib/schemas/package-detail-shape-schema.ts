@@ -92,6 +92,7 @@ export const CircleSchema = BaseShapeSchema.extend({
 export const SolidRegionSchema = BaseShapeSchema.extend({
   type: z.literal("SOLIDREGION"),
   layermask: z.number(),
+  pathData: z.string(),
   points: z.array(PointSchema),
   fillStyle: z.string().default("none"),
 })
@@ -318,6 +319,7 @@ export const ShapeItemSchema = z
         return SolidRegionSchema.parse({
           type: "SOLIDREGION",
           layermask: Number(layermask),
+          pathData,
           points,
           fillStyle: fillStyle || undefined,
           id,

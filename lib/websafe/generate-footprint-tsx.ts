@@ -1,6 +1,6 @@
 import { su } from "@tscircuit/circuit-json-util"
 import { mmStr } from "@tscircuit/mm"
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnyCircuitElement, LayerRef } from "circuit-json"
 
 interface GenerateFootprintTsxOptions {
   portHintsMap?: Record<string, string[]>
@@ -15,6 +15,15 @@ const mapPortHints = (
   return [...new Set(portHints.flatMap((hint) => portHintsMap[hint] ?? [hint]))]
 }
 
+const getLayerAttr = (layer: LayerRef | undefined) =>
+  layer && layer !== "top" ? ` layer="${layer}"` : ""
+
+const getRotationAttr = (rotation: number | undefined) =>
+  rotation ? ` pcbRotation="${rotation}deg"` : ""
+
+const getStringAttr = (name: string, value: string | undefined) =>
+  value === undefined ? "" : ` ${name}=${JSON.stringify(value)}`
+
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
   options: GenerateFootprintTsxOptions = {},
@@ -28,6 +37,15 @@ export const generateFootprintTsx = (
   const silkscreenRects = su(circuitJson).pcb_silkscreen_rect.list()
   const silkscreenTexts = su(circuitJson).pcb_silkscreen_text.list()
   const fabricationNotePaths = su(circuitJson).pcb_fabrication_note_path.list()
+  const fabricationNoteTexts = su(circuitJson).pcb_fabrication_note_text.list()
+  const fabricationNoteRects = su(circuitJson).pcb_fabrication_note_rect.list()
+  const fabricationNoteDimensions =
+    su(circuitJson).pcb_fabrication_note_dimension.list()
+  const pcbNoteTexts = su(circuitJson).pcb_note_text.list()
+  const pcbNoteRects = su(circuitJson).pcb_note_rect.list()
+  const pcbNotePaths = su(circuitJson).pcb_note_path.list()
+  const pcbNoteLines = su(circuitJson).pcb_note_line.list()
+  const pcbNoteDimensions = su(circuitJson).pcb_note_dimension.list()
   const courtyardOutlines = su(circuitJson).pcb_courtyard_outline.list()
 
   const elementStrings: string[] = []
@@ -146,7 +164,60 @@ export const generateFootprintTsx = (
 
   for (const fabricationNotePath of fabricationNotePaths) {
     elementStrings.push(
-      `<fabricationnotepath route={${JSON.stringify(fabricationNotePath.route)}} strokeWidth="${mmStr(fabricationNotePath.stroke_width)}" />`,
+      `<fabricationnotepath route={${JSON.stringify(fabricationNotePath.route)}} strokeWidth="${mmStr(fabricationNotePath.stroke_width)}"${getStringAttr("color", fabricationNotePath.color)}${getLayerAttr(fabricationNotePath.layer)} />`,
+    )
+  }
+
+  for (const fabricationNoteText of fabricationNoteTexts) {
+    elementStrings.push(
+      `<fabricationnotetext text=${JSON.stringify(fabricationNoteText.text)} pcbX="${mmStr(fabricationNoteText.anchor_position.x)}" pcbY="${mmStr(fabricationNoteText.anchor_position.y)}" anchorAlignment="${fabricationNoteText.anchor_alignment}"${getStringAttr("font", fabricationNoteText.font)}${fabricationNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(fabricationNoteText.font_size)}"`}${getStringAttr("color", fabricationNoteText.color)}${getRotationAttr(fabricationNoteText.ccw_rotation)}${getLayerAttr(fabricationNoteText.layer)} />`,
+    )
+  }
+
+  for (const fabricationNoteRect of fabricationNoteRects) {
+    elementStrings.push(
+      `<fabricationnoterect pcbX="${mmStr(fabricationNoteRect.center.x)}" pcbY="${mmStr(fabricationNoteRect.center.y)}" width="${mmStr(fabricationNoteRect.width)}" height="${mmStr(fabricationNoteRect.height)}" strokeWidth="${mmStr(fabricationNoteRect.stroke_width)}"${fabricationNoteRect.corner_radius === undefined ? "" : ` cornerRadius="${mmStr(fabricationNoteRect.corner_radius)}"`}${fabricationNoteRect.is_filled === undefined ? "" : ` isFilled={${fabricationNoteRect.is_filled}}`}${fabricationNoteRect.has_stroke === undefined ? "" : ` hasStroke={${fabricationNoteRect.has_stroke}}`}${fabricationNoteRect.is_stroke_dashed === undefined ? "" : ` isStrokeDashed={${fabricationNoteRect.is_stroke_dashed}}`}${getStringAttr("color", fabricationNoteRect.color)}${getLayerAttr(fabricationNoteRect.layer)} />`,
+    )
+  }
+
+  for (const fabricationNoteDimension of fabricationNoteDimensions) {
+    const offset =
+      "offset" in fabricationNoteDimension
+        ? fabricationNoteDimension.offset
+        : fabricationNoteDimension.offset_distance
+    elementStrings.push(
+      `<fabricationnotedimension from={${JSON.stringify(fabricationNoteDimension.from)}} to={${JSON.stringify(fabricationNoteDimension.to)}}${getStringAttr("text", fabricationNoteDimension.text)}${getStringAttr("font", fabricationNoteDimension.font)}${fabricationNoteDimension.font_size === undefined ? "" : ` fontSize="${mmStr(fabricationNoteDimension.font_size)}"`}${fabricationNoteDimension.arrow_size === undefined ? "" : ` arrowSize="${mmStr(fabricationNoteDimension.arrow_size)}"`}${offset === undefined ? "" : ` offset="${mmStr(offset)}"`}${getStringAttr("color", fabricationNoteDimension.color)}${getLayerAttr(fabricationNoteDimension.layer)} />`,
+    )
+  }
+
+  for (const pcbNoteText of pcbNoteTexts) {
+    elementStrings.push(
+      `<pcbnotetext text=${JSON.stringify(pcbNoteText.text ?? "")} pcbX="${mmStr(pcbNoteText.anchor_position.x)}" pcbY="${mmStr(pcbNoteText.anchor_position.y)}" anchorAlignment="${pcbNoteText.anchor_alignment}"${getStringAttr("font", pcbNoteText.font)}${pcbNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(pcbNoteText.font_size)}"`}${getStringAttr("color", pcbNoteText.color)}${getLayerAttr(pcbNoteText.layer)} />`,
+    )
+  }
+
+  for (const pcbNoteRect of pcbNoteRects) {
+    elementStrings.push(
+      `<pcbnoterect pcbX="${mmStr(pcbNoteRect.center.x)}" pcbY="${mmStr(pcbNoteRect.center.y)}" width="${mmStr(pcbNoteRect.width)}" height="${mmStr(pcbNoteRect.height)}" strokeWidth="${mmStr(pcbNoteRect.stroke_width)}"${pcbNoteRect.corner_radius === undefined ? "" : ` cornerRadius="${mmStr(pcbNoteRect.corner_radius)}"`}${pcbNoteRect.is_filled === undefined ? "" : ` isFilled={${pcbNoteRect.is_filled}}`}${pcbNoteRect.has_stroke === undefined ? "" : ` hasStroke={${pcbNoteRect.has_stroke}}`}${pcbNoteRect.is_stroke_dashed === undefined ? "" : ` isStrokeDashed={${pcbNoteRect.is_stroke_dashed}}`}${getStringAttr("color", pcbNoteRect.color)}${getLayerAttr(pcbNoteRect.layer)} />`,
+    )
+  }
+
+  for (const pcbNotePath of pcbNotePaths) {
+    elementStrings.push(
+      `<pcbnotepath route={${JSON.stringify(pcbNotePath.route)}} strokeWidth="${mmStr(pcbNotePath.stroke_width)}"${getStringAttr("color", pcbNotePath.color)}${getLayerAttr(pcbNotePath.layer)} />`,
+    )
+  }
+
+  for (const pcbNoteLine of pcbNoteLines) {
+    elementStrings.push(
+      `<pcbnoteline x1="${mmStr(pcbNoteLine.x1)}" y1="${mmStr(pcbNoteLine.y1)}" x2="${mmStr(pcbNoteLine.x2)}" y2="${mmStr(pcbNoteLine.y2)}" strokeWidth="${mmStr(pcbNoteLine.stroke_width)}"${pcbNoteLine.is_dashed === undefined ? "" : ` isDashed={${pcbNoteLine.is_dashed}}`}${getStringAttr("color", pcbNoteLine.color)}${getLayerAttr(pcbNoteLine.layer)} />`,
+    )
+  }
+
+  for (const pcbNoteDimension of pcbNoteDimensions) {
+    const offset = pcbNoteDimension.offset_distance
+    elementStrings.push(
+      `<pcbnotedimension from={${JSON.stringify(pcbNoteDimension.from)}} to={${JSON.stringify(pcbNoteDimension.to)}}${getStringAttr("text", pcbNoteDimension.text)}${getStringAttr("font", pcbNoteDimension.font)}${pcbNoteDimension.font_size === undefined ? "" : ` fontSize="${mmStr(pcbNoteDimension.font_size)}"`}${pcbNoteDimension.arrow_size === undefined ? "" : ` arrowSize="${mmStr(pcbNoteDimension.arrow_size)}"`}${offset === undefined ? "" : ` offset="${mmStr(offset)}"`}${getStringAttr("color", pcbNoteDimension.color)}${getLayerAttr(pcbNoteDimension.layer)} />`,
     )
   }
 
