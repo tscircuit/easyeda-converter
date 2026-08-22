@@ -22,7 +22,17 @@ it("reproduces C2848306 rendering an EasyEDA-hidden EP pin", async () => {
   if (!parsedHiddenEpPin || parsedHiddenEpPin.type !== "PIN") {
     throw new Error("C2848306 pin 5 was not parsed as a schematic pin")
   }
-  expect(parsedHiddenEpPin.visibility).toBe("none")
+  expect({
+    label: parsedHiddenEpPin.label,
+    pinNumber: parsedHiddenEpPin.pinNumber,
+    visibility: parsedHiddenEpPin.visibility,
+  }).toMatchInlineSnapshot(`
+    {
+      "label": "EP",
+      "pinNumber": 5,
+      "visibility": "none",
+    }
+  `)
 
   const result = await convertBetterEasyToTsx({ betterEasy })
 
