@@ -1,4 +1,5 @@
 import { su } from "@tscircuit/circuit-json-util"
+import type { ChipProps } from "@tscircuit/props"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import {
   type BetterEasyEdaJson,
@@ -6,6 +7,10 @@ import {
 } from "lib/schemas/easy-eda-json-schema"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
 import { getEasyEdaCadModelPlacement } from "../get-easyeda-cad-model-placement"
+import {
+  generateSymbolTsx,
+  hasNonBoxSchematicSymbol,
+} from "./generate-symbol-tsx"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
 import {
@@ -23,10 +28,6 @@ import {
   normalizeResistorValue,
 } from "./is-resistor-component"
 import { isSwitchCategoryComponent } from "./is-switch-category-component"
-import {
-  generateSymbolTsx,
-  hasNonBoxSchematicSymbol,
-} from "./generate-symbol-tsx"
 
 const getGeneratedComponentType = (
   betterEasy: BetterEasyEdaJson,
@@ -42,6 +43,40 @@ const getGeneratedComponentType = (
   if (isCrystalComponent(betterEasy)) return "crystal"
   if (isMicroUsbConnectorComponent(betterEasy)) return "connector"
   return "chip"
+}
+
+const getVisibleSchematicPinArrangement = (
+  betterEasy: BetterEasyEdaJson,
+): ChipProps["schPinArrangement"] | undefined => {
+  const pins = betterEasy.dataStr.shape.filter((shape) => shape.type === "PIN")
+  if (!pins.some((pin) => pin.visibility !== "show")) return undefined
+
+  const arrangement: Record<
+    "leftSide" | "rightSide" | "topSide" | "bottomSide",
+    Array<string | number>
+  > = {
+    leftSide: [],
+    rightSide: [],
+    topSide: [],
+    bottomSide: [],
+  }
+
+  for (const pin of pins.filter((pin) => pin.visibility === "show")) {
+    const rotation = ((pin.rotation % 360) + 360) % 360
+    const side =
+      rotation === 90
+        ? "topSide"
+        : rotation === 180
+          ? "leftSide"
+          : rotation === 270
+            ? "bottomSide"
+            : "rightSide"
+    arrangement[side].push(pin.pinNumber)
+  }
+
+  return Object.fromEntries(
+    Object.entries(arrangement).filter(([, pins]) => pins.length > 0),
+  )
 }
 
 export const convertRawEasyToTsx = async ({ rawEasy }: { rawEasy: any }) => {
@@ -81,6 +116,13 @@ export const convertBetterEasyToTsx = async ({
   }
   const componentName = normalizeManufacturerPartNumber(manufacturerPartNumber)
   const sourcePorts = su(circuitJson).source_port.list()
+  const hiddenSchematicPinNumbers = new Set(
+    betterEasy.dataStr.shape.flatMap((shape) =>
+      shape.type === "PIN" && shape.visibility !== "show"
+        ? [String(shape.pinNumber)]
+        : [],
+    ),
+  )
 
   const pinLabels: Record<string, string[]> = {}
   const sortedPorts = sourcePorts.sort((a, b) => {
@@ -89,6 +131,7 @@ export const convertBetterEasyToTsx = async ({
     return aNum - bNum
   })
   for (const sourcePort of sortedPorts) {
+    if (hiddenSchematicPinNumbers.has(String(sourcePort.pin_number))) continue
     pinLabels[sourcePort.name] = [
       sourcePort.name,
       ...(sourcePort.port_hints ?? []),
@@ -157,6 +200,9 @@ export const convertBetterEasyToTsx = async ({
           alignPortsToDrawing: isPassiveWithCustomSymbol,
         })
       : undefined
+  const schPinArrangement = symbolTsx
+    ? undefined
+    : getVisibleSchematicPinArrangement(betterEasy)
 
   return generateTypescriptComponent({
     componentName,
@@ -174,6 +220,7 @@ export const convertBetterEasyToTsx = async ({
     crystalFrequency,
     crystalPinVariant,
     symbolTsx,
+    schPinArrangement,
   })
 }
 

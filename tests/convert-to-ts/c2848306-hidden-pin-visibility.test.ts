@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C2848306.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C2848306 rendering an EasyEDA-hidden EP pin", async () => {
+it("preserves C2848306 EasyEDA-hidden EP pin visibility", async () => {
   const hiddenEpPin = chipRawEasy.dataStr.shape.find((shape) =>
     shape.startsWith("P~none~0~5~"),
   )
@@ -36,9 +36,8 @@ it("reproduces C2848306 rendering an EasyEDA-hidden EP pin", async () => {
 
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  // The converter currently discards the parsed visibility and exposes the
-  // die pad as an ordinary schematic pin.
-  expect(result).toContain('pin5: ["EP"]')
+  expect(result).not.toContain('pin5: ["EP"]')
+  expect(result).toContain("schPinArrangement=")
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
 
@@ -46,8 +45,7 @@ it("reproduces C2848306 rendering an EasyEDA-hidden EP pin", async () => {
       pin1: ["SDA"],
       pin2: ["SCL"],
       pin3: ["VDD"],
-      pin4: ["VSS"],
-      pin5: ["EP"]
+      pin4: ["VSS"]
     } as const
 
     const pinAttributes = {
@@ -60,6 +58,7 @@ it("reproduces C2848306 rendering an EasyEDA-hidden EP pin", async () => {
         <chip
           pinLabels={pinLabels}
           pinAttributes={pinAttributes}
+          schPinArrangement={{"leftSide":[1,2],"rightSide":[3,4]}}
           supplierPartNumbers={{
       "jlcpcb": [
         "C2848306"
@@ -95,7 +94,14 @@ it("reproduces C2848306 rendering an EasyEDA-hidden EP pin", async () => {
   )
   const schematicSvg = convertCircuitJsonToSchematicSvg(circuitJson)
 
-  expect(schematicSvg).toContain(">EP</text>")
+  expect(schematicSvg).not.toContain(">EP</text>")
+  expect(schematicSvg).not.toContain(">5</text>")
+  expect(
+    circuitJson.filter((element) => element.type === "pcb_smtpad"),
+  ).toHaveLength(5)
+  expect(
+    circuitJson.filter((element) => element.type === "source_port"),
+  ).toHaveLength(4)
   expect(schematicSvg).toMatchSvgSnapshot(
     import.meta.path,
     "C2848306-hidden-EP-pin-rendered",
