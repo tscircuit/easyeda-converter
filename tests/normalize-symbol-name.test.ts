@@ -26,6 +26,7 @@ describe("normalizeSymbolName", () => {
     expect(normalizeSymbolName("V-")).toBe("V-")
     expect(normalizeSymbolName("+5V")).toBe("+5V")
     expect(normalizeSymbolName("-5V")).toBe("-5V")
+    expect(normalizeSymbolName("2G4-OUT")).toBe("2G4_OUT")
   })
 
   test("handles empty strings", () => {

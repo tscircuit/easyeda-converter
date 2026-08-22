@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C7434162.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces incorrect C7434162 pin 35 and 36 labels", async () => {
+it("renders C7434162 pin 35 and 36 labels", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(
@@ -15,7 +15,7 @@ it("reproduces incorrect C7434162 pin 35 and 36 labels", async () => {
 
   const schematicSvg = convertCircuitJsonToSchematicSvg(circuitJson)
   expect(schematicSvg).toContain("GND3")
-  expect(schematicSvg).not.toContain("2G4-OUT")
+  expect(schematicSvg).toContain("2G4_OUT")
   expect(schematicSvg).toMatchSvgSnapshot(
     import.meta.path,
     "C7434162-pin-labels-repro",

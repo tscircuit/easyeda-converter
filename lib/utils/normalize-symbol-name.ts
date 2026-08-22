@@ -6,5 +6,5 @@ export const normalizeSymbolName = (name: string): string => {
   const trimmedName = name.trim()
   if (trimmedName === "+") return "_POS"
   if (trimmedName === "-") return "_NEG"
-  return trimmedName
+  return trimmedName.replace(/(?<=[A-Za-z0-9])-(?=[A-Za-z0-9])/g, "_")
 }
