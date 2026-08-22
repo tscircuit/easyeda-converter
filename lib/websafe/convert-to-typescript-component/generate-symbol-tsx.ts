@@ -17,13 +17,14 @@ const round = (value: number): number => Number(value.toFixed(6))
  * millimeters; PCB and CAD conversion must continue to use mil10ToMm instead.
  */
 const EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT = 0.02
-const toSchematicUnits = (value: number): number =>
-  round(value * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT)
+const toSchematicUnits = (value: number, symbolScale = 1): number =>
+  round(value * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT * symbolScale)
 
 const getPointTransformer =
-  (origin: { x: number; y: number }) => (point: { x: number; y: number }) => ({
-    x: toSchematicUnits(point.x - origin.x),
-    y: toSchematicUnits(origin.y - point.y),
+  (origin: { x: number; y: number }, symbolScale = 1) =>
+  (point: { x: number; y: number }) => ({
+    x: toSchematicUnits(point.x - origin.x, symbolScale),
+    y: toSchematicUnits(origin.y - point.y, symbolScale),
   })
 
 const formatNumber = (value: number): string => String(round(value))
@@ -48,6 +49,7 @@ const SVG_PATH_COMMAND_PARAMETER_COUNTS: Record<string, number> = {
 const transformSvgPath = (
   pathData: string,
   origin: { x: number; y: number },
+  symbolScale = 1,
 ): string => {
   const tokens =
     pathData.match(
@@ -61,7 +63,7 @@ const transformSvgPath = (
   let subpathStartX = 0
   let subpathStartY = 0
 
-  const transformPoint = getPointTransformer(origin)
+  const transformPoint = getPointTransformer(origin, symbolScale)
   const getOriginalPoint = (x: number, y: number, isRelative: boolean) => ({
     x: isRelative ? currentX + x : x,
     y: isRelative ? currentY + y : y,
@@ -156,8 +158,8 @@ const transformSvgPath = (
       output.push(
         [
           "A",
-          formatNumber(toSchematicUnits(Math.abs(values[0]))),
-          formatNumber(toSchematicUnits(Math.abs(values[1]))),
+          formatNumber(toSchematicUnits(Math.abs(values[0]), symbolScale)),
+          formatNumber(toSchematicUnits(Math.abs(values[1]), symbolScale)),
           formatNumber(-values[2]),
           String(values[3]),
           String(values[4] === 0 ? 1 : 0),
@@ -183,10 +185,128 @@ const getPinDirection = (
   return "right"
 }
 
-const getPinStemLength = (path: string): number | undefined => {
+const getRawPinStemLength = (path: string): number | undefined => {
   const segment = path.match(/[hHvV]\s*(-?(?:\d*\.\d+|\d+\.?))/)
   if (!segment) return undefined
-  return toSchematicUnits(Math.abs(Number(segment[1])))
+  return Math.abs(Number(segment[1]))
+}
+
+const getPinStemLength = (
+  path: string,
+  symbolScale = 1,
+): number | undefined => {
+  const stemLength = getRawPinStemLength(path)
+  return stemLength === undefined
+    ? undefined
+    : toSchematicUnits(stemLength, symbolScale)
+}
+
+// circuit-to-svg renders custom-symbol pin labels at a fixed 0.15 schematic
+// unit font size (0.12 for negated labels). Reserve enough room between
+// opposing pin rows so imported symbols do not place those labels on top of
+// each other. Scaling is derived from the symbol's own pins and labels and is
+// uniform, so pin rotations and drawing proportions are preserved.
+const PIN_LABEL_FONT_SIZE = 0.15
+const NEGATED_PIN_LABEL_FONT_SIZE = PIN_LABEL_FONT_SIZE * 0.8
+const AVERAGE_GLYPH_WIDTH_IN_EM = 0.7
+const PIN_LABEL_INSET = 0.1
+const LABEL_CLEARANCE = 0.02
+
+const getPinLabelMetrics = (
+  label: string,
+): { width: number; height: number } => {
+  const isNegated = label.startsWith("N_")
+  const displayLabel = isNegated ? label.slice(2) : label
+  const height = isNegated ? NEGATED_PIN_LABEL_FONT_SIZE : PIN_LABEL_FONT_SIZE
+  return {
+    width: displayLabel.length * height * AVERAGE_GLYPH_WIDTH_IN_EM,
+    height,
+  }
+}
+
+const getCustomSymbolClearanceScale = (shapes: SingleLetterShape[]): number => {
+  const pins = shapes.filter(
+    (shape): shape is Extract<SingleLetterShape, { type: "PIN" }> =>
+      shape.type === "PIN",
+  )
+  const entries = pins.flatMap((pin) => {
+    const stemLength = getRawPinStemLength(pin.path)
+    if (stemLength === undefined || !pin.label) return []
+    const direction = getPinDirection(pin.rotation)
+    return [
+      {
+        direction,
+        pinX: pin.x * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT,
+        pinY: -pin.y * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT,
+        stemLength: stemLength * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT,
+        metrics: getPinLabelMetrics(normalizeSymbolName(pin.label)),
+      },
+    ]
+  })
+
+  // Short identifiers fit within one line-height and do not need the custom
+  // symbol expanded even when their conservative bounding boxes touch.
+  if (entries.every((entry) => entry.metrics.width <= entry.metrics.height)) {
+    return 1
+  }
+
+  const labelsOverlapAtScale = (scale: number): boolean => {
+    const boxes = entries.map((entry) => {
+      const outward = getUnitVectorFromDirection(entry.direction)
+      const bodyX = (entry.pinX - outward.x * entry.stemLength) * scale
+      const bodyY = (entry.pinY - outward.y * entry.stemLength) * scale
+      const anchorX = bodyX - outward.x * PIN_LABEL_INSET
+      const anchorY = bodyY - outward.y * PIN_LABEL_INSET
+      const { width, height } = entry.metrics
+
+      if (entry.direction === "left") {
+        return {
+          left: anchorX,
+          right: anchorX + width,
+          bottom: anchorY - height / 2,
+          top: anchorY + height / 2,
+        }
+      }
+      if (entry.direction === "right") {
+        return {
+          left: anchorX - width,
+          right: anchorX,
+          bottom: anchorY - height / 2,
+          top: anchorY + height / 2,
+        }
+      }
+      if (entry.direction === "up") {
+        return {
+          left: anchorX - height / 2,
+          right: anchorX + height / 2,
+          bottom: anchorY - width,
+          top: anchorY,
+        }
+      }
+      return {
+        left: anchorX - height / 2,
+        right: anchorX + height / 2,
+        bottom: anchorY,
+        top: anchorY + width,
+      }
+    })
+
+    return boxes.some((box, index) =>
+      boxes
+        .slice(index + 1)
+        .some(
+          (other) =>
+            box.left < other.right + LABEL_CLEARANCE &&
+            box.right + LABEL_CLEARANCE > other.left &&
+            box.bottom < other.top + LABEL_CLEARANCE &&
+            box.top + LABEL_CLEARANCE > other.bottom,
+        ),
+    )
+  }
+
+  let scale = 1
+  while (scale < 10 && labelsOverlapAtScale(scale)) scale += 0.05
+  return round(scale)
 }
 
 const getOpenPolylineEndpoints = (
@@ -340,25 +460,27 @@ const generateShapeTsx = ({
   origin,
   portMetadata,
   drawingEndpoints = [],
+  symbolScale = 1,
 }: {
   shape: SingleLetterShape
   origin: { x: number; y: number }
   portMetadata?: PortMetadata
   drawingEndpoints?: Point[]
+  symbolScale?: number
 }): string | undefined => {
-  const transformPoint = getPointTransformer(origin)
+  const transformPoint = getPointTransformer(origin, symbolScale)
 
   if (shape.type === "RECTANGLE") {
     const center = transformPoint({
       x: shape.position.x + shape.width / 2,
       y: shape.position.y + shape.height / 2,
     })
-    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toSchematicUnits(shape.width)}} height={${toSchematicUnits(shape.height)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematicrect schX={${center.x}} schY={${center.y}} width={${toSchematicUnits(shape.width, symbolScale)}} height={${toSchematicUnits(shape.height, symbolScale)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "ELLIPSE") {
     const center = transformPoint(shape.center)
-    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toSchematicUnits(Math.max(shape.radiusX, shape.radiusY))}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toSchematicUnits(Math.max(shape.radiusX, shape.radiusY), symbolScale)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "POLYLINE" || shape.type === "POLYGON") {
@@ -369,13 +491,21 @@ const generateShapeTsx = ({
   }
 
   if (shape.type === "PATH") {
-    const transformedPath = transformSvgPath(shape.pathData, origin)
+    const transformedPath = transformSvgPath(
+      shape.pathData,
+      origin,
+      symbolScale,
+    )
     if (!transformedPath) return undefined
     return `<schematicpath svgPath=${JSON.stringify(transformedPath)} strokeColor=${JSON.stringify(shape.strokeColor)}${shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "ARC") {
-    const transformedPath = transformSvgPath(shape.pathData, origin)
+    const transformedPath = transformSvgPath(
+      shape.pathData,
+      origin,
+      symbolScale,
+    )
     if (!transformedPath) return undefined
     return `<schematicpath svgPath=${JSON.stringify(transformedPath)} strokeColor=${JSON.stringify(shape.color)} />`
   }
@@ -388,7 +518,7 @@ const generateShapeTsx = ({
 
   if (shape.type === "PIN" && portMetadata) {
     const direction = getPinDirection(shape.rotation)
-    const stemLength = getPinStemLength(shape.path)
+    const stemLength = getPinStemLength(shape.path, symbolScale)
     const position = alignPortToDrawing({
       position: transformPoint({ x: shape.x, y: shape.y }),
       direction,
@@ -446,7 +576,8 @@ export const generateSymbolTsx = (
     easyEdaJson,
     circuitJson,
   )
-  const transformPoint = getPointTransformer(origin)
+  const symbolScale = getCustomSymbolClearanceScale(shapes)
+  const transformPoint = getPointTransformer(origin, symbolScale)
   const drawingEndpoints = alignPortsToDrawing
     ? getOpenPolylineEndpoints(shapes, transformPoint)
     : []
@@ -461,6 +592,7 @@ export const generateSymbolTsx = (
             ? portMetadataByShapeId.get(shape.id)
             : undefined,
         drawingEndpoints,
+        symbolScale,
       }),
     )
     .filter((tsx): tsx is string => Boolean(tsx))

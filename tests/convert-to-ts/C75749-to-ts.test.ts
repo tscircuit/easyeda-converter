@@ -49,45 +49,45 @@ it("should convert C75749 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <schematicpath points={[{"x":-0.4,"y":-0.16},{"x":-0.4,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.8,"y":-0.16},{"x":-0.8,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0,"y":-0.16},{"x":0,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.6,"y":-0.3},{"x":-0.6,"y":0.04}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0.4,"y":-0.16},{"x":0.4,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.2,"y":-0.3},{"x":-0.2,"y":0.04}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0.8,"y":-0.16},{"x":0.8,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0.2,"y":-0.3},{"x":0.2,"y":0.04}]} strokeColor="#880000" />
-              <schematicpath points={[{"x":0.6,"y":-0.3},{"x":0.6,"y":0.04}]} strokeColor="#880000" />
-              <schematiccircle center={{ x: 0.6, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0.2, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.2, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.6, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0.8, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0.4, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.4, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.8, y: -0.1 }} radius={0.06} color="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="down" schX={-0.8} schY={-0.7} schStemLength={0.4} />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="down" schX={-0.4} schY={-0.7} schStemLength={0.4} />
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="down" schX={0} schY={-0.7} schStemLength={0.4} />
-              <port name="pin4" pinNumber={4} aliases={["4"]} direction="down" schX={0.4} schY={-0.7} schStemLength={0.4} />
-              <port name="pin5" pinNumber={5} aliases={["5"]} direction="down" schX={0.8} schY={-0.7} schStemLength={0.4} />
-              <port name="pin6" pinNumber={6} aliases={["6"]} direction="down" schX={-0.6} schY={-0.7} schStemLength={0.4} />
-              <port name="pin7" pinNumber={7} aliases={["7"]} direction="down" schX={-0.2} schY={-0.7} schStemLength={0.4} />
-              <port name="pin8" pinNumber={8} aliases={["8"]} direction="down" schX={0.2} schY={-0.7} schStemLength={0.4} />
-              <port name="pin9" pinNumber={9} aliases={["9"]} direction="down" schX={0.6} schY={-0.7} schStemLength={0.4} />
-              <schematicpath points={[{"x":0.8,"y":-0.3},{"x":-0.8,"y":-0.3}]} strokeColor="#880000" />
-              <port name="pin11" pinNumber={11} aliases={["MH2"]} direction="up" schX={-0.4} schY={0.7} schStemLength={0.4} />
-              <port name="pin10" pinNumber={10} aliases={["MH1"]} direction="up" schX={0.4} schY={0.7} schStemLength={0.4} />
-              <schematicpath points={[{"x":0.8,"y":0.3},{"x":-0.8,"y":0.3}]} strokeColor="#880000" />
-              <schematicpath svgPath="M -0.8 0.3 A 0.1 0.1 0 0 1 -0.896126 0.227564" strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.94,"y":-0.3},{"x":-0.8,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath svgPath="M -0.995732 -0.190366 A 0.06 0.08 0 0 1 -0.933048 -0.299462" strokeColor="#880000" />
-              <schematicpath points={[{"x":-0.9,"y":0.22},{"x":-1,"y":-0.2}]} strokeColor="#880000" />
-              <schematicpath svgPath="M 0.896592 0.225882 A 0.1 0.1 0 0 1 0.8 0.3" strokeColor="#880000" />
-              <schematicpath points={[{"x":0.94,"y":-0.3},{"x":0.8,"y":-0.3}]} strokeColor="#880000" />
-              <schematicpath svgPath="M 0.933048 -0.299462 A 0.06 0.08 0 0 1 0.995732 -0.190366" strokeColor="#880000" />
-              <schematicpath points={[{"x":0.9,"y":0.22},{"x":1,"y":-0.2}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.44,"y":-0.176},{"x":-0.44,"y":-0.33}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.88,"y":-0.176},{"x":-0.88,"y":-0.33}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0,"y":-0.176},{"x":0,"y":-0.33}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.66,"y":-0.33},{"x":-0.66,"y":0.044}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.44,"y":-0.176},{"x":0.44,"y":-0.33}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.22,"y":-0.33},{"x":-0.22,"y":0.044}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.88,"y":-0.176},{"x":0.88,"y":-0.33}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.22,"y":-0.33},{"x":0.22,"y":0.044}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":0.66,"y":-0.33},{"x":0.66,"y":0.044}]} strokeColor="#880000" />
+              <schematiccircle center={{ x: 0.66, y: 0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: 0.22, y: 0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: -0.22, y: 0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: -0.66, y: 0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: 0.88, y: -0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: 0.44, y: -0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: 0, y: -0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: -0.44, y: -0.11 }} radius={0.066} color="#880000" />
+              <schematiccircle center={{ x: -0.88, y: -0.11 }} radius={0.066} color="#880000" />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="down" schX={-0.88} schY={-0.77} schStemLength={0.44} />
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="down" schX={-0.44} schY={-0.77} schStemLength={0.44} />
+              <port name="pin3" pinNumber={3} aliases={["3"]} direction="down" schX={0} schY={-0.77} schStemLength={0.44} />
+              <port name="pin4" pinNumber={4} aliases={["4"]} direction="down" schX={0.44} schY={-0.77} schStemLength={0.44} />
+              <port name="pin5" pinNumber={5} aliases={["5"]} direction="down" schX={0.88} schY={-0.77} schStemLength={0.44} />
+              <port name="pin6" pinNumber={6} aliases={["6"]} direction="down" schX={-0.66} schY={-0.77} schStemLength={0.44} />
+              <port name="pin7" pinNumber={7} aliases={["7"]} direction="down" schX={-0.22} schY={-0.77} schStemLength={0.44} />
+              <port name="pin8" pinNumber={8} aliases={["8"]} direction="down" schX={0.22} schY={-0.77} schStemLength={0.44} />
+              <port name="pin9" pinNumber={9} aliases={["9"]} direction="down" schX={0.66} schY={-0.77} schStemLength={0.44} />
+              <schematicpath points={[{"x":0.88,"y":-0.33},{"x":-0.88,"y":-0.33}]} strokeColor="#880000" />
+              <port name="pin11" pinNumber={11} aliases={["MH2"]} direction="up" schX={-0.44} schY={0.77} schStemLength={0.44} />
+              <port name="pin10" pinNumber={10} aliases={["MH1"]} direction="up" schX={0.44} schY={0.77} schStemLength={0.44} />
+              <schematicpath points={[{"x":0.88,"y":0.33},{"x":-0.88,"y":0.33}]} strokeColor="#880000" />
+              <schematicpath svgPath="M -0.88 0.33 A 0.11 0.11 0 0 1 -0.985739 0.25032" strokeColor="#880000" />
+              <schematicpath points={[{"x":-1.034,"y":-0.33},{"x":-0.88,"y":-0.33}]} strokeColor="#880000" />
+              <schematicpath svgPath="M -1.095305 -0.209403 A 0.066 0.088 0 0 1 -1.026353 -0.329408" strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.99,"y":0.242},{"x":-1.1,"y":-0.22}]} strokeColor="#880000" />
+              <schematicpath svgPath="M 0.986251 0.24847 A 0.11 0.11 0 0 1 0.88 0.33" strokeColor="#880000" />
+              <schematicpath points={[{"x":1.034,"y":-0.33},{"x":0.88,"y":-0.33}]} strokeColor="#880000" />
+              <schematicpath svgPath="M 1.026353 -0.329408 A 0.066 0.088 0 0 1 1.095305 -0.209403" strokeColor="#880000" />
+              <schematicpath points={[{"x":0.99,"y":0.242},{"x":1.1,"y":-0.22}]} strokeColor="#880000" />
             </symbol>
           }
           supplierPartNumbers={{

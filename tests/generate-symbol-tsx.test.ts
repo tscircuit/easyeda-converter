@@ -82,6 +82,20 @@ test("maps duplicate EasyEDA symbol pin numbers to unused footprint ports", () =
   expect(symbolTsx.match(/name="pin8"/g)).toHaveLength(1)
 })
 
+test("preserves rotated pin directions when expanding a crowded symbol", () => {
+  const symbolTsx = generateSymbolFromRawEasy(duplicateSymbolPinRawEasy)
+  const vddPort = symbolTsx.match(
+    /<port name="pin6"[^>]*direction="up"[^>]*schX=\{0\}[^>]*schStemLength=\{([^}]+)\}/,
+  )
+  const gndPort = symbolTsx.match(
+    /<port name="pin7"[^>]*direction="down"[^>]*schX=\{0\}[^>]*schStemLength=\{([^}]+)\}/,
+  )
+
+  expect(vddPort).not.toBeNull()
+  expect(gndPort).not.toBeNull()
+  expect(vddPort?.[1]).toBe(gndPort?.[1])
+})
+
 test("distinguishes custom symbols from chip box representations", () => {
   expect(hasNonBoxSchematicSymbol(EasyEdaJsonSchema.parse(ne555RawEasy))).toBe(
     false,
