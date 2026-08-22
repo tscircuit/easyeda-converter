@@ -104,6 +104,6 @@ it("preserves C2848306 EasyEDA-hidden EP pin visibility", async () => {
   ).toHaveLength(4)
   expect(schematicSvg).toMatchSvgSnapshot(
     import.meta.path,
-    "C2848306-hidden-EP-pin-omitted",
+    "C2848306-hidden-EP-pin-rendered",
   )
 }, 20_000)
