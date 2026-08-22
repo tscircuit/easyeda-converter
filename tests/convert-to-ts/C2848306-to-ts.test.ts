@@ -1,8 +1,8 @@
-import { it, expect } from "bun:test"
-import chipRawEasy from "../assets/C2848306.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { expect, it } from "bun:test"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
+import chipRawEasy from "../assets/C2848306.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
 it("should convert C2848306 into typescript file", async () => {
@@ -26,8 +26,7 @@ it("should convert C2848306 into typescript file", async () => {
       pin1: ["SDA"],
       pin2: ["SCL"],
       pin3: ["VDD"],
-      pin4: ["VSS"],
-      pin5: ["EP"]
+      pin4: ["VSS"]
     } as const
 
     const pinAttributes = {
@@ -40,6 +39,7 @@ it("should convert C2848306 into typescript file", async () => {
         <chip
           pinLabels={pinLabels}
           pinAttributes={pinAttributes}
+          schPinArrangement={{"leftSide":[1,2],"rightSide":[3,4]}}
           supplierPartNumbers={{
       "jlcpcb": [
         "C2848306"

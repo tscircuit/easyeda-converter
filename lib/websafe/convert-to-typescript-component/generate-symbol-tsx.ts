@@ -1,9 +1,9 @@
-import type { AnyCircuitElement } from "circuit-json"
 import {
+  type Point,
   distance,
   getUnitVectorFromDirection,
-  type Point,
 } from "@tscircuit/math-utils"
+import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
 import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
@@ -387,6 +387,7 @@ const generateShapeTsx = ({
   }
 
   if (shape.type === "PIN" && portMetadata) {
+    if (shape.visibility !== "show") return undefined
     const direction = getPinDirection(shape.rotation)
     const stemLength = getPinStemLength(shape.path)
     const position = alignPortToDrawing({
