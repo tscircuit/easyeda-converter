@@ -301,7 +301,7 @@ const handleRect = (rect: z.infer<typeof RectSchema>, index: number) => {
     width,
     height,
     layer,
-    stroke_width: mil2mm(rect.lineWidth),
+    stroke_width: mil10ToMm(rect.lineWidth),
     is_filled: rect.fillStyle !== "none",
     has_stroke: rect.lineWidth > 0,
     ccw_rotation: rect.rotation,
