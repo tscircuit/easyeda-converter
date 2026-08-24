@@ -43,8 +43,10 @@ test("transforms EasyEDA paths, arcs, and text into symbol-local coordinates", (
     '<schematicpath svgPath="M 0.1 0.14 L -0.1 0 L 0.1 -0.14 Z" strokeColor="#880000" />',
   )
   expect(arcSymbolTsx).toContain(
-    '<schematicarc center={{ x: -0.4, y: 0.2 }} radius={0.08} startAngleDegrees={-90} endAngleDegrees={-270} direction="clockwise" strokeWidth={0.02} color="#880000" />',
+    '<schematicpath points={[{"x":-0.4,"y":0.12},{"x":-0.415607,"y":0.121537}',
   )
+  expect(arcSymbolTsx).toContain('{"x":-0.48,"y":0.2}')
+  expect(arcSymbolTsx).not.toContain("<schematicarc")
   expect(pathSymbolTsx).not.toContain("strokeWidth")
   expect(arcSymbolTsx).toContain("strokeWidth={0.02}")
   expect(generateSymbolFromRawEasy(rp2040RawEasy)).toContain(

@@ -61,7 +61,7 @@ it("should convert C2961147 into typescript file", async () => {
               <schematicpath points={[{"x":-0.14,"y":-0.2},{"x":-0.12,"y":-0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":0},{"x":-0.14,"y":0},{"x":-0.14,"y":-0.2},{"x":-0.16,"y":-0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":-0.2},{"x":-0.38,"y":-0.2},{"x":-0.42,"y":-0.12},{"x":-0.46,"y":-0.2}]} strokeColor="#880000" />
-              <schematicarc center={{ x: -0.4, y: 0.2 }} radius={0.08} startAngleDegrees={-90} endAngleDegrees={-270} direction="clockwise" strokeWidth={0.02} color="#880000" />
+              <schematicpath points={[{"x":-0.4,"y":0.12},{"x":-0.415607,"y":0.121537},{"x":-0.430615,"y":0.12609},{"x":-0.444446,"y":0.133482},{"x":-0.456569,"y":0.143431},{"x":-0.466518,"y":0.155554},{"x":-0.47391,"y":0.169385},{"x":-0.478463,"y":0.184393},{"x":-0.48,"y":0.2},{"x":-0.478463,"y":0.215607},{"x":-0.47391,"y":0.230615},{"x":-0.466518,"y":0.244446},{"x":-0.456569,"y":0.256569},{"x":-0.444446,"y":0.266518},{"x":-0.430615,"y":0.27391},{"x":-0.415607,"y":0.278463},{"x":-0.4,"y":0.28}]} strokeColor="#880000" strokeWidth={0.02} />
               <schematicpath points={[{"x":0,"y":0.12},{"x":-0.4,"y":0.12}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":0.28},{"x":-0.4,"y":0.28}]} strokeColor="#880000" />
               <schematicrect schX={0.04} schY={0.2} width={0.08} height={0.24} color="#880000" />
