@@ -1,4 +1,4 @@
-import { expect, it } from "bun:test"
+import { expect, test } from "bun:test"
 import {
   convertCircuitJsonToPcbSvg,
   convertCircuitJsonToSchematicSvg,
@@ -23,7 +23,7 @@ const reproCases = [
   { partNumber: "C2943786", rawEasy: c2943786RawEasy },
 ] as const
 
-it("reproduces reversed package RECT layer and line-width fields with incorrect stroke units", async () => {
+test("preserves package RECT layer and line-width fields with correct stroke units", async () => {
   const conversionResults = reproCases.map(({ partNumber, rawEasy }) => {
     const rawRect = rawEasy.packageDetail.dataStr.shape.find((shape) =>
       shape.startsWith("RECT~"),
@@ -60,46 +60,46 @@ it("reproduces reversed package RECT layer and line-width fields with incorrect 
   expect(conversionResults).toMatchInlineSnapshot(`
     [
       {
-        "convertedStrokeWidthMm": 0.0762,
+        "convertedStrokeWidthMm": 0.254,
         "expectedStrokeWidthMm": 0.254,
-        "parsedLayer": 1,
-        "parsedLineWidth": 3,
+        "parsedLayer": 3,
+        "parsedLineWidth": 1,
         "partNumber": "C124375",
         "rawLayer": 3,
         "rawLineWidth": 1,
       },
       {
-        "convertedStrokeWidthMm": 0.0762,
+        "convertedStrokeWidthMm": 0.0999998,
         "expectedStrokeWidthMm": 0.0999998,
-        "parsedLayer": 0.3937,
-        "parsedLineWidth": 3,
+        "parsedLayer": 3,
+        "parsedLineWidth": 0.3937,
         "partNumber": "C3178291",
         "rawLayer": 3,
         "rawLineWidth": 0.3937,
       },
       {
-        "convertedStrokeWidthMm": 0.0762,
+        "convertedStrokeWidthMm": 0.254,
         "expectedStrokeWidthMm": 0.254,
-        "parsedLayer": 1,
-        "parsedLineWidth": 3,
+        "parsedLayer": 3,
+        "parsedLineWidth": 1,
         "partNumber": "C131337",
         "rawLayer": 3,
         "rawLineWidth": 1,
       },
       {
-        "convertedStrokeWidthMm": 0.0762,
+        "convertedStrokeWidthMm": 0.254,
         "expectedStrokeWidthMm": 0.254,
-        "parsedLayer": 1,
-        "parsedLineWidth": 3,
+        "parsedLayer": 3,
+        "parsedLineWidth": 1,
         "partNumber": "C49234237",
         "rawLayer": 3,
         "rawLineWidth": 1,
       },
       {
-        "convertedStrokeWidthMm": 0.0762,
+        "convertedStrokeWidthMm": 0.254,
         "expectedStrokeWidthMm": 0.254,
-        "parsedLayer": 1,
-        "parsedLineWidth": 3,
+        "parsedLayer": 3,
+        "parsedLineWidth": 1,
         "partNumber": "C2943786",
         "rawLayer": 3,
         "rawLineWidth": 1,
@@ -116,7 +116,7 @@ it("reproduces reversed package RECT layer and line-width fields with incorrect 
   const result = await convertBetterEasyToTsx({
     betterEasy: c3178291BetterEasy,
   })
-  expect(result).toContain('strokeWidth="0.0762mm"')
+  expect(result).toContain('strokeWidth="0.0999998mm"')
 
   const generatedCircuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),

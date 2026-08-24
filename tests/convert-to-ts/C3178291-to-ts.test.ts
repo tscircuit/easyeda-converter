@@ -69,7 +69,7 @@ it("should convert C3178291 into typescript file", async () => {
     <smtpad portHints={["pin2"]} pcbX="0.768096mm" pcbY="-0.799846mm" width="0.508mm" height="0.508mm" shape="rect" />
     <smtpad portHints={["pin3"]} pcbX="-0.032004mm" pcbY="-0.799846mm" width="0.508mm" height="0.508mm" shape="rect" />
     <silkscreencircle pcbX="1.74625mm" pcbY="-1.651mm" radius="0.127mm" />
-    <silkscreenrect pcbX="0mm" pcbY="0mm" width="4.3815mm" height="2.54mm" strokeWidth="0.0762mm" />
+    <silkscreenrect pcbX="0mm" pcbY="0mm" width="4.3815mm" height="2.54mm" strokeWidth="0.0999998mm" />
     <silkscreentext text="{NAME}" pcbX="-0.04445mm" pcbY="2.2827mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-2.542349999999942,"y":1.532699999999977},{"x":2.4534499999999753,"y":1.532699999999977},{"x":2.4534499999999753,"y":-2.0153000000000247},{"x":-2.542349999999942,"y":-2.0153000000000247},{"x":-2.542349999999942,"y":1.532699999999977}]} />
           </footprint>}

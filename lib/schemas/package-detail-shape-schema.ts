@@ -330,7 +330,7 @@ export const ShapeItemSchema = z
         return SVGNodeSchema.parse({ type: "SVGNODE", svgData })
       }
       case "RECT": {
-        const [x, y, width, height, lineWidth, id, rotation, layer, fillStyle] =
+        const [x, y, width, height, layer, id, rotation, lineWidth, fillStyle] =
           shape.data.split("~")
         const r = rotation ? Number(rotation) : undefined
         return RectSchema.parse({

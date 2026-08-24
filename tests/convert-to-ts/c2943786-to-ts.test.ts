@@ -1179,7 +1179,7 @@ it("should import C2943786 into a snapshotted typescript component", async () =>
     <smtpad portHints={["pin564"]} pcbX="6.204839mm" pcbY="-4.21005mm" radius="0.1099947mm" shape="circle" />
     <smtpad portHints={["pin565"]} pcbX="1.004951mm" pcbY="-4.21005mm" radius="0.1099947mm" shape="circle" />
     <silkscreencircle pcbX="-8.300085mm" pcbY="6.885178mm" radius="0.199898mm" />
-    <silkscreenrect pcbX="0mm" pcbY="0mm" width="15.599918mm" height="14.45006mm" strokeWidth="0.0762mm" />
+    <silkscreenrect pcbX="0mm" pcbY="0mm" width="15.599918mm" height="14.45006mm" strokeWidth="0.254mm" />
     <silkscreentext text="{NAME}" pcbX="-0.354457mm" pcbY="8.247128mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-8.757856999999944,"y":7.4971279999998615},{"x":8.048943000000008,"y":7.4971279999998615},{"x":8.048943000000008,"y":-7.48087200000009},{"x":-8.757856999999944,"y":-7.48087200000009},{"x":-8.757856999999944,"y":7.4971279999998615}]} />
           </footprint>}

@@ -14,7 +14,7 @@ it("renders a payload with issue #464 variants", async () => {
   const payload: any = structuredClone(C113367EasyEdaJson)
   payload.lcsc.price = String(payload.lcsc.price)
   payload.packageDetail.dataStr.shape.push(
-    "RECT~3990~2990~10~10~1~variant-rect~0~3",
+    "RECT~3990~2990~10~10~3~variant-rect~0~1",
   )
   payload.dataStr.shape.push(
     "AR~part_arrowhead~270~460~gge70468~0~M 270 460 L 255 467.5 L 258.75 460 L 255 452.5 Z ~#FF00FF~0~3~15",
