@@ -80,11 +80,11 @@ it("should convert C75749 into typescript file", async () => {
               <port name="pin11" pinNumber={11} aliases={["MH2"]} direction="up" schX={-0.4} schY={0.7} schStemLength={0.4} />
               <port name="pin10" pinNumber={10} aliases={["MH1"]} direction="up" schX={0.4} schY={0.7} schStemLength={0.4} />
               <schematicpath points={[{"x":0.8,"y":0.3},{"x":-0.8,"y":0.3}]} strokeColor="#880000" />
-              <schematicpath svgPath="M -0.8 0.3 A 0.1 0.1 0 0 1 -0.896126 0.227564" strokeColor="#880000" />
+              <schematicarc center={{ x: -0.8, y: 0.2 }} radius={0.1} startAngleDegrees={90.000054} endAngleDegrees={163.999842} direction="counterclockwise" strokeWidth={0.02} color="#880000" />
               <schematicpath points={[{"x":-0.94,"y":-0.3},{"x":-0.8,"y":-0.3}]} strokeColor="#880000" />
               <schematicpath svgPath="M -0.995732 -0.190366 A 0.06 0.08 0 0 1 -0.933048 -0.299462" strokeColor="#880000" />
               <schematicpath points={[{"x":-0.9,"y":0.22},{"x":-1,"y":-0.2}]} strokeColor="#880000" />
-              <schematicpath svgPath="M 0.896592 0.225882 A 0.1 0.1 0 0 1 0.8 0.3" strokeColor="#880000" />
+              <schematicarc center={{ x: 0.799999, y: 0.2 }} radius={0.1} startAngleDegrees={15.000057} endAngleDegrees={89.999681} direction="counterclockwise" strokeWidth={0.02} color="#880000" />
               <schematicpath points={[{"x":0.94,"y":-0.3},{"x":0.8,"y":-0.3}]} strokeColor="#880000" />
               <schematicpath svgPath="M 0.933048 -0.299462 A 0.06 0.08 0 0 1 0.995732 -0.190366" strokeColor="#880000" />
               <schematicpath points={[{"x":0.9,"y":0.22},{"x":1,"y":-0.2}]} strokeColor="#880000" />

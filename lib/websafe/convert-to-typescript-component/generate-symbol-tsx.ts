@@ -28,6 +28,107 @@ const getPointTransformer =
 
 const formatNumber = (value: number): string => String(round(value))
 
+interface SvgArcCenterParameters {
+  center: Point
+  radiusX: number
+  radiusY: number
+  startAngleDegrees: number
+  endAngleDegrees: number
+}
+
+/**
+ * Convert SVG's endpoint arc representation to center parameters. EasyEDA
+ * stores schematic arcs as SVG paths, while tscircuit's schematicarc primitive
+ * needs a center, radius, and start/end angles.
+ */
+const getSvgArcCenterParameters = (
+  shape: Extract<SingleLetterShape, { type: "ARC" }>,
+): SvgArcCenterParameters | undefined => {
+  const { start, end, xAxisRotation, largeArcFlag, sweepFlag } = shape
+  let radiusX = Math.abs(shape.radiusX)
+  let radiusY = Math.abs(shape.radiusY)
+
+  if (
+    radiusX === 0 ||
+    radiusY === 0 ||
+    (start.x === end.x && start.y === end.y)
+  ) {
+    return undefined
+  }
+
+  const rotationRadians = (xAxisRotation * Math.PI) / 180
+  const cosRotation = Math.cos(rotationRadians)
+  const sinRotation = Math.sin(rotationRadians)
+  const halfDeltaX = (start.x - end.x) / 2
+  const halfDeltaY = (start.y - end.y) / 2
+  const transformedStartX = cosRotation * halfDeltaX + sinRotation * halfDeltaY
+  const transformedStartY = -sinRotation * halfDeltaX + cosRotation * halfDeltaY
+
+  // SVG scales radii that are too small to reach both endpoints.
+  const radiiScale = Math.sqrt(
+    transformedStartX ** 2 / radiusX ** 2 +
+      transformedStartY ** 2 / radiusY ** 2,
+  )
+  if (radiiScale > 1) {
+    radiusX *= radiiScale
+    radiusY *= radiiScale
+  }
+
+  const radiusXSquared = radiusX ** 2
+  const radiusYSquared = radiusY ** 2
+  const transformedStartXSquared = transformedStartX ** 2
+  const transformedStartYSquared = transformedStartY ** 2
+  const centerDenominator =
+    radiusXSquared * transformedStartYSquared +
+    radiusYSquared * transformedStartXSquared
+  if (centerDenominator === 0) return undefined
+
+  const centerNumerator = Math.max(
+    0,
+    (radiusXSquared * radiusYSquared -
+      radiusXSquared * transformedStartYSquared -
+      radiusYSquared * transformedStartXSquared) /
+      centerDenominator,
+  )
+  const centerSign = largeArcFlag === sweepFlag ? -1 : 1
+  const centerScale = centerSign * Math.sqrt(centerNumerator)
+  const transformedCenterX =
+    centerScale * ((radiusX * transformedStartY) / radiusY)
+  const transformedCenterY =
+    centerScale * (-(radiusY * transformedStartX) / radiusX)
+  const center = {
+    x:
+      cosRotation * transformedCenterX -
+      sinRotation * transformedCenterY +
+      (start.x + end.x) / 2,
+    y:
+      sinRotation * transformedCenterX +
+      cosRotation * transformedCenterY +
+      (start.y + end.y) / 2,
+  }
+
+  const startAngleDegrees =
+    (Math.atan2(start.y - center.y, start.x - center.x) * 180) / Math.PI
+  let endAngleDegrees =
+    (Math.atan2(end.y - center.y, end.x - center.x) * 180) / Math.PI
+
+  // Preserve the intended SVG sweep before flipping EasyEDA's Y-down
+  // coordinates into tscircuit's Y-up schematic space.
+  if (sweepFlag && endAngleDegrees <= startAngleDegrees) {
+    endAngleDegrees += 360
+  } else if (!sweepFlag && endAngleDegrees >= startAngleDegrees) {
+    endAngleDegrees -= 360
+  }
+
+  return {
+    center,
+    radiusX,
+    radiusY,
+    startAngleDegrees: -startAngleDegrees,
+    endAngleDegrees: -endAngleDegrees,
+  }
+}
+
 const SVG_PATH_COMMAND_PARAMETER_COUNTS: Record<string, number> = {
   A: 7,
   C: 6,
@@ -375,6 +476,19 @@ const generateShapeTsx = ({
   }
 
   if (shape.type === "ARC") {
+    const arc = getSvgArcCenterParameters(shape)
+    const isNearlyCircular =
+      arc &&
+      Math.abs(arc.radiusX - arc.radiusY) /
+        Math.max(arc.radiusX, arc.radiusY) <=
+        0.05
+
+    if (arc && isNearlyCircular) {
+      const center = transformPoint(arc.center)
+      const radius = toSchematicUnits((arc.radiusX + arc.radiusY) / 2)
+      return `<schematicarc center={{ x: ${center.x}, y: ${center.y} }} radius={${radius}} startAngleDegrees={${round(arc.startAngleDegrees)}} endAngleDegrees={${round(arc.endAngleDegrees)}} direction=${JSON.stringify(shape.sweepFlag ? "clockwise" : "counterclockwise")} strokeWidth={${toSchematicUnits(shape.lineWidth)}} color=${JSON.stringify(shape.color)} />`
+    }
+
     const transformedPath = transformSvgPath(shape.pathData, origin)
     if (!transformedPath) return undefined
     return `<schematicpath svgPath=${JSON.stringify(transformedPath)} strokeColor=${JSON.stringify(shape.color)} />`

@@ -1,6 +1,6 @@
-import { z } from "zod"
 import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
 import { normalizeActiveLowPinLabel } from "lib/utils/normalize-pin-labels"
+import { z } from "zod"
 
 /**
  I'll break down the elements in the `dataStr.head.shape` array and explain what they represent. This array contains instructions for drawing the schematic symbol of the component.
@@ -143,6 +143,10 @@ const ArcShapeOutputSchema = z.object({
   start: PointSchema,
   end: PointSchema,
   radius: z.number(),
+  radiusX: z.number(),
+  radiusY: z.number(),
+  xAxisRotation: z.number(),
+  largeArcFlag: z.boolean(),
   sweepFlag: z.boolean(),
   color: z.string(),
   lineWidth: z.number(),
@@ -161,8 +165,17 @@ const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
     []
 
   // Handle potential NaN values by defaulting to 0
-  const [x1 = 0, y1 = 0, radius = 0, , , , sweepFlag = 0, x2 = 0, y2 = 0] =
-    numbers
+  const [
+    x1 = 0,
+    y1 = 0,
+    radiusX = 0,
+    radiusY = 0,
+    xAxisRotation = 0,
+    largeArcFlag = 0,
+    sweepFlag = 0,
+    x2 = 0,
+    y2 = 0,
+  ] = numbers
 
   // Handle empty or invalid line width
   const parsedLineWidth = Number(lineWidth)
@@ -173,7 +186,13 @@ const parseArc = (str: string): z.infer<typeof ArcShapeOutputSchema> => {
     pathData,
     start: { x: x1, y: y1 },
     end: { x: x2, y: y2 },
-    radius,
+    // Preserve radius for consumers of the previous parsed shape while also
+    // exposing the complete SVG arc geometry needed by schematicarc.
+    radius: radiusX,
+    radiusX,
+    radiusY,
+    xAxisRotation,
+    largeArcFlag: largeArcFlag === 1,
     sweepFlag: sweepFlag === 1,
     color,
     lineWidth: finalLineWidth,

@@ -42,10 +42,10 @@ it("should include both obj and step cad model urls", async () => {
             <symbol>
               <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
               <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
-              <schematicpath svgPath="M -0.3376 0.0014 A 0.08 0.078 0 1 0 -0.1784 0.0012" strokeColor="#880000" />
-              <schematicpath svgPath="M -0.168 0.0014 A 0.08 0.078 0 1 0 -0.0088 0.0014" strokeColor="#880000" />
-              <schematicpath svgPath="M 0.0014 0.0014 A 0.08 0.078 0 1 0 0.1606 0.0014" strokeColor="#880000" />
-              <schematicpath svgPath="M 0.174 0.0014 A 0.08 0.078 0 1 0 0.3334 0.0012" strokeColor="#880000" />
+              <schematicarc center={{ x: -0.25799, y: 0.00909 }} radius={0.079} startAngleDegrees={-174.482889} endAngleDegrees={-365.661141} direction="clockwise" strokeWidth={0.02} color="#880000" />
+              <schematicarc center={{ x: -0.0884, y: 0.00919 }} radius={0.079} startAngleDegrees={-174.410412} endAngleDegrees={-365.589588} direction="clockwise" strokeWidth={0.02} color="#880000" />
+              <schematicarc center={{ x: 0.081, y: 0.00919 }} radius={0.079} startAngleDegrees={-174.410412} endAngleDegrees={-365.589588} direction="clockwise" strokeWidth={0.02} color="#880000" />
+              <schematicarc center={{ x: 0.253709, y: 0.008048 }} radius={0.079} startAngleDegrees={-175.232427} endAngleDegrees={-364.911405} direction="clockwise" strokeWidth={0.02} color="#880000" />
             </symbol>
           }
           supplierPartNumbers={{

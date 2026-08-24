@@ -1,4 +1,4 @@
-import { it, expect } from "bun:test"
+import { expect, it } from "bun:test"
 import { SingleLetterShapeSchema } from "lib/schemas/single-letter-shape-schema"
 
 const examples = [
@@ -15,7 +15,7 @@ const examples = [
 ]
 
 it("parses examples for single letter shape schema", () => {
-  examples.forEach((example) => {
+  for (const example of examples) {
     expect(() => {
       try {
         SingleLetterShapeSchema.parse(example)
@@ -26,7 +26,7 @@ it("parses examples for single letter shape schema", () => {
         )
       }
     }).not.toThrow()
-  })
+  }
 })
 
 it("normalizes literal undefined optional text fields from EasyEDA text shapes", () => {
@@ -105,6 +105,10 @@ it("parses schematic drawing colors, paths, and pin stems", () => {
     pathData: "M 400 194 A 4 4 0 1 1 400 186",
     start: { x: 400, y: 194 },
     end: { x: 400, y: 186 },
+    radiusX: 4,
+    radiusY: 4,
+    xAxisRotation: 0,
+    largeArcFlag: true,
     color: "#880000",
     lineWidth: 1,
     sweepFlag: true,
