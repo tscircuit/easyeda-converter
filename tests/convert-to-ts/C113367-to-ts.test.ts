@@ -53,6 +53,7 @@ it("should convert C113367 into typescript file", async () => {
           pinAttributes={pinAttributes}
           symbol={
             <symbol>
+              <schematictext schX={-0.822} schY={0.852} text="{NAME}" fontSize={0.18} anchor="left" color="#006464" />
               <schematicpath points={[{"x":-0.4,"y":-0.5},{"x":0.4,"y":-0.1},{"x":-0.4,"y":0.3},{"x":-0.4,"y":-0.5}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.32,"y":0.1},{"x":-0.2,"y":0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.32,"y":-0.3},{"x":-0.2,"y":-0.3}]} strokeColor="#880000" />
