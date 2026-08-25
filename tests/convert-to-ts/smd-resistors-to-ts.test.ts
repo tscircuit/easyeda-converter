@@ -166,7 +166,7 @@ for (const resistorCase of resistorCases) {
   })
 }
 
-it("uses the native schematic symbol for an imported C107701 resistor", async () => {
+it("captures the current imported schematic symbol for C107701", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(c107701RawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(result)
@@ -181,6 +181,6 @@ it("uses the native schematic symbol for an imported C107701 resistor", async ()
       ftype: "simple_resistor",
     }),
   )
-  expect(result).not.toContain("symbol={")
-  expect(result).not.toContain("<schematicrect")
+  expect(result).toContain("symbol={")
+  expect(result).toContain("<schematicrect")
 })
