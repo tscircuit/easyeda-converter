@@ -1,4 +1,5 @@
 import { expect, it } from "bun:test"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
@@ -88,4 +89,23 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
   expect(
     circuitJson.filter((element) => element.type.endsWith("_error")),
   ).toHaveLength(0)
+})
+
+it("uses the native schematic symbol for an imported C1525 capacitor", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(capacitorRawEasy)
+  const result = await convertBetterEasyToTsx({ betterEasy })
+  const circuitJson = await runTscircuitCode(result)
+
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C1525-imported-capacitor-schematic",
+  )
+  expect(circuitJson).toContainEqual(
+    expect.objectContaining({
+      type: "source_component",
+      ftype: "simple_capacitor",
+    }),
+  )
+  expect(result).not.toContain("symbol={")
+  expect(result).not.toContain("<schematicpath")
 })
