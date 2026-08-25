@@ -1,4 +1,5 @@
 import { expect, it } from "bun:test"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
@@ -150,3 +151,22 @@ for (const resistorCase of resistorCases) {
     ).toHaveLength(0)
   })
 }
+
+it("uses the native schematic symbol for an imported C107701 resistor", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(c107701RawEasy)
+  const result = await convertBetterEasyToTsx({ betterEasy })
+  const circuitJson = await runTscircuitCode(result)
+
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C107701-imported-resistor-schematic",
+  )
+  expect(circuitJson).toContainEqual(
+    expect.objectContaining({
+      type: "source_component",
+      ftype: "simple_resistor",
+    }),
+  )
+  expect(result).not.toContain("symbol={")
+  expect(result).not.toContain("<schematicrect")
+})
