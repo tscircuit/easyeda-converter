@@ -1,4 +1,5 @@
 import { expect, it } from "bun:test"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
@@ -40,10 +41,10 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
   expect(result).toContain('capacitance="100nF"')
   expect(result).not.toContain("<chip")
   expect(result).not.toContain("ChipProps")
-  expect(result).toContain("symbol={")
-  expect(result).toContain("<symbol>")
-  expect(result).toContain("<schematicpath")
-  expect(result.match(/<port /g)).toHaveLength(2)
+  expect(result).not.toContain("symbol={")
+  expect(result).not.toContain("<symbol>")
+  expect(result).not.toContain("<schematicpath")
+  expect(result).not.toContain("<port ")
   expect(result).toContain('manufacturerPartNumber="CL05B104KO5NNNC"')
   expect(result).toContain('"C1525"')
   expect(result.match(/<smtpad /g)).toHaveLength(2)
@@ -66,26 +67,87 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
       supplier_part_numbers: { jlcpcb: ["C1525"] },
     }),
   )
-  const importedSourcePorts = circuitJson
-    .filter((element) => element.type === "source_port")
-    // Older core versions also create the passive's two native ports. The
-    // explicit symbol ports are appended after them.
-    .slice(-2)
-  const importedSourcePortIds = new Set(
-    importedSourcePorts.map((port) => port.source_port_id),
+  const sourcePorts = circuitJson.filter(
+    (element) => element.type === "source_port",
   )
-  expect(importedSourcePorts).toHaveLength(2)
+  const sourcePortIds = new Set(sourcePorts.map((port) => port.source_port_id))
+  expect(sourcePorts).toHaveLength(2)
+  expect(sourcePorts).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        name: "pin1",
+        pin_number: 1,
+        port_hints: expect.arrayContaining(["pin1", "1"]),
+      }),
+      expect.objectContaining({
+        name: "pin2",
+        pin_number: 2,
+        port_hints: expect.arrayContaining(["pin2", "2"]),
+      }),
+    ]),
+  )
   expect(
     circuitJson.filter(
       (element) =>
         element.type === "schematic_port" &&
-        importedSourcePortIds.has(element.source_port_id),
+        sourcePortIds.has(element.source_port_id),
     ),
   ).toHaveLength(2)
-  expect(
-    circuitJson.filter((element) => element.type === "pcb_smtpad"),
-  ).toHaveLength(2)
+  const pcbSmtPads = circuitJson.filter(
+    (element) => element.type === "pcb_smtpad",
+  )
+  expect(pcbSmtPads).toHaveLength(2)
+  expect(new Set(pcbSmtPads.map((pad) => pad.pcb_port_id)).size).toBe(2)
   expect(
     circuitJson.filter((element) => element.type.endsWith("_error")),
   ).toHaveLength(0)
+})
+
+it("uses the native schematic symbol for an imported C1525 capacitor", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(capacitorRawEasy)
+  const result = await convertBetterEasyToTsx({ betterEasy })
+  const circuitJson = await runTscircuitCode(result)
+
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C1525-imported-capacitor-schematic",
+  )
+  expect(circuitJson).toContainEqual(
+    expect.objectContaining({
+      type: "source_component",
+      ftype: "simple_capacitor",
+    }),
+  )
+  expect(result).not.toContain("symbol={")
+  expect(result).not.toContain("<schematicpath")
+})
+
+it("preserves imported capacitor polarity with the native symbol", async () => {
+  const betterEasy = EasyEdaJsonSchema.parse(capacitorRawEasy)
+  for (const pin of betterEasy.dataStr.shape.filter(
+    (shape) => shape.type === "PIN",
+  )) {
+    pin.label = pin.pinNumber === 1 ? "+" : "-"
+  }
+
+  const result = await convertBetterEasyToTsx({ betterEasy })
+  const circuitJson = await runTscircuitCode(result)
+
+  expect(result).toContain("const pinLabels = {")
+  expect(result).toContain("pinLabels={pinLabels}")
+  expect(result).toContain("      polarized")
+  expect(result).not.toContain("symbol={")
+  expect(circuitJson).toContainEqual(
+    expect.objectContaining({
+      type: "source_component",
+      ftype: "simple_capacitor",
+      are_pins_interchangeable: false,
+    }),
+  )
+  expect(circuitJson).toContainEqual(
+    expect.objectContaining({
+      type: "schematic_component",
+      symbol_name: "capacitor_polarized_right",
+    }),
+  )
 })
