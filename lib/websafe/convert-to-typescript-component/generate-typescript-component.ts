@@ -117,6 +117,20 @@ ${polarizedPinLabelsString}
     ? `      pinLabels={pinLabels}
 `
     : ""
+  const isPolarizedCapacitor =
+    componentType === "capacitor" &&
+    circuitJson.filter((item) => item.type === "source_port").length === 2 &&
+    polarizedPinMetadata !== undefined
+  const capacitorPolarizedPinLabelsBlock = isPolarizedCapacitor
+    ? polarizedPinLabelsBlock
+    : ""
+  const capacitorPolarizedPinLabelsProp = isPolarizedCapacitor
+    ? polarizedPinLabelsProp
+    : ""
+  const polarizedProp = isPolarizedCapacitor
+    ? `      polarized
+`
+    : ""
   const symbolProp = symbolTsx
     ? `      symbol={
 ${symbolTsx
@@ -275,6 +289,7 @@ ${cadModelLines}
     return `
 import type { CapacitorProps } from "@tscircuit/props"
 
+${capacitorPolarizedPinLabelsBlock}\
 export const ${componentName} = (props: Omit<CapacitorProps, "capacitance">) => {
   const { name = "C1", ...restProps } = props
 
@@ -282,6 +297,8 @@ export const ${componentName} = (props: Omit<CapacitorProps, "capacitance">) => 
     <capacitor
       name={name}
       capacitance=${JSON.stringify(capacitance)}
+${capacitorPolarizedPinLabelsProp}\
+${polarizedProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
