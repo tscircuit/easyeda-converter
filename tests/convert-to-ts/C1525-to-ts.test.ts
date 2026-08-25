@@ -103,7 +103,7 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
   ).toHaveLength(0)
 })
 
-it("captures the current imported schematic symbol for C1525", async () => {
+it("uses the native schematic symbol for an imported C1525 capacitor", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(capacitorRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(result)
@@ -118,8 +118,8 @@ it("captures the current imported schematic symbol for C1525", async () => {
       ftype: "simple_capacitor",
     }),
   )
-  expect(result).toContain("symbol={")
-  expect(result).toContain("<schematicpath")
+  expect(result).not.toContain("symbol={")
+  expect(result).not.toContain("<schematicpath")
 })
 
 it("preserves imported capacitor polarity with the native symbol", async () => {
