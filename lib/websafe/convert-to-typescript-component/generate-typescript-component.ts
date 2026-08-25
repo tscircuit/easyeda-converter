@@ -32,6 +32,7 @@ interface Params {
   crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
   schPinArrangement?: ChipProps["schPinArrangement"]
+  useSymbolPortsOnly?: boolean
 }
 
 export const generateTypescriptComponent = ({
@@ -50,6 +51,7 @@ export const generateTypescriptComponent = ({
   crystalPinVariant,
   symbolTsx,
   schPinArrangement,
+  useSymbolPortsOnly = false,
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
@@ -437,7 +439,7 @@ ${pinAttributesBlock}\
 export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
   return (
     <chip
-      pinLabels={pinLabels}
+${useSymbolPortsOnly ? "" : "      pinLabels={pinLabels}\n"}\
 ${pinAttributesProp}\
 ${symbolProp}\
 ${schPinArrangementProp}\
