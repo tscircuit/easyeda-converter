@@ -188,8 +188,7 @@ export const convertBetterEasyToTsx = async ({
     isDiodeCategoryComponent(betterEasy) && sourcePorts.length !== 2
   const isMultiPinInductor =
     isInductorComponent(betterEasy) && sourcePorts.length !== 2
-  const isPassiveWithCustomSymbol =
-    componentType === "capacitor" || componentType === "resistor"
+  const isPassiveWithCustomSymbol = componentType === "capacitor"
   const symbolTsx =
     isPassiveWithCustomSymbol ||
     (componentType === "chip" &&
