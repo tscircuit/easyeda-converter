@@ -25,12 +25,12 @@ it("should convert C2886621 into typescript file", async () => {
     const pinLabels = {
       pin1: ["TRIOUT"],
       pin2: ["SINEIN_POS"],
-      pin3: ["pin3"],
+      pin3: ["SINEIN_NEG"],
       pin4: ["AUX1IN"],
       pin5: ["AUX2IN"],
       pin6: ["HFTRACK"],
       pin7: ["EXPOFREQ"],
-      pin8: ["pin8"],
+      pin8: ["V_NEG"],
       pin9: ["TRIMIX"],
       pin10: ["SAWMIX"],
       pin11: ["PULSEMIX"],
@@ -53,7 +53,7 @@ it("should convert C2886621 into typescript file", async () => {
       pin28: ["SQUAREOUT"],
       pin29: ["SAWOUT"],
       pin30: ["PULSEOUT"],
-      pin31: ["pin31"],
+      pin31: ["PWMIN_NEG"],
       pin32: ["PWMIN_POS"],
       pin33: ["EP"]
     } as const
