@@ -358,7 +358,7 @@ const generateShapeTsx = ({
 
   if (shape.type === "ELLIPSE") {
     const center = transformPoint(shape.center)
-    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toSchematicUnits(Math.max(shape.radiusX, shape.radiusY))}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    return `<schematiccircle center={{ x: ${center.x}, y: ${center.y} }} radius={${toSchematicUnits(Math.max(shape.radiusX, shape.radiusY))}} strokeWidth={${toSchematicUnits(shape.lineWidth)}} color=${JSON.stringify(shape.color)}${shape.fillColor && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "POLYLINE" || shape.type === "POLYGON") {

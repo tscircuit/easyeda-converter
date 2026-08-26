@@ -42,7 +42,7 @@ it("should convert C5830143 into typescript file", async () => {
           symbol={
             <symbol>
               <port name="pin2" pinNumber={2} aliases={["2"]} direction="up" schX={0} schY={0.22} schStemLength={0.2} />
-              <schematiccircle center={{ x: 0.22, y: -0.12 }} radius={0.02} color="#A00000" />
+              <schematiccircle center={{ x: 0.22, y: -0.12 }} radius={0.02} strokeWidth={0.02} color="#A00000" />
               <schematicpath points={[{"x":-0.04,"y":0.02},{"x":0,"y":-0.06},{"x":0.04,"y":0.02},{"x":-0.04,"y":0.02}]} strokeColor="#880000" />
               <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={0.4} schY={-0.18} schStemLength={0.2} />
               <port name="pin3" pinNumber={3} aliases={["3"]} direction="left" schX={-0.4} schY={-0.18} schStemLength={0.2} />

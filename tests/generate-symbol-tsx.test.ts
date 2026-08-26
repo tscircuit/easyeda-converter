@@ -27,7 +27,7 @@ test("generates a centered symbol with positioned, aliased ports", () => {
     "<schematicrect schX={0} schY={0} width={1.4} height={1} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
-    "<schematiccircle center={{ x: -0.6, y: 0.4 }} radius={0.03}",
+    "<schematiccircle center={{ x: -0.6, y: 0.4 }} radius={0.03} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
     '<port name="pin1" pinNumber={1} aliases={["GND"]} direction="left" schX={-0.9} schY={0.3} schStemLength={0.2} />',
