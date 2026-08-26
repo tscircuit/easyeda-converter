@@ -80,14 +80,20 @@ test("maps duplicate EasyEDA symbol pin numbers to unused footprint ports", () =
   expect(symbolTsx.match(/name="pin8"/g)).toHaveLength(1)
 })
 
-test("reduces only colliding custom-symbol pin labels", () => {
+test("preserves EasyEDA pin-label width when normalization expands text", () => {
   const symbolTsx = generateSymbolFromRawEasy(duplicateSymbolPinRawEasy)
 
   expect(symbolTsx).toContain(
-    '<port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} schPinLabelFontSize={0.08} />',
+    '<port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} schPinLabelFontSize={0.069231} />',
   )
   expect(symbolTsx).toContain(
     '<port name="pin1" pinNumber={1} aliases={["N_SD"]} direction="left" schX={-0.8} schY={0.5} schStemLength={0.4} />',
+  )
+  expect(symbolTsx).toContain(
+    '<port name="pin6" pinNumber={6} aliases={["VDD"]} direction="up" schX={0} schY={0.7} schStemLength={0.4} />',
+  )
+  expect(symbolTsx).toContain(
+    '<port name="pin5" pinNumber={5} aliases={["VO_POS"]} direction="right" schX={0.8} schY={-0.1} schStemLength={0.4} schPinLabelFontSize={0.075} />',
   )
   expect(symbolTsx).toContain(
     '<schematicpath points={[{"x":-0.4,"y":-0.5},{"x":0.4,"y":-0.1},{"x":-0.4,"y":0.3},{"x":-0.4,"y":-0.5}]}',
@@ -97,7 +103,7 @@ test("reduces only colliding custom-symbol pin labels", () => {
   )
 })
 
-test("does not add pin-label overrides to symbols without collisions", () => {
+test("does not add pin-label overrides when EasyEDA labels are not expanded", () => {
   const symbolTsx = generateSymbolFromRawEasy(ne555RawEasy)
 
   expect(symbolTsx).not.toContain("schPinLabelFontSize")
