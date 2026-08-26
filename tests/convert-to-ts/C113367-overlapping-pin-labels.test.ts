@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C113367.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("emits pin-label size overrides for the C113367 custom symbol", async () => {
+it("preserves the original pin labels for the C113367 custom symbol", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(
@@ -14,9 +14,12 @@ it("emits pin-label size overrides for the C113367 custom symbol", async () => {
   )
   const schematicSvg = convertCircuitJsonToSchematicSvg(circuitJson)
 
-  expect(result).toContain("schPinLabelFontSize")
-  expect(schematicSvg).toContain("IN_NEG")
-  expect(schematicSvg).toContain("VO_POS")
+  expect(result).toContain('aliases={["IN-","IN_NEG"]}')
+  expect(result).toContain('aliases={["VO+","VO_POS"]}')
+  expect(result).not.toContain("schPinLabelFontSize")
+  expect(schematicSvg).toContain("IN-")
+  expect(schematicSvg).toContain("VO+")
+  expect(schematicSvg).not.toContain("IN_NEG")
   expect(schematicSvg).toMatchSvgSnapshot(
     import.meta.path,
     "C113367-overlapping-pin-labels",

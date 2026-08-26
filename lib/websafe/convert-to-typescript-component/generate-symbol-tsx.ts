@@ -253,38 +253,6 @@ interface PortMetadata {
   name: string
   pinNumber?: number
   aliases: string[]
-  schPinLabelFontSize?: number
-}
-
-const DEFAULT_PIN_LABEL_FONT_SIZE = 0.15
-const DEFAULT_NEGATED_PIN_LABEL_FONT_SIZE = 0.12
-const getLabelWidthUnits = (label: string): number =>
-  [...label].reduce((width, character) => {
-    if (/[1Iil|]/.test(character)) return width + 0.4
-    if (/[MW@%]/.test(character)) return width + 1
-    return width + 0.7
-  }, 0)
-
-const getPinLabelFontSizeFromEasyEdaLabel = ({
-  originalLabel,
-  normalizedLabel,
-}: {
-  originalLabel: string
-  normalizedLabel: string
-}): number | undefined => {
-  const isNegated = normalizedLabel.startsWith("N_")
-  const displayedNormalizedLabel = isNegated
-    ? normalizedLabel.slice(2)
-    : normalizedLabel
-  const displayedOriginalLabel = originalLabel.replace(/#$/, "")
-  const originalWidth = getLabelWidthUnits(displayedOriginalLabel)
-  const normalizedWidth = getLabelWidthUnits(displayedNormalizedLabel)
-  if (originalWidth === 0 || normalizedWidth <= originalWidth) return undefined
-
-  const defaultFontSize = isNegated
-    ? DEFAULT_NEGATED_PIN_LABEL_FONT_SIZE
-    : DEFAULT_PIN_LABEL_FONT_SIZE
-  return round(defaultFontSize * (originalWidth / normalizedWidth))
 }
 
 const getPortMetadataByShapeId = (
@@ -354,26 +322,20 @@ const getPortMetadataByShapeId = (
       ? normalizeSymbolName(pin.label)
       : undefined
     const aliases = [
+      pin.originalLabel,
       ...(sourcePort?.port_hints ?? []),
-      ...(normalizedPinLabel ? [normalizedPinLabel] : []),
+      normalizedPinLabel,
     ].filter(
-      (alias, index, aliases) =>
-        alias !== portName && aliases.indexOf(alias) === index,
+      (alias, index, aliases): alias is string =>
+        Boolean(alias) &&
+        alias !== portName &&
+        aliases.indexOf(alias) === index,
     )
 
     metadataByShapeId.set(pin.id, {
       name: portName,
       pinNumber: sourcePort?.pin_number,
       aliases,
-      schPinLabelFontSize:
-        pin.originalLabel &&
-        normalizedPinLabel &&
-        aliases[0] === normalizedPinLabel
-          ? getPinLabelFontSizeFromEasyEdaLabel({
-              originalLabel: pin.originalLabel,
-              normalizedLabel: aliases[0],
-            })
-          : undefined,
     })
   })
 
@@ -451,11 +413,7 @@ const generateShapeTsx = ({
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
-    const pinLabelFontSizeProp =
-      portMetadata.schPinLabelFontSize === undefined
-        ? ""
-        : ` schPinLabelFontSize={${portMetadata.schPinLabelFontSize}}`
-    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp}${pinLabelFontSizeProp} />`
+    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
   }
 
   // AR arrowheads and I image annotations are intentionally ignored by the

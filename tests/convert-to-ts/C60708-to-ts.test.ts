@@ -76,8 +76,8 @@ it("should convert C60708 into typescript file", async () => {
               <port name="pin8" pinNumber={8} aliases={["OE"]} direction="left" schX={-1.2} schY={0.5} schStemLength={0.2} />
               <schematictext schX={-0.9} schY={-0.8} text="1.2-3.6V" fontSize={0.1} anchor="left" color="#000000" schRotation={0} />
               <schematictext schX={0.24} schY={-0.8} text="1.65-5.5V" fontSize={0.1} anchor="left" color="#000000" schRotation={0} />
-              <port name="pin6" pinNumber={6} aliases={["NC1","NC"]} direction="up" schX={-0.8} schY={1.3} schStemLength={0.2} />
-              <port name="pin9" pinNumber={9} aliases={["NC2","NC"]} direction="up" schX={0.8} schY={1.3} schStemLength={0.2} />
+              <port name="pin6" pinNumber={6} aliases={["NC","NC1"]} direction="up" schX={-0.8} schY={1.3} schStemLength={0.2} />
+              <port name="pin9" pinNumber={9} aliases={["NC","NC2"]} direction="up" schX={0.8} schY={1.3} schStemLength={0.2} />
             </symbol>
           }
           supplierPartNumbers={{
