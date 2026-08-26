@@ -80,6 +80,29 @@ test("maps duplicate EasyEDA symbol pin numbers to unused footprint ports", () =
   expect(symbolTsx.match(/name="pin8"/g)).toHaveLength(1)
 })
 
+test("reduces only colliding custom-symbol pin labels", () => {
+  const symbolTsx = generateSymbolFromRawEasy(duplicateSymbolPinRawEasy)
+
+  expect(symbolTsx).toContain(
+    '<port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} schPinLabelFontSize={0.08} />',
+  )
+  expect(symbolTsx).toContain(
+    '<port name="pin1" pinNumber={1} aliases={["N_SD"]} direction="left" schX={-0.8} schY={0.5} schStemLength={0.4} />',
+  )
+  expect(symbolTsx).toContain(
+    '<schematicpath points={[{"x":-0.4,"y":-0.5},{"x":0.4,"y":-0.1},{"x":-0.4,"y":0.3},{"x":-0.4,"y":-0.5}]}',
+  )
+  expect(symbolTsx).toContain(
+    '<schematictext schX={0.72} schY={-0.02} text="+"',
+  )
+})
+
+test("does not add pin-label overrides to symbols without collisions", () => {
+  const symbolTsx = generateSymbolFromRawEasy(ne555RawEasy)
+
+  expect(symbolTsx).not.toContain("schPinLabelFontSize")
+})
+
 test("distinguishes custom symbols from chip box representations", () => {
   expect(hasNonBoxSchematicSymbol(EasyEdaJsonSchema.parse(ne555RawEasy))).toBe(
     false,

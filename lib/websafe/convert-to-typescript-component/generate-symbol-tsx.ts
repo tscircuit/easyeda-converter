@@ -253,6 +253,177 @@ interface PortMetadata {
   name: string
   pinNumber?: number
   aliases: string[]
+  schPinLabelFontSize?: number
+}
+
+const DEFAULT_PIN_LABEL_FONT_SIZE = 0.15
+const DEFAULT_NEGATED_PIN_LABEL_FONT_SIZE = 0.12
+const MIN_PIN_LABEL_FONT_SIZE = 0.08
+const PIN_LABEL_FONT_SIZE_STEP = 0.01
+const PIN_LABEL_DISTANCE_FROM_STEM = 0.1
+const PIN_LABEL_CLEARANCE = 0.05
+
+interface PinLabelLayout {
+  shapeId: string
+  direction: "up" | "down" | "left" | "right"
+  anchor: Point
+  displayLabel: string
+  defaultFontSize: number
+  fontSize: number
+}
+
+interface PinLabelBounds {
+  left: number
+  right: number
+  bottom: number
+  top: number
+}
+
+const getEstimatedLabelWidth = (label: string, fontSize: number): number => {
+  const widthInEms = [...label].reduce((width, character) => {
+    if (/[1Iil|]/.test(character)) return width + 0.4
+    if (/[MW@%]/.test(character)) return width + 1
+    return width + 0.7
+  }, 0)
+  return widthInEms * fontSize
+}
+
+const getPinLabelBounds = (layout: PinLabelLayout): PinLabelBounds => {
+  const width = getEstimatedLabelWidth(layout.displayLabel, layout.fontSize)
+  const height = layout.fontSize
+  const { x, y } = layout.anchor
+
+  if (layout.direction === "left") {
+    return {
+      left: x,
+      right: x + width,
+      bottom: y - height / 2,
+      top: y + height / 2,
+    }
+  }
+  if (layout.direction === "right") {
+    return {
+      left: x - width,
+      right: x,
+      bottom: y - height / 2,
+      top: y + height / 2,
+    }
+  }
+  if (layout.direction === "up") {
+    return {
+      left: x - height / 2,
+      right: x + height / 2,
+      bottom: y - width,
+      top: y,
+    }
+  }
+  return {
+    left: x - height / 2,
+    right: x + height / 2,
+    bottom: y,
+    top: y + width,
+  }
+}
+
+const pinLabelBoundsOverlap = (
+  first: PinLabelBounds,
+  second: PinLabelBounds,
+): boolean =>
+  first.left < second.right + PIN_LABEL_CLEARANCE &&
+  first.right + PIN_LABEL_CLEARANCE > second.left &&
+  first.bottom < second.top + PIN_LABEL_CLEARANCE &&
+  first.top + PIN_LABEL_CLEARANCE > second.bottom
+
+const assignPinLabelFontSizes = ({
+  shapes,
+  origin,
+  portMetadataByShapeId,
+}: {
+  shapes: SingleLetterShape[]
+  origin: Point
+  portMetadataByShapeId: Map<string, PortMetadata>
+}): void => {
+  const transformPoint = getPointTransformer(origin)
+  const layouts: PinLabelLayout[] = shapes.flatMap((shape) => {
+    if (shape.type !== "PIN" || shape.visibility !== "show") return []
+
+    const metadata = portMetadataByShapeId.get(shape.id)
+    const label = metadata?.aliases[0]
+    const stemLength = getPinStemLength(shape.path)
+    if (!metadata || !label || stemLength === undefined) return []
+
+    const direction = getPinDirection(shape.rotation)
+    const outward = getUnitVectorFromDirection(direction)
+    const portPosition = transformPoint({ x: shape.x, y: shape.y })
+    const anchorDistance = stemLength + PIN_LABEL_DISTANCE_FROM_STEM
+    const isNegated = label.startsWith("N_")
+    const displayLabel = isNegated ? label.slice(2) : label
+    const defaultFontSize = isNegated
+      ? DEFAULT_NEGATED_PIN_LABEL_FONT_SIZE
+      : DEFAULT_PIN_LABEL_FONT_SIZE
+    if (
+      getEstimatedLabelWidth(displayLabel, defaultFontSize) <= defaultFontSize
+    )
+      return []
+
+    return [
+      {
+        shapeId: shape.id,
+        direction,
+        anchor: {
+          x: portPosition.x - outward.x * anchorDistance,
+          y: portPosition.y - outward.y * anchorDistance,
+        },
+        displayLabel,
+        defaultFontSize,
+        fontSize: defaultFontSize,
+      },
+    ]
+  })
+
+  const crowdedShapeIds = new Set<string>()
+  while (true) {
+    const collidingShapeIds = new Set<string>()
+    for (let firstIndex = 0; firstIndex < layouts.length; firstIndex += 1) {
+      const first = layouts[firstIndex]!
+      const firstBounds = getPinLabelBounds(first)
+      for (
+        let secondIndex = firstIndex + 1;
+        secondIndex < layouts.length;
+        secondIndex += 1
+      ) {
+        const second = layouts[secondIndex]!
+        if (pinLabelBoundsOverlap(firstBounds, getPinLabelBounds(second))) {
+          collidingShapeIds.add(first.shapeId)
+          collidingShapeIds.add(second.shapeId)
+        }
+      }
+    }
+
+    if (collidingShapeIds.size === 0) break
+    for (const shapeId of collidingShapeIds) crowdedShapeIds.add(shapeId)
+    let reducedAnyLabel = false
+    for (const layout of layouts) {
+      if (
+        !crowdedShapeIds.has(layout.shapeId) ||
+        layout.fontSize <= MIN_PIN_LABEL_FONT_SIZE
+      ) {
+        continue
+      }
+      layout.fontSize = Math.max(
+        MIN_PIN_LABEL_FONT_SIZE,
+        round(layout.fontSize - PIN_LABEL_FONT_SIZE_STEP),
+      )
+      reducedAnyLabel = true
+    }
+    if (!reducedAnyLabel) break
+  }
+
+  for (const layout of layouts) {
+    if (layout.fontSize >= layout.defaultFontSize) continue
+    const metadata = portMetadataByShapeId.get(layout.shapeId)
+    if (metadata) metadata.schPinLabelFontSize = layout.fontSize
+  }
 }
 
 const getPortMetadataByShapeId = (
@@ -406,7 +577,11 @@ const generateShapeTsx = ({
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
-    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    const pinLabelFontSizeProp =
+      portMetadata.schPinLabelFontSize === undefined
+        ? ""
+        : ` schPinLabelFontSize={${portMetadata.schPinLabelFontSize}}`
+    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp}${pinLabelFontSizeProp} />`
   }
 
   // AR arrowheads and I image annotations are intentionally ignored by the
@@ -447,6 +622,7 @@ export const generateSymbolTsx = (
     easyEdaJson,
     circuitJson,
   )
+  assignPinLabelFontSizes({ shapes, origin, portMetadataByShapeId })
   const transformPoint = getPointTransformer(origin)
   const drawingEndpoints = alignPortsToDrawing
     ? getOpenPolylineEndpoints(shapes, transformPoint)
