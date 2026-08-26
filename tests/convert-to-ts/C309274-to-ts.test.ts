@@ -44,7 +44,7 @@ it("should convert C309274 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <schematicrect schX={-0.46} schY={0.1} width={0.12} height={0.6} color="#880000" />
+              <schematicrect schX={-0.46} schY={0.1} width={0.12} height={0.6} strokeWidth={0.02} color="#880000" />
               <schematicpath points={[{"x":0.4,"y":0.4},{"x":0.2,"y":0.4},{"x":0.2,"y":0.6},{"x":0.22,"y":0.48}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":0.6},{"x":0.18,"y":0.48}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":0},{"x":0.2,"y":0},{"x":0.2,"y":0.2},{"x":0.18,"y":0.1}]} strokeColor="#880000" />

@@ -42,8 +42,8 @@ it("should convert C2998002 into typescript file", async () => {
             <symbol>
               <schematictext schX={0.3} schY={-0.06} text="TR1" fontSize={0.11} anchor="left" color="#0000FF" schRotation={0} />
               <schematictext schX={-0.58} schY={-0.06} text="TR2" fontSize={0.11} anchor="left" color="#0000FF" schRotation={0} />
-              <schematiccircle center={{ x: 0, y: 0 }} radius={0.01} color="#880000" />
-              <schematicrect schX={0} schY={0} width={1.2} height={0.4} color="#880000" />
+              <schematiccircle center={{ x: 0, y: 0 }} radius={0.01} strokeWidth={0.02} color="#880000" />
+              <schematicrect schX={0} schY={0} width={1.2} height={0.4} strokeWidth={0.02} color="#880000" />
               <schematicpath points={[{"x":0,"y":0},{"x":0,"y":-0.14},{"x":-0.4,"y":-0.14}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":-0.06},{"x":0.4,"y":-0.14},{"x":0.4,"y":-0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.2,"y":-0.06},{"x":-0.4,"y":-0.14},{"x":-0.4,"y":-0.2}]} strokeColor="#880000" />

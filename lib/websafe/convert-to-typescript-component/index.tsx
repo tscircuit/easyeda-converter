@@ -19,6 +19,7 @@ import {
 } from "./is-capacitor-component"
 import { isCrystalComponent } from "./is-crystal-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
+import { isDipSwitchCategoryComponent } from "./is-dip-switch-category-component"
 import { isInductorComponent } from "./is-inductor-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
 import { isMicroUsbConnectorComponent } from "./is-micro-usb-connector-component"
@@ -36,6 +37,7 @@ const getGeneratedComponentType = (
   if (isLedCategoryComponent(betterEasy) && pinCount === 2) return "led"
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
+  if (isDipSwitchCategoryComponent(betterEasy)) return "chip"
   if (isSwitchCategoryComponent(betterEasy)) return "switch"
   if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
@@ -160,6 +162,7 @@ export const convertBetterEasyToTsx = async ({
     betterEasy,
     sourcePorts.length,
   )
+  const isDipSwitch = isDipSwitchCategoryComponent(betterEasy)
   const inductance =
     componentType === "inductor"
       ? betterEasy.dataStr.head.c_para.Value?.trim()
@@ -221,6 +224,7 @@ export const convertBetterEasyToTsx = async ({
     crystalPinVariant,
     symbolTsx,
     schPinArrangement,
+    useSymbolPortsOnly: isDipSwitch && Boolean(symbolTsx),
   })
 }
 

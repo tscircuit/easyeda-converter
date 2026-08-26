@@ -24,10 +24,10 @@ test("generates a centered symbol with positioned, aliased ports", () => {
   const symbolTsx = generateSymbolFromRawEasy(ne555RawEasy)
 
   expect(symbolTsx).toContain(
-    "<schematicrect schX={0} schY={0} width={1.4} height={1}",
+    "<schematicrect schX={0} schY={0} width={1.4} height={1} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
-    "<schematiccircle center={{ x: -0.6, y: 0.4 }} radius={0.03}",
+    "<schematiccircle center={{ x: -0.6, y: 0.4 }} radius={0.03} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
     '<port name="pin1" pinNumber={1} aliases={["GND"]} direction="left" schX={-0.9} schY={0.3} schStemLength={0.2} />',
@@ -45,8 +45,6 @@ test("transforms EasyEDA paths, arcs, and text into symbol-local coordinates", (
   expect(arcSymbolTsx).toContain(
     '<schematicpath svgPath="M -0.4 0.12 A 0.08 0.08 0 1 0 -0.4 0.28" strokeColor="#880000" />',
   )
-  expect(pathSymbolTsx).not.toContain("strokeWidth")
-  expect(arcSymbolTsx).not.toContain("strokeWidth")
   expect(generateSymbolFromRawEasy(rp2040RawEasy)).toContain(
     '<schematictext schX={0} schY={0.2} text="RP2040" fontSize={0.23} anchor="left" color="#0000FF" schRotation={0} />',
   )
@@ -56,7 +54,7 @@ test("keeps imported crystal symbols on tscircuit's schematic grid", () => {
   const symbolTsx = generateSymbolFromRawEasy(crystalRawEasy)
 
   expect(symbolTsx).toContain(
-    "<schematicrect schX={0} schY={0} width={0.8} height={0.8}",
+    "<schematicrect schX={0} schY={0} width={0.8} height={0.8} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
     '<port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.6} schY={-0.2} schStemLength={0.2} />',

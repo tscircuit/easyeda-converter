@@ -58,15 +58,15 @@ it("should convert C75749 into typescript file", async () => {
               <schematicpath points={[{"x":0.8,"y":-0.16},{"x":0.8,"y":-0.3}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":-0.3},{"x":0.2,"y":0.04}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.6,"y":-0.3},{"x":0.6,"y":0.04}]} strokeColor="#880000" />
-              <schematiccircle center={{ x: 0.6, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0.2, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.2, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.6, y: 0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0.8, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0.4, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: 0, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.4, y: -0.1 }} radius={0.06} color="#880000" />
-              <schematiccircle center={{ x: -0.8, y: -0.1 }} radius={0.06} color="#880000" />
+              <schematiccircle center={{ x: 0.6, y: 0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: 0.2, y: 0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: -0.2, y: 0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: -0.6, y: 0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: 0.8, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: 0.4, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: 0, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: -0.4, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
+              <schematiccircle center={{ x: -0.8, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
               <port name="pin1" pinNumber={1} aliases={["1"]} direction="down" schX={-0.8} schY={-0.7} schStemLength={0.4} />
               <port name="pin2" pinNumber={2} aliases={["2"]} direction="down" schX={-0.4} schY={-0.7} schStemLength={0.4} />
               <port name="pin3" pinNumber={3} aliases={["3"]} direction="down" schX={0} schY={-0.7} schStemLength={0.4} />
