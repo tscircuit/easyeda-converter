@@ -210,12 +210,18 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   // multiplexed labels such as RST/NMI/SBWTDIO are preserved.
   const nameMatch = pinString.match(/~([^~]*)~(?:start|end)~/)
   let label = nameMatch?.[1] ?? ""
-  if (label.endsWith("+")) label = `${label.slice(0, -1)}_POS`
-  if (label.endsWith("-")) label = `${label.slice(0, -1)}_NEG`
+  if (label !== "+/-" && label.endsWith("+")) {
+    label = `${label.slice(0, -1)}_POS`
+  }
+  if (label !== "+/-" && label.endsWith("-")) {
+    label = `${label.slice(0, -1)}_NEG`
+  }
   label = normalizeActiveLowPinLabel(label)
-  if (/^\+\d+(?:\.\d+)?V$/i.test(label)) label = `V${label.slice(1, -1)}`
-  if (label.startsWith("+")) label = `${label.slice(1)}_POS`
-  if (label.startsWith("-")) label = `${label.slice(1)}_NEG`
+  if (label !== "+/-") {
+    if (/^\+\d+(?:\.\d+)?V$/i.test(label)) label = `V${label.slice(1, -1)}`
+    if (label.startsWith("+")) label = `${label.slice(1)}_POS`
+    if (label.startsWith("-")) label = `${label.slice(1)}_NEG`
+  }
 
   const colorMatch = pinString.match(/#[0-9A-F]{6}/)
   const labelColor = colorMatch ? colorMatch[0] : ""

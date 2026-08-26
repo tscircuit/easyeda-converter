@@ -13,22 +13,39 @@ const reproCases = [
     partNumber: "C472489",
     rawEasy: c472489RawEasy,
     pins: [
-      { pinNumber: 20, rawLabel: "#RST/NMI/SBWTDIO" },
-      { pinNumber: 41, rawLabel: "P1.3/TA1.2/A3/C3" },
+      {
+        pinNumber: 20,
+        rawLabel: "#RST/NMI/SBWTDIO",
+        parsedLabel: "N_RST/NMI/SBWTDIO",
+        generatedAliases: ["N_RST", "NMI", "SBWTDIO"],
+      },
+      {
+        pinNumber: 41,
+        rawLabel: "P1.3/TA1.2/A3/C3",
+        parsedLabel: "P1.3/TA1.2/A3/C3",
+        generatedAliases: ["P1.3", "TA1.21", "A3", "C3"],
+      },
     ],
     inlineSnapshot: `
       [
         {
-          "generatedLabelWasDiscarded": true,
-          "generatedPinLabelIsNumericFallback": true,
-          "parsedLabel": "20",
+          "generatedAliases": [
+            "N_RST",
+            "NMI",
+            "SBWTDIO",
+          ],
+          "parsedLabel": "N_RST/NMI/SBWTDIO",
           "pinNumber": 20,
           "rawLabel": "#RST/NMI/SBWTDIO",
         },
         {
-          "generatedLabelWasDiscarded": true,
-          "generatedPinLabelIsNumericFallback": true,
-          "parsedLabel": "41",
+          "generatedAliases": [
+            "P1.3",
+            "TA1.21",
+            "A3",
+            "C3",
+          ],
+          "parsedLabel": "P1.3/TA1.2/A3/C3",
           "pinNumber": 41,
           "rawLabel": "P1.3/TA1.2/A3/C3",
         },
@@ -38,13 +55,24 @@ const reproCases = [
   {
     partNumber: "C14877",
     rawEasy: c14877RawEasy,
-    pins: [{ pinNumber: 1, rawLabel: "(PCINT19/OC2B/INT1)PD3" }],
+    pins: [
+      {
+        pinNumber: 1,
+        rawLabel: "(PCINT19/OC2B/INT1)PD3",
+        parsedLabel: "(PCINT19/OC2B/INT1)PD3",
+        generatedAliases: ["PD3", "PCINT19", "OC2B", "INT1"],
+      },
+    ],
     inlineSnapshot: `
       [
         {
-          "generatedLabelWasDiscarded": true,
-          "generatedPinLabelIsNumericFallback": true,
-          "parsedLabel": "1",
+          "generatedAliases": [
+            "PD3",
+            "PCINT19",
+            "OC2B",
+            "INT1",
+          ],
+          "parsedLabel": "(PCINT19/OC2B/INT1)PD3",
           "pinNumber": 1,
           "rawLabel": "(PCINT19/OC2B/INT1)PD3",
         },
@@ -54,13 +82,21 @@ const reproCases = [
   {
     partNumber: "C2886621",
     rawEasy: c2886621RawEasy,
-    pins: [{ pinNumber: 3, rawLabel: "SINEIN–" }],
+    pins: [
+      {
+        pinNumber: 3,
+        rawLabel: "SINEIN–",
+        parsedLabel: "SINEIN–",
+        generatedAliases: ["SINEIN_NEG"],
+      },
+    ],
     inlineSnapshot: `
       [
         {
-          "generatedLabelWasDiscarded": true,
-          "generatedPinLabelIsNumericFallback": true,
-          "parsedLabel": "3",
+          "generatedAliases": [
+            "SINEIN_NEG",
+          ],
+          "parsedLabel": "SINEIN–",
           "pinNumber": 3,
           "rawLabel": "SINEIN–",
         },
@@ -70,7 +106,7 @@ const reproCases = [
 ] as const
 
 for (const { partNumber, rawEasy, pins, inlineSnapshot } of reproCases) {
-  it(`reproduces ${partNumber} losing special-character pin labels`, async () => {
+  it(`preserves ${partNumber} special-character pin labels`, async () => {
     for (const { rawLabel } of pins) {
       expect(
         rawEasy.dataStr.shape.some((shape) => shape.includes(`~${rawLabel}~`)),
@@ -80,7 +116,7 @@ for (const { partNumber, rawEasy, pins, inlineSnapshot } of reproCases) {
     const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
     const parsedLabels = new Map<number, string>()
 
-    for (const { pinNumber } of pins) {
+    for (const { pinNumber, parsedLabel } of pins) {
       const parsedPin = betterEasy.dataStr.shape.find(
         (shape) => shape.type === "PIN" && shape.pinNumber === pinNumber,
       )
@@ -89,25 +125,21 @@ for (const { partNumber, rawEasy, pins, inlineSnapshot } of reproCases) {
         throw new Error(`Missing parsed pin ${pinNumber} for ${partNumber}`)
       }
 
-      // The parser incorrectly matches the numeric pin-name segment after it
-      // rejects '/', '.', parentheses, or the Unicode en dash in the real label.
-      expect(parsedPin.label).toBe(String(pinNumber))
+      expect(parsedPin.label).toBe(parsedLabel)
       parsedLabels.set(pinNumber, parsedPin.label)
     }
 
     const result = await convertBetterEasyToTsx({ betterEasy })
 
-    for (const { pinNumber, rawLabel } of pins) {
-      expect(result).toContain(`pin${pinNumber}: ["pin${pinNumber}"]`)
-      expect(result).not.toContain(rawLabel)
+    for (const { pinNumber, generatedAliases } of pins) {
+      expect(result).toContain(
+        `pin${pinNumber}: [${generatedAliases.map((alias) => `"${alias}"`).join(",")}],`,
+      )
     }
 
     expect(
-      pins.map(({ pinNumber, rawLabel }) => ({
-        generatedLabelWasDiscarded: !result.includes(rawLabel),
-        generatedPinLabelIsNumericFallback: result.includes(
-          `pin${pinNumber}: ["pin${pinNumber}"]`,
-        ),
+      pins.map(({ pinNumber, rawLabel, generatedAliases }) => ({
+        generatedAliases,
         parsedLabel: parsedLabels.get(pinNumber),
         pinNumber,
         rawLabel,
@@ -119,7 +151,7 @@ for (const { partNumber, rawEasy, pins, inlineSnapshot } of reproCases) {
     )
     expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
       import.meta.path,
-      `${partNumber}-special-character-pin-labels-missing`,
+      `${partNumber}-special-character-pin-labels-preserved`,
     )
   })
 }
