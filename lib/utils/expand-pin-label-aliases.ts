@@ -15,9 +15,9 @@ const cleanAlias = (alias: string): string => {
 
 export const expandPinLabelAliases = (rawLabel: string): string[] => {
   const label = rawLabel.trim()
-  if (!label || /^[+\-\u2013\u2212](?:\/[+\-\u2013\u2212])?$/u.test(label)) {
-    return []
-  }
+  if (!label || label === "+/-") return []
+  if (label === "+") return ["_POS"]
+  if (/^[\-\u2013\u2212]$/u.test(label)) return ["_NEG"]
 
   const leadingAliases = label.match(/^\(([^)]*\/[^)]*)\)(.+)$/)
   if (leadingAliases) {

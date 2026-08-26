@@ -31,8 +31,10 @@ test("expands parenthesized aliases without leaking punctuation", () => {
   ])
 })
 
-test("does not turn standalone polarity markers into aliases", () => {
-  expect(expandPinLabelAliases("+")).toEqual([])
-  expect(expandPinLabelAliases("-")).toEqual([])
+test("preserves standalone polarity markers used for metadata", () => {
+  expect(expandPinLabelAliases("+")).toEqual(["_POS"])
+  expect(expandPinLabelAliases("-")).toEqual(["_NEG"])
+  expect(expandPinLabelAliases("–")).toEqual(["_NEG"])
+  expect(expandPinLabelAliases("−")).toEqual(["_NEG"])
   expect(expandPinLabelAliases("+/-")).toEqual([])
 })
