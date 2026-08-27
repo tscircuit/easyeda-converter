@@ -129,8 +129,7 @@ export function generateArcFromSweep(
   // The large-arc and sweep flags together select one of the two possible
   // circle centers. Ignoring the large-arc flag puts large arcs on the
   // opposite side of their chord.
-  const centerDirection =
-    (sweepFlag ? -1 : 1) * (largeArcFlag ? -1 : 1)
+  const centerDirection = (sweepFlag ? -1 : 1) * (largeArcFlag ? -1 : 1)
   const centerX = midX + h * Math.sin(angle) * centerDirection
   const centerY = midY - h * Math.cos(angle) * centerDirection
 

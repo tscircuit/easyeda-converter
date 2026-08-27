@@ -12,15 +12,7 @@ describe("generateArcFromSweep", () => {
 
   test("uses the opposite circle center for a large arc", () => {
     const route = generateArcFromSweep(-1, 0, 1, 0, 2, true, false)
-    const reversedSweepRoute = generateArcFromSweep(
-      -1,
-      0,
-      1,
-      0,
-      2,
-      true,
-      true,
-    )
+    const reversedSweepRoute = generateArcFromSweep(-1, 0, 1, 0, 2, true, true)
 
     expect(Math.max(...route.map(({ y }) => y))).toBeGreaterThan(3.5)
     expect(Math.min(...route.map(({ x }) => x))).toBeLessThan(-1.9)

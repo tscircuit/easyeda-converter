@@ -253,8 +253,7 @@ const classifySemicircle = (
   const isNearEndpoint = (point: { x: number; y: number }) =>
     Math.hypot(point.x - arc.start.x, point.y - arc.start.y) <=
       endpointTolerance ||
-    Math.hypot(point.x - arc.end.x, point.y - arc.end.y) <=
-      endpointTolerance
+    Math.hypot(point.x - arc.end.x, point.y - arc.end.y) <= endpointTolerance
 
   let hasConnectedSegment = false
 
