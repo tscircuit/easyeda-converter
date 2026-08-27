@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C19943592.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces the incorrectly rendered C19943592 pin 1 footprint", async () => {
+it("renders the C19943592 pin 1 rectangular footprint pad", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(

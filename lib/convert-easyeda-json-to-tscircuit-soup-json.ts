@@ -607,12 +607,17 @@ export const convertEasyEdaJsonToCircuitJson = (
             rect_pad_height: padHeight,
           }
         } else {
-          // For square or nearly square pads, use circular holes
+          // Preserve the rectangular copper pad while using a circular drill.
           additionalPlatedHoleProps = {
-            shape: "circle",
-            hole_diameter: holeDiameter,
-            outer_diameter: Math.max(padWidth, padHeight),
-            radius: holeDiameter / 2,
+            shape: "rotated_pill_hole_with_rect_pad",
+            hole_shape: "rotated_pill",
+            pad_shape: "rect",
+            hole_width: holeDiameter,
+            hole_height: holeDiameter,
+            hole_ccw_rotation: pad.rotation || 0,
+            rect_ccw_rotation: pad.rotation || 0,
+            rect_pad_width: padWidth,
+            rect_pad_height: padHeight,
           }
         }
       } else {

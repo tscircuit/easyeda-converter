@@ -99,7 +99,7 @@ it("should convert C75749 into typescript file", async () => {
           footprint={<footprint>
             <platedhole  portHints={["pin3"]} pcbX="-1.41986mm" pcbY="-0.000127mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin11"]} pcbX="0mm" pcbY="-12.499975mm" outerDiameter="4.99999mm" holeDiameter="3.2500316mm" shape="circle" />
-    <platedhole  portHints={["pin1"]} pcbX="-1.41986mm" pcbY="5.519801mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin1"]} pcbX="-1.41986mm" pcbY="5.519801mm" holeWidth="0.999998mm" holeHeight="0.999998mm" outerWidth="1.5748mm" outerHeight="1.5748mm" rectPad={true} pcbRotation="90deg" shape="pill" />
     <platedhole  portHints={["pin2"]} pcbX="-1.41986mm" pcbY="2.759837mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin4"]} pcbX="-1.41986mm" pcbY="-2.760091mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin5"]} pcbX="-1.41986mm" pcbY="-5.520055mm" outerDiameter="1.5748mm" holeDiameter="0.999998mm" shape="circle" />

@@ -55,7 +55,7 @@ it("should convert C157947 into typescript file", async () => {
     <platedhole  portHints={["pin4"]} pcbX="-2.999994mm" pcbY="0mm" outerDiameter="1.499997mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin3"]} pcbX="-4.99999mm" pcbY="0mm" outerDiameter="1.499997mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin2"]} pcbX="-6.999986mm" pcbY="0mm" outerDiameter="1.499997mm" holeDiameter="0.999998mm" shape="circle" />
-    <platedhole  portHints={["pin1"]} pcbX="-8.999982mm" pcbY="0mm" outerDiameter="1.499997mm" holeDiameter="0.999998mm" shape="circle" />
+    <platedhole  portHints={["pin1"]} pcbX="-8.999982mm" pcbY="0mm" holeWidth="0.999998mm" holeHeight="0.999998mm" outerWidth="1.499997mm" outerHeight="1.499997mm" rectPad={true} pcbRotation="0deg" shape="pill" />
     <silkscreenpath route={[{"x":10.999952600000142,"y":1.4999970000000076},{"x":9.999954600000137,"y":1.4999970000000076},{"x":9.999954600000137,"y":0}]} />
     <silkscreenpath route={[{"x":8.000441200000068,"y":-1.9990053999999873},{"x":8.000441200000068,"y":-5.999505400000089}]} />
     <silkscreenpath route={[{"x":7.9999332000001,"y":-1.9990053999999873},{"x":-7.999018799999931,"y":-1.9990053999999873},{"x":-7.999018799999931,"y":-5.999505400000089}]} />
