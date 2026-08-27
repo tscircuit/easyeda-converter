@@ -50,6 +50,18 @@ it("should parse easyeda json for a 555 timer and convert to tscircuit soup", as
     expect(firstPad.layer).toBe("top")
   }
 
+  const notchArc = soupElements.find(
+    (element: any) =>
+      element.type === "pcb_silkscreen_path" &&
+      element.pcb_silkscreen_path_id === "pcb_silkscreen_arc_10",
+  )
+  expect(notchArc).toBeDefined()
+
+  const notchStartX = notchArc.route[0].x
+  const notchXs = notchArc.route.map(({ x }: { x: number }) => x)
+  expect(Math.min(...notchXs)).toBeGreaterThanOrEqual(notchStartX - 0.001)
+  expect(Math.max(...notchXs)).toBeGreaterThan(notchStartX + 0.6)
+
   expect(
     convertCircuitJsonToPcbSvg(soupElements, { showCourtyards: true }),
   ).toMatchSvgSnapshot(import.meta.path)
