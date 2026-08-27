@@ -237,7 +237,7 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     arc.end.y,
     arc.radiusX,
     arc.largeArc,
-    arc.sweepDirection === "CW",
+    arc.sweepDirection !== "CW",
   )
 
   return pcb_silkscreen_path.parse({

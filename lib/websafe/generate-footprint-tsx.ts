@@ -126,7 +126,7 @@ export const generateFootprintTsx = (
 
   for (const silkscreenPath of silkscreenPaths) {
     elementStrings.push(
-      `<silkscreenpath route={${JSON.stringify(silkscreenPath.route)}} strokeWidth="${mmStr(silkscreenPath.stroke_width)}" />`,
+      `<silkscreenpath route={${JSON.stringify(silkscreenPath.route)}} />`,
     )
   }
 
