@@ -318,14 +318,23 @@ const getPortMetadataByShapeId = (
     portName ??= `pin${pinIndex + 1}`
     usedPortNames.add(portName)
     const sourcePort = sourcePorts.find((port) => port.name === portName)
+    const normalizedPinLabel = pin.label
+      ? normalizeSymbolName(pin.label)
+      : undefined
+    // Keep a shared EasyEDA GND label first for schematic display while
+    // retaining generated aliases such as GND1/GND2 for unique selection.
+    const aliases = [
+      ...(normalizedPinLabel === "GND" ? [normalizedPinLabel] : []),
+      ...(sourcePort?.port_hints ?? []),
+      ...(normalizedPinLabel !== "GND" && normalizedPinLabel
+        ? [normalizedPinLabel]
+        : []),
+    ]
 
     metadataByShapeId.set(pin.id, {
       name: portName,
       pinNumber: sourcePort?.pin_number,
-      aliases: [
-        ...(sourcePort?.port_hints ?? []),
-        ...(pin.label ? [normalizeSymbolName(pin.label)] : []),
-      ].filter(
+      aliases: aliases.filter(
         (alias, index, aliases) =>
           alias !== portName && aliases.indexOf(alias) === index,
       ),
