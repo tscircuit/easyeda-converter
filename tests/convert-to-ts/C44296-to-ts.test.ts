@@ -8,9 +8,9 @@ import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-f
 
 it("preserves C44296's shared common-cathode label", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
-  const commonCathodePinNumbers = betterEasy.dataStr.shape
-    .filter((shape) => shape.type === "PIN" && shape.label === "GND")
-    .map((pin) => pin.pinNumber)
+  const commonCathodePinNumbers = betterEasy.dataStr.shape.flatMap((shape) =>
+    shape.type === "PIN" && shape.label === "GND" ? [shape.pinNumber] : [],
+  )
 
   // EasyEDA represents both physical pins as the same common-cathode
   // connection.
