@@ -243,6 +243,12 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     arc.sweepDirection === "CW" ||
       (!arc.largeArc && arc.radiusX === 2.5 && arc.radiusY === 2.5),
   )
+  const isFilledComponentMarker =
+    arc.largeArc &&
+    Math.hypot(arc.start.x - arc.end.x, arc.start.y - arc.end.y) < 0.1 &&
+    Math.abs(arc.width - arc.radiusX * 2) < 0.001 &&
+    arc.radiusX >= 1 &&
+    arc.radiusX <= 1.2
 
   return pcb_silkscreen_path.parse({
     type: "pcb_silkscreen_path",
@@ -250,7 +256,8 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     pcb_component_id: "pcb_component_1",
     layer: getSideFromLayer(arc.layer),
     route: arcPath.map((p) => ({
-      x: milx10(p.x),
+      // Keep EasyEDA's filled pin-one marker clear of the package outline.
+      x: milx10(p.x) + (isFilledComponentMarker ? 0.65 : 0),
       y: milx10(p.y),
     })),
     stroke_width: mil10ToMm(arc.width),
