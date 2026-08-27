@@ -237,10 +237,10 @@ const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
     arc.end.y,
     arc.radiusX,
     arc.largeArc,
-    // EasyEDA's small counter-clockwise arcs use the opposite sweep in the
-    // converter's Cartesian coordinate system. Large arcs retain their source
-    // direction.
-    arc.sweepDirection === "CW" || !arc.largeArc,
+    // EasyEDA's 1 px small counter-clockwise component-marking arcs use the
+    // opposite sweep in the converter's Cartesian coordinate system. Other
+    // arcs retain their source direction.
+    arc.sweepDirection === "CW" || (!arc.largeArc && arc.width === 1),
   )
 
   return pcb_silkscreen_path.parse({
