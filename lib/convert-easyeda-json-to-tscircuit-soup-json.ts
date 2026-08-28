@@ -229,11 +229,7 @@ const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   return "top"
 }
 
-const handleSilkscreenArc = (
-  arc: z.infer<typeof ArcSchema>,
-  index: number,
-  hasComponentMarkingSemicircle = false,
-) => {
+const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
   const arcPath = generateArcFromSweep(
     arc.start.x,
     arc.start.y,
@@ -241,19 +237,8 @@ const handleSilkscreenArc = (
     arc.end.y,
     arc.radiusX,
     arc.largeArc,
-    // EasyEDA's 2.5 mm-radius component-marking semicircles use the
-    // opposite sweep in the converter's Cartesian coordinate system. Other
-    // arcs retain their source direction.
-    arc.sweepDirection === "CW" ||
-      (!arc.largeArc && arc.radiusX === 2.5 && arc.radiusY === 2.5),
+    arc.sweepDirection === "CW",
   )
-  const isFilledComponentMarker =
-    hasComponentMarkingSemicircle &&
-    arc.largeArc &&
-    Math.hypot(arc.start.x - arc.end.x, arc.start.y - arc.end.y) < 0.1 &&
-    Math.abs(arc.width - arc.radiusX * 2) < 0.001 &&
-    arc.radiusX >= 1 &&
-    arc.radiusX <= 1.2
 
   return pcb_silkscreen_path.parse({
     type: "pcb_silkscreen_path",
@@ -261,8 +246,7 @@ const handleSilkscreenArc = (
     pcb_component_id: "pcb_component_1",
     layer: getSideFromLayer(arc.layer),
     route: arcPath.map((p) => ({
-      // Keep EasyEDA's filled pin-one marker clear of the package outline.
-      x: milx10(p.x) + (isFilledComponentMarker ? 0.65 : 0),
+      x: milx10(p.x),
       y: milx10(p.y),
     })),
     stroke_width: mil10ToMm(arc.width),
@@ -736,14 +720,6 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   // Add silkscreen paths, arcs and text
   let hasFoundDesignator = false
-  const hasComponentMarkingSemicircle =
-    easyEdaJson.packageDetail.dataStr.shape.some(
-      (shape) =>
-        shape.type === "ARC" &&
-        !shape.largeArc &&
-        shape.radiusX === 2.5 &&
-        shape.radiusY === 2.5,
-    )
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
       if (isSilkscreenLayer(shape.layer)) {
@@ -765,9 +741,7 @@ export const convertEasyEdaJsonToCircuitJson = (
       circuitElements.push(handleRect(shape, index))
     } else if (shape.type === "ARC") {
       if (!isCourtyardLayer(shape.layer)) {
-        circuitElements.push(
-          handleSilkscreenArc(shape, index, hasComponentMarkingSemicircle),
-        )
+        circuitElements.push(handleSilkscreenArc(shape, index))
       }
     } else if (shape.type === "TEXT") {
       if (isCourtyardLayer(shape.layer)) return
