@@ -80,7 +80,7 @@ it("should convert C9900017879 into typescript file", async () => {
     }}
           manufacturerPartNumber="ARDUINO_NANO"
           footprint={<footprint>
-            <platedhole  portHints={["pin1"]} pcbX="17.78mm" pcbY="7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+            <platedhole  portHints={["pin1"]} pcbX="17.78mm" pcbY="7.62mm" holeWidth="0.9000236mm" holeHeight="0.9000236mm" outerWidth="1.5999968mm" outerHeight="1.5999968mm" rectPad={true} pcbRotation="0deg" shape="pill" />
     <platedhole  portHints={["pin29"]} pcbX="15.24mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
     <platedhole  portHints={["pin27"]} pcbX="10.16mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
     <platedhole  portHints={["pin25"]} pcbX="5.08mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
@@ -109,7 +109,7 @@ it("should convert C9900017879 into typescript file", async () => {
     <platedhole  portHints={["pin24"]} pcbX="2.54mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
     <platedhole  portHints={["pin26"]} pcbX="7.62mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
     <platedhole  portHints={["pin28"]} pcbX="12.7mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
-    <platedhole  portHints={["pin30"]} pcbX="17.78mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />
+    <platedhole  portHints={["pin30"]} pcbX="17.78mm" pcbY="-7.62mm" holeWidth="0.9000236mm" holeHeight="0.9000236mm" outerWidth="1.5999968mm" outerHeight="1.5999968mm" rectPad={true} pcbRotation="0deg" shape="pill" />
     <silkscreenpath route={[{"x":3.1745936000000086,"y":-8.889390399999982},{"x":3.8095935999999995,"y":-8.254390399999977},{"x":4.444593600000005,"y":-8.889390399999982}]} />
     <silkscreenpath route={[{"x":-18.41525399999999,"y":-6.349517399999996},{"x":-19.05025399999998,"y":-6.984517399999987},{"x":-19.05025399999998,"y":-8.254517399999997},{"x":-18.41525399999999,"y":-8.889517399999988}]} />
     <silkscreenpath route={[{"x":-15.875253999999998,"y":-6.349517399999996},{"x":-16.51025399999999,"y":-6.984517399999987},{"x":-17.145253999999994,"y":-6.349517399999996}]} />

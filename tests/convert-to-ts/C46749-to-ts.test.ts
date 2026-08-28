@@ -61,7 +61,7 @@ it("should convert C46749 into typescript file", async () => {
     }}
           manufacturerPartNumber="NE555P"
           footprint={<footprint>
-            <platedhole  portHints={["pin1"]} pcbX="-3.81mm" pcbY="-3.81mm" outerDiameter="1.499997mm" holeDiameter="0.9000236mm" shape="circle" />
+            <platedhole  portHints={["pin1"]} pcbX="-3.81mm" pcbY="-3.81mm" holeWidth="0.9000236mm" holeHeight="0.9000236mm" outerWidth="1.499997mm" outerHeight="1.499997mm" rectPad={true} pcbRotation="0deg" shape="pill" />
     <platedhole  portHints={["pin2"]} pcbX="-1.27mm" pcbY="-3.81mm" outerDiameter="1.499997mm" holeDiameter="0.9000236mm" shape="circle" />
     <platedhole  portHints={["pin3"]} pcbX="1.27mm" pcbY="-3.81mm" outerDiameter="1.499997mm" holeDiameter="0.9000236mm" shape="circle" />
     <platedhole  portHints={["pin4"]} pcbX="3.81mm" pcbY="-3.81mm" outerDiameter="1.499997mm" holeDiameter="0.9000236mm" shape="circle" />
