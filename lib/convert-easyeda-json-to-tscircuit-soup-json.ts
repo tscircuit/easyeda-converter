@@ -27,7 +27,6 @@ import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
-  ArcSchema,
   CircleSchema,
   HoleSchema,
   PadSchema,
@@ -38,6 +37,11 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import {
+  getSilkscreenArcPath,
+  type PackageArc,
+  type PackageTrack,
+} from "./utils/get-silkscreen-arc-path"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
@@ -229,111 +233,13 @@ const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   return "top"
 }
 
-type PackageArc = z.infer<typeof ArcSchema>
-type PackageTrack = z.infer<typeof TrackSchema>
-type SemicircleRole = "end_cap" | "notch"
-
-const classifySemicircle = (
-  arc: PackageArc,
-  silkscreenTracks: PackageTrack[],
-): SemicircleRole | null => {
-  const chord = {
-    x: arc.end.x - arc.start.x,
-    y: arc.end.y - arc.start.y,
-  }
-  const chordLength = Math.hypot(chord.x, chord.y)
-  const isSemicircle =
-    !arc.largeArc &&
-    Math.abs(chordLength - 2 * arc.radiusX) <=
-      Math.max(1e-6, arc.radiusX * 1e-4)
-
-  if (!isSemicircle) return null
-
-  const endpointTolerance = Math.max(0.05, arc.radiusX * 0.02)
-  const isNearEndpoint = (point: { x: number; y: number }) =>
-    Math.hypot(point.x - arc.start.x, point.y - arc.start.y) <=
-      endpointTolerance ||
-    Math.hypot(point.x - arc.end.x, point.y - arc.end.y) <= endpointTolerance
-
-  let hasConnectedSegment = false
-
-  for (const track of silkscreenTracks) {
-    if (track.layer !== arc.layer) continue
-
-    for (const [pointIndex, point] of track.points.entries()) {
-      if (!isNearEndpoint(point)) continue
-
-      const neighbors = [
-        track.points[pointIndex - 1],
-        track.points[pointIndex + 1],
-      ]
-
-      for (const neighbor of neighbors) {
-        if (!neighbor) continue
-        hasConnectedSegment = true
-
-        const segment = {
-          x: neighbor.x - point.x,
-          y: neighbor.y - point.y,
-        }
-        const segmentLength = Math.hypot(segment.x, segment.y)
-        if (segmentLength === 0) continue
-
-        const normalizedDot =
-          Math.abs(segment.x * chord.x + segment.y * chord.y) /
-          (segmentLength * chordLength)
-        // Perpendicular outline segments continue smoothly into an end cap.
-        if (normalizedDot < 0.25) return "end_cap"
-      }
-    }
-  }
-
-  return hasConnectedSegment ? "notch" : null
-}
-
-const distanceFromRouteMidpoint = (
-  route: Array<{ x: number; y: number }>,
-  point: { x: number; y: number },
-) => {
-  const midpoint = route[Math.floor(route.length / 2)]!
-  return Math.hypot(midpoint.x - point.x, midpoint.y - point.y)
-}
-
 const handleSilkscreenArc = (
   arc: PackageArc,
   index: number,
   footprintCenter: { x: number; y: number },
   silkscreenTracks: PackageTrack[],
 ) => {
-  const generateArcPath = (sweepFlag: boolean) =>
-    generateArcFromSweep(
-      arc.start.x,
-      arc.start.y,
-      arc.end.x,
-      arc.end.y,
-      arc.radiusX,
-      arc.largeArc,
-      sweepFlag,
-    )
-
-  const sweepFlag = arc.sweepDirection === "CW"
-  let arcPath = generateArcPath(sweepFlag)
-  const semicircleRole = classifySemicircle(arc, silkscreenTracks)
-
-  if (semicircleRole) {
-    const oppositeArcPath = generateArcPath(!sweepFlag)
-    const arcDistance = distanceFromRouteMidpoint(arcPath, footprintCenter)
-    const oppositeDistance = distanceFromRouteMidpoint(
-      oppositeArcPath,
-      footprintCenter,
-    )
-    const originalArcIsInward = arcDistance <= oppositeDistance
-    const shouldBowInward = semicircleRole === "notch"
-
-    if (originalArcIsInward !== shouldBowInward) {
-      arcPath = oppositeArcPath
-    }
-  }
+  const arcPath = getSilkscreenArcPath(arc, footprintCenter, silkscreenTracks)
 
   return pcb_silkscreen_path.parse({
     type: "pcb_silkscreen_path",
