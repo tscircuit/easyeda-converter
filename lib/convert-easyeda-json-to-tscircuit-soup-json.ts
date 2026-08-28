@@ -27,7 +27,6 @@ import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
-  ArcSchema,
   CircleSchema,
   HoleSchema,
   PadSchema,
@@ -38,6 +37,11 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import {
+  getSilkscreenArcPath,
+  type PackageArc,
+  type PackageTrack,
+} from "./utils/get-silkscreen-arc-path"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import { normalizeSymbolName } from "./utils/normalize-symbol-name"
@@ -229,16 +233,13 @@ const getSideFromLayer = (layer?: number): "top" | "bottom" => {
   return "top"
 }
 
-const handleSilkscreenArc = (arc: z.infer<typeof ArcSchema>, index: number) => {
-  const arcPath = generateArcFromSweep(
-    arc.start.x,
-    arc.start.y,
-    arc.end.x,
-    arc.end.y,
-    arc.radiusX,
-    arc.largeArc,
-    arc.sweepDirection === "CW",
-  )
+const handleSilkscreenArc = (
+  arc: PackageArc,
+  index: number,
+  footprintCenter: { x: number; y: number },
+  silkscreenTracks: PackageTrack[],
+) => {
+  const arcPath = getSilkscreenArcPath(arc, footprintCenter, silkscreenTracks)
 
   return pcb_silkscreen_path.parse({
     type: "pcb_silkscreen_path",
@@ -715,6 +716,10 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   // Add silkscreen paths, arcs and text
   let hasFoundDesignator = false
+  const silkscreenTracks = easyEdaJson.packageDetail.dataStr.shape.filter(
+    (shape): shape is PackageTrack =>
+      shape.type === "TRACK" && isSilkscreenLayer(shape.layer),
+  )
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
     if (shape.type === "TRACK") {
       if (isSilkscreenLayer(shape.layer)) {
@@ -736,7 +741,14 @@ export const convertEasyEdaJsonToCircuitJson = (
       circuitElements.push(handleRect(shape, index))
     } else if (shape.type === "ARC") {
       if (!isCourtyardLayer(shape.layer)) {
-        circuitElements.push(handleSilkscreenArc(shape, index))
+        circuitElements.push(
+          handleSilkscreenArc(
+            shape,
+            index,
+            easyEdaJson.packageDetail.dataStr.head,
+            silkscreenTracks,
+          ),
+        )
       }
     } else if (shape.type === "TEXT") {
       if (isCourtyardLayer(shape.layer)) return

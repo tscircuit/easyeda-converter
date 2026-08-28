@@ -126,8 +126,12 @@ export function generateArcFromSweep(
   // Calculate the center of the arc
   const h = Math.sqrt(radius * radius - (distance * distance) / 4)
   const angle = Math.atan2(dy, dx)
-  const centerX = midX + h * Math.sin(angle) * (sweepFlag ? -1 : 1)
-  const centerY = midY - h * Math.cos(angle) * (sweepFlag ? -1 : 1)
+  // The large-arc and sweep flags together select one of the two possible
+  // circle centers. Ignoring the large-arc flag puts large arcs on the
+  // opposite side of their chord.
+  const centerDirection = (sweepFlag ? -1 : 1) * (largeArcFlag ? -1 : 1)
+  const centerX = midX + h * Math.sin(angle) * centerDirection
+  const centerY = midY - h * Math.cos(angle) * centerDirection
 
   // Calculate start and end angles
   const startAngle = Math.atan2(startY - centerY, startX - centerX)

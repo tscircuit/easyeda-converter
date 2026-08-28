@@ -9,6 +9,18 @@ test("C5184526 should have two holes", async () => {
 
   expect(circuitJson.filter((e) => e.type === "pcb_hole").length).toBe(2)
 
+  const cornerArc = circuitJson.find(
+    (element: any) =>
+      element.type === "pcb_silkscreen_path" &&
+      element.pcb_silkscreen_path_id === "pcb_silkscreen_arc_13",
+  ) as any
+  expect(cornerArc).toBeDefined()
+
+  const [arcStart, nextArcPoint] = cornerArc.route
+  expect(Math.abs(nextArcPoint.x - arcStart.x)).toBeLessThan(
+    Math.abs(nextArcPoint.y - arcStart.y),
+  )
+
   expect(
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
   ).toMatchSvgSnapshot(import.meta.path)
