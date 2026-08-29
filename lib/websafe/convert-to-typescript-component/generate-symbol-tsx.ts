@@ -6,7 +6,7 @@ import {
 import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
-import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
+import { expandPinLabelAliases } from "lib/utils/expand-pin-label-aliases"
 
 const round = (value: number): number => Number(value.toFixed(6))
 
@@ -295,11 +295,11 @@ const getPortMetadataByShapeId = (
     usedPortNamesByPadNumber.set(pinNumberKey, matchingPortIndex + 1)
 
     if (!portName && pin.label) {
-      const normalizedLabel = normalizeSymbolName(pin.label)
+      const pinAliases = expandPinLabelAliases(pin.label)
       portName = sourcePorts.find(
         (port) =>
           !usedPortNames.has(port.name) &&
-          port.port_hints?.includes(normalizedLabel),
+          pinAliases.some((alias) => port.port_hints?.includes(alias)),
       )?.name
     }
 
@@ -318,15 +318,19 @@ const getPortMetadataByShapeId = (
     portName ??= `pin${pinIndex + 1}`
     usedPortNames.add(portName)
     const sourcePort = sourcePorts.find((port) => port.name === portName)
+    const aliases = sourcePort
+      ? (sourcePort.port_hints ?? [])
+      : pin.label
+        ? expandPinLabelAliases(pin.label)
+        : []
 
     metadataByShapeId.set(pin.id, {
       name: portName,
       pinNumber: sourcePort?.pin_number,
-      aliases: [
-        ...(sourcePort?.port_hints ?? []),
-        ...(pin.label ? [normalizeSymbolName(pin.label)] : []),
-      ].filter(
-        (alias, index, aliases) =>
+      // Keep the raw EasyEDA text on `pin.label`; aliases exposed by generated
+      // ports must remain safe to use in selectors.
+      aliases: aliases.filter(
+        (alias, index) =>
           alias !== portName && aliases.indexOf(alias) === index,
       ),
     })

@@ -8,14 +8,14 @@ const minusPinStr =
 const voltagePinStr =
   "P~show~0~27~450~260~0~gge31~0^^450~260^^M450,260h-10~#880000^^1~436.3~264~0~+5V~end~~~#0000FF^^1~440.5~259~0~27~start~~~#0000FF^^0~443~260^^0~M 440 257 L 437 260 L 440 263"
 
-it("converts trailing plus and minus in pin labels", () => {
+it("preserves trailing plus and minus in raw EasyEDA pin labels", () => {
   const plusPin = PinShapeSchema.parse(plusPinStr)
   const minusPin = PinShapeSchema.parse(minusPinStr)
-  expect(plusPin.label).toBe("C1_POS")
-  expect(minusPin.label).toBe("C2_NEG")
+  expect(plusPin.label).toBe("C1+")
+  expect(minusPin.label).toBe("C2-")
 })
 
-it("normalizes voltage pin labels with leading plus", () => {
+it("preserves leading plus in raw EasyEDA pin labels", () => {
   const pin = PinShapeSchema.parse(voltagePinStr)
-  expect(pin.label).toBe("V5")
+  expect(pin.label).toBe("+5V")
 })

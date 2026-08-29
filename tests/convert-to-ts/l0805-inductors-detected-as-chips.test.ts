@@ -56,8 +56,8 @@ test("reproduces C1046 L0805 inductor being generated as a generic chip", async 
               pinLabels={pinLabels}
               symbol={
                 <symbol>
-                  <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
-                  <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
+                  <port name="pin2" pinNumber={2} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
+                  <port name="pin1" pinNumber={1} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
                   <schematicpath svgPath="M -0.3376 0.0014 A 0.08 0.078 0 1 0 -0.1784 0.0012" strokeColor="#880000" />
                   <schematicpath svgPath="M -0.168 0.0014 A 0.08 0.078 0 1 0 -0.0088 0.0014" strokeColor="#880000" />
                   <schematicpath svgPath="M 0.0014 0.0014 A 0.08 0.078 0 1 0 0.1606 0.0014" strokeColor="#880000" />
@@ -108,8 +108,8 @@ test("reproduces C281113 L0805 inductor being generated as a generic chip", asyn
               pinLabels={pinLabels}
               symbol={
                 <symbol>
-                  <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
-                  <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
+                  <port name="pin2" pinNumber={2} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
+                  <port name="pin1" pinNumber={1} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
                   <schematicpath svgPath="M -0.33766 0.00136 A 0.08 0.078 0 1 0 -0.17836 0.00128" strokeColor="#880000" />
                   <schematicpath svgPath="M -0.168 0.00142 A 0.08 0.078 0 1 0 -0.0087 0.00132" strokeColor="#880000" />
                   <schematicpath svgPath="M 0.00134 0.00142 A 0.08 0.078 0 1 0 0.16064 0.00132" strokeColor="#880000" />
