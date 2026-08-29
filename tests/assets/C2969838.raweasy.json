@@ -1,0 +1,241 @@
+{
+  "uuid": "224ad0657b3e40fcba2a50a39a3a1db0",
+  "title": "STTS22HTR",
+  "description": "",
+  "docType": 2,
+  "type": 3,
+  "thumb": "//image.lceda.cn/components/224ad0657b3e40fcba2a50a39a3a1db0.png",
+  "lcsc": {
+    "id": 3362302,
+    "number": "C2969838"
+  },
+  "szlcsc": {
+    "id": 3362302,
+    "number": "C2969838"
+  },
+  "owner": {
+    "uuid": "0819f05c4eef4c71ace90d822a990e87",
+    "username": "lcsc",
+    "nickname": "LCSC",
+    "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
+  },
+  "tags": [
+    "Temperature and Humidity Sensor"
+  ],
+  "updateTime": 1713810284,
+  "updated_at": "2024-04-22 18:25:52",
+  "dataStr": {
+    "head": {
+      "docType": "2",
+      "editorVersion": "6.5.39",
+      "x": 400,
+      "y": 295,
+      "c_para": {
+        "pre": "U?",
+        "name": "STTS22HTR",
+        "package": "DFN-6_L2.0-W2.0-P0.65-BL-EP1.2",
+        "Supplier": "LCSC",
+        "Supplier Part": "C2969838",
+        "Manufacturer": "ST(意法半导体)",
+        "Manufacturer Part": "STTS22HTR",
+        "Contributor": "lcsc",
+        "JLCPCB Part Class": "Extended Part"
+      },
+      "puuid": "781d53400d1449608bc46c09eea56060",
+      "utime": 1701050109,
+      "uuid": "224ad0657b3e40fcba2a50a39a3a1db0",
+      "importFlag": 0,
+      "c_spiceCmd": null,
+      "pre": "U?",
+      "name": "STTS22HTR",
+      "hasIdFlag": true
+    },
+    "canvas": "CA~1000~1000~#FFFFFF~yes~#CCCCCC~5~1000~1000~line~5~pixel~5~400~295",
+    "shape": [
+      "R~350~280~2~2~100~40~#880000~1~0~none~gge1~0~",
+      "E~355~285~1.5~1.5~#880000~1~0~#880000~gge2~0",
+      "P~show~0~1~340~290~180~gge5~0^^340~290^^M340,290h10~#880000^^1~353.7~294~0~SCL~start~~~#0000FF^^1~349.5~289~0~1~end~~~#0000FF^^0~347~290^^0~M 350 293 L 353 290 L 350 287",
+      "P~show~0~2~340~300~180~gge6~0^^340~300^^M340,300h10~#880000^^1~353.7~304~0~ALERT/INT~start~~~#0000FF^^1~349.5~299~0~2~end~~~#0000FF^^0~347~300^^0~M 350 303 L 353 300 L 350 297",
+      "P~show~0~3~340~310~180~gge7~0^^340~310^^M340,310h10~#FF0000^^1~353.7~314~0~VDD~start~~~#FF0000^^1~349.5~309~0~3~end~~~#FF0000^^0~347~310^^0~M 350 313 L 353 310 L 350 307",
+      "P~show~0~4~460~310~0~gge8~0^^460~310^^M460,310h-10~#880000^^1~446.3~314~0~Addr~end~~~#0000FF^^1~450.5~309~0~4~start~~~#0000FF^^0~453~310^^0~M 450 307 L 447 310 L 450 313",
+      "P~show~0~5~460~300~0~gge9~0^^460~300^^M460,300h-10~#000000^^1~446.3~304~0~GND~end~~~#000000^^1~450.5~299~0~5~start~~~#000000^^0~453~300^^0~M 450 297 L 447 300 L 450 303",
+      "P~show~0~6~460~290~0~gge10~0^^460~290^^M460,290h-10~#880000^^1~446.3~294~0~SDA~end~~~#0000FF^^1~450.5~289~0~6~start~~~#0000FF^^0~453~290^^0~M 450 287 L 447 290 L 450 293",
+      "P~show~0~7~410~270~90~gge59~0^^410~270^^M 410 270 v 10~#880000^^1~413~282~270~EP~end~~~#0000FF^^1~409~280~270~7~start~~~#0000FF^^0~410~277^^0~M 407 280 L 410 283 L 413 280"
+    ],
+    "BBox": {
+      "x": 339,
+      "y": 269,
+      "width": 122,
+      "height": 51
+    },
+    "colors": []
+  },
+  "jlcOnSale": 1,
+  "datastrid": "717bd3a8e6d145f780186b6a57b5b8ec",
+  "verify": true,
+  "SMT": true,
+  "writable": false,
+  "isFavorite": false,
+  "packageDetail": {
+    "uuid": "781d53400d1449608bc46c09eea56060",
+    "title": "DFN-6_L2.0-W2.0-P0.65-BL-EP1.2",
+    "docType": 4,
+    "updateTime": 1649571491,
+    "owner": {
+      "uuid": "0819f05c4eef4c71ace90d822a990e87",
+      "username": "lcsc",
+      "nickname": "LCSC",
+      "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
+    },
+    "datastrid": "adc33cc2b18944098873f87b55aa31bf",
+    "writable": false,
+    "dataStr": {
+      "head": {
+        "docType": "4",
+        "editorVersion": "6.4.25",
+        "newgId": true,
+        "c_para": {
+          "package": "DFN-6_L2.0-W2.0-P0.65-BL-EP1.2",
+          "pre": "U?",
+          "Contributor": "lcsc",
+          "link": "https://atta.szlcsc.com/upload/public/pdf/source/20200730/C712490_EB73A6D7506D579F180BB075B53A87A6.pdf",
+          "3DModel": "DFN-6_L2.0-W2.0-P0.65-BL-EP1.2"
+        },
+        "x": 3944.499,
+        "y": 3000,
+        "hasIdFlag": true,
+        "utime": 1634176018,
+        "uuid": "781d53400d1449608bc46c09eea56060",
+        "importFlag": 0,
+        "transformList": "",
+        "uuid_3d": "e07cd294288e4c2fb0b8e1a2d1b98783"
+      },
+      "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~0.03937~mm~1~45~visible~0.5~3944.499~3000~0~none",
+      "shape": [
+        "CIRCLE~3940.562~3003.937~0.118~0.2362~101~gge1154~0~~circle_gge1155,circle_gge1156",
+        "CIRCLE~3941.999~3004.669~0.295~0.5906~12~gge1145~0~~",
+        "SOLIDREGION~100~~M 3942.0886 2998.6713 L 3946.9114 2998.6713 L 3946.9114 3001.3287 L 3942.0886 3001.3287 Z ~solid~gge1119~~~~0",
+        "SOLIDREGION~100~~M 3941.3987 2996.063 L 3942.4813 2996.063 L 3942.4813 2997.441 L 3941.3987 2997.441 Z ~solid~gge1148~~~~0",
+        "SOLIDREGION~100~~M 3943.9577 2996.063 L 3945.0403 2996.063 L 3945.0403 2997.441 L 3943.9577 2997.441 Z ~solid~gge1149~~~~0",
+        "SOLIDREGION~100~~M 3946.5167 2996.063 L 3947.5993 2996.063 L 3947.5993 2997.441 L 3946.5167 2997.441 Z ~solid~gge1150~~~~0",
+        "SOLIDREGION~100~~M 3941.3987 3002.559 L 3942.4813 3002.559 L 3942.4813 3003.937 L 3941.3987 3003.937 Z ~solid~gge1151~~~~0",
+        "SOLIDREGION~100~~M 3943.9587 3002.559 L 3945.0413 3002.559 L 3945.0413 3003.937 L 3943.9587 3003.937 Z ~solid~gge1152~~~~0",
+        "SOLIDREGION~100~~M 3946.5167 3002.559 L 3947.5993 3002.559 L 3947.5993 3003.937 L 3946.5167 3003.937 Z ~solid~gge1153~~~~0",
+        "SOLIDREGION~99~~M 3940.562 3003.937 L 3940.562 2996.063 L 3948.436 2996.063 L 3948.436 3003.937 Z ~solid~gge1144~~~~0",
+        "PAD~RECT~3944.5~3003.543~1.1024~2.1654~1~~2~0~3943.9488 3002.4606 3945.0512 3002.4606 3945.0512 3004.626 3943.9488 3004.626~0~gge1126~0~~Y~0~0.0000~0.1969~3944.4995,3003.5433",
+        "PAD~RECT~3944.5~3000~5.1181~3.1496~1~~7~0~3941.941 2998.4252 3947.0591 2998.4252 3947.0591 3001.5748 3941.941 3001.5748~0~gge1127~0~~Y~0~0~0.1969~3944.4995,3000",
+        "PAD~RECT~3941.94~2996.457~1.1024~2.1654~1~~6~0~3941.3888 2995.374 3942.4912 2995.374 3942.4912 2997.5394 3941.3888 2997.5394~0~gge1128~0~~Y~0~0.0000~0.1969~3941.9399,2996.4568",
+        "PAD~RECT~3944.499~2996.457~1.1024~2.1654~1~~5~0~3943.9478 2995.374 3945.0502 2995.374 3945.0502 2997.5394 3943.9478 2997.5394~0~gge1129~0~~Y~0~0.0000~0.1969~3944.499,2996.4568",
+        "PAD~RECT~3947.058~2996.457~1.1024~2.1654~1~~4~0~3946.5068 2995.374 3947.6092 2995.374 3947.6092 2997.5394 3946.5068 2997.5394~0~gge1130~0~~Y~0~0.0000~0.1969~3947.0581,2996.4568",
+        "PAD~RECT~3947.058~3003.543~1.1024~2.1654~1~~3~0~3946.5068 3002.4606 3947.6092 3002.4606 3947.6092 3004.626 3946.5068 3004.626~0~gge1131~0~~Y~0~0.0000~0.1969~3947.0581,3003.5432",
+        "PAD~RECT~3941.94~3003.543~1.1024~2.1654~1~~1~0~3941.3888 3002.4606 3942.4912 3002.4606 3942.4912 3004.626 3941.3888 3004.626~0~gge1132~0~~Y~0~0.0000~0.1969~3941.9399,3003.5432",
+        "TRACK~0.6~3~~3948.739 3004.24 3948.739 2995.76~gge1143~0",
+        "TRACK~0.5984~3~~3948.3185 3004.237 3948.739 3004.237~gge1142~0",
+        "TRACK~0.5984~3~~3945.7599 3004.237 3945.7977 3004.237~gge1141~0",
+        "TRACK~0.5984~3~~3943.2003 3004.237 3943.2391 3004.237~gge1140~0",
+        "TRACK~0.5984~3~~3940.262 3004.237 3940.6795 3004.237~gge1139~0",
+        "TRACK~0.5984~3~~3948.3185 2995.763 3948.739 2995.763~gge1138~0",
+        "TRACK~0.5984~3~~3945.7594 2995.763 3945.7977 2995.763~gge1137~0",
+        "TRACK~0.5984~3~~3943.2003 2995.763 3943.2386 2995.763~gge1136~0",
+        "TRACK~0.5984~3~~3940.262 2995.763 3940.6795 2995.763~gge1135~0",
+        "TRACK~0.6~3~~3940.262 3004.237 3940.262 2995.763~gge1134~0",
+        "CIRCLE~3941.999~3005.5~0.295~0.5906~3~gge1133~0~~",
+        "SVGNODE~{\"gId\":\"g1_outline\",\"nodeName\":\"g\",\"nodeType\":1,\"layerid\":\"19\",\"attrs\":{\"c_width\":\"7.9527\",\"c_height\":\"7.9527\",\"c_rotation\":\"0,0,0\",\"z\":\"0\",\"c_origin\":\"3944.499,3000\",\"uuid\":\"a6276339f50448c1ad950868b8119b1f\",\"c_etype\":\"outline3D\",\"id\":\"g1_outline\",\"title\":\"DFN-6_L2.0-W2.0-P0.65-BL-EP1.2\",\"layerid\":\"19\",\"transform\":\"scale(1) translate(0, 0)\"},\"childNodes\":[{\"gId\":\"g1_outline_line0\",\"nodeName\":\"polyline\",\"nodeType\":1,\"attrs\":{\"fill\":\"none\",\"id\":\"g1_outline_line0\",\"c_shapetype\":\"line\",\"points\":\"3940.5226 2998.2283 3940.5226 2998.8188 3940.562 2998.8188 3940.562 3001.181 3940.5226 3001.181 3940.5226 3001.7716 3940.562 3001.7716 3940.562 3003.9369 3941.4675 3003.9369 3941.4675 3003.9763 3941.6644 3003.9763 3942.2549 3003.9763 3942.4518 3003.9763 3942.4518 3003.9369 3942.8455 3003.9369 3944.0266 3003.9369 3944.0266 3003.9763 3944.2234 3003.9763 3944.814 3003.9763 3945.0108 3003.9763 3945.0108 3003.9369 3946.5856 3003.9369 3946.5856 3003.9763 3946.7431 3003.9763 3947.373 3003.9763 3947.5699 3003.9763 3947.5699 3003.9369 3948.436 3003.9369 3948.436 3001.7716 3948.4754 3001.7716 3948.4754 3001.181 3948.436 3001.181 3948.436 2998.8188 3948.4754 2998.8188 3948.4754 2998.2283 3948.436 2998.2283 3948.436 2998.1495 3948.436 2997.7558 3948.436 2996.0629 3947.5699 2996.0629 3947.5699 2996.0236 3947.373 2996.0236 3946.7431 2996.0236 3946.5856 2996.0236 3946.5856 2996.0629 3945.0108 2996.0629 3945.0108 2996.0236 3944.814 2996.0236 3944.2234 2996.0236 3944.0266 2996.0236 3944.0266 2996.0629 3942.8455 2996.0629 3942.4518 2996.0629 3942.4518 2996.0236 3942.2549 2996.0236 3941.6644 2996.0236 3941.4675 2996.0236 3941.4675 2996.0629 3940.562 2996.0629 3940.562 2997.7558 3940.562 2998.1495 3940.562 2998.2283 3940.5226 2998.2283 3940.5226 2998.2283\"}}]}"
+      ],
+      "layers": [
+        "1~TopLayer~#FF0000~true~true~true~",
+        "2~BottomLayer~#0000FF~true~false~true~",
+        "3~TopSilkLayer~#FFCC00~true~false~true~",
+        "4~BottomSilkLayer~#66CC33~true~false~true~",
+        "5~TopPasteMaskLayer~#808080~true~false~true~",
+        "6~BottomPasteMaskLayer~#800000~true~false~true~",
+        "7~TopSolderMaskLayer~#800080~true~false~true~0.3",
+        "8~BottomSolderMaskLayer~#AA00FF~true~false~true~0.3",
+        "9~Ratlines~#6464FF~true~false~true~",
+        "10~BoardOutLine~#FF00FF~true~false~true~",
+        "11~Multi-Layer~#C0C0C0~true~false~true~",
+        "12~Document~#FFFFFF~true~false~true~",
+        "13~TopAssembly~#33CC99~true~false~true~",
+        "14~BottomAssembly~#5555FF~true~false~true~",
+        "15~Mechanical~#F022F0~true~false~true~",
+        "19~3DModel~#66CCFF~true~false~true~",
+        "21~Inner1~#999966~false~false~false~~",
+        "22~Inner2~#008000~false~false~false~~",
+        "23~Inner3~#00FF00~false~false~false~~",
+        "24~Inner4~#BC8E00~false~false~false~~",
+        "25~Inner5~#70DBFA~false~false~false~~",
+        "26~Inner6~#00CC66~false~false~false~~",
+        "27~Inner7~#9966FF~false~false~false~~",
+        "28~Inner8~#800080~false~false~false~~",
+        "29~Inner9~#008080~false~false~false~~",
+        "30~Inner10~#15935F~false~false~false~~",
+        "31~Inner11~#000080~false~false~false~~",
+        "32~Inner12~#00B400~false~false~false~~",
+        "33~Inner13~#2E4756~false~false~false~~",
+        "34~Inner14~#99842F~false~false~false~~",
+        "35~Inner15~#FFFFAA~false~false~false~~",
+        "36~Inner16~#99842F~false~false~false~~",
+        "37~Inner17~#2E4756~false~false~false~~",
+        "38~Inner18~#3535FF~false~false~false~~",
+        "39~Inner19~#8000BC~false~false~false~~",
+        "40~Inner20~#43AE5F~false~false~false~~",
+        "41~Inner21~#C3ECCE~false~false~false~~",
+        "42~Inner22~#728978~false~false~false~~",
+        "43~Inner23~#39503F~false~false~false~~",
+        "44~Inner24~#0C715D~false~false~false~~",
+        "45~Inner25~#5A8A80~false~false~false~~",
+        "46~Inner26~#2B937E~false~false~false~~",
+        "47~Inner27~#23999D~false~false~false~~",
+        "48~Inner28~#45B4E3~false~false~false~~",
+        "49~Inner29~#215DA1~false~false~false~~",
+        "50~Inner30~#4564D7~false~false~false~~",
+        "51~Inner31~#6969E9~false~false~false~~",
+        "52~Inner32~#9069E9~false~false~false~~",
+        "99~ComponentShapeLayer~#00CCCC~true~false~true~0.4",
+        "100~LeadShapeLayer~#CC9999~true~false~true~",
+        "101~ComponentMarkingLayer~#66FFCC~true~false~true~",
+        "Hole~Hole~#222222~false~false~true~",
+        "DRCError~DRCError~#FAD609~false~false~true~"
+      ],
+      "objects": [
+        "All~true~false",
+        "Component~true~true",
+        "Prefix~true~true",
+        "Name~true~false",
+        "Track~true~true",
+        "Pad~true~true",
+        "Via~true~true",
+        "Hole~true~true",
+        "Copper_Area~true~true",
+        "Circle~true~true",
+        "Arc~true~true",
+        "Solid_Region~true~true",
+        "Text~true~true",
+        "Image~true~true",
+        "Rect~true~true",
+        "Dimension~true~true",
+        "Protractor~true~true"
+      ],
+      "BBox": {
+        "x": 3940.3,
+        "y": 2995.4,
+        "width": 8.5,
+        "height": 10.4
+      }
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -1.01,
+        "y": -1.01,
+        "z": -0.02
+      },
+      "max": {
+        "x": 1.01,
+        "y": 1.01,
+        "z": 0.75
+      }
+    }
+  }
+}
