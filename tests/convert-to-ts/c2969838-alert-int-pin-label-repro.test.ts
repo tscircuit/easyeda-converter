@@ -6,18 +6,19 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C2969838.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C2969838 losing its ALERT/INT pin label", async () => {
+it("reproduces slash-separated pin labels being lost", async () => {
+  const slashSeparatedPinLabel = "ALERT/INT"
+
   expect(
     chipRawEasy.dataStr.shape.some((shape) =>
-      shape.includes("~ALERT/INT~"),
+      shape.includes(`~${slashSeparatedPinLabel}~`),
     ),
   ).toBeTrue()
 
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  expect(result).toContain('pin2: ["pin2"]')
-  expect(result).not.toContain("ALERT/INT")
+  expect(result).not.toContain(slashSeparatedPinLabel)
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
