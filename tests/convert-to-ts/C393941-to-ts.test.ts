@@ -33,11 +33,11 @@ it("should convert C393941 into typescript file", async () => {
       pin6: ["VSS"],
       pin7: ["DAT0"],
       pin8: ["DAT1"],
+      pin9: ["CD"],
       pin10: ["pin10"],
       pin11: ["pin11"],
       pin12: ["pin12"],
-      pin13: ["pin13"],
-      pin14: ["CD"]
+      pin13: ["pin13"]
     } as const
 
     const pinAttributes = {
@@ -67,7 +67,7 @@ it("should convert C393941 into typescript file", async () => {
     <smtpad portHints={["pin3"]} pcbX="0.050038mm" pcbY="5.4499637mm" width="0.6999986mm" height="1.5999968mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="1.150112mm" pcbY="5.4499637mm" width="0.6999986mm" height="1.5999968mm" shape="rect" />
     <smtpad portHints={["pin1"]} pcbX="2.250186mm" pcbY="5.4499637mm" width="0.6999986mm" height="1.5999968mm" shape="rect" />
-    <smtpad portHints={["pin14"]} pcbX="-6.549898mm" pcbY="5.4499637mm" width="0.6999986mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin9"]} pcbX="-6.549898mm" pcbY="5.4499637mm" width="0.6999986mm" height="1.5999968mm" shape="rect" />
     <smtpad portHints={["pin10"]} pcbX="-7.750048mm" pcbY="4.4499657mm" width="1.1999976mm" height="1.499997mm" shape="rect" />
     <smtpad portHints={["pin11"]} pcbX="-7.750048mm" pcbY="-5.1499643mm" width="1.1999976mm" height="2.1999956mm" shape="rect" />
     <smtpad portHints={["pin12"]} pcbX="7.750048mm" pcbY="-5.1499643mm" width="1.1999976mm" height="2.1999956mm" shape="rect" />

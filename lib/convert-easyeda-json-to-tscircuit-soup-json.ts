@@ -438,14 +438,43 @@ export const convertEasyEdaJsonToCircuitJson = (
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
+  const footprintPinNumbers = new Set(
+    pads.map((pad) => String(pad.number ?? "").trim()),
+  )
+
+  const matchedPinsByPad = pads.map((pad) => {
+    const padNumber = String(pad.number ?? "").trim()
+    const exactPinNumberMatch = pins.find(
+      (pin) => String(pin.pinNumber).trim() === padNumber,
+    )
+    if (exactPinNumberMatch) return exactPinNumberMatch
+
+    // Some EasyEDA footprints use a functional pad name (for example "CD")
+    // where the symbol uses a numeric pin with that label.
+    if (!padNumber || /^\d+$/.test(padNumber)) return undefined
+
+    const normalizedPadNumber = normalizeSymbolName(padNumber)
+    const pinLabelMatches = pins.filter(
+      (pin) => normalizeSymbolName(pin.label) === normalizedPadNumber,
+    )
+    if (pinLabelMatches.length !== 1) return undefined
+
+    const matchedPinNumber = String(pinLabelMatches[0]!.pinNumber).trim()
+    if (!/^\d+$/.test(matchedPinNumber)) return undefined
+    if (footprintPinNumbers.has(matchedPinNumber)) return undefined
+
+    return pinLabelMatches[0]
+  })
 
   // Prepare pin labels for normalization
-  const pinLabelSets = pads.map((pad) => {
+  const pinLabelSets = pads.map((pad, index) => {
     const labels = []
-    if (pad.number) labels.push(pad.number.toString())
+    const matchedPin = matchedPinsByPad[index]
 
-    const pin = pins.find((p) => p.pinNumber === pad.number)
-    if (pin) labels.push(normalizeSymbolName(pin.label))
+    if (matchedPin) labels.push(matchedPin.pinNumber.toString())
+    else if (pad.number) labels.push(pad.number.toString())
+
+    if (matchedPin) labels.push(normalizeSymbolName(matchedPin.label))
 
     return labels
   })
@@ -453,7 +482,9 @@ export const convertEasyEdaJsonToCircuitJson = (
   // Repeated EasyEDA pad numbers are multiple copper geometries for one
   // logical pin. Unnumbered pads remain independent.
   const padNumberKeys = pads.map((pad, index) => {
-    const padNumber = String(pad.number ?? "").trim()
+    const padNumber = String(
+      matchedPinsByPad[index]?.pinNumber ?? pad.number ?? "",
+    ).trim()
     return padNumber ? `number:${padNumber}` : `index:${index}`
   })
   const uniquePinLabelSets: string[][] = []
