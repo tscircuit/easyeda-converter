@@ -40,6 +40,15 @@ const runReproCase = async (partNumber: string, rawEasy: unknown) => {
 }
 
 test("reproduces C1046 L0805 inductor being generated as a generic chip", async () => {
+  expect(c1046RawEasy).toMatchObject({
+    owner: { username: "LCSC" },
+    title: "SDFL2012S100KTF",
+    uuid: "7e7bd4480f50e43c3f271086aa8e152e",
+    lcsc: {
+      number: "C1046",
+      url: "https://lcsc.com/product-detail/Inductors-SMD_10uH-10_C1046.html",
+    },
+  })
   const result = await runReproCase("C1046", c1046RawEasy)
 
   expect(result).toMatchInlineSnapshot(`
@@ -92,6 +101,15 @@ test("reproduces C1046 L0805 inductor being generated as a generic chip", async 
 }, 50000)
 
 test("reproduces C281113 L0805 inductor being generated as a generic chip", async () => {
+  expect(c281113RawEasy).toMatchObject({
+    owner: { username: "LCSC" },
+    title: "MGFL2012F100MT-LF",
+    uuid: "910aaef3ba604a9a8f17fc3b542dced9",
+    lcsc: {
+      number: "C281113",
+      url: "https://lcsc.com/product-detail/Inductors-SMD_microgate-MGFL2012F100MT-LF_C281113.html",
+    },
+  })
   const result = await runReproCase("C281113", c281113RawEasy)
 
   expect(result).toMatchInlineSnapshot(`
