@@ -21,6 +21,7 @@ it("converts C2041570 to an inductor", async () => {
     expect.objectContaining({
       type: "source_component",
       ftype: "simple_inductor",
+      name: "L1",
       inductance: "2.2uH",
     }),
   )
