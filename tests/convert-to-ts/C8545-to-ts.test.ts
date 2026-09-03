@@ -60,6 +60,7 @@ it("repro: imports C8545 with its custom schematic symbol", async () => {
               <port name="pin3" pinNumber={3} aliases={["D"]} direction="up" schX={0.2} schY={0.4} schStemLength={0.2} />
               <port name="pin1" pinNumber={1} aliases={["G"]} direction="left" schX={-0.4} schY={0} schStemLength={0.2} />
               <port name="pin2" pinNumber={2} aliases={["S"]} direction="down" schX={0.2} schY={-0.4} schStemLength={0.2} />
+              <schematictext schX={-0.44} schY={0.64} text="{NAME}" fontSize={0.2} anchor="bottom_left" />
             </symbol>
           }
           supplierPartNumbers={{

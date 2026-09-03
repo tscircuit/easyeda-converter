@@ -14,6 +14,41 @@ const examples = [
   "P~show~0~8~445~285~0~gge12~0^^445~285^^M445,285h-10~#FF0000^^1~431.3~289~0~VCC~end~~~#FF0000^^1~435.5~284~0~8~start~~~#FF0000^^0~438~285^^0~M 435 282 L 432 285 L 435 288",
 ]
 
+it("preserves pin-number visibility, position, rotation, and font metadata", () => {
+  expect(SingleLetterShapeSchema.parse(examples[2])).toMatchObject({
+    numberLabel: {
+      visible: true,
+      x: 364.5,
+      y: 284,
+      rotation: 0,
+      anchor: "end",
+      fontSize: "7pt",
+      color: "#000000",
+    },
+  })
+  expect(
+    SingleLetterShapeSchema.parse(
+      "P~show~0~3~380~280~270~gge7~0^^380~280^^M 380 280 v -10~#880000^^0~383~268~270~3~start~~~#0000FF^^0~379~270~270~3~end~~9pt~#0000FF^^0~380~273^^0~M 377 270 L 380 267 L 383 270",
+    ),
+  ).toMatchObject({
+    numberLabel: { visible: false, rotation: 270, fontSize: "9pt" },
+  })
+})
+
+it("preserves solid, dashed, and dotted schematic polyline styles", () => {
+  for (const [code, strokeStyle] of [
+    ["0", "solid"],
+    ["1", "dashed"],
+    ["2", "dotted"],
+  ]) {
+    expect(
+      SingleLetterShapeSchema.parse(
+        `PL~390 260 390 255 380 255 380 270~#880000~1~${code}~none~gge88~0`,
+      ),
+    ).toMatchObject({ strokeStyle })
+  }
+})
+
 it("parses examples for single letter shape schema", () => {
   examples.forEach((example) => {
     expect(() => {

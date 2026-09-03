@@ -46,7 +46,7 @@ it("preserves all C136720 slide-switch terminals and its footprint", async () =>
   expect(result).not.toContain("NaNmm")
   expect(result).toContain("ChipProps")
   expect(result).toContain("<chip")
-  expect(result).not.toContain("symbol={")
+  expect(result).toContain("symbol={")
   expect(result).toContain("pinLabels={pinLabels}")
   expect(result).not.toContain("<pushbutton")
   expect(result).not.toContain("<switch")
@@ -65,6 +65,21 @@ it("preserves all C136720 slide-switch terminals and its footprint", async () =>
       return (
         <chip
           pinLabels={pinLabels}
+          symbol={
+            <symbol>
+              <port name="pin2" pinNumber={2} aliases={["2"]} direction="left" schX={-0.7} schY={0} schStemLength={0.38} />
+              <schematictext schX={-0.46} schY={0.02} text="2" fontSize={0.11} anchor="bottom_right" color="#000000" schRotation={0} />
+              <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={0.7} schY={-0.1} schStemLength={0.38} />
+              <schematictext schX={0.44} schY={-0.08} text="1" fontSize={0.11} anchor="bottom_left" color="#000000" schRotation={0} />
+              <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={0.7} schY={0.1} schStemLength={0.38} />
+              <schematictext schX={0.44} schY={0.12} text="3" fontSize={0.11} anchor="bottom_left" color="#000000" schRotation={0} />
+              <port name="pin4" pinNumber={4} aliases={["4"]} direction="down" schX={0.3} schY={-0.3} schStemLength={0.1} />
+              <port name="pin5" pinNumber={5} aliases={["5"]} direction="down" schX={-0.3} schY={-0.3} schStemLength={0.1} />
+              <schematicpath points={[{"x":-0.2,"y":0},{"x":0.2,"y":-0.1}]} strokeColor="#880000" />
+              <schematicpath points={[{"x":-0.4,"y":0},{"x":-0.4,"y":0.2},{"x":0.4,"y":0.2},{"x":0.4,"y":-0.2},{"x":-0.4,"y":-0.2},{"x":-0.4,"y":0}]} strokeColor="#000000" />
+              <schematictext schX={-0.72} schY={0.468} text="{NAME}" fontSize={0.2} anchor="bottom_left" />
+            </symbol>
+          }
           supplierPartNumbers={{
       "jlcpcb": [
         "C136720"

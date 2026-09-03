@@ -187,6 +187,37 @@ export const ArcShapeSchema = z
   .transform(parseArc)
   .pipe(ArcShapeOutputSchema)
 
+const PinNumberLabelSchema = z.object({
+  visible: z.boolean(),
+  x: z.number(),
+  y: z.number(),
+  rotation: z.number(),
+  anchor: z.enum(["start", "middle", "end"]),
+  fontSize: z.string(),
+  color: z.string(),
+})
+
+const parsePinNumberLabel = (
+  section: string | undefined,
+): z.infer<typeof PinNumberLabelSchema> | undefined => {
+  if (!section) return undefined
+  const [visible, x, y, rotation, , anchor, , fontSize, color] =
+    section.split("~")
+  if (!x || !y || !Number.isFinite(Number(x)) || !Number.isFinite(Number(y))) {
+    return undefined
+  }
+  return {
+    visible: visible === "1",
+    x: Number(x),
+    y: Number(y),
+    rotation: Number(rotation) || 0,
+    anchor: anchor === "end" || anchor === "middle" ? anchor : "start",
+    // EasyEDA's pin text defaults to 7pt when the font size is omitted.
+    fontSize: fontSize || "7pt",
+    color: color || "#0000FF",
+  }
+}
+
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide", "none"]),
@@ -199,6 +230,7 @@ const PinShapeOutputSchema = z.object({
   labelColor: z.string(),
   path: z.string(),
   arrow: z.string(),
+  numberLabel: PinNumberLabelSchema.optional(),
 })
 
 const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
@@ -235,6 +267,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     labelColor,
     path,
     arrow,
+    numberLabel: parsePinNumberLabel(pinString.split("^^")[4]),
   }
 }
 
@@ -249,6 +282,7 @@ const PolylineShapeOutputSchema = z.object({
   points: z.array(PointSchema),
   color: z.string(),
   lineWidth: z.number(),
+  strokeStyle: z.enum(["solid", "dashed", "dotted"]).optional(),
   id: z.string(),
 })
 
@@ -269,13 +303,15 @@ const parsePolyline = (
   str: string,
 ): z.infer<typeof PolylineShapeOutputSchema> => {
   const [, ...rest] = str.split("~")
-  const [pointsStr, color, lineWidth, , , id] = rest
+  const [pointsStr, color, lineWidth, strokeStyle, , id] = rest
 
   return {
     type: "POLYLINE",
     points: parsePoints(pointsStr),
     color,
     lineWidth: Number(lineWidth),
+    strokeStyle:
+      strokeStyle === "1" ? "dashed" : strokeStyle === "2" ? "dotted" : "solid",
     id,
   }
 }
@@ -392,6 +428,7 @@ const optionalEasyEdaTextField = <T extends z.ZodTypeAny>(fieldSchema: T) =>
 
 const TextShapeOutputSchema = z.object({
   type: z.literal("TEXT"),
+  isReference: z.boolean().optional(),
   alignment: z.enum(["L", "C", "R"]),
   x: z.number(),
   y: z.number(),
@@ -433,6 +470,7 @@ const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
 
   return {
     type: "TEXT",
+    isReference: alignment === "P",
     // Some EasyEDA component payloads use "P" for start-aligned text.
     alignment: (alignment === "P" ? "L" : alignment) as "L" | "C" | "R",
     x: Number(x),

@@ -50,17 +50,24 @@ it("should convert C309274 into typescript file", async () => {
               <schematicpath points={[{"x":0.4,"y":0},{"x":0.2,"y":0},{"x":0.2,"y":0.2},{"x":0.18,"y":0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":0.2},{"x":0.22,"y":0.1}]} strokeColor="#880000" />
               <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.6} schY={0.6} schStemLength={0.2} />
+              <schematictext schX={0.4} schY={0.62} text="2" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={0.6} schY={0.4} schStemLength={0.2} />
+              <schematictext schX={0.4} schY={0.42} text="3" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <port name="pin4" pinNumber={4} aliases={["4"]} direction="right" schX={0.6} schY={0.2} schStemLength={0.2} />
+              <schematictext schX={0.4} schY={0.22} text="4" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <port name="pin5" pinNumber={5} aliases={["5"]} direction="right" schX={0.6} schY={0} schStemLength={0.2} />
+              <schematictext schX={0.4} schY={0.02} text="5" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <port name="pin6" pinNumber={6} aliases={["6"]} direction="right" schX={0.6} schY={-0.2} schStemLength={0.2} />
+              <schematictext schX={0.4} schY={-0.18} text="6" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <port name="pin7" pinNumber={7} aliases={["7"]} direction="right" schX={0.6} schY={-0.4} schStemLength={0.2} />
+              <schematictext schX={0.4} schY={-0.38} text="7" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <schematicpath points={[{"x":0.4,"y":0.6},{"x":-0.2,"y":0.6},{"x":-0.2,"y":0.2}]} strokeColor="#880000" />
               <schematicpath svgPath="M -0.28 0.2 C -0.28 0.14 -0.2 0.14 -0.2 0.2" strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":-0.4},{"x":0.2,"y":-0.4},{"x":0.2,"y":-0.2},{"x":0.18,"y":-0.3}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":-0.2},{"x":0.22,"y":-0.3}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":0.2},{"x":0.04,"y":0.2},{"x":0,"y":0.28},{"x":-0.04,"y":0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":-0.2},{"x":0.14,"y":-0.2},{"x":0.1,"y":-0.12},{"x":0.06,"y":-0.2}]} strokeColor="#880000" />
+              <schematictext schX={-0.52} schY={1.02} text="{NAME}" fontSize={0.2} anchor="bottom_left" />
             </symbol>
           }
           supplierPartNumbers={{

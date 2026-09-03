@@ -365,7 +365,15 @@ const generateShapeTsx = ({
     const isPolygon = shape.type === "POLYGON"
     const points = shape.points.map(transformPoint)
     if (isPolygon && points.length > 0) points.push(points[0])
-    return `<schematicpath points={${JSON.stringify(points)}} strokeColor=${JSON.stringify(isPolygon ? shape.lineColor : shape.color)}${isPolygon && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
+    // EasyEDA stores a style, not a dash array. Use stroke-relative lengths.
+    const strokeWidth = toSchematicUnits(shape.lineWidth)
+    const dashProps =
+      !isPolygon && shape.strokeStyle === "dashed"
+        ? ` dashLength={${round(strokeWidth * 3)}} dashGap={${round(strokeWidth * 3)}}`
+        : !isPolygon && shape.strokeStyle === "dotted"
+          ? ` dashLength={${strokeWidth}} dashGap={${round(strokeWidth * 2)}}`
+          : ""
+    return `<schematicpath points={${JSON.stringify(points)}} strokeColor=${JSON.stringify(isPolygon ? shape.lineColor : shape.color)}${dashProps}${isPolygon && shape.fillColor !== "none" ? ` isFilled fillColor=${JSON.stringify(shape.fillColor)}` : ""} />`
   }
 
   if (shape.type === "PATH") {
@@ -383,7 +391,7 @@ const generateShapeTsx = ({
   if (shape.type === "TEXT") {
     if (shape.visibility !== "1") return undefined
     const position = transformPoint({ x: shape.x, y: shape.y })
-    return `<schematictext schX={${position.x}} schY={${position.y}} text=${JSON.stringify(shape.content)} fontSize={${getTextFontSize(shape.fontSize)}} anchor=${JSON.stringify(getTextAnchor(shape.alignment))} color=${JSON.stringify(shape.fontColor)} schRotation={${round(-shape.rotation)}} />`
+    return `<schematictext schX={${position.x}} schY={${position.y}} text=${JSON.stringify(shape.isReference ? "{NAME}" : shape.content)} fontSize={${getTextFontSize(shape.fontSize)}} anchor=${JSON.stringify(getTextAnchor(shape.alignment))} color=${JSON.stringify(shape.fontColor)} schRotation={${round(-shape.rotation)}} />`
   }
 
   if (shape.type === "PIN" && portMetadata) {
@@ -406,7 +414,17 @@ const generateShapeTsx = ({
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
-    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    const portTsx = `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    const label = shape.numberLabel
+    if (!label?.visible) return portTsx
+    const labelPosition = transformPoint(label)
+    const anchor =
+      label.anchor === "end"
+        ? "bottom_right"
+        : label.anchor === "middle"
+          ? "bottom_center"
+          : "bottom_left"
+    return `${portTsx}\n<schematictext schX={${labelPosition.x}} schY={${labelPosition.y}} text=${JSON.stringify(String(portMetadata.pinNumber ?? shape.pinNumber))} fontSize={${getTextFontSize(label.fontSize)}} anchor="${anchor}" color=${JSON.stringify(label.color)} schRotation={${label.rotation}} />`
   }
 
   // AR arrowheads and I image annotations are intentionally ignored by the
@@ -468,8 +486,24 @@ export const generateSymbolTsx = (
 
   if (shapeTsx.length === 0) return undefined
 
+  // Custom symbols do not receive the automatic reference text of a chip box.
+  // Keep a source prefix when present (including hidden ones), otherwise place
+  // the instance name above the source bounds using the existing text template.
+  if (
+    includePorts &&
+    !shapes.some((shape) => shape.type === "TEXT" && shape.isReference)
+  ) {
+    const topLeft = transformPoint({ x: bounds.x, y: bounds.y })
+    shapeTsx.push(
+      `<schematictext schX={${topLeft.x}} schY={${round(topLeft.y + 0.2)}} text="{NAME}" fontSize={0.2} anchor="bottom_left" />`,
+    )
+  }
+
   return `<symbol>
-${shapeTsx.map((tsx) => `  ${tsx}`).join("\n")}
+${shapeTsx
+  .flatMap((tsx) => tsx.split("\n"))
+  .map((line) => `  ${line}`)
+  .join("\n")}
 </symbol>`
 }
 

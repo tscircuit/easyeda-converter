@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { SingleLetterShapeSchema } from "lib/schemas/single-letter-shape-schema"
 import {
   generateSymbolTsx,
   hasNonBoxSchematicSymbol,
@@ -13,12 +14,84 @@ import symbolWithPathRawEasy from "./assets/C2828420.raweasy.json"
 import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
 import symbolWithStaleHeadOriginRawEasy from "./assets/C5830143.raweasy.json"
 import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
+import switchRawEasy from "./assets/C2941005.raweasy.json"
+import slideSwitchRawEasy from "./assets/C136720.raweasy.json"
 
 const generateSymbolFromRawEasy = (rawEasy: unknown): string => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
   return generateSymbolTsx(betterEasy, circuitJson) ?? ""
 }
+
+test("preserves the switch drawing, pin-number positions, and dashed contacts", () => {
+  const symbolTsx = generateSymbolFromRawEasy(switchRawEasy)
+  expect(symbolTsx.match(/<port /g)).toHaveLength(6)
+  expect(symbolTsx.match(/<schematictext /g)).toHaveLength(7)
+  expect(symbolTsx).toContain('text="{NAME}"')
+  expect(symbolTsx).toContain(
+    '<schematictext schX={-0.22} schY={0.4} text="3" fontSize={0.14} anchor="bottom_right" color="#0000FF" schRotation={270} />',
+  )
+  expect(symbolTsx.match(/dashLength=\{0.06\} dashGap=\{0.06\}/g)).toHaveLength(
+    2,
+  )
+  expect(symbolTsx).toContain(
+    '<schematicpath points={[{"x":0,"y":0.6},{"x":0,"y":0.7},{"x":-0.2,"y":0.7},{"x":-0.2,"y":0.4}]} strokeColor="#880000" dashLength={0.06} dashGap={0.06} />',
+  )
+})
+
+test("keeps hidden mounting-pin numbers hidden in the imported slide switch", () => {
+  const symbolTsx = generateSymbolFromRawEasy(slideSwitchRawEasy)
+  expect(symbolTsx.match(/<port /g)).toHaveLength(5)
+  expect(symbolTsx.match(/<schematictext /g)).toHaveLength(4)
+  expect(symbolTsx).not.toContain('text="4"')
+  expect(symbolTsx).not.toContain('text="5"')
+})
+
+test("omits hidden pins and renders dotted paths with a shorter dash", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
+  const pin = betterEasy.dataStr.shape.find((shape) => shape.type === "PIN")!
+  pin.visibility = "hide"
+  const path = betterEasy.dataStr.shape.find(
+    (shape) => shape.type === "POLYLINE",
+  )!
+  path.strokeStyle = "dotted"
+  const symbolTsx = generateSymbolTsx(
+    betterEasy,
+    convertEasyEdaJsonToCircuitJson(betterEasy),
+  )!
+  expect(symbolTsx.match(/<port /g)).toHaveLength(5)
+  expect(symbolTsx).not.toContain('text="3"')
+  expect(symbolTsx).toContain("dashLength={0.02} dashGap={0.04}")
+})
+
+test("uses the source reference position and respects a hidden reference", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
+  const prefix = SingleLetterShapeSchema.parse(
+    "T~P~390~250~0~#0000FF~~7pt~~~~comment~SW?~1~start~ref1~0",
+  )
+  if (prefix.type !== "TEXT") throw new Error("Expected a text shape")
+  betterEasy.dataStr.shape.push(prefix)
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const symbolTsx = generateSymbolTsx(betterEasy, circuitJson)!
+  expect(symbolTsx.match(/text="\{NAME\}"/g)).toHaveLength(1)
+  expect(symbolTsx).toContain(
+    '<schematictext schX={0} schY={0.8} text="{NAME}"',
+  )
+  expect(symbolTsx).not.toContain("SW?")
+  prefix.visibility = "0"
+  expect(generateSymbolTsx(betterEasy, circuitJson)).not.toContain("{NAME}")
+})
+
+test("does not add pin annotations or a reference to a drawing-only symbol", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
+  const symbolTsx = generateSymbolTsx(
+    betterEasy,
+    convertEasyEdaJsonToCircuitJson(betterEasy),
+    { includePorts: false },
+  )!
+  expect(symbolTsx).not.toContain("<port ")
+  expect(symbolTsx).not.toContain("<schematictext ")
+})
 
 test("generates a centered symbol with positioned, aliased ports", () => {
   const symbolTsx = generateSymbolFromRawEasy(ne555RawEasy)

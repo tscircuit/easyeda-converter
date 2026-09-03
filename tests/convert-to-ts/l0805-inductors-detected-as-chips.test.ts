@@ -71,6 +71,7 @@ test("reproduces C1046 L0805 inductor being generated as a generic chip", async 
                   <schematicpath svgPath="M -0.168 0.0014 A 0.08 0.078 0 1 0 -0.0088 0.0014" strokeColor="#880000" />
                   <schematicpath svgPath="M 0.0014 0.0014 A 0.08 0.078 0 1 0 0.1606 0.0014" strokeColor="#880000" />
                   <schematicpath svgPath="M 0.174 0.0014 A 0.08 0.078 0 1 0 0.3334 0.0012" strokeColor="#880000" />
+                  <schematictext schX={-0.48} schY={0.288} text="{NAME}" fontSize={0.2} anchor="bottom_left" />
                 </symbol>
               }
               supplierPartNumbers={{
@@ -132,6 +133,7 @@ test("reproduces C281113 L0805 inductor being generated as a generic chip", asyn
                   <schematicpath svgPath="M -0.168 0.00142 A 0.08 0.078 0 1 0 -0.0087 0.00132" strokeColor="#880000" />
                   <schematicpath svgPath="M 0.00134 0.00142 A 0.08 0.078 0 1 0 0.16064 0.00132" strokeColor="#880000" />
                   <schematicpath svgPath="M 0.174 0.00138 A 0.08 0.078 0 1 0 0.3333 0.00128" strokeColor="#880000" />
+                  <schematictext schX={-0.44} schY={0.286} text="{NAME}" fontSize={0.2} anchor="bottom_left" />
                 </symbol>
               }
               supplierPartNumbers={{
