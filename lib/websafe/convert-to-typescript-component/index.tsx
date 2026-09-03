@@ -38,11 +38,7 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isDipSwitchCategoryComponent(betterEasy)) return "chip"
-  if (isSwitchCategoryComponent(betterEasy)) {
-    // A bare <switch> defaults to two-terminal SPST. Use the chip fallback for
-    // other pin counts rather than guessing the pole/throw configuration.
-    return pinCount === 2 ? "switch" : "chip"
-  }
+  if (isSwitchCategoryComponent(betterEasy, pinCount)) return "switch"
   if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
   if (isInductorComponent(betterEasy) && pinCount === 2) return "inductor"
@@ -195,10 +191,6 @@ export const convertBetterEasyToTsx = async ({
     isDiodeCategoryComponent(betterEasy) && sourcePorts.length !== 2
   const isMultiPinInductor =
     isInductorComponent(betterEasy) && sourcePorts.length !== 2
-  const isMultiPinSwitch =
-    !isDipSwitch &&
-    isSwitchCategoryComponent(betterEasy) &&
-    sourcePorts.length !== 2
   const isPassiveWithCustomSymbol =
     componentType === "capacitor" && sourcePorts.length !== 2
   const symbolTsx =
@@ -206,7 +198,6 @@ export const convertBetterEasyToTsx = async ({
     (componentType === "chip" &&
       !isMultiPinDiode &&
       !isMultiPinInductor &&
-      !isMultiPinSwitch &&
       hasNonBoxSchematicSymbol(betterEasy))
       ? generateSymbolTsx(betterEasy, circuitJson, {
           alignPortsToDrawing: isPassiveWithCustomSymbol,
