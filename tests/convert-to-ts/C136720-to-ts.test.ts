@@ -3,8 +3,10 @@ import switchRawEasy from "../assets/C136720.raweasy.json"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
+import {
+  convertCircuitJsonToPcbSvg,
+  convertCircuitJsonToSchematicSvg,
+} from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 
 it("converts C136720 document-layer tracks to fabrication notes", () => {
@@ -34,7 +36,7 @@ it("converts C136720 document-layer tracks to fabrication notes", () => {
   )
 })
 
-it("should convert C136720 slide switch into a switch component with pin labels", async () => {
+it("preserves all C136720 slide-switch terminals and its footprint", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
@@ -42,13 +44,14 @@ it("should convert C136720 slide switch into a switch component with pin labels"
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-  expect(result).toContain("SwitchProps")
-  expect(result).toContain("<switch")
+  expect(result).toContain("ChipProps")
+  expect(result).toContain("<chip")
+  expect(result).not.toContain("symbol={")
   expect(result).toContain("pinLabels={pinLabels}")
   expect(result).not.toContain("<pushbutton")
-  expect(result).not.toContain("<chip")
+  expect(result).not.toContain("<switch")
   expect(result).toMatchInlineSnapshot(`
-    "import type { SwitchProps } from "@tscircuit/props"
+    "import type { ChipProps } from "@tscircuit/props"
 
     const pinLabels = {
       pin1: ["pin1"],
@@ -58,12 +61,9 @@ it("should convert C136720 slide switch into a switch component with pin labels"
       pin5: ["pin5"]
     } as const
 
-    export const SK_12E12_G5 = (props: SwitchProps) => {
-      const { name = "SW1", ...restProps } = props
-
+    export const SK_12E12_G5 = (props: ChipProps<typeof pinLabels>) => {
       return (
-        <switch
-          name={name}
+        <chip
           pinLabels={pinLabels}
           supplierPartNumbers={{
       "jlcpcb": [
@@ -89,15 +89,24 @@ it("should convert C136720 slide switch into a switch component with pin labels"
             pcbRotationOffset: 90,
             modelOriginPosition: { x: -0.000012699999999199463, y: 0.3670000000000013, z: -0.5500069999999995 },
           }}
-          {...restProps}
+          {...props}
         />
       )
     }"
   `)
 
-  const circuitJson = await runTscircuitCode(
-    wrapTsxWithBoardFor3dSnapshot(result),
-  )
+  const circuitJson = await runTscircuitCode(`${result}
+export default () => (<board><SK_12E12_G5 name="SW1" /></board>)
+`)
+  await expect(
+    convertCircuitJsonToSchematicSvg(circuitJson),
+  ).toMatchSvgSnapshot(import.meta.path, "C136720-schematic")
+  expect(
+    circuitJson
+      .filter((element) => element.type === "schematic_port")
+      .map((port) => port.pin_number)
+      .sort(),
+  ).toEqual([1, 2, 3, 4, 5])
   expect(
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
   ).toMatchSvgSnapshot(import.meta.path)
@@ -109,7 +118,8 @@ it("should convert C136720 slide switch into a switch component with pin labels"
     (element) => element.type === "source_component",
   )
 
-  expect(sourceComponent?.ftype).toBe("simple_switch")
+  expect(sourceComponent?.ftype).toBe("simple_chip")
+  expect(sourceComponent?.are_pins_interchangeable).not.toBe(true)
   expect(
     circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
   ).toHaveLength(2)
