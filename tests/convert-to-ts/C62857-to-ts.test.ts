@@ -29,10 +29,10 @@ it("converts C62857 capacitor array with its EasyEDA symbol", async () => {
   expect(result.match(/<schematicpath /g)).toHaveLength(17)
   expect(result.match(/<port /g)).toHaveLength(8)
   expect(result).toContain(
-    '<port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.7} schY={0.46} schStemLength={0.4} />',
+    '<port name="pin1" pinNumber={1} direction="left" schX={-0.7} schY={0.46} schStemLength={0.4} />',
   )
   expect(result).toContain(
-    '<port name="pin8" pinNumber={8} aliases={["8"]} direction="right" schX={0.7} schY={0.46} schStemLength={0.4} />',
+    '<port name="pin8" pinNumber={8} direction="right" schX={0.7} schY={0.46} schStemLength={0.4} />',
   )
   expect(result.match(/<smtpad /g)).toHaveLength(8)
 

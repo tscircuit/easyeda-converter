@@ -67,15 +67,15 @@ it("should convert C75749 into typescript file", async () => {
               <schematiccircle center={{ x: 0, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
               <schematiccircle center={{ x: -0.4, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
               <schematiccircle center={{ x: -0.8, y: -0.1 }} radius={0.06} strokeWidth={0.02} color="#880000" />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="down" schX={-0.8} schY={-0.7} schStemLength={0.4} />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="down" schX={-0.4} schY={-0.7} schStemLength={0.4} />
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="down" schX={0} schY={-0.7} schStemLength={0.4} />
-              <port name="pin4" pinNumber={4} aliases={["4"]} direction="down" schX={0.4} schY={-0.7} schStemLength={0.4} />
-              <port name="pin5" pinNumber={5} aliases={["5"]} direction="down" schX={0.8} schY={-0.7} schStemLength={0.4} />
-              <port name="pin6" pinNumber={6} aliases={["6"]} direction="down" schX={-0.6} schY={-0.7} schStemLength={0.4} />
-              <port name="pin7" pinNumber={7} aliases={["7"]} direction="down" schX={-0.2} schY={-0.7} schStemLength={0.4} />
-              <port name="pin8" pinNumber={8} aliases={["8"]} direction="down" schX={0.2} schY={-0.7} schStemLength={0.4} />
-              <port name="pin9" pinNumber={9} aliases={["9"]} direction="down" schX={0.6} schY={-0.7} schStemLength={0.4} />
+              <port name="pin1" pinNumber={1} direction="down" schX={-0.8} schY={-0.7} schStemLength={0.4} />
+              <port name="pin2" pinNumber={2} direction="down" schX={-0.4} schY={-0.7} schStemLength={0.4} />
+              <port name="pin3" pinNumber={3} direction="down" schX={0} schY={-0.7} schStemLength={0.4} />
+              <port name="pin4" pinNumber={4} direction="down" schX={0.4} schY={-0.7} schStemLength={0.4} />
+              <port name="pin5" pinNumber={5} direction="down" schX={0.8} schY={-0.7} schStemLength={0.4} />
+              <port name="pin6" pinNumber={6} direction="down" schX={-0.6} schY={-0.7} schStemLength={0.4} />
+              <port name="pin7" pinNumber={7} direction="down" schX={-0.2} schY={-0.7} schStemLength={0.4} />
+              <port name="pin8" pinNumber={8} direction="down" schX={0.2} schY={-0.7} schStemLength={0.4} />
+              <port name="pin9" pinNumber={9} direction="down" schX={0.6} schY={-0.7} schStemLength={0.4} />
               <schematicpath points={[{"x":0.8,"y":-0.3},{"x":-0.8,"y":-0.3}]} strokeColor="#880000" />
               <port name="pin11" pinNumber={11} aliases={["MH2"]} direction="up" schX={-0.4} schY={0.7} schStemLength={0.4} />
               <port name="pin10" pinNumber={10} aliases={["MH1"]} direction="up" schX={0.4} schY={0.7} schStemLength={0.4} />

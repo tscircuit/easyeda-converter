@@ -12,7 +12,9 @@ import crystalRawEasy from "./assets/C1985372.raweasy.json"
 import symbolWithPathRawEasy from "./assets/C2828420.raweasy.json"
 import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
 import symbolWithStaleHeadOriginRawEasy from "./assets/C5830143.raweasy.json"
+import twoPinCustomSymbolRawEasy from "./assets/C49234237.raweasy.json"
 import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
+import unicodePolarityRawEasy from "./assets/C2886621.raweasy.json"
 
 const generateSymbolFromRawEasy = (rawEasy: unknown): string => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
@@ -57,7 +59,7 @@ test("keeps imported crystal symbols on tscircuit's schematic grid", () => {
     "<schematicrect schX={0} schY={0} width={0.8} height={0.8} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
-    '<port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.6} schY={-0.2} schStemLength={0.2} />',
+    '<port name="pin1" pinNumber={1} direction="left" schX={-0.6} schY={-0.2} schStemLength={0.2} />',
   )
   expect(symbolTsx).not.toContain("width={10.16}")
 })
@@ -66,7 +68,7 @@ test("uses the symbol bounds when EasyEDA head coordinates are stale", () => {
   const symbolTsx = generateSymbolFromRawEasy(symbolWithStaleHeadOriginRawEasy)
 
   expect(symbolTsx).toContain(
-    '<port name="pin2" pinNumber={2} aliases={["2"]} direction="up" schX={0} schY={0.22}',
+    '<port name="pin2" pinNumber={2} direction="up" schX={0} schY={0.22}',
   )
   expect(symbolTsx).not.toContain("-101.854")
 })
@@ -75,9 +77,42 @@ test("maps duplicate EasyEDA symbol pin numbers to unused footprint ports", () =
   const symbolTsx = generateSymbolFromRawEasy(duplicateSymbolPinRawEasy)
 
   expect(symbolTsx).toContain(
-    '<port name="pin4" pinNumber={4} aliases={["NC"]}',
+    '<port name="pin4" pinNumber={4} direction="left"',
   )
+  expect(symbolTsx).toContain('aliases={["N_SD"]}')
+  expect(symbolTsx).toContain('aliases={["IN_NEG"]}')
+  expect(symbolTsx).toContain('aliases={["VO_NEG"]}')
+  expect(symbolTsx).not.toContain('aliases={["SD#"]}')
+  expect(symbolTsx).not.toContain('aliases={["IN-"]}')
+  expect(symbolTsx).not.toContain('aliases={["VO-"]}')
   expect(symbolTsx.match(/name="pin8"/g)).toHaveLength(1)
+})
+
+test("keeps Unicode polarity characters out of selector aliases", () => {
+  const symbolTsx = generateSymbolFromRawEasy(unicodePolarityRawEasy)
+
+  expect(symbolTsx).toContain('aliases={["SINEIN_NEG"]}')
+  expect(symbolTsx).not.toContain('aliases={["SINEIN–"]}')
+})
+
+test("keeps duplicate custom-symbol aliases uniquely numbered", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(twoPinCustomSymbolRawEasy)
+  const pins = betterEasy.dataStr.shape.filter((shape) => shape.type === "PIN")
+  if (pins.length !== 2) throw new Error("Expected a two-pin custom symbol")
+
+  pins[0].label = "PA0/ADC"
+  pins[1].label = "PA1/ADC"
+
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const symbolTsx = generateSymbolTsx(betterEasy, circuitJson) ?? ""
+
+  expect(symbolTsx).toContain(
+    'name="pin1" pinNumber={1} aliases={["PA0","ADC1"]}',
+  )
+  expect(symbolTsx).toContain(
+    'name="pin2" pinNumber={2} aliases={["PA1","ADC2"]}',
+  )
+  expect(symbolTsx).not.toContain('"ADC"')
 })
 
 test("distinguishes custom symbols from chip box representations", () => {

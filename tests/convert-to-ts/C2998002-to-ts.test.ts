@@ -56,10 +56,10 @@ it("should convert C2998002 into typescript file", async () => {
               <schematicpath points={[{"x":-0.2,"y":0},{"x":0.2,"y":0}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":0.1},{"x":0.2,"y":-0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.2,"y":0.1},{"x":-0.2,"y":-0.1}]} strokeColor="#880000" />
-              <port name="pin3" pinNumber={3} aliases={["E1","E"]} direction="up" schX={0.4} schY={0.4} schStemLength={0.2} />
-              <port name="pin1" pinNumber={1} aliases={["C1","C"]} direction="down" schX={-0.4} schY={-0.4} schStemLength={0.2} />
-              <port name="pin2" pinNumber={2} aliases={["C2","C"]} direction="down" schX={0.4} schY={-0.4} schStemLength={0.2} />
-              <port name="pin4" pinNumber={4} aliases={["E2","E"]} direction="up" schX={-0.4} schY={0.4} schStemLength={0.2} />
+              <port name="pin3" pinNumber={3} aliases={["E1"]} direction="up" schX={0.4} schY={0.4} schStemLength={0.2} />
+              <port name="pin1" pinNumber={1} aliases={["C1"]} direction="down" schX={-0.4} schY={-0.4} schStemLength={0.2} />
+              <port name="pin2" pinNumber={2} aliases={["C2"]} direction="down" schX={0.4} schY={-0.4} schStemLength={0.2} />
+              <port name="pin4" pinNumber={4} aliases={["E2"]} direction="up" schX={-0.4} schY={0.4} schStemLength={0.2} />
             </symbol>
           }
           supplierPartNumbers={{

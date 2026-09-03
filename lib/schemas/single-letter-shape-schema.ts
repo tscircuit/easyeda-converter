@@ -1,6 +1,5 @@
 import { z } from "zod"
 import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
-import { normalizeActiveLowPinLabel } from "lib/utils/normalize-pin-labels"
 
 /**
  I'll break down the elements in the `dataStr.head.shape` array and explain what they represent. This array contains instructions for drawing the schematic symbol of the component.
@@ -205,14 +204,12 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const parts = pinString.split("~")
   const [, visibility, , pinNumber, x, y, rotation, id] = parts
 
-  const nameMatch = pinString.match(/~([\w+#-]+)~(start|end)~/)
-  let label = nameMatch ? nameMatch[1] : ""
-  if (label.endsWith("+")) label = `${label.slice(0, -1)}_POS`
-  if (label.endsWith("-")) label = `${label.slice(0, -1)}_NEG`
-  label = normalizeActiveLowPinLabel(label)
-  if (/^\+\d+(?:\.\d+)?V$/i.test(label)) label = `V${label.slice(1, -1)}`
-  if (label.startsWith("+")) label = `${label.slice(1)}_POS`
-  if (label.startsWith("-")) label = `${label.slice(1)}_NEG`
+  // Pin names are delimited by `~` and followed by an alignment marker.
+  // Capture the complete field instead of maintaining a character whitelist.
+  const nameMatch = pinString.match(/~([^~]*)~(?:start|end)~/)
+  // Keep the EasyEDA text exactly as authored for schematic display. Selector-
+  // safe names are generated separately by expandPinLabelAliases.
+  const label = nameMatch ? nameMatch[1] : ""
 
   const colorMatch = pinString.match(/#[0-9A-F]{6}/)
   const labelColor = colorMatch ? colorMatch[0] : ""
