@@ -63,35 +63,21 @@ it("should convert C60708 into typescript file", async () => {
               <schematicpath points={[{"x":0.2,"y":0.3},{"x":0.2,"y":-0.9}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":-0.9},{"x":1,"y":-0.9}]} strokeColor="#880000" />
               <port name="pin1" pinNumber={1} aliases={["VCCA"]} direction="up" schX={-0.2} schY={1.3} schStemLength={0.2} />
-              <schematictext schX={-0.22} schY={1.22} text="1" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={270} />
               <port name="pin2" pinNumber={2} aliases={["A1"]} direction="left" schX={-1.2} schY={0.1} schStemLength={0.2} />
-              <schematictext schX={-1.12} schY={0.12} text="2" fontSize={0.14} anchor="bottom_right" color="#8D2323" schRotation={0} />
               <port name="pin3" pinNumber={3} aliases={["A2"]} direction="left" schX={-1.2} schY={-0.1} schStemLength={0.2} />
-              <schematictext schX={-1.12} schY={-0.08} text="3" fontSize={0.14} anchor="bottom_right" color="#8D2323" schRotation={0} />
               <port name="pin4" pinNumber={4} aliases={["A3"]} direction="left" schX={-1.2} schY={-0.3} schStemLength={0.2} />
-              <schematictext schX={-1.12} schY={-0.28} text="4" fontSize={0.14} anchor="bottom_right" color="#8D2323" schRotation={0} />
               <port name="pin5" pinNumber={5} aliases={["A4"]} direction="left" schX={-1.2} schY={-0.5} schStemLength={0.2} />
-              <schematictext schX={-1.12} schY={-0.48} text="5" fontSize={0.14} anchor="bottom_right" color="#8D2323" schRotation={0} />
               <port name="pin7" pinNumber={7} aliases={["GND"]} direction="down" schX={0} schY={-1.3} schStemLength={0.2} />
-              <schematictext schX={-0.02} schY={-1.22} text="7" fontSize={0.14} anchor="bottom_right" color="#8D2323" schRotation={270} />
               <port name="pin14" pinNumber={14} aliases={["VCCB"]} direction="up" schX={0.2} schY={1.3} schStemLength={0.2} />
-              <schematictext schX={0.18} schY={1.22} text="14" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={270} />
               <port name="pin13" pinNumber={13} aliases={["B1"]} direction="right" schX={1.2} schY={0.1} schStemLength={0.2} />
-              <schematictext schX={1.12} schY={0.12} text="13" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={0} />
               <port name="pin12" pinNumber={12} aliases={["B2"]} direction="right" schX={1.2} schY={-0.1} schStemLength={0.2} />
-              <schematictext schX={1.12} schY={-0.08} text="12" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={0} />
               <port name="pin11" pinNumber={11} aliases={["B3"]} direction="right" schX={1.2} schY={-0.3} schStemLength={0.2} />
-              <schematictext schX={1.12} schY={-0.28} text="11" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={0} />
               <port name="pin10" pinNumber={10} aliases={["B4"]} direction="right" schX={1.2} schY={-0.5} schStemLength={0.2} />
-              <schematictext schX={1.12} schY={-0.48} text="10" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={0} />
               <port name="pin8" pinNumber={8} aliases={["OE"]} direction="left" schX={-1.2} schY={0.5} schStemLength={0.2} />
-              <schematictext schX={-1.12} schY={0.52} text="8" fontSize={0.14} anchor="bottom_right" color="#8D2323" schRotation={0} />
               <schematictext schX={-0.9} schY={-0.8} text="1.2-3.6V" fontSize={0.1} anchor="left" color="#000000" schRotation={0} />
               <schematictext schX={0.24} schY={-0.8} text="1.65-5.5V" fontSize={0.1} anchor="left" color="#000000" schRotation={0} />
               <port name="pin6" pinNumber={6} aliases={["NC1","NC"]} direction="up" schX={-0.8} schY={1.3} schStemLength={0.2} />
-              <schematictext schX={-0.82} schY={1.22} text="6" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={270} />
               <port name="pin9" pinNumber={9} aliases={["NC2","NC"]} direction="up" schX={0.8} schY={1.3} schStemLength={0.2} />
-              <schematictext schX={0.78} schY={1.22} text="9" fontSize={0.14} anchor="bottom_left" color="#8D2323" schRotation={270} />
             </symbol>
           }
           supplierPartNumbers={{

@@ -14,34 +14,6 @@ const examples = [
   "P~show~0~8~445~285~0~gge12~0^^445~285^^M445,285h-10~#FF0000^^1~431.3~289~0~VCC~end~~~#FF0000^^1~435.5~284~0~8~start~~~#FF0000^^0~438~285^^0~M 435 282 L 432 285 L 435 288",
 ]
 
-it("parses pin-number placement independently from the pin name", () => {
-  expect(SingleLetterShapeSchema.parse(examples[2])).toMatchObject({
-    type: "PIN",
-    label: "GND",
-    numberLabel: {
-      visible: true,
-      x: 364.5,
-      y: 284,
-      rotation: 0,
-      anchor: "end",
-      fontSize: "7pt",
-      color: "#000000",
-    },
-  })
-})
-
-it("allows a pin without number-label metadata", () => {
-  const pin = examples[2].split("^^").slice(0, 4).join("^^")
-  expect(SingleLetterShapeSchema.parse(pin)).toMatchObject({
-    type: "PIN",
-    pinNumber: 1,
-  })
-  expect(SingleLetterShapeSchema.parse(pin)).not.toHaveProperty(
-    "numberLabel",
-    expect.anything(),
-  )
-})
-
 it("parses examples for single letter shape schema", () => {
   examples.forEach((example) => {
     expect(() => {

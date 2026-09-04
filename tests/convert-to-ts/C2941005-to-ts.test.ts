@@ -32,12 +32,6 @@ test("renders the C2941005 schematic and PCB", async () => {
   ).toHaveLength(6)
 
   const circuitJson = await renderImportedSwitch()
-  expect(
-    circuitJson
-      .filter((element) => element.type === "schematic_text")
-      .map((element) => element.text)
-      .sort(),
-  ).toEqual(["1", "2", "3", "4", "5", "6"])
   await expect(
     convertCircuitJsonToSchematicSvg(circuitJson),
   ).toMatchSvgSnapshot(import.meta.path, "C2941005-schematic")

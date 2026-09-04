@@ -187,38 +187,6 @@ export const ArcShapeSchema = z
   .transform(parseArc)
   .pipe(ArcShapeOutputSchema)
 
-const PinNumberLabelSchema = z.object({
-  visible: z.boolean(),
-  x: z.number(),
-  y: z.number(),
-  rotation: z.number(),
-  anchor: z.enum(["start", "middle", "end"]),
-  fontSize: z.string(),
-  color: z.string(),
-})
-
-const parsePinNumberLabel = (
-  section: string | undefined,
-): z.infer<typeof PinNumberLabelSchema> | undefined => {
-  if (!section) return undefined
-  const [visible, x, y, rotation, , anchor, , fontSize, color] =
-    section.split("~")
-  const positionX = Number.parseFloat(x)
-  const positionY = Number.parseFloat(y)
-  if (!Number.isFinite(positionX) || !Number.isFinite(positionY)) {
-    return undefined
-  }
-  return {
-    visible: visible === "1",
-    x: positionX,
-    y: positionY,
-    rotation: Number.parseFloat(rotation) || 0,
-    anchor: anchor === "end" || anchor === "middle" ? anchor : "start",
-    fontSize: fontSize || "7pt",
-    color: color || "#0000FF",
-  }
-}
-
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide", "none"]),
@@ -231,7 +199,6 @@ const PinShapeOutputSchema = z.object({
   labelColor: z.string(),
   path: z.string(),
   arrow: z.string(),
-  numberLabel: PinNumberLabelSchema.optional(),
 })
 
 const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
@@ -268,7 +235,6 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     labelColor,
     path,
     arrow,
-    numberLabel: parsePinNumberLabel(pinString.split("^^")[4]),
   }
 }
 
