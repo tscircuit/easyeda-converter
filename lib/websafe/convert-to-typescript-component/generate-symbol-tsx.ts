@@ -318,17 +318,24 @@ const getPortMetadataByShapeId = (
     portName ??= `pin${pinIndex + 1}`
     usedPortNames.add(portName)
     const sourcePort = sourcePorts.find((port) => port.name === portName)
+    const normalizedPinLabel = pin.label
+      ? normalizeSymbolName(pin.label)
+      : undefined
+    const aliases = [
+      pin.originalLabel,
+      ...(sourcePort?.port_hints ?? []),
+      normalizedPinLabel,
+    ].filter(
+      (alias, index, aliases): alias is string =>
+        Boolean(alias) &&
+        alias !== portName &&
+        aliases.indexOf(alias) === index,
+    )
 
     metadataByShapeId.set(pin.id, {
       name: portName,
       pinNumber: sourcePort?.pin_number,
-      aliases: [
-        ...(sourcePort?.port_hints ?? []),
-        ...(pin.label ? [normalizeSymbolName(pin.label)] : []),
-      ].filter(
-        (alias, index, aliases) =>
-          alias !== portName && aliases.indexOf(alias) === index,
-      ),
+      aliases,
     })
   })
 
