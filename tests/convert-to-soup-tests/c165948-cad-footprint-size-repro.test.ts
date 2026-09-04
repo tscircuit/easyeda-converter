@@ -4,20 +4,19 @@ import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tsc
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import usbCRawEasy from "../assets/C165948.raweasy.json"
 
-test("reproduces C165948 CAD model scaling smaller than its PCB footprint", async () => {
+test("uses C165948 CAD model bounds instead of its PCB footprint size", async () => {
   const easyEdaJson = EasyEdaJsonSchema.parse(usbCRawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(easyEdaJson)
   const cadComponent = circuitJson.find(
     (element): element is CadComponent => element.type === "cad_component",
   )
 
-  // The OBJ metadata reports 8.94 x 7.9 x 4.101 mm, but the direct Circuit
-  // JSON conversion constrains it to these PCB-derived bounds. With
-  // contain_within_bounds, the 5.648 mm Y target uniformly shrinks the model.
+  // Match the OBJ's local bounds so contain_within_bounds does not scale the
+  // model to the unrelated PCB footprint dimensions.
   expect(cadComponent?.size).toEqual({
-    x: 8.75022399999989,
-    y: 5.648261599999842,
-    z: 7.8999842000000005,
+    x: 8.94,
+    y: 7.9,
+    z: 4.101,
   })
 
   circuitJson.push(
