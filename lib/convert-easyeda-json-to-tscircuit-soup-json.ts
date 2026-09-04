@@ -995,14 +995,29 @@ export const convertEasyEdaJsonToCircuitJson = (
         const t = DEFAULT_PCB_THICKNESS_MM / 2
         const attrs = svgNode?.svgData?.attrs ?? {}
         const modelHeight = readModelHeightMm(attrs.c_height)
+        const cadModelSize = resolvedCadModelBounds
+          ? {
+              x: resolvedCadModelBounds.max.x - resolvedCadModelBounds.min.x,
+              y: resolvedCadModelBounds.max.y - resolvedCadModelBounds.min.y,
+              z: resolvedCadModelBounds.max.z - resolvedCadModelBounds.min.z,
+            }
+          : undefined
+        const hasValidCadModelSize =
+          cadModelSize !== undefined &&
+          Object.values(cadModelSize).every(
+            (dimension) => Number.isFinite(dimension) && dimension > 0,
+          )
 
-        // Ensure we have a size; Z holds the model's thickness in local space
+        // cad_component.size constrains the model in its local coordinate frame,
+        // so prefer the model's own bounds over unrelated PCB footprint bounds.
         if (!cad.size) {
-          cad.size = {
-            x: pcb_component.width,
-            y: pcb_component.height,
-            z: modelHeight,
-          }
+          cad.size = hasValidCadModelSize
+            ? cadModelSize
+            : {
+                x: pcb_component.width,
+                y: pcb_component.height,
+                z: modelHeight,
+              }
         }
 
         // --- Axis convention: EasyEDA models are typically Y-up ---
