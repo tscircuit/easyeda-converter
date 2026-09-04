@@ -38,7 +38,7 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isDipSwitchCategoryComponent(betterEasy)) return "chip"
-  if (isSwitchCategoryComponent(betterEasy)) return "switch"
+  if (isSwitchCategoryComponent(betterEasy) && pinCount === 2) return "switch"
   if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
   if (isInductorComponent(betterEasy) && pinCount === 2) return "inductor"
