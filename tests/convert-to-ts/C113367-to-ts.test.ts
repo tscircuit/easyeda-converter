@@ -63,13 +63,21 @@ it("should convert C113367 into typescript file", async () => {
               <schematicpath points={[{"x":-0.28,"y":0.24},{"x":-0.4,"y":0.5}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.28,"y":-0.44},{"x":-0.4,"y":-0.7}]} strokeColor="#880000" />
               <port name="pin1" pinNumber={1} aliases={["N_SD"]} direction="left" schX={-0.8} schY={0.5} schStemLength={0.4} />
+              <schematictext schX={-0.52} schY={0.52} text="1" fontSize={0.14} anchor="bottom_right" color="#0000FF" schRotation={0} />
               <port name="pin2" pinNumber={2} aliases={["IN_NEG"]} direction="left" schX={-0.8} schY={0.1} schStemLength={0.4} />
+              <schematictext schX={-0.54} schY={0.12} text="2" fontSize={0.14} anchor="bottom_right" color="#0000FF" schRotation={0} />
               <port name="pin3" pinNumber={3} aliases={["IN_POS"]} direction="left" schX={-0.8} schY={-0.3} schStemLength={0.4} />
+              <schematictext schX={-0.52} schY={-0.28} text="3" fontSize={0.14} anchor="bottom_right" color="#0000FF" schRotation={0} />
               <port name="pin7" pinNumber={7} aliases={["GND"]} direction="down" schX={0} schY={-0.9} schStemLength={0.4} />
+              <schematictext schX={-0.02} schY={-0.62} text="7" fontSize={0.14} anchor="bottom_right" color="#000000" schRotation={270} />
               <port name="pin5" pinNumber={5} aliases={["VO_POS"]} direction="right" schX={0.8} schY={-0.1} schStemLength={0.4} />
+              <schematictext schX={0.52} schY={-0.08} text="5" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <port name="pin6" pinNumber={6} aliases={["VDD"]} direction="up" schX={0} schY={0.7} schStemLength={0.4} />
+              <schematictext schX={-0.02} schY={0.42} text="6" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={270} />
               <port name="pin8" pinNumber={8} aliases={["VO_NEG"]} direction="right" schX={0.8} schY={-0.5} schStemLength={0.4} />
+              <schematictext schX={0.52} schY={-0.48} text="8" fontSize={0.14} anchor="bottom_left" color="#0000FF" schRotation={0} />
               <port name="pin4" pinNumber={4} aliases={["NC"]} direction="left" schX={-0.8} schY={-0.7} schStemLength={0.4} />
+              <schematictext schX={-0.52} schY={-0.68} text="4" fontSize={0.14} anchor="bottom_right" color="#0000FF" schRotation={0} />
               <schematictext schX={0.72} schY={-0.02} text="+" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
               <schematictext schX={0.76} schY={-0.46} text="-" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
             </symbol>

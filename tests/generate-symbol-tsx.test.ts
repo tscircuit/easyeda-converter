@@ -13,12 +13,62 @@ import symbolWithPathRawEasy from "./assets/C2828420.raweasy.json"
 import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
 import symbolWithStaleHeadOriginRawEasy from "./assets/C5830143.raweasy.json"
 import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
+import switchRawEasy from "./assets/C2941005.raweasy.json"
+import slideSwitchRawEasy from "./assets/C136720.raweasy.json"
 
 const generateSymbolFromRawEasy = (rawEasy: unknown): string => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
   return generateSymbolTsx(betterEasy, circuitJson) ?? ""
 }
+
+test("preserves visible pin numbers at their EasyEDA positions and rotations", () => {
+  const symbolTsx = generateSymbolFromRawEasy(switchRawEasy)
+  expect(symbolTsx.match(/<port /g)).toHaveLength(6)
+  expect(symbolTsx.match(/<schematictext /g)).toHaveLength(6)
+  expect(symbolTsx).toContain(
+    '<schematictext schX={-0.22} schY={0.4} text="3" fontSize={0.14} anchor="bottom_right" color="#0000FF" schRotation={270} />',
+  )
+  for (const number of [1, 2, 3, 4, 5, 6]) {
+    expect(symbolTsx).toContain(`text="${number}"`)
+  }
+})
+
+test("keeps hidden pin numbers hidden without removing their ports", () => {
+  const symbolTsx = generateSymbolFromRawEasy(slideSwitchRawEasy)
+  expect(symbolTsx.match(/<port /g)).toHaveLength(5)
+  expect(symbolTsx.match(/<schematictext /g)).toHaveLength(3)
+  expect(symbolTsx).toContain('fontSize={0.11} anchor="bottom_right"')
+  expect(symbolTsx).not.toContain('text="4"')
+  expect(symbolTsx).not.toContain('text="5"')
+})
+
+test("does not emit pin numbers when ports or their annotations are absent", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  expect(
+    generateSymbolTsx(betterEasy, circuitJson, { includePorts: false }),
+  ).not.toContain("<schematictext")
+  for (const shape of betterEasy.dataStr.shape) {
+    if (shape.type === "PIN") shape.numberLabel = undefined
+  }
+  expect(generateSymbolTsx(betterEasy, circuitJson)).not.toContain(
+    "<schematictext",
+  )
+})
+
+test("does not display a number for a hidden schematic pin", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
+  const pin = betterEasy.dataStr.shape.find(
+    (shape) => shape.type === "PIN" && shape.pinNumber === 3,
+  )!
+  if (pin.type !== "PIN") throw new Error("Expected pin 3 in the fixture")
+  pin.visibility = "hide"
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const symbolTsx = generateSymbolTsx(betterEasy, circuitJson)!
+  expect(symbolTsx).not.toContain('text="3"')
+  expect(symbolTsx.match(/<port /g)).toHaveLength(5)
+})
 
 test("generates a centered symbol with positioned, aliased ports", () => {
   const symbolTsx = generateSymbolFromRawEasy(ne555RawEasy)

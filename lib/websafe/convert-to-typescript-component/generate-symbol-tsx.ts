@@ -406,7 +406,19 @@ const generateShapeTsx = ({
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
-    return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    const portTsx = `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
+    const label = shape.numberLabel
+    if (!label?.visible) return portTsx
+
+    const labelPosition = transformPoint(label)
+    const anchor = {
+      start: "bottom_left",
+      middle: "bottom_center",
+      end: "bottom_right",
+    }[label.anchor]
+    // Keep the displayed number consistent with the resolved footprint port.
+    const number = String(portMetadata.pinNumber ?? shape.pinNumber)
+    return `${portTsx}\n<schematictext schX={${labelPosition.x}} schY={${labelPosition.y}} text=${JSON.stringify(number)} fontSize={${getTextFontSize(label.fontSize)}} anchor=${JSON.stringify(anchor)} color=${JSON.stringify(label.color)} schRotation={${round(label.rotation)}} />`
   }
 
   // AR arrowheads and I image annotations are intentionally ignored by the
@@ -469,7 +481,10 @@ export const generateSymbolTsx = (
   if (shapeTsx.length === 0) return undefined
 
   return `<symbol>
-${shapeTsx.map((tsx) => `  ${tsx}`).join("\n")}
+${shapeTsx
+  .flatMap((tsx) => tsx.split("\n"))
+  .map((line) => `  ${line}`)
+  .join("\n")}
 </symbol>`
 }
 
