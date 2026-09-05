@@ -17,6 +17,7 @@ const round = (value: number): number => Number(value.toFixed(6))
  * millimeters; PCB and CAD conversion must continue to use mil10ToMm instead.
  */
 const EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT = 0.02
+const IMPORTED_SYMBOL_REFERENCE_OFFSET = 0.2
 const toSchematicUnits = (value: number): number =>
   round(value * EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT)
 
@@ -422,7 +423,12 @@ export const generateSymbolTsx = (
   {
     includePorts = true,
     alignPortsToDrawing = false,
-  }: { includePorts?: boolean; alignPortsToDrawing?: boolean } = {},
+    includeReferenceDesignator = false,
+  }: {
+    includePorts?: boolean
+    alignPortsToDrawing?: boolean
+    includeReferenceDesignator?: boolean
+  } = {},
 ): string | undefined => {
   const shapes = easyEdaJson.dataStr.shape
   if (shapes.length === 0) return undefined
@@ -465,6 +471,16 @@ export const generateSymbolTsx = (
       }),
     )
     .filter((tsx): tsx is string => Boolean(tsx))
+
+  if (includeReferenceDesignator) {
+    const referencePosition = transformPoint({
+      x: origin.x,
+      y: bounds.y,
+    })
+    shapeTsx.push(
+      `<schematictext schX={${referencePosition.x}} schY={${round(referencePosition.y + IMPORTED_SYMBOL_REFERENCE_OFFSET)}} text="{REF}" fontSize={0.18} anchor="bottom_center" color="#000000" />`,
+    )
+  }
 
   if (shapeTsx.length === 0) return undefined
 
