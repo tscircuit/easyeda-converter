@@ -1,0 +1,908 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`records the DDR alias suffix collision 1`] = `
+[
+  [
+    "pin1",
+    "A11",
+    "VDDQ",
+  ],
+  [
+    "pin2",
+    "T2",
+    "A11",
+  ],
+  [
+    "pin3",
+    "P3",
+    "A12",
+  ],
+]
+`;
+
+exports[`records C2920140 aliases, pad associations and unintended internal connection: physical terminal aliases 1`] = `
+[
+  {
+    "name": "pin1",
+    "pin_number": 1,
+    "port_hints": [
+      "A11",
+      "VDDQ1",
+    ],
+  },
+  {
+    "name": "pin2",
+    "pin_number": 2,
+    "port_hints": [
+      "B1",
+      "VPP1",
+    ],
+  },
+  {
+    "name": "pin3",
+    "pin_number": 3,
+    "port_hints": [
+      "C1",
+      "VDDQ2",
+    ],
+  },
+  {
+    "name": "pin4",
+    "pin_number": 4,
+    "port_hints": [
+      "D1",
+      "VDD1",
+    ],
+  },
+  {
+    "name": "pin5",
+    "pin_number": 5,
+    "port_hints": [
+      "E1",
+      "VSS1",
+    ],
+  },
+  {
+    "name": "pin6",
+    "pin_number": 6,
+    "port_hints": [
+      "F1",
+      "VSSQ1",
+    ],
+  },
+  {
+    "name": "pin7",
+    "pin_number": 7,
+    "port_hints": [
+      "G1",
+      "VDDQ3",
+    ],
+  },
+  {
+    "name": "pin8",
+    "pin_number": 8,
+    "port_hints": [
+      "H1",
+      "VSSQ2",
+    ],
+  },
+  {
+    "name": "pin9",
+    "pin_number": 9,
+    "port_hints": [
+      "J1",
+      "VDD2",
+    ],
+  },
+  {
+    "name": "pin10",
+    "pin_number": 10,
+    "port_hints": [
+      "K1",
+      "VSS2",
+    ],
+  },
+  {
+    "name": "pin11",
+    "pin_number": 11,
+    "port_hints": [
+      "L1",
+      "VDD3",
+    ],
+  },
+  {
+    "name": "pin12",
+    "pin_number": 12,
+    "port_hints": [
+      "M1",
+      "VREFCA",
+    ],
+  },
+  {
+    "name": "pin13",
+    "pin_number": 13,
+    "port_hints": [
+      "N1",
+      "VSS3",
+    ],
+  },
+  {
+    "name": "pin14",
+    "pin_number": 14,
+    "port_hints": [
+      "P1",
+      "RESET_n",
+    ],
+  },
+  {
+    "name": "pin15",
+    "pin_number": 15,
+    "port_hints": [
+      "R1",
+      "VDD4",
+    ],
+  },
+  {
+    "name": "pin16",
+    "pin_number": 16,
+    "port_hints": [
+      "T1",
+      "VSS4",
+    ],
+  },
+  {
+    "name": "pin17",
+    "pin_number": 17,
+    "port_hints": [
+      "A21",
+      "VSSQ3",
+    ],
+  },
+  {
+    "name": "pin18",
+    "pin_number": 18,
+    "port_hints": [
+      "B2",
+      "VSS5",
+    ],
+  },
+  {
+    "name": "pin19",
+    "pin_number": 19,
+    "port_hints": [
+      "C2",
+      "DQU4",
+    ],
+  },
+  {
+    "name": "pin20",
+    "pin_number": 20,
+    "port_hints": [
+      "D2",
+      "VSSQ4",
+    ],
+  },
+  {
+    "name": "pin21",
+    "pin_number": 21,
+    "port_hints": [
+      "E2",
+    ],
+  },
+  {
+    "name": "pin22",
+    "pin_number": 22,
+    "port_hints": [
+      "F2",
+      "VDDQ4",
+    ],
+  },
+  {
+    "name": "pin23",
+    "pin_number": 23,
+    "port_hints": [
+      "G2",
+      "DQL0",
+    ],
+  },
+  {
+    "name": "pin24",
+    "pin_number": 24,
+    "port_hints": [
+      "H2",
+      "DQL4",
+    ],
+  },
+  {
+    "name": "pin25",
+    "pin_number": 25,
+    "port_hints": [
+      "J2",
+      "VDDQ5",
+    ],
+  },
+  {
+    "name": "pin26",
+    "pin_number": 26,
+    "port_hints": [
+      "K2",
+      "CKE",
+    ],
+  },
+  {
+    "name": "pin27",
+    "pin_number": 27,
+    "port_hints": [
+      "L2",
+    ],
+  },
+  {
+    "name": "pin28",
+    "pin_number": 28,
+    "port_hints": [
+      "M2",
+      "BG0",
+    ],
+  },
+  {
+    "name": "pin29",
+    "pin_number": 29,
+    "port_hints": [
+      "N2",
+      "BA0",
+    ],
+  },
+  {
+    "name": "pin30",
+    "pin_number": 30,
+    "port_hints": [
+      "P2",
+      "A6",
+    ],
+  },
+  {
+    "name": "pin31",
+    "pin_number": 31,
+    "port_hints": [
+      "R2",
+      "A81",
+    ],
+  },
+  {
+    "name": "pin32",
+    "pin_number": 32,
+    "port_hints": [
+      "T2",
+      "A11",
+    ],
+  },
+  {
+    "name": "pin33",
+    "pin_number": 33,
+    "port_hints": [
+      "A31",
+      "DQU0",
+    ],
+  },
+  {
+    "name": "pin34",
+    "pin_number": 34,
+    "port_hints": [
+      "B3",
+      "VDD5",
+    ],
+  },
+  {
+    "name": "pin35",
+    "pin_number": 35,
+    "port_hints": [
+      "C3",
+      "DQU2",
+    ],
+  },
+  {
+    "name": "pin36",
+    "pin_number": 36,
+    "port_hints": [
+      "D3",
+      "DQU6",
+    ],
+  },
+  {
+    "name": "pin37",
+    "pin_number": 37,
+    "port_hints": [
+      "E3",
+      "VSSQ5",
+    ],
+  },
+  {
+    "name": "pin38",
+    "pin_number": 38,
+    "port_hints": [
+      "F3",
+      "DQSL_c",
+    ],
+  },
+  {
+    "name": "pin39",
+    "pin_number": 39,
+    "port_hints": [
+      "G3",
+      "DQSL_t",
+    ],
+  },
+  {
+    "name": "pin40",
+    "pin_number": 40,
+    "port_hints": [
+      "H3",
+      "DQL2",
+    ],
+  },
+  {
+    "name": "pin41",
+    "pin_number": 41,
+    "port_hints": [
+      "J3",
+      "DQL6",
+    ],
+  },
+  {
+    "name": "pin42",
+    "pin_number": 42,
+    "port_hints": [
+      "K3",
+      "ODT",
+    ],
+  },
+  {
+    "name": "pin43",
+    "pin_number": 43,
+    "port_hints": [
+      "L3",
+      "ACT_n",
+    ],
+  },
+  {
+    "name": "pin44",
+    "pin_number": 44,
+    "port_hints": [
+      "M3",
+    ],
+  },
+  {
+    "name": "pin45",
+    "pin_number": 45,
+    "port_hints": [
+      "N3",
+      "A4",
+    ],
+  },
+  {
+    "name": "pin46",
+    "pin_number": 46,
+    "port_hints": [
+      "P3",
+      "A0",
+    ],
+  },
+  {
+    "name": "pin47",
+    "pin_number": 47,
+    "port_hints": [
+      "R3",
+      "A22",
+    ],
+  },
+  {
+    "name": "pin48",
+    "pin_number": 48,
+    "port_hints": [
+      "T3",
+      "PAR",
+    ],
+  },
+  {
+    "name": "pin49",
+    "pin_number": 49,
+    "port_hints": [
+      "A71",
+      "DQSU_c",
+    ],
+  },
+  {
+    "name": "pin50",
+    "pin_number": 50,
+    "port_hints": [
+      "B7",
+      "DQSU_t",
+    ],
+  },
+  {
+    "name": "pin51",
+    "pin_number": 51,
+    "port_hints": [
+      "C7",
+      "DQU3",
+    ],
+  },
+  {
+    "name": "pin52",
+    "pin_number": 52,
+    "port_hints": [
+      "D7",
+      "DQU7",
+    ],
+  },
+  {
+    "name": "pin53",
+    "pin_number": 53,
+    "port_hints": [
+      "E7",
+    ],
+  },
+  {
+    "name": "pin54",
+    "pin_number": 54,
+    "port_hints": [
+      "F7",
+      "DQL1",
+    ],
+  },
+  {
+    "name": "pin55",
+    "pin_number": 55,
+    "port_hints": [
+      "G7",
+      "VDD6",
+    ],
+  },
+  {
+    "name": "pin56",
+    "pin_number": 56,
+    "port_hints": [
+      "H7",
+      "DQL3",
+    ],
+  },
+  {
+    "name": "pin57",
+    "pin_number": 57,
+    "port_hints": [
+      "J7",
+      "DQL7",
+    ],
+  },
+  {
+    "name": "pin58",
+    "pin_number": 58,
+    "port_hints": [
+      "K7",
+      "CK_t",
+    ],
+  },
+  {
+    "name": "pin59",
+    "pin_number": 59,
+    "port_hints": [
+      "L7",
+      "CS_n",
+    ],
+  },
+  {
+    "name": "pin60",
+    "pin_number": 60,
+    "port_hints": [
+      "M7",
+    ],
+  },
+  {
+    "name": "pin61",
+    "pin_number": 61,
+    "port_hints": [
+      "N7",
+      "A32",
+    ],
+  },
+  {
+    "name": "pin62",
+    "pin_number": 62,
+    "port_hints": [
+      "P7",
+      "A12",
+    ],
+  },
+  {
+    "name": "pin63",
+    "pin_number": 63,
+    "port_hints": [
+      "R7",
+      "A91",
+    ],
+  },
+  {
+    "name": "pin64",
+    "pin_number": 64,
+    "port_hints": [
+      "T7",
+      "NC",
+    ],
+  },
+  {
+    "name": "pin65",
+    "pin_number": 65,
+    "port_hints": [
+      "A82",
+      "VSSQ6",
+    ],
+  },
+  {
+    "name": "pin66",
+    "pin_number": 66,
+    "port_hints": [
+      "B8",
+      "DQU1",
+    ],
+  },
+  {
+    "name": "pin67",
+    "pin_number": 67,
+    "port_hints": [
+      "C8",
+      "DQU5",
+    ],
+  },
+  {
+    "name": "pin68",
+    "pin_number": 68,
+    "port_hints": [
+      "D8",
+      "VSSQ7",
+    ],
+  },
+  {
+    "name": "pin69",
+    "pin_number": 69,
+    "port_hints": [
+      "E8",
+      "VSSQ8",
+    ],
+  },
+  {
+    "name": "pin70",
+    "pin_number": 70,
+    "port_hints": [
+      "F8",
+      "VDDQ6",
+    ],
+  },
+  {
+    "name": "pin71",
+    "pin_number": 71,
+    "port_hints": [
+      "G8",
+      "VSS6",
+    ],
+  },
+  {
+    "name": "pin72",
+    "pin_number": 72,
+    "port_hints": [
+      "H8",
+      "DQL5",
+    ],
+  },
+  {
+    "name": "pin73",
+    "pin_number": 73,
+    "port_hints": [
+      "J8",
+      "VDDQ7",
+    ],
+  },
+  {
+    "name": "pin74",
+    "pin_number": 74,
+    "port_hints": [
+      "K8",
+      "CK_c",
+    ],
+  },
+  {
+    "name": "pin75",
+    "pin_number": 75,
+    "port_hints": [
+      "L8",
+    ],
+  },
+  {
+    "name": "pin76",
+    "pin_number": 76,
+    "port_hints": [
+      "M8",
+    ],
+  },
+  {
+    "name": "pin77",
+    "pin_number": 77,
+    "port_hints": [
+      "N8",
+      "BA1",
+    ],
+  },
+  {
+    "name": "pin78",
+    "pin_number": 78,
+    "port_hints": [
+      "P8",
+      "A5",
+    ],
+  },
+  {
+    "name": "pin79",
+    "pin_number": 79,
+    "port_hints": [
+      "R8",
+      "A72",
+    ],
+  },
+  {
+    "name": "pin80",
+    "pin_number": 80,
+    "port_hints": [
+      "T8",
+      "A13",
+    ],
+  },
+  {
+    "name": "pin81",
+    "pin_number": 81,
+    "port_hints": [
+      "A92",
+      "VDDQ8",
+    ],
+  },
+  {
+    "name": "pin82",
+    "pin_number": 82,
+    "port_hints": [
+      "B9",
+      "VDD7",
+    ],
+  },
+  {
+    "name": "pin83",
+    "pin_number": 83,
+    "port_hints": [
+      "C9",
+      "VSSQ9",
+    ],
+  },
+  {
+    "name": "pin84",
+    "pin_number": 84,
+    "port_hints": [
+      "D9",
+      "VDDQ9",
+    ],
+  },
+  {
+    "name": "pin85",
+    "pin_number": 85,
+    "port_hints": [
+      "E9",
+      "VSS7",
+    ],
+  },
+  {
+    "name": "pin86",
+    "pin_number": 86,
+    "port_hints": [
+      "F9",
+      "ZQ",
+    ],
+  },
+  {
+    "name": "pin87",
+    "pin_number": 87,
+    "port_hints": [
+      "G9",
+      "VDDQ10",
+    ],
+  },
+  {
+    "name": "pin88",
+    "pin_number": 88,
+    "port_hints": [
+      "H9",
+      "VSSQ10",
+    ],
+  },
+  {
+    "name": "pin89",
+    "pin_number": 89,
+    "port_hints": [
+      "J9",
+      "VDD8",
+    ],
+  },
+  {
+    "name": "pin90",
+    "pin_number": 90,
+    "port_hints": [
+      "K9",
+      "VSS8",
+    ],
+  },
+  {
+    "name": "pin91",
+    "pin_number": 91,
+    "port_hints": [
+      "L9",
+      "VDD9",
+    ],
+  },
+  {
+    "name": "pin92",
+    "pin_number": 92,
+    "port_hints": [
+      "M9",
+      "VSS9",
+    ],
+  },
+  {
+    "name": "pin93",
+    "pin_number": 93,
+    "port_hints": [
+      "N9",
+      "TEN",
+    ],
+  },
+  {
+    "name": "pin94",
+    "pin_number": 94,
+    "port_hints": [
+      "P9",
+      "ALERT_n",
+    ],
+  },
+  {
+    "name": "pin95",
+    "pin_number": 95,
+    "port_hints": [
+      "R9",
+      "VPP2",
+    ],
+  },
+  {
+    "name": "pin96",
+    "pin_number": 96,
+    "port_hints": [
+      "T9",
+      "VDD10",
+    ],
+  },
+]
+`;
+
+exports[`records C2920140 aliases, pad associations and unintended internal connection: unchanged supplier footprint 1`] = `
+"<footprint>
+        <smtpad portHints={["pin1"]} pcbX="-3.199892mm" pcbY="5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin2"]} pcbX="-3.199892mm" pcbY="5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin3"]} pcbX="-3.199892mm" pcbY="4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin4"]} pcbX="-3.199892mm" pcbY="3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin5"]} pcbX="-3.199892mm" pcbY="2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin6"]} pcbX="-3.199892mm" pcbY="1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin7"]} pcbX="-3.199892mm" pcbY="1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin8"]} pcbX="-3.199892mm" pcbY="0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin9"]} pcbX="-3.199892mm" pcbY="-0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin10"]} pcbX="-3.199892mm" pcbY="-1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin11"]} pcbX="-3.199892mm" pcbY="-1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin12"]} pcbX="-3.199892mm" pcbY="-2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin13"]} pcbX="-3.199892mm" pcbY="-3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin14"]} pcbX="-3.199892mm" pcbY="-4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin15"]} pcbX="-3.199892mm" pcbY="-5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin16"]} pcbX="-3.199892mm" pcbY="-5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin17"]} pcbX="-2.400046mm" pcbY="5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin18"]} pcbX="-2.400046mm" pcbY="5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin19"]} pcbX="-2.400046mm" pcbY="4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin20"]} pcbX="-2.400046mm" pcbY="3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin21"]} pcbX="-2.400046mm" pcbY="2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin22"]} pcbX="-2.400046mm" pcbY="1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin23"]} pcbX="-2.400046mm" pcbY="1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin24"]} pcbX="-2.400046mm" pcbY="0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin25"]} pcbX="-2.400046mm" pcbY="-0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin26"]} pcbX="-2.400046mm" pcbY="-1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin27"]} pcbX="-2.400046mm" pcbY="-1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin28"]} pcbX="-2.400046mm" pcbY="-2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin29"]} pcbX="-2.400046mm" pcbY="-3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin30"]} pcbX="-2.400046mm" pcbY="-4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin31"]} pcbX="-2.400046mm" pcbY="-5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin32"]} pcbX="-2.400046mm" pcbY="-5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin33"]} pcbX="-1.599946mm" pcbY="5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin34"]} pcbX="-1.599946mm" pcbY="5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin35"]} pcbX="-1.599946mm" pcbY="4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin36"]} pcbX="-1.599946mm" pcbY="3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin37"]} pcbX="-1.599946mm" pcbY="2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin38"]} pcbX="-1.599946mm" pcbY="1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin39"]} pcbX="-1.599946mm" pcbY="1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin40"]} pcbX="-1.599946mm" pcbY="0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin41"]} pcbX="-1.599946mm" pcbY="-0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin42"]} pcbX="-1.599946mm" pcbY="-1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin43"]} pcbX="-1.599946mm" pcbY="-1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin44"]} pcbX="-1.599946mm" pcbY="-2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin45"]} pcbX="-1.599946mm" pcbY="-3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin46"]} pcbX="-1.599946mm" pcbY="-4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin47"]} pcbX="-1.599946mm" pcbY="-5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin48"]} pcbX="-1.599946mm" pcbY="-5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin49"]} pcbX="1.599946mm" pcbY="5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin50"]} pcbX="1.599946mm" pcbY="5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin51"]} pcbX="1.599946mm" pcbY="4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin52"]} pcbX="1.599946mm" pcbY="3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin53"]} pcbX="1.599946mm" pcbY="2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin54"]} pcbX="1.599946mm" pcbY="1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin55"]} pcbX="1.599946mm" pcbY="1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin56"]} pcbX="1.599946mm" pcbY="0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin57"]} pcbX="1.599946mm" pcbY="-0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin58"]} pcbX="1.599946mm" pcbY="-1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin59"]} pcbX="1.599946mm" pcbY="-1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin60"]} pcbX="1.599946mm" pcbY="-2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin61"]} pcbX="1.599946mm" pcbY="-3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin62"]} pcbX="1.599946mm" pcbY="-4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin63"]} pcbX="1.599946mm" pcbY="-5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin64"]} pcbX="1.599946mm" pcbY="-5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin65"]} pcbX="2.400046mm" pcbY="5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin66"]} pcbX="2.400046mm" pcbY="5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin67"]} pcbX="2.400046mm" pcbY="4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin68"]} pcbX="2.400046mm" pcbY="3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin69"]} pcbX="2.400046mm" pcbY="2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin70"]} pcbX="2.400046mm" pcbY="1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin71"]} pcbX="2.400046mm" pcbY="1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin72"]} pcbX="2.400046mm" pcbY="0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin73"]} pcbX="2.400046mm" pcbY="-0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin74"]} pcbX="2.400046mm" pcbY="-1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin75"]} pcbX="2.400046mm" pcbY="-1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin76"]} pcbX="2.400046mm" pcbY="-2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin77"]} pcbX="2.400046mm" pcbY="-3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin78"]} pcbX="2.400046mm" pcbY="-4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin79"]} pcbX="2.400046mm" pcbY="-5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin80"]} pcbX="2.400046mm" pcbY="-5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin81"]} pcbX="3.199892mm" pcbY="5.999988mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin82"]} pcbX="3.199892mm" pcbY="5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin83"]} pcbX="3.199892mm" pcbY="4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin84"]} pcbX="3.199892mm" pcbY="3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin85"]} pcbX="3.199892mm" pcbY="2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin86"]} pcbX="3.199892mm" pcbY="1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin87"]} pcbX="3.199892mm" pcbY="1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin88"]} pcbX="3.199892mm" pcbY="0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin89"]} pcbX="3.199892mm" pcbY="-0.40005mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin90"]} pcbX="3.199892mm" pcbY="-1.199896mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin91"]} pcbX="3.199892mm" pcbY="-1.999996mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin92"]} pcbX="3.199892mm" pcbY="-2.800096mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin93"]} pcbX="3.199892mm" pcbY="-3.599942mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin94"]} pcbX="3.199892mm" pcbY="-4.400042mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin95"]} pcbX="3.199892mm" pcbY="-5.199888mm" radius="0.1919986mm" shape="circle" />
+<smtpad portHints={["pin96"]} pcbX="3.199892mm" pcbY="-5.999988mm" radius="0.1919986mm" shape="circle" />
+<silkscreenpath route={[{"x":-5.226176999999993,"y":6.726173999999986},{"x":5.226202400000005,"y":6.726173999999986},{"x":5.226202400000005,"y":-6.726199400000013},{"x":-5.226176999999993,"y":-6.726199400000013},{"x":-5.226176999999993,"y":6.726173999999986}]} />
+<silkscreenpath route={[{"x":-5.454777000000007,"y":6.206185199999993},{"x":-5.454777000000007,"y":6.954773999999986},{"x":-4.7061882,"y":6.954773999999986}]} />
+<silkscreencircle pcbX="-5.726176mm" pcbY="5.999988mm" radius="0.050038mm" />
+<fabricationnotepath route={[{"x":-5.226189547600001,"y":6.726186547599994},{"x":-4.706190587600005,"y":6.726186547599994},{"x":-5.226189547600001,"y":6.206187587599985},{"x":-5.226189547600001,"y":6.726186547599994}]} strokeWidth="0.254mm" />
+<courtyardoutline outline={[{"x":-6.0157999999999845,"y":7.2095999999999805},{"x":5.482399999999998,"y":7.2095999999999805},{"x":5.482399999999998,"y":-6.9809999999999945},{"x":-6.0157999999999845,"y":-6.9809999999999945},{"x":-6.0157999999999845,"y":7.2095999999999805}]} />
+      </footprint>"
+`;
+
+exports[`records C2920140 aliases, pad associations and unintended internal connection: unwired internal connections 1`] = `
+[
+  {
+    "source_component_id": "source_component_0",
+    "source_component_internal_connection_id": "source_component_internal_connection_0",
+    "source_port_ids": [
+      "source_port_0",
+      "source_port_31",
+    ],
+    "subcircuit_id": "subcircuit_source_group_0",
+    "type": "source_component_internal_connection",
+  },
+]
+`;
