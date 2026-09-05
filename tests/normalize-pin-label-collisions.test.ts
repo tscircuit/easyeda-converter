@@ -57,3 +57,15 @@ test.each(collisionCases)(
 test("keeps a canonical alias only once on its own terminal", () => {
   expect(normalizePinLabels([["1", "pin1"]])).toEqual([["pin1"]])
 })
+
+test("does not reserve numeric input labels after they become canonical names", () => {
+  expect(
+    normalizePinLabels([
+      ["1", ""],
+      ["2", ""],
+    ]),
+  ).toEqual([
+    ["pin1", "1"],
+    ["pin2", "2"],
+  ])
+})

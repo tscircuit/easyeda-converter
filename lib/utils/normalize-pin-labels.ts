@@ -60,10 +60,10 @@ export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
     }
   }
 
-  // Reserve all original labels and canonical names before assigning aliases,
-  // including labels that occur later in the input.
+  // Reserve original aliases and canonical names, including later input labels.
+  // Numeric input labels become canonical pin names, not literal aliases.
   const reservedLabels = new Set([
-    ...uniqueInputPinLabels.flat(),
+    ...uniqueInputPinLabels.flat().filter((label) => !/^\d+$/.test(label)),
     ...result.map((labels) => labels[0]),
   ])
   type PinLabel = string
