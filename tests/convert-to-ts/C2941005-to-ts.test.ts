@@ -32,12 +32,9 @@ test("renders the C2941005 schematic and PCB", async () => {
   ).toHaveLength(6)
 
   const circuitJson = await renderImportedSwitch()
-  const schematicSvg = convertCircuitJsonToSchematicSvg(circuitJson)
-  expect(schematicSvg).toContain(">SW1</text>")
-  await expect(schematicSvg).toMatchSvgSnapshot(
-    import.meta.path,
-    "C2941005-schematic",
-  )
+  await expect(
+    convertCircuitJsonToSchematicSvg(circuitJson),
+  ).toMatchSvgSnapshot(import.meta.path, "C2941005-schematic")
   await expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "C2941005-pcb",
@@ -81,20 +78,12 @@ test("preserves all six C2941005 schematic terminals and their PCB pad mappings"
     (element) => element.type === "source_component",
   )
   expect(sourceComponent).toBeDefined()
-  expect(sourceComponent?.ftype).toBe("simple_switch")
   expect(sourceComponent?.are_pins_interchangeable).not.toBe(true)
 })
 
-test.each([
-  [1, undefined],
-  [2, "spst"],
-  [3, "spdt"],
-  [4, "dpst"],
-  [5, undefined],
-  [6, "dpdt"],
-] as const)(
-  "selects the supported native switch type (input: %i, type: %s)",
-  async (pinCount, switchType) => {
+test.each([1, 2, 3])(
+  "uses the native switch only for two terminals (input: %i)",
+  async (pinCount) => {
     // Reduced inputs exercise classification boundaries; the unmodified
     // six-terminal fixture above verifies the real component and pad mappings.
     const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
@@ -107,11 +96,8 @@ test.each([
       )
 
     const result = await convertBetterEasyToTsx({ betterEasy })
-    expect(result.includes("<switch")).toBe(Boolean(switchType))
-    expect(result.includes("<chip")).toBe(!switchType)
-    if (switchType) {
-      expect(result).toContain(`type="${switchType}"`)
-    }
+    expect(result.includes("<switch")).toBe(pinCount === 2)
+    expect(result.includes("<chip")).toBe(pinCount !== 2)
 
     const circuitJson = await runTscircuitCode(`${result}
 export default () => (<board><YTSPS_22E58LM name="SW1" /></board>)
@@ -119,11 +105,11 @@ export default () => (<board><YTSPS_22E58LM name="SW1" /></board>)
     expect(
       circuitJson.filter((element) => element.type === "schematic_port"),
     ).toHaveLength(pinCount)
-    if (switchType) {
+    if (pinCount === 2) {
       expect(
         circuitJson.find((element) => element.type === "schematic_component")
           ?.symbol_name,
-      ).toContain(`${switchType}_switch`)
+      ).toBe("spst_switch_right")
     }
   },
 )

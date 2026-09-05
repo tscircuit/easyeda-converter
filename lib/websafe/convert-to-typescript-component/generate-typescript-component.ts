@@ -16,8 +16,6 @@ export type GeneratedComponentType =
   | "crystal"
   | "connector"
 
-export type GeneratedSwitchType = "spst" | "spdt" | "dpst" | "dpdt"
-
 interface Params {
   pinLabels: ChipProps["pinLabels"]
   componentName: string
@@ -27,7 +25,6 @@ interface Params {
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
-  switchType?: GeneratedSwitchType
   capacitance?: string
   resistance?: string
   inductance?: string
@@ -47,7 +44,6 @@ export const generateTypescriptComponent = ({
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
-  switchType,
   capacitance,
   resistance,
   inductance,
@@ -255,10 +251,6 @@ ${cadModelLines}
   }
 
   if (componentType === "switch") {
-    if (!switchType) {
-      throw new Error("Switch type is required for switch components")
-    }
-
     return `
 import type { SwitchProps } from "@tscircuit/props"
 
@@ -272,7 +264,6 @@ export const ${componentName} = (props: SwitchProps) => {
   return (
     <switch
       name={name}
-      type="${switchType}"
       pinLabels={pinLabels}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
