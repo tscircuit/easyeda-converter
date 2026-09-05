@@ -1,0 +1,191 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`allocates unique aliases with later original suffixes 1`] = `
+[
+  [
+    "pin1",
+    "A14",
+  ],
+  [
+    "pin2",
+    "A15",
+  ],
+  [
+    "pin3",
+    "A11",
+  ],
+  [
+    "pin4",
+    "A12",
+  ],
+  [
+    "pin5",
+    "A13",
+  ],
+]
+`;
+
+exports[`allocates unique aliases with existing underscore suffixes 1`] = `
+[
+  [
+    "pin1",
+    "A1_3",
+  ],
+  [
+    "pin2",
+    "A1_4",
+  ],
+  [
+    "pin3",
+    "A1_1",
+  ],
+  [
+    "pin4",
+    "A1_2",
+  ],
+]
+`;
+
+exports[`allocates unique aliases with generated aliases from different bases 1`] = `
+[
+  [
+    "pin1",
+    "A2",
+  ],
+  [
+    "pin2",
+    "A3",
+  ],
+  [
+    "pin3",
+    "A4",
+  ],
+  [
+    "pin4",
+    "A5",
+  ],
+  [
+    "pin5",
+    "A6",
+  ],
+  [
+    "pin6",
+    "A7",
+  ],
+  [
+    "pin7",
+    "A8",
+  ],
+  [
+    "pin8",
+    "A9",
+  ],
+  [
+    "pin9",
+    "A10",
+  ],
+  [
+    "pin10",
+    "A11",
+  ],
+  [
+    "pin11",
+    "A12",
+  ],
+  [
+    "pin12",
+    "A13",
+  ],
+  [
+    "pin13",
+    "A14",
+  ],
+  [
+    "pin14",
+    "A15",
+  ],
+]
+`;
+
+exports[`allocates unique aliases with canonical pin names 1`] = `
+[
+  [
+    "pin1",
+    "pin21",
+  ],
+  [
+    "pin2",
+    "pin12",
+  ],
+  [
+    "pin3",
+    "pin11",
+  ],
+]
+`;
+
+exports[`allocates unique aliases with repeated numeric and alternate aliases 1`] = `
+[
+  [
+    "pin2",
+  ],
+  [
+    "pin3",
+    "pin2_alt3",
+  ],
+  [
+    "pin4",
+    "pin2_alt4",
+  ],
+  [
+    "pin5",
+    "pin2_alt1",
+  ],
+  [
+    "pin6",
+    "pin2_alt2",
+  ],
+]
+`;
+
+exports[`allocates unique aliases with active-low normalized collisions 1`] = `
+[
+  [
+    "pin1",
+    "N_RESET2",
+  ],
+  [
+    "pin2",
+    "N_RESET3",
+  ],
+  [
+    "pin3",
+    "N_RESET1",
+  ],
+]
+`;
+
+exports[`allocates unique aliases with object prototype names 1`] = `
+[
+  [
+    "pin1",
+    "__proto__1",
+  ],
+  [
+    "pin2",
+    "__proto__2",
+  ],
+  [
+    "pin3",
+    "constructor2",
+  ],
+  [
+    "pin4",
+    "constructor3",
+  ],
+  [
+    "pin5",
+    "constructor1",
+  ],
+]
+`;

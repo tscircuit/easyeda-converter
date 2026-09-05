@@ -19,8 +19,9 @@ test("records the DDR alias suffix collision", () => {
   ])
   expect(normalized).toMatchSnapshot()
   expect(normalized.filter((aliases) => aliases.includes("A11"))).toHaveLength(
-    2,
+    1,
   )
+  expect(new Set(normalized.flat()).size).toBe(normalized.flat().length)
 })
 
 test("records C2920140 aliases, pad associations and unintended internal connection", async () => {
@@ -52,7 +53,7 @@ test("records C2920140 aliases, pad associations and unintended internal connect
   const internalConnections = circuitJson.filter(
     (element) => element.type === "source_component_internal_connection",
   )
-  expect(internalConnections).toHaveLength(1)
+  expect(internalConnections).toHaveLength(0)
   expect(internalConnections).toMatchSnapshot("unwired internal connections")
   expect(
     circuitJson.filter((element) => element.type === "source_port"),
