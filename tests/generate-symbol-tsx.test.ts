@@ -13,12 +13,30 @@ import symbolWithPathRawEasy from "./assets/C2828420.raweasy.json"
 import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
 import symbolWithStaleHeadOriginRawEasy from "./assets/C5830143.raweasy.json"
 import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
+import protectionDiodeRawEasy from "./assets/C7519.raweasy.json"
 
 const generateSymbolFromRawEasy = (rawEasy: unknown): string => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
   return generateSymbolTsx(betterEasy, circuitJson) ?? ""
 }
+
+test.each(["none", "#880000", ""])(
+  "keeps the rectangle primitive when its fill is %s",
+  (fillColor) => {
+    const rawEasy = structuredClone(protectionDiodeRawEasy)
+    rawEasy.dataStr.shape[0] = rawEasy.dataStr.shape[0].replace(
+      "#FFFFFF",
+      fillColor,
+    )
+    const symbolTsx = generateSymbolFromRawEasy(rawEasy)
+
+    expect(symbolTsx).toContain(
+      '<schematicrect schX={0} schY={0} width={1.8} height={2} strokeWidth={0.02} color="#880000"',
+    )
+    expect(symbolTsx.match(/<port /g)).toHaveLength(6)
+  },
+)
 
 test("generates a centered symbol with positioned, aliased ports", () => {
   const symbolTsx = generateSymbolFromRawEasy(ne555RawEasy)

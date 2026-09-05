@@ -349,6 +349,23 @@ const generateShapeTsx = ({
   const transformPoint = getPointTransformer(origin)
 
   if (shape.type === "RECTANGLE") {
+    // SchematicRect currently drops fillColor, using the outline color as the
+    // fill. A closed path preserves separate outline and fill colors.
+    if (
+      shape.fillColor &&
+      shape.fillColor !== "none" &&
+      shape.fillColor.toLowerCase() !== shape.color.toLowerCase()
+    ) {
+      const { x, y } = shape.position
+      const points = [
+        { x, y },
+        { x: x + shape.width, y },
+        { x: x + shape.width, y: y + shape.height },
+        { x, y: y + shape.height },
+        { x, y },
+      ].map(transformPoint)
+      return `<schematicpath points={${JSON.stringify(points)}} strokeWidth={${toSchematicUnits(shape.lineWidth)}} strokeColor=${JSON.stringify(shape.color)} isFilled fillColor=${JSON.stringify(shape.fillColor)} />`
+    }
     const center = transformPoint({
       x: shape.position.x + shape.width / 2,
       y: shape.position.y + shape.height / 2,
