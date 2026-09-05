@@ -4,7 +4,7 @@ exports[`records the DDR alias suffix collision 1`] = `
 [
   [
     "pin1",
-    "A11",
+    "A12",
     "VDDQ",
   ],
   [
@@ -15,7 +15,7 @@ exports[`records the DDR alias suffix collision 1`] = `
   [
     "pin3",
     "P3",
-    "A12",
+    "A13",
   ],
 ]
 `;
@@ -26,7 +26,7 @@ exports[`records C2920140 aliases, pad associations and unintended internal conn
     "name": "pin1",
     "pin_number": 1,
     "port_hints": [
-      "A11",
+      "A12",
       "VDDQ1",
     ],
   },
@@ -510,7 +510,7 @@ exports[`records C2920140 aliases, pad associations and unintended internal conn
     "pin_number": 62,
     "port_hints": [
       "P7",
-      "A12",
+      "A14",
     ],
   },
   {
@@ -892,17 +892,4 @@ exports[`records C2920140 aliases, pad associations and unintended internal conn
       </footprint>"
 `;
 
-exports[`records C2920140 aliases, pad associations and unintended internal connection: unwired internal connections 1`] = `
-[
-  {
-    "source_component_id": "source_component_0",
-    "source_component_internal_connection_id": "source_component_internal_connection_0",
-    "source_port_ids": [
-      "source_port_0",
-      "source_port_31",
-    ],
-    "subcircuit_id": "subcircuit_source_group_0",
-    "type": "source_component_internal_connection",
-  },
-]
-`;
+exports[`records C2920140 aliases, pad associations and unintended internal connection: unwired internal connections 1`] = `[]`;

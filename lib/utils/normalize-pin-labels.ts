@@ -42,13 +42,7 @@ export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
       continue
     }
 
-    let existingAltCount = 0
-    for (const label of result[i]) {
-      if (label.startsWith(`pin${desiredNumber}_alt`)) {
-        existingAltCount += 1
-      }
-    }
-    result[i].push(`pin${desiredNumber}_alt${existingAltCount + 1}`)
+    result[i].push(`pin${desiredNumber}_alt`)
   }
 
   for (let i = 0; i < result.length; i++) {
@@ -66,24 +60,55 @@ export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
     }
   }
 
-  const totalLabelCounts: Record<string, number> = {}
+  // Reserve all original labels and canonical names before assigning aliases,
+  // including labels that occur later in the input.
+  const reservedLabels = new Set([
+    ...uniqueInputPinLabels.flat(),
+    ...result.map((labels) => labels[0]),
+  ])
+  type PinLabel = string
+  const incrementalLabelCounts = new Map<PinLabel, number>()
+  for (const labels of result) {
+    if (labels.length < 2) continue
+    const alternatePrefix = labels[1]
+    let suffix = incrementalLabelCounts.get(alternatePrefix) ?? 0
+    do {
+      suffix += 1
+    } while (reservedLabels.has(`${alternatePrefix}${suffix}`))
+    labels[1] = `${alternatePrefix}${suffix}`
+    incrementalLabelCounts.set(alternatePrefix, suffix)
+    reservedLabels.add(labels[1])
+  }
+
+  const assignedLabels = new Set(result.flat())
+  const totalLabelCounts = new Map<PinLabel, number>()
   for (const inputLabels of uniqueInputPinLabels) {
     for (const label of inputLabels) {
       if (/^\d+$/.test(label)) continue
-      totalLabelCounts[label] = (totalLabelCounts[label] ?? 0) + 1
+      totalLabelCounts.set(label, (totalLabelCounts.get(label) ?? 0) + 1)
     }
   }
 
-  const incrementalLabelCounts: Record<string, number> = {}
   for (let i = 0; i < uniqueInputPinLabels.length; i++) {
     for (const label of uniqueInputPinLabels[i]) {
       if (/^\d+$/.test(label)) continue
 
-      if (totalLabelCounts[label] === 1) {
+      if (totalLabelCounts.get(label) === 1 && result[i].includes(label)) {
+        continue
+      }
+      if (totalLabelCounts.get(label) === 1 && !assignedLabels.has(label)) {
         result[i].push(label)
+        assignedLabels.add(label)
       } else {
-        incrementalLabelCounts[label] = (incrementalLabelCounts[label] ?? 0) + 1
-        result[i].push(`${label}${incrementalLabelCounts[label]}`)
+        let suffix = incrementalLabelCounts.get(label) ?? 0
+        do {
+          suffix += 1
+        } while (reservedLabels.has(`${label}${suffix}`))
+        const disambiguatedLabel = `${label}${suffix}`
+        incrementalLabelCounts.set(label, suffix)
+        reservedLabels.add(disambiguatedLabel)
+        assignedLabels.add(disambiguatedLabel)
+        result[i].push(disambiguatedLabel)
       }
     }
   }
