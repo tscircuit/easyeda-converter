@@ -80,6 +80,18 @@ test("maps duplicate EasyEDA symbol pin numbers to unused footprint ports", () =
   expect(symbolTsx.match(/name="pin8"/g)).toHaveLength(1)
 })
 
+test("keeps polarity display labels compact and adds symbol clearance", () => {
+  const symbolTsx = generateSymbolFromRawEasy(duplicateSymbolPinRawEasy)
+
+  expect(symbolTsx).toContain("<symbol width={2.541} height={2.463}>")
+  expect(symbolTsx).toContain(
+    '<port name="pin2" pinNumber={2} aliases={["IN-","IN_NEG"]}',
+  )
+  expect(symbolTsx).toContain(
+    '<port name="pin5" pinNumber={5} aliases={["VO+","VO_POS"]}',
+  )
+})
+
 test("distinguishes custom symbols from chip box representations", () => {
   expect(hasNonBoxSchematicSymbol(EasyEdaJsonSchema.parse(ne555RawEasy))).toBe(
     false,
