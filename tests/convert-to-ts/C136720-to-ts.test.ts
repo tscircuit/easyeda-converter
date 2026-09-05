@@ -1,13 +1,13 @@
 import { expect, it } from "bun:test"
-import switchRawEasy from "../assets/C136720.raweasy.json"
-import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { runTscircuitCode } from "tscircuit"
 import {
   convertCircuitJsonToPcbSvg,
   convertCircuitJsonToSchematicSvg,
 } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { runTscircuitCode } from "tscircuit"
+import switchRawEasy from "../assets/C136720.raweasy.json"
 
 it("converts C136720 document-layer tracks to fabrication notes", () => {
   const betterEasy = EasyEdaJsonSchema.parse(switchRawEasy)
@@ -74,6 +74,7 @@ it("preserves the imported C136720 slide switch symbol and all five terminals", 
               <port name="pin5" pinNumber={5} aliases={["5"]} direction="down" schX={-0.3} schY={-0.3} schStemLength={0.1} />
               <schematicpath points={[{"x":-0.2,"y":0},{"x":0.2,"y":-0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":-0.4,"y":0},{"x":-0.4,"y":0.2},{"x":0.4,"y":0.2},{"x":0.4,"y":-0.2},{"x":-0.4,"y":-0.2},{"x":-0.4,"y":0}]} strokeColor="#000000" />
+              <schematictext schX={0} schY={0.468} text="{REF}" fontSize={0.18} anchor="bottom_center" color="#000000" />
             </symbol>
           }
           supplierPartNumbers={{
@@ -128,10 +129,9 @@ export default () => (<board><SK_12E12_G5 name="SW1" /></board>)
       .map((port) => port.pin_number)
       .sort((a, b) => a! - b!),
   ).toEqual([1, 2, 3, 4, 5])
-  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-    "C136720-schematic",
-  )
+  const schematicSvg = convertCircuitJsonToSchematicSvg(circuitJson)
+  expect(schematicSvg).toContain(">SW1</text>")
+  expect(schematicSvg).toMatchSvgSnapshot(import.meta.path, "C136720-schematic")
   expect(
     circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
   ).toHaveLength(2)
