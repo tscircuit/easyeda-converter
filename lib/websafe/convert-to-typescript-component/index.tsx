@@ -12,7 +12,10 @@ import {
   hasNonBoxSchematicSymbol,
 } from "./generate-symbol-tsx"
 import { generateTypescriptComponent } from "./generate-typescript-component"
-import type { GeneratedComponentType } from "./generate-typescript-component"
+import type {
+  GeneratedComponentType,
+  GeneratedSwitchType,
+} from "./generate-typescript-component"
 import {
   isCapacitorComponent,
   normalizeCapacitanceValue,
@@ -33,18 +36,29 @@ import { isSwitchCategoryComponent } from "./is-switch-category-component"
 const getGeneratedComponentType = (
   betterEasy: BetterEasyEdaJson,
   pinCount: number,
+  switchType: GeneratedSwitchType | undefined,
 ): GeneratedComponentType => {
   if (isLedCategoryComponent(betterEasy) && pinCount === 2) return "led"
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isDipSwitchCategoryComponent(betterEasy)) return "chip"
-  if (isSwitchCategoryComponent(betterEasy) && pinCount === 2) return "switch"
+  if (isSwitchCategoryComponent(betterEasy) && switchType) return "switch"
   if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
   if (isInductorComponent(betterEasy) && pinCount === 2) return "inductor"
   if (isCrystalComponent(betterEasy)) return "crystal"
   if (isMicroUsbConnectorComponent(betterEasy)) return "connector"
   return "chip"
+}
+
+const getSwitchTypeFromPinCount = (
+  pinCount: number,
+): GeneratedSwitchType | undefined => {
+  if (pinCount === 2) return "spst"
+  if (pinCount === 3) return "spdt"
+  if (pinCount === 4) return "dpst"
+  if (pinCount === 6) return "dpdt"
+  return undefined
 }
 
 const getVisibleSchematicPinArrangement = (
@@ -158,9 +172,11 @@ export const convertBetterEasyToTsx = async ({
   const supplierPartNumbers: Record<string, string[]> = {
     jlcpcb: [betterEasy.lcsc.number],
   }
+  const switchType = getSwitchTypeFromPinCount(sourcePorts.length)
   const componentType = getGeneratedComponentType(
     betterEasy,
     sourcePorts.length,
+    switchType,
   )
   const isDipSwitch = isDipSwitchCategoryComponent(betterEasy)
   const inductance =
@@ -217,6 +233,7 @@ export const convertBetterEasyToTsx = async ({
     circuitJson,
     supplierPartNumbers,
     componentType,
+    switchType: componentType === "switch" ? switchType : undefined,
     capacitance,
     resistance,
     inductance,
