@@ -4,6 +4,9 @@ export const categoryValueContainsSwitch = (value: unknown): boolean => {
 
     if (
       /analog\s+switch/.test(normalized) ||
+      /\b(?:power[\s-]+distribution|load|(?:high|low)[\s-]+side)[\s-]+switch(?:es)?\b/.test(
+        normalized,
+      ) ||
       /multiplex/.test(normalized) ||
       /switching\s+diodes?/.test(normalized) ||
       /\bics?\b/.test(normalized)

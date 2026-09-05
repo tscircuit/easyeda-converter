@@ -4,19 +4,19 @@ exports[`records semiconductor and mechanical switch categories 1`] = `
 [
   {
     "category": "Power Distribution Switches",
-    "isMechanicalSwitch": true,
+    "isMechanicalSwitch": false,
   },
   {
     "category": "Load Switches",
-    "isMechanicalSwitch": true,
+    "isMechanicalSwitch": false,
   },
   {
     "category": "High-Side Switches",
-    "isMechanicalSwitch": true,
+    "isMechanicalSwitch": false,
   },
   {
     "category": "Low Side Switches",
-    "isMechanicalSwitch": true,
+    "isMechanicalSwitch": false,
   },
   {
     "category": "Analog Switches / Multiplexers",
@@ -61,7 +61,7 @@ exports[`records TPS22918 classification and preserves its six supplier pins and
 `;
 
 exports[`records TPS22918 classification and preserves its six supplier pins and footprint: generated component 1`] = `
-"import type { SwitchProps } from "@tscircuit/props"
+"import type { ChipProps } from "@tscircuit/props"
 
 const pinLabels = {
   pin1: ["VIN"],
@@ -72,13 +72,16 @@ const pinLabels = {
   pin6: ["VOUT"]
 } as const
 
-export const TPS22918DBVR = (props: SwitchProps) => {
-  const { name = "SW1", ...restProps } = props
+const pinAttributes = {
+  pin1: {requiresPower: true},
+  pin2: {requiresGround: true}
+} as const
 
+export const TPS22918DBVR = (props: ChipProps<typeof pinLabels>) => {
   return (
-    <switch
-      name={name}
+    <chip
       pinLabels={pinLabels}
+      pinAttributes={pinAttributes}
       supplierPartNumbers={{
   "jlcpcb": [
     "C131941"
@@ -99,7 +102,7 @@ export const TPS22918DBVR = (props: SwitchProps) => {
 <courtyardoutline outline={[{"x":-2.1425540000000183,"y":1.8123540000000276},{"x":2.167445999999927,"y":1.8123540000000276},{"x":2.167445999999927,"y":-2.015045999999984},{"x":-2.1425540000000183,"y":-2.015045999999984},{"x":-2.1425540000000183,"y":1.8123540000000276}]} />
       </footprint>}
       
-      {...restProps}
+      {...props}
     />
   )
 }"
