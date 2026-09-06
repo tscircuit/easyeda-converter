@@ -1,0 +1,17 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`rejects null response before fetching geometry 1`] = `"Invalid EasyEDA search response for "C2040": expected a boolean success field"`;
+
+exports[`rejects missing success flag before fetching geometry 1`] = `"Invalid EasyEDA search response for "C2040": expected a boolean success field"`;
+
+exports[`rejects string success flag before fetching geometry 1`] = `"Invalid EasyEDA search response for "C2040": expected a boolean success field"`;
+
+exports[`rejects missing results before fetching geometry 1`] = `"Invalid EasyEDA search response for "C2040": expected result.lists.lcsc containing component UUIDs and supplier metadata"`;
+
+exports[`rejects missing lists before fetching geometry 1`] = `"Invalid EasyEDA search response for "C2040": expected result.lists.lcsc containing component UUIDs and supplier metadata"`;
+
+exports[`rejects non-array component list before fetching geometry 1`] = `"Invalid EasyEDA search response for "C2040": expected result.lists.lcsc containing component UUIDs and supplier metadata"`;
+
+exports[`rejects component without a UUID before fetching geometry 1`] = `"Invalid EasyEDA search response for "C2040": expected result.lists.lcsc containing component UUIDs and supplier metadata"`;
+
+exports[`rejects API rejection even with a nonempty result list before fetching geometry 1`] = `"EasyEDA API rejected the component search for "C2040" (code 0)"`;

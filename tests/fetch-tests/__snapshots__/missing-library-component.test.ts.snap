@@ -1,5 +1,5 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
-exports[`reports when S4 has no EasyEDA library search result 1`] = `"Component not found"`;
+exports[`reports when S4 has no EasyEDA library search result 1`] = `"Component not found in EasyEDA library search for "C41411351". A supplier catalog listing does not guarantee importable symbol/footprint data."`;
 
-exports[`reports when EasyEDA rejects the search request 1`] = `"Component not found"`;
+exports[`reports when EasyEDA rejects the search request 1`] = `"EasyEDA API rejected the component search for "C41411351" (code 500): Search unavailable"`;

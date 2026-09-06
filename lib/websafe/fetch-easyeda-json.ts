@@ -1,5 +1,6 @@
 import type { RawEasyEdaJson } from "../schemas/easy-eda-json-schema"
 import { getModelCdnUrl } from "./get-model-cdn-url"
+import { parseEasyEdaSearchResponse } from "./parse-easyeda-search-response"
 
 type ModelBounds = {
   min: { x: number; y: number; z: number }
@@ -117,27 +118,25 @@ export async function fetchEasyEDAComponent(
     )
   }
 
-  const searchResult = await searchResponse.json()
-  if (!searchResult.success || !searchResult.result.lists.lcsc.length) {
-    throw new Error("Component not found")
-  }
+  const searchComponents = parseEasyEdaSearchResponse(
+    await searchResponse.json(),
+    jlcpcbPartNumber,
+  )
 
   const requestedPartNumber = jlcpcbPartNumber.trim().toUpperCase()
-  const bestMatchComponent = searchResult.result.lists.lcsc.find(
-    (component: any) => {
-      const candidatePartNumbers = [
-        component.dataStr?.head?.c_para?.["Supplier Part"],
-        component.lcsc?.number,
-        component.szlcsc?.number,
-      ]
+  const bestMatchComponent = searchComponents.find((component) => {
+    const candidatePartNumbers = [
+      component.dataStr?.head?.c_para?.["Supplier Part"],
+      component.lcsc?.number,
+      component.szlcsc?.number,
+    ]
 
-      return candidatePartNumbers.some(
-        (partNumber) =>
-          typeof partNumber === "string" &&
-          partNumber.trim().toUpperCase() === requestedPartNumber,
-      )
-    },
-  )
+    return candidatePartNumbers.some(
+      (partNumber) =>
+        typeof partNumber === "string" &&
+        partNumber.trim().toUpperCase() === requestedPartNumber,
+    )
+  })
 
   if (!bestMatchComponent) {
     throw new Error(
