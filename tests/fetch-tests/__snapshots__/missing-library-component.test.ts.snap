@@ -1,0 +1,5 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`reports when S4 has no EasyEDA library search result 1`] = `"Component not found"`;
+
+exports[`reports when EasyEDA rejects the search request 1`] = `"Component not found"`;
