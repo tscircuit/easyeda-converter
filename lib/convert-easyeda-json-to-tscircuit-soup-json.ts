@@ -683,7 +683,7 @@ export const convertEasyEdaJsonToCircuitJson = (
               : {
                   radius: Math.min(mil2mm(pad.width), mil2mm(pad.height)) / 2,
                 }),
-        layer: "top",
+        layer: pad.layermask === 2 ? "bottom" : "top",
         port_hints: pcbPortHints,
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
