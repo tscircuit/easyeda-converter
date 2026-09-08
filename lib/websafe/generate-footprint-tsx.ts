@@ -92,7 +92,7 @@ export const generateFootprintTsx = (
   for (const smtPad of smtPads) {
     if (smtPad.shape === "circle") {
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle"${getLayerAttr(smtPad.layer)} />`,
       )
     } else if (smtPad.shape === "rect") {
       const cornerRadius =
@@ -102,18 +102,18 @@ export const generateFootprintTsx = (
           ? ` cornerRadius="${mmStr(cornerRadius)}"`
           : ""
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}"${cornerRadiusAttr} shape="rect" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}"${cornerRadiusAttr} shape="rect"${getLayerAttr(smtPad.layer)} />`,
       )
     } else if (smtPad.shape === "pill") {
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" radius="${mmStr(smtPad.radius)}" shape="pill" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}" radius="${mmStr(smtPad.radius)}" shape="pill"${getLayerAttr(smtPad.layer)} />`,
       )
     } else if (smtPad.shape === "polygon") {
       const pointsStr = smtPad.points
         .map((p) => `{x: "${mmStr(p.x)}", y: "${mmStr(p.y)}"}`)
         .join(", ")
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} points={[${pointsStr}]} shape="polygon" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} points={[${pointsStr}]} shape="polygon"${getLayerAttr(smtPad.layer)} />`,
       )
     }
   }
