@@ -30,7 +30,7 @@ it("should convert C46497 into typescript file", async () => {
       pin5: ["RINN"],
       pin6: ["PLIMIT"],
       pin7: ["GVDD"],
-      pin8: ["pin8"],
+      pin8: ["GAIN","SLV"],
       pin9: ["GND1"],
       pin10: ["LINP"],
       pin11: ["LINN"],

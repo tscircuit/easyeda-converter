@@ -83,6 +83,18 @@ describe("normalizePinLabels", () => {
     ])
   })
 
+  test("splits slash-separated aliases into separate labels", () => {
+    expect(
+      normalizePinLabels([
+        ["1", "CD/DAT3"],
+        ["2", "#RST/NMI"],
+      ]),
+    ).toEqual([
+      ["pin1", "CD", "DAT3"],
+      ["pin2", "N_RST", "NMI"],
+    ])
+  })
+
   test("handles duplicate numeric labels", () => {
     const input = [["1"], ["2"], ["2"], ["3"]]
     expect(normalizePinLabels(input)).toEqual([
