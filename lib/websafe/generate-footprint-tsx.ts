@@ -21,8 +21,16 @@ const getLayerAttr = (layer: LayerRef | undefined) =>
 const getRotationAttr = (rotation: number | undefined) =>
   rotation ? ` pcbRotation="${rotation}deg"` : ""
 
-const getStringAttr = (name: string, value: string | undefined) =>
-  value === undefined ? "" : ` ${name}=${JSON.stringify(value)}`
+const needsJsxStringExpression = (value: string) =>
+  JSON.stringify(value) !== `"${value}"` || value.includes("&")
+
+const getStringAttr = (name: string, value: string | undefined) => {
+  if (value === undefined) return ""
+  if (needsJsxStringExpression(value)) {
+    return ` ${name}={${JSON.stringify(value)}}`
+  }
+  return ` ${name}=${JSON.stringify(value)}`
+}
 
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
@@ -149,16 +157,11 @@ export const generateFootprintTsx = (
   }
 
   for (const silkscreenText of silkscreenTexts) {
-    // Preserve the "{NAME}" placeholder so the runtime/editor can resolve it
-    const isRefDes = silkscreenText.text === "{NAME}"
-    const textValue = isRefDes
-      ? JSON.stringify("{NAME}")
-      : JSON.stringify(silkscreenText.text)
     const rotation = silkscreenText.ccw_rotation || 0
     const rotationAttr = rotation ? ` pcbRotation="${rotation}deg"` : ""
 
     elementStrings.push(
-      `<silkscreentext text=${textValue} pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}"${rotationAttr}${silkscreenText.font_size ? ` fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,
+      `<silkscreentext${getStringAttr("text", silkscreenText.text)} pcbX="${mmStr(silkscreenText.anchor_position.x)}" pcbY="${mmStr(silkscreenText.anchor_position.y)}" anchorAlignment="${silkscreenText.anchor_alignment}"${rotationAttr}${silkscreenText.font_size ? ` fontSize="${mmStr(silkscreenText.font_size)}"` : ""} />`,
     )
   }
 
@@ -170,7 +173,7 @@ export const generateFootprintTsx = (
 
   for (const fabricationNoteText of fabricationNoteTexts) {
     elementStrings.push(
-      `<fabricationnotetext text=${JSON.stringify(fabricationNoteText.text)} pcbX="${mmStr(fabricationNoteText.anchor_position.x)}" pcbY="${mmStr(fabricationNoteText.anchor_position.y)}" anchorAlignment="${fabricationNoteText.anchor_alignment}"${getStringAttr("font", fabricationNoteText.font)}${fabricationNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(fabricationNoteText.font_size)}"`}${getStringAttr("color", fabricationNoteText.color)}${getRotationAttr(fabricationNoteText.ccw_rotation)}${getLayerAttr(fabricationNoteText.layer)} />`,
+      `<fabricationnotetext${getStringAttr("text", fabricationNoteText.text)} pcbX="${mmStr(fabricationNoteText.anchor_position.x)}" pcbY="${mmStr(fabricationNoteText.anchor_position.y)}" anchorAlignment="${fabricationNoteText.anchor_alignment}"${getStringAttr("font", fabricationNoteText.font)}${fabricationNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(fabricationNoteText.font_size)}"`}${getStringAttr("color", fabricationNoteText.color)}${getRotationAttr(fabricationNoteText.ccw_rotation)}${getLayerAttr(fabricationNoteText.layer)} />`,
     )
   }
 
@@ -192,7 +195,7 @@ export const generateFootprintTsx = (
 
   for (const pcbNoteText of pcbNoteTexts) {
     elementStrings.push(
-      `<pcbnotetext text=${JSON.stringify(pcbNoteText.text ?? "")} pcbX="${mmStr(pcbNoteText.anchor_position.x)}" pcbY="${mmStr(pcbNoteText.anchor_position.y)}" anchorAlignment="${pcbNoteText.anchor_alignment}"${getStringAttr("font", pcbNoteText.font)}${pcbNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(pcbNoteText.font_size)}"`}${getStringAttr("color", pcbNoteText.color)}${getLayerAttr(pcbNoteText.layer)} />`,
+      `<pcbnotetext${getStringAttr("text", pcbNoteText.text ?? "")} pcbX="${mmStr(pcbNoteText.anchor_position.x)}" pcbY="${mmStr(pcbNoteText.anchor_position.y)}" anchorAlignment="${pcbNoteText.anchor_alignment}"${getStringAttr("font", pcbNoteText.font)}${pcbNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(pcbNoteText.font_size)}"`}${getStringAttr("color", pcbNoteText.color)}${getLayerAttr(pcbNoteText.layer)} />`,
     )
   }
 
