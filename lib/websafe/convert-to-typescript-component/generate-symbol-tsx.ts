@@ -255,6 +255,59 @@ interface PortMetadata {
   aliases: string[]
 }
 
+const hasOverlappingDefaultPinLabels = (
+  pins: Extract<SingleLetterShape, { type: "PIN" }>[],
+  origin: { x: number; y: number },
+): boolean => {
+  const transformPoint = getPointTransformer(origin)
+  // Match circuit-to-svg's default 0.15 font size and 0.1 inset from the
+  // stem end. Bounds are in symbol-local, Y-up schematic coordinates.
+  const fontSize = 0.15
+  const bounds = pins.map((pin) => {
+    const direction = getPinDirection(pin.rotation)
+    const outward = getUnitVectorFromDirection(direction)
+    const position = transformPoint(pin)
+    const inset = (getPinStemLength(pin.path) ?? 0.4) + 0.1
+    const x = position.x - outward.x * inset
+    const y = position.y - outward.y * inset
+    // Use a conservative sans-serif character width for collision detection.
+    const width = pin.label.replace(/^N_/, "").length * fontSize * 0.75
+    if (direction === "left") {
+      return {
+        minX: x,
+        maxX: x + width,
+        minY: y - fontSize / 2,
+        maxY: y + fontSize / 2,
+      }
+    }
+    if (direction === "right") {
+      return {
+        minX: x - width,
+        maxX: x,
+        minY: y - fontSize / 2,
+        maxY: y + fontSize / 2,
+      }
+    }
+    return {
+      minX: x - fontSize / 2,
+      maxX: x + fontSize / 2,
+      minY: direction === "up" ? y - width : y,
+      maxY: direction === "up" ? y : y + width,
+    }
+  })
+  return bounds.some((a, index) =>
+    bounds
+      .slice(index + 1)
+      .some(
+        (b) =>
+          a.minX < b.maxX &&
+          a.maxX > b.minX &&
+          a.minY < b.maxY &&
+          a.maxY > b.minY,
+      ),
+  )
+}
+
 const getPortMetadataByShapeId = (
   easyEdaJson: BetterEasyEdaJson,
   circuitJson: AnyCircuitElement[],
@@ -340,11 +393,13 @@ const generateShapeTsx = ({
   origin,
   portMetadata,
   drawingEndpoints = [],
+  preservePinLabelPositions = false,
 }: {
   shape: SingleLetterShape
   origin: { x: number; y: number }
   portMetadata?: PortMetadata
   drawingEndpoints?: Point[]
+  preservePinLabelPositions?: boolean
 }): string | undefined => {
   const transformPoint = getPointTransformer(origin)
 
@@ -423,6 +478,35 @@ const generateShapeTsx = ({
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
+    if (
+      preservePinLabelPositions &&
+      shape.labelText &&
+      shape.label &&
+      !/^(pin)?\d+$/.test(shape.label)
+    ) {
+      const path = transformSvgPath(shape.path, origin)
+      if (path) {
+        const label = shape.labelText
+        const labelPosition = transformPoint(label)
+        const anchor =
+          label.alignment === "start"
+            ? "left"
+            : label.alignment === "end"
+              ? "right"
+              : "center"
+        const fontSize = label.fontSize ? getTextFontSize(label.fontSize) : 0.15
+        // Draw the source pin artwork and its positioned label together. An
+        // automatic port stem would also add a box-style label at the wrong
+        // position, duplicating this text on compact mixed-direction symbols.
+        return [
+          `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}} schStemLength={0} />`,
+          `<schematicpath svgPath=${JSON.stringify(path)} strokeColor=${JSON.stringify(shape.labelColor)} />`,
+          // Schematic text rotations are emitted directly as SVG rotations,
+          // matching EasyEDA's text angle even though positions use Y-up.
+          `<schematictext schX={${labelPosition.x}} schY={${labelPosition.y}} text=${JSON.stringify(shape.label)} fontSize={${fontSize}} anchor=${JSON.stringify(anchor)} color=${JSON.stringify(label.color || "#006464")} schRotation={${round(label.rotation)}} />`,
+        ].join("\n")
+      }
+    }
     return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
   }
 
@@ -468,6 +552,22 @@ export const generateSymbolTsx = (
   const drawingEndpoints = alignPortsToDrawing
     ? getOpenPolylineEndpoints(shapes, transformPoint)
     : []
+  const labeledPins = shapes.filter(
+    (shape): shape is Extract<SingleLetterShape, { type: "PIN" }> =>
+      shape.type === "PIN" &&
+      shape.visibility === "show" &&
+      Boolean(shape.labelText) &&
+      Boolean(shape.label) &&
+      !/^(pin)?\d+$/.test(shape.label),
+  )
+  const preservePinLabelPositions =
+    !alignPortsToDrawing &&
+    // Compact symbols have too little interior space for the default labels
+    // when horizontal and vertical pins both point into the same area.
+    toSchematicUnits(Math.max(bounds.width, bounds.height)) <= 1 &&
+    labeledPins.some((pin) => pin.rotation % 180 === 0) &&
+    labeledPins.some((pin) => Math.abs(pin.rotation % 180) === 90) &&
+    hasOverlappingDefaultPinLabels(labeledPins, origin)
   const shapeTsx = shapes
     .filter((shape) => includePorts || shape.type !== "PIN")
     .map((shape) =>
@@ -479,9 +579,11 @@ export const generateSymbolTsx = (
             ? portMetadataByShapeId.get(shape.id)
             : undefined,
         drawingEndpoints,
+        preservePinLabelPositions,
       }),
     )
     .filter((tsx): tsx is string => Boolean(tsx))
+    .flatMap((tsx) => tsx.split("\n"))
 
   if (shapeTsx.length === 0) return undefined
 

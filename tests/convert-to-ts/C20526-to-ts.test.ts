@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C20526.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("repro: converts C20526 with a schematic snapshot", async () => {
+it("preserves C20526 pin label positions without overlap", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
@@ -17,6 +17,28 @@ it("repro: converts C20526 with a schematic snapshot", async () => {
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  const pinLabels = circuitJson.filter(
+    (element) => element.type === "schematic_text",
+  )
+  expect(pinLabels).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        text: "B",
+        position: { x: 0.06, y: -0.06 },
+        rotation: 0,
+      }),
+      expect.objectContaining({
+        text: "C",
+        position: { x: 0.26, y: 0.14 },
+        rotation: 270,
+      }),
+      expect.objectContaining({
+        text: "E",
+        position: { x: 0.26, y: -0.14 },
+        rotation: 270,
+      }),
+    ]),
   )
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
@@ -38,9 +60,15 @@ it("repro: converts C20526 with a schematic snapshot", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <port name="pin3" pinNumber={3} aliases={["C"]} direction="up" schX={0.2} schY={0.4} schStemLength={0.2} />
-              <port name="pin1" pinNumber={1} aliases={["B"]} direction="left" schX={-0.2} schY={0} schStemLength={0.2} />
-              <port name="pin2" pinNumber={2} aliases={["E"]} direction="down" schX={0.2} schY={-0.4} schStemLength={0.2} />
+              <port name="pin3" pinNumber={3} aliases={["C"]} direction="up" schX={0.2} schY={0.4} schStemLength={0} />
+              <schematicpath svgPath="M 0.2 0.4 L 0.2 0.2" strokeColor="#880000" />
+              <schematictext schX={0.26} schY={0.14} text="C" fontSize={0.15} anchor="right" color="#0000FF" schRotation={270} />
+              <port name="pin1" pinNumber={1} aliases={["B"]} direction="left" schX={-0.2} schY={0} schStemLength={0} />
+              <schematicpath svgPath="M -0.2 0 L 0 0" strokeColor="#880000" />
+              <schematictext schX={0.06} schY={-0.06} text="B" fontSize={0.15} anchor="left" color="#0000FF" schRotation={0} />
+              <port name="pin2" pinNumber={2} aliases={["E"]} direction="down" schX={0.2} schY={-0.4} schStemLength={0} />
+              <schematicpath svgPath="M 0.2 -0.4 L 0.2 -0.2" strokeColor="#880000" />
+              <schematictext schX={0.26} schY={-0.14} text="E" fontSize={0.15} anchor="left" color="#0000FF" schRotation={270} />
               <schematicpath points={[{"x":0.2,"y":0.2},{"x":0,"y":0.06}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":-0.06},{"x":0.2,"y":-0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":0.18},{"x":0,"y":-0.18}]} strokeColor="#880000" />

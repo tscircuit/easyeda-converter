@@ -14,12 +14,25 @@ import symbolWithArcRawEasy from "./assets/C2961147.raweasy.json"
 import symbolWithStaleHeadOriginRawEasy from "./assets/C5830143.raweasy.json"
 import pinsOnlyRawEasy from "./assets/C19076967.raweasy.json"
 import protectionDiodeRawEasy from "./assets/C7519.raweasy.json"
+import transistorRawEasy from "./assets/C20526.raweasy.json"
 
 const generateSymbolFromRawEasy = (rawEasy: unknown): string => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
   return generateSymbolTsx(betterEasy, circuitJson) ?? ""
 }
+
+test("keeps automatic pin stems for older data without label positions", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(transistorRawEasy)
+  for (const shape of betterEasy.dataStr.shape) {
+    if (shape.type === "PIN") delete shape.labelText
+  }
+  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
+  const symbolTsx = generateSymbolTsx(betterEasy, circuitJson) ?? ""
+
+  expect(symbolTsx.match(/schStemLength=\{0.2\}/g)).toHaveLength(3)
+  expect(symbolTsx).not.toContain("<schematictext")
+})
 
 test.each(["none", "#880000", ""])(
   "keeps the rectangle primitive when its fill is %s",
