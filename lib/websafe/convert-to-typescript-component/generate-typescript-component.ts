@@ -3,6 +3,8 @@ import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 import { inferPinAttributes } from "./infer-pin-attributes"
+import { generateMosfetSymbolTsx } from "./generate-mosfet-symbol-tsx"
+import type { MosfetMetadata } from "./get-mosfet-metadata"
 
 export type GeneratedComponentType =
   | "chip"
@@ -33,6 +35,7 @@ interface Params {
   symbolTsx?: string
   schPinArrangement?: ChipProps["schPinArrangement"]
   useSymbolPortsOnly?: boolean
+  mosfetMetadata?: MosfetMetadata
 }
 
 export const generateTypescriptComponent = ({
@@ -52,6 +55,7 @@ export const generateTypescriptComponent = ({
   symbolTsx,
   schPinArrangement,
   useSymbolPortsOnly = false,
+  mosfetMetadata,
 }: Params) => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
@@ -156,6 +160,55 @@ ${symbolTsx
     .filter(Boolean)
     .map((line) => `        ${line}`)
     .join("\n")
+
+  if (mosfetMetadata) {
+    const { channelType, mosfetMode, pins } = mosfetMetadata
+    const internallyConnectedPins = ["source", "drain"]
+      .map((terminal) =>
+        Object.keys(pins).filter((pin) => pins[pin] === terminal),
+      )
+      .filter((group) => group.length > 1)
+    return `
+import type { ChipProps, MosfetProps } from "@tscircuit/props"
+
+const pinLabels = {
+${pinLabelsString}
+} as const
+
+type ImportedMosfetProps = ChipProps<typeof pinLabels> & {
+  channelType${channelType ? "?" : ""}: MosfetProps["channelType"]
+  mosfetMode${mosfetMode ? "?" : ""}: MosfetProps["mosfetMode"]
+}
+
+export const ${componentName} = (props: ImportedMosfetProps) => {
+  const { name, channelType${channelType ? ` = ${JSON.stringify(channelType)}` : ""}, mosfetMode${mosfetMode ? ` = ${JSON.stringify(mosfetMode)}` : ""}, ...restProps } = props
+  if ((channelType !== "n" && channelType !== "p") ||
+      (mosfetMode !== "enhancement" && mosfetMode !== "depletion")) {
+    throw new Error("MOSFET imports require channelType and mosfetMode when they are missing from the source data")
+  }
+
+  return (
+    <chip
+      name={name}
+      pinLabels={pinLabels}
+      internallyConnectedPins={${JSON.stringify(internallyConnectedPins)}}
+      symbol={${generateMosfetSymbolTsx(pins, manufacturerPartNumber)}}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...restProps}
+    />
+  )
+}
+`.trim()
+  }
 
   if (componentType === "diode") {
     return `
