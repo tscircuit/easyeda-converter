@@ -494,7 +494,11 @@ const generateShapeTsx = ({
             : label.alignment === "end"
               ? "right"
               : "center"
-        const fontSize = label.fontSize ? getTextFontSize(label.fontSize) : 0.15
+        // Keep positioned names small enough to clear compact symbol artwork.
+        const fontSize = Math.min(
+          label.fontSize ? getTextFontSize(label.fontSize) : 0.1,
+          0.1,
+        )
         // Draw the source pin artwork and its positioned label together. An
         // automatic port stem would also add a box-style label at the wrong
         // position, duplicating this text on compact mixed-direction symbols.

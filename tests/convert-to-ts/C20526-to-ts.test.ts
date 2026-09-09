@@ -66,13 +66,13 @@ it("preserves C20526 pin label positions without overlap", async () => {
             <symbol>
               <port name="pin3" pinNumber={3} aliases={["C"]} direction="up" schX={0.2} schY={0.4} schStemLength={0} />
               <schematicpath svgPath="M 0.2 0.4 L 0.2 0.2" strokeColor="#880000" />
-              <schematictext schX={0.26} schY={0.14} text="C" fontSize={0.15} anchor="right" color="#006464" schRotation={270} />
+              <schematictext schX={0.26} schY={0.14} text="C" fontSize={0.1} anchor="right" color="#006464" schRotation={270} />
               <port name="pin1" pinNumber={1} aliases={["B"]} direction="left" schX={-0.2} schY={0} schStemLength={0} />
               <schematicpath svgPath="M -0.2 0 L 0 0" strokeColor="#880000" />
-              <schematictext schX={0.06} schY={-0.06} text="B" fontSize={0.15} anchor="left" color="#006464" schRotation={0} />
+              <schematictext schX={0.06} schY={-0.06} text="B" fontSize={0.1} anchor="left" color="#006464" schRotation={0} />
               <port name="pin2" pinNumber={2} aliases={["E"]} direction="down" schX={0.2} schY={-0.4} schStemLength={0} />
               <schematicpath svgPath="M 0.2 -0.4 L 0.2 -0.2" strokeColor="#880000" />
-              <schematictext schX={0.26} schY={-0.14} text="E" fontSize={0.15} anchor="left" color="#006464" schRotation={270} />
+              <schematictext schX={0.26} schY={-0.14} text="E" fontSize={0.1} anchor="left" color="#006464" schRotation={270} />
               <schematicpath points={[{"x":0.2,"y":0.2},{"x":0,"y":0.06}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":-0.06},{"x":0.2,"y":-0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":0.18},{"x":0,"y":-0.18}]} strokeColor="#880000" />
