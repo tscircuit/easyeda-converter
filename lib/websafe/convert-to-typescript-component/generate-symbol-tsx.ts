@@ -255,6 +255,26 @@ interface PortMetadata {
   aliases: string[]
 }
 
+const generatePinTextTsx = (
+  label: NonNullable<Extract<SingleLetterShape, { type: "PIN" }>["labelText"]>,
+  text: string,
+  color: string,
+  origin: { x: number; y: number },
+): string => {
+  const position = getPointTransformer(origin)(label)
+  // EasyEDA positions text on its baseline, not its vertical center.
+  const anchor =
+    label.alignment === "start"
+      ? "bottom_left"
+      : label.alignment === "end"
+        ? "bottom_right"
+        : "bottom_center"
+  // EasyEDA's pin text defaults to 7pt when the size field is empty.
+  const fontSize = getTextFontSize(label.fontSize || "7pt")
+  // Schematic text rotations are SVG angles, as in the source document.
+  return `<schematictext schX={${position.x}} schY={${position.y}} text=${JSON.stringify(text)} fontSize={${fontSize}} anchor=${JSON.stringify(anchor)} color=${JSON.stringify(color)} schRotation={${round(label.rotation)}} />`
+}
+
 const hasOverlappingDefaultPinLabels = (
   pins: Extract<SingleLetterShape, { type: "PIN" }>[],
   origin: { x: number; y: number },
@@ -486,24 +506,23 @@ const generateShapeTsx = ({
     ) {
       const path = transformSvgPath(shape.path, origin)
       if (path) {
-        const label = shape.labelText
-        const labelPosition = transformPoint(label)
-        const anchor =
-          label.alignment === "start"
-            ? "left"
-            : label.alignment === "end"
-              ? "right"
-              : "center"
-        const fontSize = label.fontSize ? getTextFontSize(label.fontSize) : 0.15
         // Draw the source pin artwork and its positioned label together. An
         // automatic port stem would also add a box-style label at the wrong
         // position, duplicating this text on compact mixed-direction symbols.
         return [
           `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}} schStemLength={0} />`,
           `<schematicpath svgPath=${JSON.stringify(path)} strokeColor=${JSON.stringify(shape.labelColor)} />`,
-          // Schematic text rotations are emitted directly as SVG rotations,
-          // matching EasyEDA's text angle even though positions use Y-up.
-          `<schematictext schX={${labelPosition.x}} schY={${labelPosition.y}} text=${JSON.stringify(shape.label)} fontSize={${fontSize}} anchor=${JSON.stringify(anchor)} color=${JSON.stringify(label.color || "#006464")} schRotation={${round(label.rotation)}} />`,
+          generatePinTextTsx(shape.labelText, shape.label, "#006464", origin),
+          ...(shape.numberText
+            ? [
+                generatePinTextTsx(
+                  shape.numberText,
+                  String(portMetadata.pinNumber ?? shape.pinNumber),
+                  "#A90000",
+                  origin,
+                ),
+              ]
+            : []),
         ].join("\n")
       }
     }

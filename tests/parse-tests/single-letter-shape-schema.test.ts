@@ -110,6 +110,14 @@ it("parses schematic drawing colors, paths, and pin stems", () => {
       fontSize: "",
       color: "#000000",
     },
+    numberText: {
+      x: 364.5,
+      y: 284,
+      rotation: 0,
+      alignment: "end",
+      fontSize: "",
+      color: "#000000",
+    },
   })
 
   expect(

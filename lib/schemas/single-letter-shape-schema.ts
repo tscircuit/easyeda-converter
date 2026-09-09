@@ -197,6 +197,19 @@ const PinLabelTextSchema = z.object({
   color: z.string(),
 })
 
+const parsePinText = (section: string | undefined) => {
+  const fields = section?.split("~") ?? []
+  const parsed = PinLabelTextSchema.safeParse({
+    x: Number.parseFloat(fields[1]),
+    y: Number.parseFloat(fields[2]),
+    rotation: Number.parseFloat(fields[3] || "0"),
+    alignment: fields[5],
+    fontSize: fields[7] ?? "",
+    color: fields[8] ?? "",
+  })
+  return parsed.success ? parsed.data : undefined
+}
+
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide", "none"]),
@@ -208,6 +221,7 @@ const PinShapeOutputSchema = z.object({
   label: z.string(),
   labelColor: z.string(),
   labelText: PinLabelTextSchema.optional(),
+  numberText: PinLabelTextSchema.optional(),
   path: z.string(),
   arrow: z.string(),
 })
@@ -228,16 +242,10 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const colorMatch = pinString.match(/#[0-9A-F]{6}/)
   const labelColor = colorMatch ? colorMatch[0] : ""
 
-  const path = pinString.split("^^")[2]?.split("~")[0] ?? ""
-  const labelFields = pinString.split("^^")[3]?.split("~") ?? []
-  const labelText = PinLabelTextSchema.safeParse({
-    x: Number.parseFloat(labelFields[1]),
-    y: Number.parseFloat(labelFields[2]),
-    rotation: Number.parseFloat(labelFields[3] || "0"),
-    alignment: labelFields[5],
-    fontSize: labelFields[7] ?? "",
-    color: labelFields[8] ?? "",
-  })
+  const sections = pinString.split("^^")
+  const path = sections[2]?.split("~")[0] ?? ""
+  const labelText = parsePinText(sections[3])
+  const numberText = parsePinText(sections[4])
 
   const arrowMatch = pinString.match(/\^\^0~(.+)$/)
   const arrow = arrowMatch ? arrowMatch[1] : ""
@@ -253,7 +261,8 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     rotation: Number.isNaN(r) ? 0 : r,
     label,
     labelColor,
-    ...(labelText.success ? { labelText: labelText.data } : {}),
+    ...(labelText ? { labelText } : {}),
+    ...(numberText ? { numberText } : {}),
     path,
     arrow,
   }
