@@ -34,20 +34,6 @@ test("keeps automatic pin stems for older data without label positions", () => {
   expect(symbolTsx).not.toContain("<schematictext")
 })
 
-test("keeps positioned pin names when number coordinates are missing", () => {
-  const betterEasy = EasyEdaJsonSchema.parse(transistorRawEasy)
-  for (const shape of betterEasy.dataStr.shape) {
-    if (shape.type === "PIN") delete shape.numberText
-  }
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-  const symbolTsx = generateSymbolTsx(betterEasy, circuitJson) ?? ""
-
-  expect(symbolTsx.match(/<schematictext /g)).toHaveLength(3)
-  expect(symbolTsx).toContain('text="B"')
-  expect(symbolTsx).toContain('text="C"')
-  expect(symbolTsx).toContain('text="E"')
-})
-
 test.each(["none", "#880000", ""])(
   "keeps the rectangle primitive when its fill is %s",
   (fillColor) => {

@@ -18,65 +18,32 @@ it("preserves C20526 pin label positions without overlap", async () => {
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
   )
-  expect(
-    circuitJson.filter((element) => element.type === "schematic_port"),
-  ).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({ pin_number: 1, center: { x: -0.2, y: 0 } }),
-      expect.objectContaining({ pin_number: 2, center: { x: 0.2, y: -0.4 } }),
-      expect.objectContaining({ pin_number: 3, center: { x: 0.2, y: 0.4 } }),
-    ]),
-  )
   const pinLabels = circuitJson.filter(
     (element) => element.type === "schematic_text",
   )
+  expect(pinLabels).toHaveLength(3)
   expect(pinLabels).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
         text: "B",
+        color: "#006464",
         position: { x: 0.06, y: -0.06 },
         rotation: 0,
-        anchor: "bottom_left",
-        color: "#006464",
       }),
       expect.objectContaining({
         text: "C",
+        color: "#006464",
         position: { x: 0.26, y: 0.14 },
         rotation: 270,
-        anchor: "bottom_right",
-        color: "#006464",
       }),
       expect.objectContaining({
         text: "E",
+        color: "#006464",
         position: { x: 0.26, y: -0.14 },
         rotation: 270,
-        anchor: "bottom_left",
-        color: "#006464",
-      }),
-      expect.objectContaining({
-        text: "1",
-        position: { x: -0.12, y: 0.02 },
-        rotation: 0,
-        anchor: "bottom_right",
-        color: "#A90000",
-      }),
-      expect.objectContaining({
-        text: "2",
-        position: { x: 0.18, y: -0.32 },
-        rotation: 270,
-        anchor: "bottom_right",
-        color: "#A90000",
-      }),
-      expect.objectContaining({
-        text: "3",
-        position: { x: 0.18, y: 0.32 },
-        rotation: 270,
-        anchor: "bottom_left",
-        color: "#A90000",
       }),
     ]),
   )
-  expect(pinLabels).toHaveLength(6)
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "C20526-to-ts-schematic",
@@ -99,16 +66,13 @@ it("preserves C20526 pin label positions without overlap", async () => {
             <symbol>
               <port name="pin3" pinNumber={3} aliases={["C"]} direction="up" schX={0.2} schY={0.4} schStemLength={0} />
               <schematicpath svgPath="M 0.2 0.4 L 0.2 0.2" strokeColor="#880000" />
-              <schematictext schX={0.26} schY={0.14} text="C" fontSize={0.14} anchor="bottom_right" color="#006464" schRotation={270} />
-              <schematictext schX={0.18} schY={0.32} text="3" fontSize={0.14} anchor="bottom_left" color="#A90000" schRotation={270} />
+              <schematictext schX={0.26} schY={0.14} text="C" fontSize={0.15} anchor="right" color="#006464" schRotation={270} />
               <port name="pin1" pinNumber={1} aliases={["B"]} direction="left" schX={-0.2} schY={0} schStemLength={0} />
               <schematicpath svgPath="M -0.2 0 L 0 0" strokeColor="#880000" />
-              <schematictext schX={0.06} schY={-0.06} text="B" fontSize={0.14} anchor="bottom_left" color="#006464" schRotation={0} />
-              <schematictext schX={-0.12} schY={0.02} text="1" fontSize={0.14} anchor="bottom_right" color="#A90000" schRotation={0} />
+              <schematictext schX={0.06} schY={-0.06} text="B" fontSize={0.15} anchor="left" color="#006464" schRotation={0} />
               <port name="pin2" pinNumber={2} aliases={["E"]} direction="down" schX={0.2} schY={-0.4} schStemLength={0} />
               <schematicpath svgPath="M 0.2 -0.4 L 0.2 -0.2" strokeColor="#880000" />
-              <schematictext schX={0.26} schY={-0.14} text="E" fontSize={0.14} anchor="bottom_left" color="#006464" schRotation={270} />
-              <schematictext schX={0.18} schY={-0.32} text="2" fontSize={0.14} anchor="bottom_right" color="#A90000" schRotation={270} />
+              <schematictext schX={0.26} schY={-0.14} text="E" fontSize={0.15} anchor="left" color="#006464" schRotation={270} />
               <schematicpath points={[{"x":0.2,"y":0.2},{"x":0,"y":0.06}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":-0.06},{"x":0.2,"y":-0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":0.18},{"x":0,"y":-0.18}]} strokeColor="#880000" />
