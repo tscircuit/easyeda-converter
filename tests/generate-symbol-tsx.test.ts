@@ -34,6 +34,51 @@ test("keeps automatic pin stems for older data without label positions", () => {
   expect(symbolTsx).not.toContain("<schematictext")
 })
 
+test("imports labels on large, horizontal-pin symbols without overlap checks", () => {
+  const symbolTsx = generateSymbolFromRawEasy(ne555RawEasy)
+
+  expect(symbolTsx).toContain(
+    '<schematictext schX={-0.626} schY={0.22} text="GND" fontSize={0.14} anchor="left" color="#000000" schRotation={0} />',
+  )
+  expect(symbolTsx.match(/<schematictext /g)).toHaveLength(8)
+  expect(symbolTsx.match(/schStemLength=\{0\}/g)).toHaveLength(8)
+})
+
+test("preserves visible source label text, size, color, alignment, and rotation", () => {
+  const rawEasy = structuredClone(transistorRawEasy)
+  rawEasy.dataStr.shape = rawEasy.dataStr.shape.map((shape) =>
+    shape.replace(
+      "^^0~13~-7~270~C~end~~~#0000FF",
+      "^^1~13~-7~270~C+~middle~~12~#123456",
+    ),
+  )
+  const symbolTsx = generateSymbolFromRawEasy(rawEasy)
+
+  expect(symbolTsx).toContain(
+    '<schematictext schX={0.26} schY={0.14} text="C+" fontSize={0.24} anchor="center" color="#123456" schRotation={270} />',
+  )
+  expect(symbolTsx.match(/<schematictext /g)).toHaveLength(1)
+})
+
+test("does not introduce labels hidden in the source symbol", () => {
+  const symbolTsx = generateSymbolFromRawEasy(transistorRawEasy)
+
+  expect(symbolTsx).not.toContain("<schematictext")
+  expect(symbolTsx.match(/<port /g)).toHaveLength(3)
+  expect(symbolTsx.match(/schStemLength=\{0\}/g)).toHaveLength(3)
+  expect(symbolTsx).toContain(
+    '<schematicpath svgPath="M 0.2 0.4 L 0.2 0.2" strokeColor="#880000" />',
+  )
+})
+
+test("preserves visible numeric pin names", () => {
+  const rawEasy = structuredClone(transistorRawEasy)
+  rawEasy.dataStr.shape = rawEasy.dataStr.shape.map((shape) =>
+    shape.replace("^^0~13~-7~270~C~end", "^^1~13~-7~270~3~end"),
+  )
+  expect(generateSymbolFromRawEasy(rawEasy)).toContain('text="3"')
+})
+
 test.each(["none", "#880000", ""])(
   "keeps the rectangle primitive when its fill is %s",
   (fillColor) => {
@@ -61,7 +106,7 @@ test("generates a centered symbol with positioned, aliased ports", () => {
     "<schematiccircle center={{ x: -0.6, y: 0.4 }} radius={0.03} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
-    '<port name="pin1" pinNumber={1} aliases={["GND"]} direction="left" schX={-0.9} schY={0.3} schStemLength={0.2} />',
+    '<port name="pin1" pinNumber={1} aliases={["GND"]} direction="left" schX={-0.9} schY={0.3} schStemLength={0} />',
   )
   expect(symbolTsx.match(/<port /g)).toHaveLength(8)
 })
@@ -88,7 +133,7 @@ test("keeps imported crystal symbols on tscircuit's schematic grid", () => {
     "<schematicrect schX={0} schY={0} width={0.8} height={0.8} strokeWidth={0.02}",
   )
   expect(symbolTsx).toContain(
-    '<port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.6} schY={-0.2} schStemLength={0.2} />',
+    '<port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.6} schY={-0.2} schStemLength={0} />',
   )
   expect(symbolTsx).not.toContain("width={10.16}")
 })

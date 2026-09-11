@@ -189,6 +189,8 @@ export const ArcShapeSchema = z
 
 // Label positions retain EasyEDA's global, Y-down 10 mil coordinate system.
 const PinLabelTextSchema = z.object({
+  visibility: z.enum(["0", "1"]),
+  text: z.string(),
   x: z.number().finite(),
   y: z.number().finite(),
   rotation: z.number().finite(),
@@ -225,12 +227,13 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   if (label.startsWith("+")) label = `${label.slice(1)}_POS`
   if (label.startsWith("-")) label = `${label.slice(1)}_NEG`
 
-  const colorMatch = pinString.match(/#[0-9A-F]{6}/)
-  const labelColor = colorMatch ? colorMatch[0] : ""
-
-  const path = pinString.split("^^")[2]?.split("~")[0] ?? ""
+  const pathFields = pinString.split("^^")[2]?.split("~") ?? []
+  const path = pathFields[0] ?? ""
+  const labelColor = pathFields[1] ?? ""
   const labelFields = pinString.split("^^")[3]?.split("~") ?? []
   const labelText = PinLabelTextSchema.safeParse({
+    visibility: labelFields[0],
+    text: labelFields[4],
     x: Number.parseFloat(labelFields[1]),
     y: Number.parseFloat(labelFields[2]),
     rotation: Number.parseFloat(labelFields[3] || "0"),

@@ -29,6 +29,20 @@ it("parses examples for single letter shape schema", () => {
   })
 })
 
+it.each(["#800", "#8d2323", "rgb(136, 0, 0)"])(
+  "preserves source pin path color %s independently of label color",
+  (color) => {
+    const shape = SingleLetterShapeSchema.parse(
+      examples[2].replace("M355,285h10~#000000", `M355,285h10~${color}`),
+    )
+    expect(shape).toMatchObject({
+      type: "PIN",
+      labelColor: color,
+      labelText: { color: "#000000" },
+    })
+  },
+)
+
 it("keeps pins usable when optional label coordinates are malformed", () => {
   const shape = SingleLetterShapeSchema.parse(
     examples[2].replace("^^1~368.7~289", "^^1~undefined~289"),
@@ -103,6 +117,8 @@ it("parses schematic drawing colors, paths, and pin stems", () => {
     type: "PIN",
     path: "M355,285h10",
     labelText: {
+      visibility: "1",
+      text: "GND",
       x: 368.7,
       y: 289,
       rotation: 0,

@@ -6,7 +6,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C20526.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("preserves C20526 pin label positions without overlap", async () => {
+it("preserves C20526 source pin artwork and hidden labels", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
@@ -21,33 +21,21 @@ it("preserves C20526 pin label positions without overlap", async () => {
   const pinLabels = circuitJson.filter(
     (element) => element.type === "schematic_text",
   )
-  expect(pinLabels).toHaveLength(3)
-  expect(pinLabels).toEqual(
+  expect(pinLabels).toHaveLength(0)
+  const ports = circuitJson.filter(
+    (element) => element.type === "schematic_port",
+  )
+  expect(ports).toHaveLength(3)
+  expect(ports.map((port) => port.center)).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({
-        text: "B",
-        color: "#006464",
-        position: { x: 0.06, y: -0.06 },
-        rotation: 0,
-      }),
-      expect.objectContaining({
-        text: "C",
-        color: "#006464",
-        position: { x: 0.26, y: 0.14 },
-        rotation: 270,
-      }),
-      expect.objectContaining({
-        text: "E",
-        color: "#006464",
-        position: { x: 0.26, y: -0.14 },
-        rotation: 270,
-      }),
+      { x: -0.2, y: 0 },
+      { x: 0.2, y: 0.4 },
+      { x: 0.2, y: -0.4 },
     ]),
   )
-  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-    "C20526-to-ts-schematic",
-  )
+  const svg = convertCircuitJsonToSchematicSvg(circuitJson)
+  expect(svg).not.toContain("sch-pin-label")
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "C20526-to-ts-schematic")
 
   expect(result).toMatchInlineSnapshot(`
     "import type { ChipProps } from "@tscircuit/props"
@@ -66,13 +54,10 @@ it("preserves C20526 pin label positions without overlap", async () => {
             <symbol>
               <port name="pin3" pinNumber={3} aliases={["C"]} direction="up" schX={0.2} schY={0.4} schStemLength={0} />
               <schematicpath svgPath="M 0.2 0.4 L 0.2 0.2" strokeColor="#880000" />
-              <schematictext schX={0.26} schY={0.14} text="C" fontSize={0.1} anchor="right" color="#006464" schRotation={270} />
               <port name="pin1" pinNumber={1} aliases={["B"]} direction="left" schX={-0.2} schY={0} schStemLength={0} />
               <schematicpath svgPath="M -0.2 0 L 0 0" strokeColor="#880000" />
-              <schematictext schX={0.06} schY={-0.06} text="B" fontSize={0.1} anchor="left" color="#006464" schRotation={0} />
               <port name="pin2" pinNumber={2} aliases={["E"]} direction="down" schX={0.2} schY={-0.4} schStemLength={0} />
               <schematicpath svgPath="M 0.2 -0.4 L 0.2 -0.2" strokeColor="#880000" />
-              <schematictext schX={0.26} schY={-0.14} text="E" fontSize={0.1} anchor="left" color="#006464" schRotation={270} />
               <schematicpath points={[{"x":0.2,"y":0.2},{"x":0,"y":0.06}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":-0.06},{"x":0.2,"y":-0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":0.18},{"x":0,"y":-0.18}]} strokeColor="#880000" />
@@ -106,4 +91,36 @@ it("preserves C20526 pin label positions without overlap", async () => {
       )
     }"
   `)
+})
+
+it("renders visible pin labels at their source positions with their source styling", async () => {
+  const rawEasy = structuredClone(chipRawEasy)
+  rawEasy.dataStr.shape = rawEasy.dataStr.shape.map((shape) =>
+    shape.replace(
+      "^^0~13~-7~270~C~end~~~#0000FF",
+      "^^1~13~-7~270~C~end~~12~#123456",
+    ),
+  )
+  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+  const result = await convertBetterEasyToTsx({ betterEasy })
+  const circuitJson = await runTscircuitCode(
+    wrapTsxWithBoardFor3dSnapshot(result),
+  )
+  expect(
+    circuitJson.filter((element) => element.type === "schematic_text"),
+  ).toEqual([
+    expect.objectContaining({
+      text: "C",
+      position: { x: 0.26, y: 0.14 },
+      rotation: 270,
+      font_size: 0.24,
+      color: "#123456",
+    }),
+  ])
+  const svg = convertCircuitJsonToSchematicSvg(circuitJson)
+  expect(svg).not.toContain("sch-pin-label")
+  expect(svg).toMatchSvgSnapshot(
+    import.meta.path,
+    "C20526-visible-source-label",
+  )
 })
