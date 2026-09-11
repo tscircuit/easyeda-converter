@@ -29,6 +29,28 @@ it("parses examples for single letter shape schema", () => {
   })
 })
 
+it.each(["#800", "#8d2323", "rgb(136, 0, 0)"])(
+  "preserves source pin path color %s independently of label color",
+  (color) => {
+    const shape = SingleLetterShapeSchema.parse(
+      examples[2].replace("M355,285h10~#000000", `M355,285h10~${color}`),
+    )
+    expect(shape).toMatchObject({
+      type: "PIN",
+      labelColor: color,
+      labelText: { color: "#000000" },
+    })
+  },
+)
+
+it("keeps pins usable when optional label coordinates are malformed", () => {
+  const shape = SingleLetterShapeSchema.parse(
+    examples[2].replace("^^1~368.7~289", "^^1~undefined~289"),
+  )
+  expect(shape).toMatchObject({ type: "PIN", label: "GND", pinNumber: 1 })
+  expect(shape).not.toHaveProperty("labelText")
+})
+
 it("normalizes literal undefined optional text fields from EasyEDA text shapes", () => {
   const shape = SingleLetterShapeSchema.parse(
     "T~L~415~303~0~#0000FF~undefined~5.5pt~undefined~undefined~undefined~comment~TR1~1~start~gge7~0~pinpart",
@@ -94,6 +116,16 @@ it("parses schematic drawing colors, paths, and pin stems", () => {
   expect(SingleLetterShapeSchema.parse(examples[2])).toMatchObject({
     type: "PIN",
     path: "M355,285h10",
+    labelText: {
+      visibility: "1",
+      text: "GND",
+      x: 368.7,
+      y: 289,
+      rotation: 0,
+      alignment: "start",
+      fontSize: "",
+      color: "#000000",
+    },
   })
 
   expect(

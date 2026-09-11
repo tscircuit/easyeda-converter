@@ -42,10 +42,14 @@ it("should convert C18185602 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <port name="pin1" pinNumber={1} aliases={["D"]} direction="right" schX={0.2} schY={0} schStemLength={0.2} />
-              <port name="pin3" pinNumber={3} aliases={["B"]} direction="right" schX={0.2} schY={-0.4} schStemLength={0.2} />
-              <port name="pin2" pinNumber={2} aliases={["C"]} direction="right" schX={0.2} schY={-0.2} schStemLength={0.2} />
-              <port name="pin4" pinNumber={4} aliases={["A"]} direction="right" schX={0.2} schY={0.2} schStemLength={0.2} />
+              <port name="pin1" pinNumber={1} aliases={["D"]} direction="right" schX={0.2} schY={0} schStemLength={0} />
+              <schematicpath svgPath="M 0.2 0 L 0 0" strokeColor="#880000" />
+              <port name="pin3" pinNumber={3} aliases={["B"]} direction="right" schX={0.2} schY={-0.4} schStemLength={0} />
+              <schematicpath svgPath="M 0.2 -0.4 L 0 -0.4" strokeColor="#880000" />
+              <port name="pin2" pinNumber={2} aliases={["C"]} direction="right" schX={0.2} schY={-0.2} schStemLength={0} />
+              <schematicpath svgPath="M 0.2 -0.2 L 0 -0.2" strokeColor="#880000" />
+              <port name="pin4" pinNumber={4} aliases={["A"]} direction="right" schX={0.2} schY={0.2} schStemLength={0} />
+              <schematicpath svgPath="M 0.2 0.2 L 0 0.2" strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":-0.4},{"x":-0.54,"y":-0.4},{"x":-0.58,"y":-0.3},{"x":-0.62,"y":-0.4}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":0},{"x":-0.2,"y":0},{"x":-0.24,"y":0.1},{"x":-0.28,"y":0}]} strokeColor="#880000" />
               <schematicrect schX={-0.72} schY={-0.2} width={0.08} height={0.32} strokeWidth={0.02} color="#880000" />

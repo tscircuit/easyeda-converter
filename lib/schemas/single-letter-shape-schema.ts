@@ -187,6 +187,18 @@ export const ArcShapeSchema = z
   .transform(parseArc)
   .pipe(ArcShapeOutputSchema)
 
+// Label positions retain EasyEDA's global, Y-down 10 mil coordinate system.
+const PinLabelTextSchema = z.object({
+  visibility: z.enum(["0", "1"]),
+  text: z.string(),
+  x: z.number().finite(),
+  y: z.number().finite(),
+  rotation: z.number().finite(),
+  alignment: z.enum(["start", "end", "middle"]),
+  fontSize: z.string(),
+  color: z.string(),
+})
+
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide", "none"]),
@@ -197,6 +209,7 @@ const PinShapeOutputSchema = z.object({
   id: z.string(),
   label: z.string(),
   labelColor: z.string(),
+  labelText: PinLabelTextSchema.optional(),
   path: z.string(),
   arrow: z.string(),
 })
@@ -214,10 +227,20 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   if (label.startsWith("+")) label = `${label.slice(1)}_POS`
   if (label.startsWith("-")) label = `${label.slice(1)}_NEG`
 
-  const colorMatch = pinString.match(/#[0-9A-F]{6}/)
-  const labelColor = colorMatch ? colorMatch[0] : ""
-
-  const path = pinString.split("^^")[2]?.split("~")[0] ?? ""
+  const pathFields = pinString.split("^^")[2]?.split("~") ?? []
+  const path = pathFields[0] ?? ""
+  const labelColor = pathFields[1] ?? ""
+  const labelFields = pinString.split("^^")[3]?.split("~") ?? []
+  const labelText = PinLabelTextSchema.safeParse({
+    visibility: labelFields[0],
+    text: labelFields[4],
+    x: Number.parseFloat(labelFields[1]),
+    y: Number.parseFloat(labelFields[2]),
+    rotation: Number.parseFloat(labelFields[3] || "0"),
+    alignment: labelFields[5],
+    fontSize: labelFields[7] ?? "",
+    color: labelFields[8] ?? "",
+  })
 
   const arrowMatch = pinString.match(/\^\^0~(.+)$/)
   const arrow = arrowMatch ? arrowMatch[1] : ""
@@ -233,6 +256,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
     rotation: Number.isNaN(r) ? 0 : r,
     label,
     labelColor,
+    ...(labelText.success ? { labelText: labelText.data } : {}),
     path,
     arrow,
   }
