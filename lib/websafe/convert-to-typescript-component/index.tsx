@@ -15,6 +15,7 @@ import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
 import {
   isCapacitorComponent,
+  isPolarizedCapacitorComponent,
   normalizeCapacitanceValue,
 } from "./is-capacitor-component"
 import { isCrystalComponent } from "./is-crystal-component"
@@ -23,7 +24,6 @@ import { isDipSwitchCategoryComponent } from "./is-dip-switch-category-component
 import { isInductorComponent } from "./is-inductor-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
 import { isMicroUsbConnectorComponent } from "./is-micro-usb-connector-component"
-import { isPolarizedCapacitorComponent } from "./is-polarized-capacitor-component"
 import { isPushbuttonCategoryComponent } from "./is-pushbutton-category-component"
 import {
   isResistorComponent,
