@@ -25,6 +25,7 @@ interface Params {
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
+  isPolarizedCapacitor?: boolean
   capacitance?: string
   resistance?: string
   inductance?: string
@@ -44,6 +45,7 @@ export const generateTypescriptComponent = ({
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
+  isPolarizedCapacitor = false,
   capacitance,
   resistance,
   inductance,
@@ -119,17 +121,17 @@ ${polarizedPinLabelsString}
     ? `      pinLabels={pinLabels}
 `
     : ""
-  const isPolarizedCapacitor =
+  const shouldGeneratePolarizedCapacitor =
     componentType === "capacitor" &&
     circuitJson.filter((item) => item.type === "source_port").length === 2 &&
-    polarizedPinMetadata !== undefined
-  const capacitorPolarizedPinLabelsBlock = isPolarizedCapacitor
+    (isPolarizedCapacitor || polarizedPinMetadata !== undefined)
+  const capacitorPolarizedPinLabelsBlock = shouldGeneratePolarizedCapacitor
     ? polarizedPinLabelsBlock
     : ""
-  const capacitorPolarizedPinLabelsProp = isPolarizedCapacitor
+  const capacitorPolarizedPinLabelsProp = shouldGeneratePolarizedCapacitor
     ? polarizedPinLabelsProp
     : ""
-  const polarizedProp = isPolarizedCapacitor
+  const polarizedProp = shouldGeneratePolarizedCapacitor
     ? `      polarized
 `
     : ""

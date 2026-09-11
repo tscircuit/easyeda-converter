@@ -5,17 +5,17 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { runTscircuitCode } from "tscircuit"
 import capacitorRawEasy from "../assets/C335982.raweasy.json"
 
-it("repros C335982 losing its curved polarized capacitor plate", async () => {
+it("preserves C335982's curved polarized capacitor plate", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(capacitorRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
   const circuitJson = await runTscircuitCode(result)
 
   expect(result).toContain("<capacitor")
-  expect(result).not.toContain("      polarized")
+  expect(result).toContain("      polarized")
   expect(circuitJson).toContainEqual(
     expect.objectContaining({
       type: "schematic_component",
-      symbol_name: "capacitor_right",
+      symbol_name: "capacitor_polarized_right",
     }),
   )
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
