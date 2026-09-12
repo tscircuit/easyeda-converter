@@ -5,19 +5,18 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { runTscircuitCode } from "tscircuit"
 import mosfetRawEasy from "../assets/C501008.raweasy.json"
 
-test("repro: C501008 STL130N6F7 MOSFET renders as an eight-pin chip", async () => {
+test("repro: C501008 STL130N6F7 renders with a MOSFET symbol", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(mosfetRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  // The EasyEDA source is a pin box; the importer does not select a MOSFET symbol.
   expect(result).toContain("<chip")
-  expect(result).not.toContain("symbol={")
+  expect(result).toContain("symbol={")
 
   const circuitJson = await runTscircuitCode(`
     ${result}
     export default () => (
       <board>
-        <STL130N6F7 name="Q_HA" schWidth={1.6} schHeight={2} />
+        <STL130N6F7 name="Q_HA" channelType="n" mosfetMode="enhancement" schWidth={1.6} schHeight={2} />
       </board>
     )
   `)
