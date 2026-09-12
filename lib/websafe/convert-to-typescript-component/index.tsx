@@ -15,6 +15,7 @@ import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
 import {
   isCapacitorComponent,
+  isPolarizedCapacitorComponent,
   normalizeCapacitanceValue,
 } from "./is-capacitor-component"
 import { isCrystalComponent } from "./is-crystal-component"
@@ -217,6 +218,7 @@ export const convertBetterEasyToTsx = async ({
     circuitJson,
     supplierPartNumbers,
     componentType,
+    isPolarizedCapacitor: isPolarizedCapacitorComponent(betterEasy),
     capacitance,
     resistance,
     inductance,
