@@ -94,6 +94,8 @@ it("parses schematic drawing colors, paths, and pin stems", () => {
   expect(SingleLetterShapeSchema.parse(examples[2])).toMatchObject({
     type: "PIN",
     path: "M355,285h10",
+    originalLabel: "GND",
+    label: "GND",
   })
 
   expect(
