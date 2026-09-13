@@ -11,7 +11,9 @@ export const normalizeActiveLowPinLabel = (label: string): string => {
 
 export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
   const normalizedInputPinLabels = inputPinLabels.map((labels) =>
-    labels.map(normalizeActiveLowPinLabel),
+    labels.flatMap((label) =>
+      label.split("/").filter(Boolean).map(normalizeActiveLowPinLabel),
+    ),
   )
   const uniqueInputPinLabels = normalizedInputPinLabels.map((labels) => [
     ...new Set(labels),
