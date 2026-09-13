@@ -363,8 +363,11 @@ ${cadModelLines}
 import type { InductorProps } from "@tscircuit/props"
 
 export const ${componentName} = (props: Omit<InductorProps, "inductance">) => {
+  const { name = "L1", ...restProps } = props
+
   return (
     <inductor
+      name={name}
       inductance=${JSON.stringify(inductance)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
@@ -376,7 +379,7 @@ ${cadModelLines}
       }}`
           : ""
       }
-      {...props}
+      {...restProps}
     />
   )
 }

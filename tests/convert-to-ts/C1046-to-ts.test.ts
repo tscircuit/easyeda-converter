@@ -25,27 +25,15 @@ it("should convert C1046 into typescript file", async () => {
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
-    "import type { ChipProps } from "@tscircuit/props"
+    "import type { InductorProps } from "@tscircuit/props"
 
-    const pinLabels = {
-      pin1: ["pin1"],
-      pin2: ["pin2"]
-    } as const
+    export const SDFL2012S100KTF = (props: Omit<InductorProps, "inductance">) => {
+      const { name = "L1", ...restProps } = props
 
-    export const SDFL2012S100KTF = (props: ChipProps<typeof pinLabels>) => {
       return (
-        <chip
-          pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
-              <schematicpath svgPath="M -0.3376 0.0014 A 0.08 0.078 0 1 0 -0.1784 0.0012" strokeColor="#880000" />
-              <schematicpath svgPath="M -0.168 0.0014 A 0.08 0.078 0 1 0 -0.0088 0.0014" strokeColor="#880000" />
-              <schematicpath svgPath="M 0.0014 0.0014 A 0.08 0.078 0 1 0 0.1606 0.0014" strokeColor="#880000" />
-              <schematicpath svgPath="M 0.174 0.0014 A 0.08 0.078 0 1 0 0.3334 0.0012" strokeColor="#880000" />
-            </symbol>
-          }
+        <inductor
+          name={name}
+          inductance="10uH"
           supplierPartNumbers={{
       "jlcpcb": [
         "C1046"
@@ -66,7 +54,7 @@ it("should convert C1046 into typescript file", async () => {
             pcbRotationOffset: 0,
             modelOriginPosition: { x: 0, y: -0.000038099999983387534, z: 0 },
           }}
-          {...props}
+          {...restProps}
         />
       )
     }"
