@@ -50,6 +50,14 @@ export const generateFootprintTsx = (
 
   const elementStrings: string[] = []
 
+  for (const cutout of su(circuitJson).pcb_cutout.list()) {
+    if (cutout.shape === "polygon") {
+      elementStrings.push(
+        `<cutout shape="polygon" points={${JSON.stringify(cutout.points)}} />`,
+      )
+    }
+  }
+
   for (const hole of holes) {
     if (hole.hole_shape === "circle") {
       elementStrings.push(

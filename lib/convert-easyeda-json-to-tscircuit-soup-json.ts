@@ -37,6 +37,7 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { getBoardOutlineNotches } from "./utils/get-board-outline-notches"
 import {
   getSilkscreenArcPath,
   type PackageArc,
@@ -708,6 +709,22 @@ export const convertEasyEdaJsonToCircuitJson = (
     .forEach((v, index) => {
       circuitElements.push(handleVia(v, index))
     })
+
+  const outlineTracks = easyEdaJson.packageDetail.dataStr.shape.filter(
+    (shape): shape is PackageTrack => shape.type === "TRACK",
+  )
+  for (const [index, points] of getBoardOutlineNotches(
+    outlineTracks,
+  ).entries()) {
+    circuitElements.push(
+      Soup.pcb_cutout.parse({
+        type: "pcb_cutout",
+        pcb_cutout_id: `pcb_cutout_from_outline_${index + 1}`,
+        shape: "polygon",
+        points: points.map((p) => ({ x: milx10(p.x), y: milx10(p.y) })),
+      }),
+    )
+  }
 
   // Add pcb cutouts from solid regions marked as cutout
   easyEdaJson.packageDetail.dataStr.shape
