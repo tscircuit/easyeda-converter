@@ -1,8 +1,7 @@
+import { distance, orientation, type Point } from "@tscircuit/math-utils"
 import type { PackageTrack } from "./get-silkscreen-arc-path"
 
-type Point = { x: number; y: number }
-const same = (a: Point, b: Point) =>
-  Math.abs(a.x - b.x) < 0.0001 && Math.abs(a.y - b.y) < 0.0001
+const same = (a: Point, b: Point) => distance(a, b) < 0.0001
 
 /** Join footprint BoardOutline tracks before closing board-edge notch mouths. */
 export const getBoardOutlinePolygons = (tracks: PackageTrack[]): Point[][] => {
@@ -16,32 +15,15 @@ export const getBoardOutlinePolygons = (tracks: PackageTrack[]): Point[][] => {
     const edges = [remainingEdges.shift()!]
     // Collect a whole connected component so a branch cannot be mistaken for
     // a valid notch plus an unrelated leftover line.
-    let collecting = true
-    while (collecting) {
-      collecting = false
-      for (let i = remainingEdges.length - 1; i >= 0; i--) {
-        if (
-          remainingEdges[i].some((p) =>
-            edges.some((edge) => edge.some((q) => same(p, q))),
-          )
-        ) {
-          edges.push(remainingEdges.splice(i, 1)[0])
-          collecting = true
-        }
-      }
-    }
-    if (
-      edges.some((edge) =>
-        edge.some(
-          (p) =>
-            edges.reduce(
-              (degree, other) =>
-                degree + other.filter((q) => same(p, q)).length,
-              0,
-            ) > 2,
-        ),
+    while (true) {
+      const index = remainingEdges.findIndex((edge) =>
+        edge.some((p) => edges.flat().some((q) => same(p, q))),
       )
-    )
+      if (index === -1) break
+      edges.push(remainingEdges.splice(index, 1)[0])
+    }
+    const endpoints = edges.flat()
+    if (endpoints.some((p) => endpoints.filter((q) => same(p, q)).length > 2))
       continue
     const route = edges.shift()!
     let changed = true
@@ -76,20 +58,17 @@ export const getBoardOutlinePolygons = (tracks: PackageTrack[]): Point[][] => {
       continue
     // Remove collinear vertices, including outward edge tabs which otherwise
     // double back along the closing edge (as on C2879827).
-    let simplified = true
-    while (simplified && route.length > 2) {
-      simplified = false
-      for (let i = 0; i < route.length; i++) {
-        const a = route[(i + route.length - 1) % route.length]
-        const b = route[i]
-        const c = route[(i + 1) % route.length]
-        const cross = (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x)
-        if (Math.abs(cross) < 1e-8) {
-          route.splice(i, 1)
-          simplified = true
-          break
-        }
-      }
+    while (route.length > 2) {
+      const index = route.findIndex(
+        (p, i) =>
+          orientation(
+            route[(i + route.length - 1) % route.length],
+            p,
+            route[(i + 1) % route.length],
+          ) === 0,
+      )
+      if (index === -1) break
+      route.splice(index, 1)
     }
     const area = route.reduce((sum, p, i) => {
       const q = route[(i + 1) % route.length]
