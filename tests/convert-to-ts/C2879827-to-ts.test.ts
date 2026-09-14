@@ -1,3 +1,4 @@
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { runTscircuitCode } from "tscircuit"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 import { expect, test } from "bun:test"
@@ -52,8 +53,10 @@ test("C2879827 preserves the board cutout in generated component TSX", async () 
   const tsx = await convertBetterEasyToTsx({ betterEasy })
   expect(tsx).toContain("<silkscreenpath")
   expect(tsx).toContain("<cutout")
-  expect(tsx).toMatchSnapshot()
   const rendered = await runTscircuitCode(wrapTsxWithBoardFor3dSnapshot(tsx))
+  expect(
+    convertCircuitJsonToPcbSvg(rendered, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path)
   const cutouts = rendered.filter((e) => e.type === "pcb_cutout")
   expect(cutouts).toHaveLength(1)
   expect(cutouts[0]).toMatchObject({ shape: "polygon" })
