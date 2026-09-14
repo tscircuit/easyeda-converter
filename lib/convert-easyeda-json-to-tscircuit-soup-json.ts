@@ -1,3 +1,4 @@
+import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import {
   findBoundsAndCenter,
   transformPCBElements,
@@ -718,6 +719,21 @@ export const convertEasyEdaJsonToCircuitJson = (
     .forEach((sr, index) => {
       circuitElements.push(handleCutout(sr, index))
     })
+
+  const boardOutlineTracks = easyEdaJson.packageDetail.dataStr.shape.filter(
+    (shape): shape is PackageTrack =>
+      shape.type === "TRACK" && shape.layer === 10,
+  )
+  getBoardOutlinePolygons(boardOutlineTracks).forEach((points, index) => {
+    circuitElements.push(
+      Soup.pcb_cutout.parse({
+        type: "pcb_cutout",
+        pcb_cutout_id: `pcb_cutout_outline_${index + 1}`,
+        shape: "polygon",
+        points: points.map((p) => ({ x: milx10(p.x), y: milx10(p.y) })),
+      }),
+    )
+  })
 
   // Add silkscreen paths, arcs and text
   let hasFoundDesignator = false

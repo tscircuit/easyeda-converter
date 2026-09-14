@@ -1,3 +1,5 @@
+import { runTscircuitCode } from "tscircuit"
+import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 import { expect, test } from "bun:test"
 import chipRawEasy from "../assets/C2879827.raweasy.json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
@@ -23,12 +25,16 @@ test("C2879827 preserves the source notch geometry during parsing", () => {
     (shape) => shape.type === "SOLIDREGION" && shape.fillStyle === "cutout",
   )
   expect(leadCutouts).toHaveLength(2)
-  expect(leadCutouts.every((shape) => shape.layermask === 100)).toBe(true)
+  expect(
+    leadCutouts.every(
+      (shape) => shape.type === "SOLIDREGION" && shape.layermask === 100,
+    ),
+  ).toBe(true)
 })
 
-test("C2879827 reproduces BoardOutline tracks being omitted", () => {
+test("C2879827 converts BoardOutline tracks into one cutout", () => {
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-  expect(circuitJson.filter((e) => e.type === "pcb_cutout")).toHaveLength(0)
+  expect(circuitJson.filter((e) => e.type === "pcb_cutout")).toHaveLength(1)
   for (const track of outlineTracks) {
     const index = shapes.indexOf(track)
     const path = circuitJson.find(
@@ -40,24 +46,33 @@ test("C2879827 reproduces BoardOutline tracks being omitted", () => {
   }
 })
 
-test("C2879827 reproduces missing cutout in generated component TSX", async () => {
+test("C2879827 preserves the board cutout in generated component TSX", async () => {
   // Cached OBJ bounds in the fixture make conversion independent of the network.
   expect(chipRawEasy._objMetadata.bounds).toBeDefined()
   const tsx = await convertBetterEasyToTsx({ betterEasy })
   expect(tsx).toContain("<silkscreenpath")
-  expect(tsx).not.toContain("<cutout")
+  expect(tsx).toContain("<cutout")
+  expect(tsx).toMatchSnapshot()
+  const rendered = await runTscircuitCode(wrapTsxWithBoardFor3dSnapshot(tsx))
+  const cutouts = rendered.filter((e) => e.type === "pcb_cutout")
+  expect(cutouts).toHaveLength(1)
+  expect(cutouts[0]).toMatchObject({ shape: "polygon" })
   expect(tsx).not.toContain("NaN")
 })
 
-// Expected failures: remove `.failing` when implementing the respective fixes.
-test.failing("C2879827 must retain its board notch as cutout geometry", () => {
+test("C2879827 must retain its board notch as cutout geometry", () => {
   const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy)
-  expect(
-    circuitJson.filter((e) => e.type === "pcb_cutout").length,
-  ).toBeGreaterThan(0)
+  const cutout = circuitJson.find((e) => e.type === "pcb_cutout")!
+  expect(cutout.shape).toBe("polygon")
+  if (cutout.shape !== "polygon") throw new Error("Expected polygon")
+  expect(cutout.points).toHaveLength(4)
+  const xs = cutout.points.map((p) => p.x)
+  const ys = cutout.points.map((p) => p.y)
+  expect(Math.max(...xs) - Math.min(...xs)).toBeCloseTo(8.4, 3)
+  expect(Math.max(...ys) - Math.min(...ys)).toBeCloseTo(11.63, 3)
 })
 
-test.failing("TSX generator must preserve an existing pcb_cutout", () => {
+test("TSX generator must preserve an existing pcb_cutout", () => {
   // Isolate the second bug from interpreting this part's open outline.
   const tsx = generateFootprintTsx([
     {
