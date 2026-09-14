@@ -4,6 +4,21 @@ import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 import { inferPinAttributes } from "./infer-pin-attributes"
 
+/**
+ * Renders a string as a JSX attribute. Values that are safe to place inside
+ * a plain double-quoted JSX attribute (no quotes, backslashes, or JSX
+ * expression braces) keep the existing `attr="value"` form so we don't
+ * needlessly churn output. Anything else falls back to a JSX expression
+ * container with a properly escaped JS string literal, since JSX quoted
+ * attributes do not interpret JavaScript escape sequences.
+ */
+const renderJsxStringAttr = (attrName: string, value: string): string => {
+  if (/^[^"\\{}]*$/.test(value)) {
+    return `${attrName}="${value}"`
+  }
+  return `${attrName}={${JSON.stringify(value)}}`
+}
+
 export type GeneratedComponentType =
   | "chip"
   | "diode"
@@ -173,7 +188,7 @@ export const ${componentName} = (props: DiodeProps) => {
 ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -203,7 +218,7 @@ export const ${componentName} = (props: LedProps) => {
 ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -236,7 +251,7 @@ export const ${componentName} = (props: PushButtonProps<typeof pinLabels>) => {
       pinLabels={pinLabels}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -269,7 +284,7 @@ export const ${componentName} = (props: SwitchProps) => {
       pinLabels={pinLabels}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -305,7 +320,7 @@ ${capacitorPolarizedPinLabelsProp}\
 ${polarizedProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -338,7 +353,7 @@ export const ${componentName} = (props: Omit<ResistorProps, "resistance">) => {
       resistance=${JSON.stringify(resistance)}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -367,7 +382,7 @@ export const ${componentName} = (props: Omit<InductorProps, "inductance">) => {
     <inductor
       inductance=${JSON.stringify(inductance)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -402,7 +417,7 @@ export const ${componentName} = (props: ImportedCrystalProps) => {
       frequency=${JSON.stringify(crystalFrequency)}
       pinVariant=${JSON.stringify(crystalPinVariant)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -431,7 +446,7 @@ export const ${componentName} = (props: ConnectorProps) => {
     <connector
       pinLabels={pinLabels}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -463,7 +478,7 @@ ${pinAttributesProp}\
 ${symbolProp}\
 ${schPinArrangementProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      ${renderJsxStringAttr("manufacturerPartNumber", manufacturerPartNumber)}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
