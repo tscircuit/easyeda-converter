@@ -423,6 +423,47 @@ const generateShapeTsx = ({
         : ` aliases={${JSON.stringify(portMetadata.aliases)}}`
     const stemLengthProp =
       stemLength === undefined ? "" : ` schStemLength={${stemLength}}`
+    if (shape.labelText) {
+      // Apply any requested port alignment to the source artwork and label too.
+      const sourcePosition = transformPoint(shape)
+      const pinOrigin = {
+        x:
+          origin.x -
+          (position.x - sourcePosition.x) /
+            EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT,
+        y:
+          origin.y +
+          (position.y - sourcePosition.y) /
+            EASYEDA_SCHEMATIC_UNIT_TO_TSCIRCUIT_UNIT,
+      }
+      const path = transformSvgPath(shape.path, pinOrigin)
+      if (path) {
+        const label = shape.labelText
+        const labelPosition = getPointTransformer(pinOrigin)(label)
+        const anchor =
+          label.alignment === "start"
+            ? "left"
+            : label.alignment === "end"
+              ? "right"
+              : "center"
+        // EasyEDA defaults omitted pin-label font sizes to 7pt.
+        // https://docs.easyeda.com/en/DocumentFormat/EasyEDA-Document-Format/#pin
+        // A nonzero port stem makes circuit-to-svg generate its own label.
+        // Keep the electrical port, but draw its original EasyEDA path instead
+        // so source label positions and visibility are preserved without duplicates.
+        return [
+          `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}} schStemLength={0} />`,
+          `<schematicpath svgPath=${JSON.stringify(path)} strokeColor=${JSON.stringify(shape.labelColor)} />`,
+          // Schematic text rotations are emitted directly as SVG rotations,
+          // matching EasyEDA's text angle even though positions use Y-up.
+          ...(label.visibility === "1" && label.text
+            ? [
+                `<schematictext schX={${labelPosition.x}} schY={${labelPosition.y}} text=${JSON.stringify(label.text)} fontSize={${getTextFontSize(label.fontSize || "7pt")}} anchor=${JSON.stringify(anchor)} color=${JSON.stringify(label.color)} schRotation={${round(label.rotation)}} />`,
+              ]
+            : []),
+        ].join("\n")
+      }
+    }
     return `<port name=${JSON.stringify(portMetadata.name)}${pinNumberProp}${aliasesProp} direction=${JSON.stringify(direction)} schX={${position.x}} schY={${position.y}}${stemLengthProp} />`
   }
 
@@ -482,6 +523,7 @@ export const generateSymbolTsx = (
       }),
     )
     .filter((tsx): tsx is string => Boolean(tsx))
+    .flatMap((tsx) => tsx.split("\n"))
 
   if (shapeTsx.length === 0) return undefined
 
