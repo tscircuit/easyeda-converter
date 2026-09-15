@@ -530,11 +530,12 @@ export const convertEasyEdaJsonToCircuitJson = (
         pcb_port_id: `pcb_port_${index + 1}`,
       }
       let additionalPlatedHoleProps: any
+      const explicitHoleLength = pad.holeLength ? mil2mm(pad.holeLength) : 0
 
       if (pad.shape === "OVAL") {
         // EasyEDA OVAL plated pads map cleanly to pill-shaped plated holes.
         // We preserve the pad rotation so slots like C2961147 stay aligned.
-        // To compute the drill dimensions:
+        // When no explicit slot length exists, infer the drill dimensions:
         // 1. Find the smallest outer dimensions
         // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
         // 3. Calculate the largest "inner dimension" (which is either the
@@ -557,7 +558,9 @@ export const convertEasyEdaJsonToCircuitJson = (
           smallestOuterDimension / 2 - mil2mm(pad.holeRadius)
 
         const largestInnerDimension =
-          largestOuterDimension - distanceFromOuterPlatingToHole * 2
+          explicitHoleLength > 0
+            ? explicitHoleLength
+            : largestOuterDimension - distanceFromOuterPlatingToHole * 2
         const smallestInnerDimension = mil2mm(pad.holeRadius) * 2
 
         const innerWidth =
@@ -586,16 +589,16 @@ export const convertEasyEdaJsonToCircuitJson = (
         // Check if the pad is significantly rectangular (not square)
         const aspectRatio =
           Math.max(padWidth, padHeight) / Math.min(padWidth, padHeight)
-        const isSignificantlyRectangular = aspectRatio > 1.5 // Only use pill holes for aspect ratios > 1.5
+        const isSignificantlyRectangular = aspectRatio > 1.5
 
-        if (isSignificantlyRectangular) {
-          // Simple approach: create slim pill holes with consistent proportions
-          // Width = original hole diameter, Height = 2.6x width for good pill shape
+        if (explicitHoleLength > 0 || isSignificantlyRectangular) {
+          // Preserve the legacy estimate only when EasyEDA supplies no slot length.
           const baseWidth = holeDiameter
-          const pillHeight = baseWidth * 2.6 // 2.6:1 aspect ratio for elegant pills
+          const pillHeight =
+            explicitHoleLength > 0 ? explicitHoleLength : baseWidth * 2.6
 
           const holeWidth = padWidth > padHeight ? pillHeight : baseWidth
-          const holeHeight = padHeight > padWidth ? pillHeight : baseWidth
+          const holeHeight = padHeight >= padWidth ? pillHeight : baseWidth
 
           additionalPlatedHoleProps = {
             shape: "rotated_pill_hole_with_rect_pad",

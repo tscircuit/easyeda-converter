@@ -70,10 +70,10 @@ it("should convert C309274 into typescript file", async () => {
     }}
           manufacturerPartNumber="PJ-609"
           footprint={<footprint>
-            <platedhole  portHints={["pin2"]} pcbX="-6.299962mm" pcbY="-8.10006mm" holeWidth="0.7999984mm" holeHeight="2.3999952mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
+            <platedhole  portHints={["pin2"]} pcbX="-6.299962mm" pcbY="-8.10006mm" holeWidth="0.7999984mm" holeHeight="2.0999704mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
     <platedhole  portHints={["pin3"]} pcbX="-6.299962mm" pcbY="8.10006mm" holeWidth="0.7999984mm" holeHeight="2.3999952mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
-    <platedhole  portHints={["pin4"]} pcbX="0mm" pcbY="-8.10006mm" holeWidth="0.7999984mm" holeHeight="2.3999952mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
-    <platedhole  portHints={["pin6"]} pcbX="6.299962mm" pcbY="-8.10006mm" holeWidth="0.7999984mm" holeHeight="2.3999952mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
+    <platedhole  portHints={["pin4"]} pcbX="0mm" pcbY="-8.10006mm" holeWidth="0.7999984mm" holeHeight="2.0999704mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
+    <platedhole  portHints={["pin6"]} pcbX="6.299962mm" pcbY="-8.10006mm" holeWidth="0.7999984mm" holeHeight="2.0999704mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
     <platedhole  portHints={["pin7"]} pcbX="6.299962mm" pcbY="8.10006mm" holeWidth="0.7999984mm" holeHeight="2.3999952mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
     <platedhole  portHints={["pin5"]} pcbX="0mm" pcbY="8.10006mm" holeWidth="0.7999984mm" holeHeight="2.3999952mm" outerWidth="1.5999968mm" outerHeight="3.1999936mm" pcbRotation="270deg" shape="pill" />
     <silkscreenpath route={[{"x":-10.500436200000195,"y":10.000132399999984},{"x":10.499547199999824,"y":10.000132399999984}]} />
