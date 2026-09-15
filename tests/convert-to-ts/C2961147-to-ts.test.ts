@@ -75,9 +75,9 @@ it("should convert C2961147 into typescript file", async () => {
     }}
           manufacturerPartNumber="PJ-002AH"
           footprint={<footprint>
-            <platedhole  portHints={["pin3"]} pcbX="-0mm" pcbY="2.350008mm" holeWidth="0.999998mm" holeHeight="3.1999936mm" outerWidth="1.7999964mm" outerHeight="3.999992mm" pcbRotation="90deg" shape="pill" />
-    <platedhole  portHints={["pin2"]} pcbX="2.999994mm" pcbY="-2.350008mm" holeWidth="0.999998mm" holeHeight="3.1999936mm" outerWidth="1.7999964mm" outerHeight="3.999992mm" shape="pill" />
-    <platedhole  portHints={["pin1"]} pcbX="-2.999994mm" pcbY="-2.350008mm" holeWidth="0.999998mm" holeHeight="3.499993mm" outerWidth="1.999996mm" outerHeight="4.499991mm" pcbRotation="180deg" shape="pill" />
+            <platedhole  portHints={["pin3"]} pcbX="-0mm" pcbY="2.350008mm" holeWidth="0.999998mm" holeHeight="2.999994mm" outerWidth="1.7999964mm" outerHeight="3.999992mm" pcbRotation="90deg" shape="pill" />
+    <platedhole  portHints={["pin2"]} pcbX="2.999994mm" pcbY="-2.350008mm" holeWidth="0.999998mm" holeHeight="2.999994mm" outerWidth="1.7999964mm" outerHeight="3.999992mm" shape="pill" />
+    <platedhole  portHints={["pin1"]} pcbX="-2.999994mm" pcbY="-2.350008mm" holeWidth="0.999998mm" holeHeight="3.5000184mm" outerWidth="1.999996mm" outerHeight="4.499991mm" pcbRotation="180deg" shape="pill" />
     <silkscreenpath route={[{"x":7.199985599999991,"y":2.1500083999999333},{"x":7.199985599999991,"y":-6.849973599999998}]} />
     <silkscreenpath route={[{"x":-3.699992599999973,"y":-4.612208199999941},{"x":-3.699992599999973,"y":-6.849973599999998},{"x":10.699978599999895,"y":-6.849973599999998},{"x":10.699978599999895,"y":2.130018600000085}]} />
     <silkscreenpath route={[{"x":-2.213279800000123,"y":2.1500083999999333},{"x":-3.699992599999973,"y":2.1500083999999333},{"x":-3.699992599999973,"y":-0.08775699999989683}]} />
