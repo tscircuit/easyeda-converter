@@ -33,11 +33,10 @@ it("reproduces C609652 losing the PA0/RESET#/UPDI label on pin 16", async () => 
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),
   ).toHaveLength(20)
-  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-    "c609652-pin-label-schematic",
-  )
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+  await expect(
+    convertCircuitJsonToSchematicSvg(circuitJson),
+  ).toMatchSvgSnapshot(import.meta.path, "c609652-pin-label-schematic")
+  await expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "c609652-pin-label-pcb",
   )
