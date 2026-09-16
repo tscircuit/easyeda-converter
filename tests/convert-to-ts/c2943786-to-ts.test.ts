@@ -1181,7 +1181,7 @@ it("should import C2943786 into a snapshotted typescript component", async () =>
     <silkscreencircle pcbX="-8.300085mm" pcbY="6.885178mm" radius="0.199898mm" />
     <silkscreenrect pcbX="0mm" pcbY="0mm" width="15.599918mm" height="14.45006mm" strokeWidth="0.254mm" />
     <silkscreentext text="{NAME}" pcbX="-0.354457mm" pcbY="8.247128mm" anchorAlignment="center" fontSize="1mm" />
-    <courtyardoutline outline={[{"x":-8.757856999999944,"y":7.4971279999998615},{"x":8.048943000000008,"y":7.4971279999998615},{"x":8.048943000000008,"y":-7.48087200000009},{"x":-8.757856999999944,"y":-7.48087200000009},{"x":-8.757856999999944,"y":7.4971279999998615}]} />
+    <courtyardoutline outline={[{"x":-7.970101399999976,"y":7.464996999999926},{"x":8.029867599999989,"y":7.464996999999926},{"x":8.029867599999989,"y":-7.434974200000056},{"x":-7.970101399999976,"y":-7.434974200000056},{"x":-7.970101399999976,"y":7.464996999999926}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2943786.obj?uuid=64b0ecebc40e4578851f9afd7fce5701",
