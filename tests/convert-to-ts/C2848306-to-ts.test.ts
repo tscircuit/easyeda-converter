@@ -56,7 +56,7 @@ it("should convert C2848306 into typescript file", async () => {
     <silkscreenpath route={[{"x":-0.8261857999999904,"y":-0.826211200000003},{"x":0.8262111999999888,"y":-0.826211200000003}]} />
     <silkscreencircle pcbX="-1.01346mm" pcbY="0.76454mm" radius="0.037592mm" />
     <silkscreentext text="{NAME}" pcbX="-0.0508mm" pcbY="1.8382mm" anchorAlignment="center" fontSize="1mm" />
-    <courtyardoutline outline={[{"x":-1.29140000000001,"y":1.0882000000000005},{"x":1.189799999999991,"y":1.0882000000000005},{"x":1.189799999999991,"y":-1.06280000000001},{"x":-1.29140000000001,"y":-1.06280000000001},{"x":-1.29140000000001,"y":1.0882000000000005}]} />
+    <courtyardoutline outline={[{"x":-1.1799193999999886,"y":1.0100187999999974},{"x":1.1799193999999886,"y":1.0100187999999974},{"x":1.1799193999999886,"y":-1.009993399999999},{"x":-1.1799193999999886,"y":-1.009993399999999},{"x":-1.1799193999999886,"y":1.0100187999999974}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2848306.obj?uuid=09d63d3bb21a495aa100cde68133c9fa",

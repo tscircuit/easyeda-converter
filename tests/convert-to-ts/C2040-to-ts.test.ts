@@ -172,7 +172,7 @@ it("should convert C2040 into typescript file", async () => {
     <silkscreencircle pcbX="-3.999992mm" pcbY="3.700272mm" radius="0.127mm" />
     <silkscreencircle pcbX="-3.999992mm" pcbY="3.700145mm" radius="0.127mm" />
     <silkscreentext text="{NAME}" pcbX="-0.140208mm" pcbY="4.859022mm" anchorAlignment="center" fontSize="1mm" />
-    <courtyardoutline outline={[{"x":-4.3780080000000225,"y":4.109021999999982},{"x":4.097592000000077,"y":4.109021999999982},{"x":4.097592000000077,"y":-4.087178000000108},{"x":-4.3780080000000225,"y":-4.087178000000108},{"x":-4.3780080000000225,"y":4.109021999999982}]} />
+    <courtyardoutline outline={[{"x":-4.0999415,"y":4.10006850000002},{"x":4.0999415,"y":4.10006850000002},{"x":4.0999415,"y":-4.10006850000002},{"x":-4.0999415,"y":-4.10006850000002},{"x":-4.0999415,"y":4.10006850000002}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2040.obj?uuid=76b360a9d4c54384a4e47d7e5af156df",
