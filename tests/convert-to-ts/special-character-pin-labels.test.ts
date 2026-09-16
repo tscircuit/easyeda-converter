@@ -88,7 +88,7 @@ for (const { partNumber, rawEasy, pins } of reproCases) {
       convertCircuitJsonToSchematicSvg(circuitJson),
     ).toMatchSvgSnapshot(
       import.meta.path,
-      `${partNumber}-special-character-pin-labels`,
+      `${partNumber}-special-character-pin-labels-missing`,
     )
   })
 }

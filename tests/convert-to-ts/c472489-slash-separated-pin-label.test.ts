@@ -27,9 +27,9 @@ it("preserves C472489 slash-separated pin 20 label", async () => {
 
   await expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
-    "C472489-pin20-label-pcb",
+    "C472489-pin20-label-missing-pcb",
   )
   await expect(
     convertCircuitJsonToSchematicSvg(circuitJson),
-  ).toMatchSvgSnapshot(import.meta.path, "C472489-pin20-label")
+  ).toMatchSvgSnapshot(import.meta.path, "C472489-pin20-label-missing")
 })
