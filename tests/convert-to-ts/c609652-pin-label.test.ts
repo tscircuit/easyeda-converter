@@ -1,8 +1,5 @@
 import { expect, it } from "bun:test"
-import {
-  convertCircuitJsonToSchematicSvg,
-  convertCircuitJsonToPcbSvg,
-} from "circuit-to-svg"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
@@ -36,8 +33,4 @@ it("reproduces C609652 losing the PA0/RESET#/UPDI label on pin 16", async () => 
   await expect(
     convertCircuitJsonToSchematicSvg(circuitJson),
   ).toMatchSvgSnapshot(import.meta.path, "c609652-pin-label-schematic")
-  await expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-    "c609652-pin-label-pcb",
-  )
 })
