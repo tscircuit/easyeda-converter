@@ -76,7 +76,7 @@ it("imports C5378731 supplier fabrication notes into its footprint string", asyn
     <silkscreencircle pcbX="-0.000127mm" pcbY="0.000254mm" radius="0.99187mm" />
     <silkscreentext text="{NAME}" pcbX="-0.012827mm" pcbY="3.039112mm" anchorAlignment="center" fontSize="1mm" />
     <fabricationnotepath route={[{"x":1.0158729999998286,"y":2.032076200000006},{"x":2.031872999999905,"y":2.032076200000006},{"x":2.031872999999905,"y":1.397076200000015},{"x":1.0158729999998286,"y":2.032076200000006}]} strokeWidth="0.254mm" />
-    <courtyardoutline outline={[{"x":-3.3616269999999986,"y":2.2891120000001592},{"x":3.335972999999967,"y":2.2891120000001592},{"x":3.335972999999967,"y":-1.8430880000000798},{"x":-3.3616269999999986,"y":-1.8430880000000798},{"x":-3.3616269999999986,"y":2.2891120000001592}]} />
+    <courtyardoutline outline={[{"x":-3.3499938000001066,"y":1.650149600000077},{"x":3.349993799999993,"y":1.650149600000077},{"x":3.349993799999993,"y":-1.6498447999999826},{"x":-3.3499938000001066,"y":-1.6498447999999826},{"x":-3.3499938000001066,"y":1.650149600000077}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C5378731.obj?uuid=24821b1a65784664819cc38487bec84f",

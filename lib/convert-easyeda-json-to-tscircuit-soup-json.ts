@@ -1,6 +1,7 @@
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import {
   findBoundsAndCenter,
+  getBoundsOfPcbElements,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
 import { mil2mm, mm } from "@tscircuit/mm"
@@ -91,6 +92,60 @@ const parseCadOffsetsFromSvgNode = (
       const [rx, ry, rz] = (attrs.c_rotation ?? "0,0,0").split(",").map(Number)
       return { x: rx || 0, y: ry || 0, z: rz || 0 }
     })(),
+  }
+}
+
+type PcbBounds = {
+  minX: number
+  minY: number
+  maxX: number
+  maxY: number
+}
+
+const getCadModelOutlineBounds = (
+  svgNode?: z.infer<typeof SVGNodeSchema>,
+): PcbBounds | undefined => {
+  const points: Array<{ x: number; y: number }> = []
+
+  for (const childNode of svgNode?.svgData.childNodes ?? []) {
+    if (typeof childNode !== "object" || childNode === null) continue
+
+    const attrs = (childNode as { attrs?: unknown }).attrs
+    if (typeof attrs !== "object" || attrs === null) continue
+
+    const rawPoints = (attrs as { points?: unknown }).points
+    if (typeof rawPoints !== "string") continue
+
+    const coordinates = rawPoints.trim().split(/\s+/).map(Number)
+    for (let index = 0; index + 1 < coordinates.length; index += 2) {
+      const x = coordinates[index]
+      const y = coordinates[index + 1]
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue
+      points.push({ x: milx10(x!), y: milx10(y!) })
+    }
+  }
+
+  if (points.length === 0) return undefined
+
+  return {
+    minX: Math.min(...points.map((point) => point.x)),
+    minY: Math.min(...points.map((point) => point.y)),
+    maxX: Math.max(...points.map((point) => point.x)),
+    maxY: Math.max(...points.map((point) => point.y)),
+  }
+}
+
+const unionBounds = (
+  first: PcbBounds,
+  second: PcbBounds | undefined,
+): PcbBounds => {
+  if (!second) return first
+
+  return {
+    minX: Math.min(first.minX, second.minX),
+    minY: Math.min(first.minY, second.minY),
+    maxX: Math.max(first.maxX, second.maxX),
+    maxY: Math.max(first.maxY, second.maxY),
   }
 }
 
@@ -902,22 +957,47 @@ export const convertEasyEdaJsonToCircuitJson = (
     )
   }
 
-  // Generate courtyard outline from packageDetail.dataStr.BBox when no explicit
-  // courtyard TRACK (layers 13/14/15) exists. The BBox is EasyEDA's own bounding
-  // box for the footprint in canvas coordinates (milx10 units). It is added before
-  // recentering so it gets transformed automatically with all other elements.
+  // Generate a fallback courtyard when EasyEDA does not provide one. Prefer the
+  // physical 3D body outline combined with the pad/hole envelope. EasyEDA's BBox
+  // can include silkscreen text and pin-1 markers, so use it only when no physical
+  // body outline is available.
   const hasExplicitCourtyard = circuitElements.some(
-    (e) => e.type === "pcb_courtyard_outline",
+    (e) =>
+      e.type === "pcb_courtyard_outline" || e.type === "pcb_courtyard_rect",
   )
   if (!hasExplicitCourtyard) {
     const bbox = easyEdaJson.packageDetail.dataStr.BBox
-    if (bbox) {
+    const modelOutlineBounds = getCadModelOutlineBounds(svgNode)
+    const packageElements = circuitElements.filter(
+      (element) =>
+        element.type === "pcb_smtpad" ||
+        element.type === "pcb_plated_hole" ||
+        element.type === "pcb_hole" ||
+        element.type === "pcb_via",
+    )
+    const packageElementBounds =
+      packageElements.length > 0
+        ? getBoundsOfPcbElements(packageElements)
+        : undefined
+    const fallbackBounds = bbox
+      ? {
+          minX: milx10(bbox.x),
+          minY: milx10(bbox.y),
+          maxX: milx10(bbox.x + bbox.width),
+          maxY: milx10(bbox.y + bbox.height),
+        }
+      : undefined
+    const courtyardBounds = modelOutlineBounds
+      ? unionBounds(modelOutlineBounds, packageElementBounds)
+      : fallbackBounds
+
+    if (courtyardBounds) {
       const strokeWidth = 0.05
       const margin = 0.25
-      const x1 = milx10(bbox.x) - margin
-      const y1 = milx10(bbox.y) - margin
-      const x2 = milx10(bbox.x + bbox.width) + margin
-      const y2 = milx10(bbox.y + bbox.height) + margin
+      const x1 = courtyardBounds.minX - margin
+      const y1 = courtyardBounds.minY - margin
+      const x2 = courtyardBounds.maxX + margin
+      const y2 = courtyardBounds.maxY + margin
       circuitElements.push(
         pcb_courtyard_outline.parse({
           type: "pcb_courtyard_outline",
