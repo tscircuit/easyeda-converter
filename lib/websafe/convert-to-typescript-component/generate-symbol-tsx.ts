@@ -1,3 +1,4 @@
+import { getEasyEdaPinAliases } from "lib/utils/get-easyeda-pin-aliases"
 import {
   type Point,
   distance,
@@ -318,14 +319,15 @@ const getPortMetadataByShapeId = (
     portName ??= `pin${pinIndex + 1}`
     usedPortNames.add(portName)
     const sourcePort = sourcePorts.find((port) => port.name === portName)
+    let aliases = getEasyEdaPinAliases(pin.label)
+    if (sourcePort?.port_hints?.length) {
+      aliases = sourcePort.port_hints
+    }
 
     metadataByShapeId.set(pin.id, {
       name: portName,
       pinNumber: sourcePort?.pin_number,
-      aliases: [
-        ...(sourcePort?.port_hints ?? []),
-        ...(pin.label ? [normalizeSymbolName(pin.label)] : []),
-      ].filter(
+      aliases: aliases.filter(
         (alias, index, aliases) =>
           alias !== portName && aliases.indexOf(alias) === index,
       ),

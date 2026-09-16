@@ -20,8 +20,8 @@ it("reproduces C388883 HTML entities becoming invalid pin aliases", async () => 
 
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  expect(result).toContain('pin3: ["1&#96;","1"]')
-  expect(result).toContain('pin4: ["2&#96;","2"]')
+  expect(result).toContain('pin3: ["1&#96;","1__96_"]')
+  expect(result).toContain('pin4: ["2&#96;","2__96_"]')
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),

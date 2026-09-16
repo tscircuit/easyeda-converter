@@ -55,9 +55,9 @@ it("should convert C2961147 into typescript file", async () => {
           pinLabels={pinLabels}
           symbol={
             <symbol>
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={0.6} schY={0} schStemLength={0.4} />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.6} schY={-0.2} schStemLength={0.4} />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="right" schX={0.6} schY={0.2} schStemLength={0.4} />
+              <port name="pin3" pinNumber={3} direction="right" schX={0.6} schY={0} schStemLength={0.4} />
+              <port name="pin2" pinNumber={2} direction="right" schX={0.6} schY={-0.2} schStemLength={0.4} />
+              <port name="pin1" pinNumber={1} direction="right" schX={0.6} schY={0.2} schStemLength={0.4} />
               <schematicpath points={[{"x":-0.14,"y":-0.2},{"x":-0.12,"y":-0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":0},{"x":-0.14,"y":0},{"x":-0.14,"y":-0.2},{"x":-0.16,"y":-0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":-0.2},{"x":-0.38,"y":-0.2},{"x":-0.42,"y":-0.12},{"x":-0.46,"y":-0.2}]} strokeColor="#880000" />

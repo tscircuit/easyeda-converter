@@ -49,12 +49,12 @@ it("should convert C309274 into typescript file", async () => {
               <schematicpath points={[{"x":0.2,"y":0.6},{"x":0.18,"y":0.48}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":0},{"x":0.2,"y":0},{"x":0.2,"y":0.2},{"x":0.18,"y":0.1}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.2,"y":0.2},{"x":0.22,"y":0.1}]} strokeColor="#880000" />
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.6} schY={0.6} schStemLength={0.2} />
-              <port name="pin3" pinNumber={3} aliases={["3"]} direction="right" schX={0.6} schY={0.4} schStemLength={0.2} />
-              <port name="pin4" pinNumber={4} aliases={["4"]} direction="right" schX={0.6} schY={0.2} schStemLength={0.2} />
-              <port name="pin5" pinNumber={5} aliases={["5"]} direction="right" schX={0.6} schY={0} schStemLength={0.2} />
-              <port name="pin6" pinNumber={6} aliases={["6"]} direction="right" schX={0.6} schY={-0.2} schStemLength={0.2} />
-              <port name="pin7" pinNumber={7} aliases={["7"]} direction="right" schX={0.6} schY={-0.4} schStemLength={0.2} />
+              <port name="pin2" pinNumber={2} direction="right" schX={0.6} schY={0.6} schStemLength={0.2} />
+              <port name="pin3" pinNumber={3} direction="right" schX={0.6} schY={0.4} schStemLength={0.2} />
+              <port name="pin4" pinNumber={4} direction="right" schX={0.6} schY={0.2} schStemLength={0.2} />
+              <port name="pin5" pinNumber={5} direction="right" schX={0.6} schY={0} schStemLength={0.2} />
+              <port name="pin6" pinNumber={6} direction="right" schX={0.6} schY={-0.2} schStemLength={0.2} />
+              <port name="pin7" pinNumber={7} direction="right" schX={0.6} schY={-0.4} schStemLength={0.2} />
               <schematicpath points={[{"x":0.4,"y":0.6},{"x":-0.2,"y":0.6},{"x":-0.2,"y":0.2}]} strokeColor="#880000" />
               <schematicpath svgPath="M -0.28 0.2 C -0.28 0.14 -0.2 0.14 -0.2 0.2" strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":-0.4},{"x":0.2,"y":-0.4},{"x":0.2,"y":-0.2},{"x":0.18,"y":-0.3}]} strokeColor="#880000" />
