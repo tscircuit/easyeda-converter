@@ -5,7 +5,7 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C388883.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("reproduces C388883 HTML entities becoming invalid pin aliases", async () => {
+it("preserves distinct C388883 terminals with encoded prime labels", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
 
   const htmlEncodedPinNumbers = betterEasy.dataStr.shape.flatMap((shape) =>
@@ -20,8 +20,8 @@ it("reproduces C388883 HTML entities becoming invalid pin aliases", async () => 
 
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  expect(result).toContain('pin3: ["1&#96;","1__96_"]')
-  expect(result).toContain('pin4: ["2&#96;","2__96_"]')
+  expect(result).toContain('pin3: ["1_PRIME"]')
+  expect(result).toContain('pin4: ["2_PRIME"]')
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
@@ -30,21 +30,15 @@ it("reproduces C388883 HTML entities becoming invalid pin aliases", async () => 
     .filter((element) => element.type === "source_property_ignored_warning")
     .filter((warning) => warning.property_name.startsWith("pinLabels"))
 
+  expect(invalidPinLabelWarnings).toHaveLength(0)
+  const sourcePorts = circuitJson.filter(
+    (element) => element.type === "source_port",
+  )
+  expect(sourcePorts).toHaveLength(4)
   expect(
-    invalidPinLabelWarnings.map((warning) => ({
-      message: warning.message,
-      propertyName: warning.property_name,
-    })),
-  ).toEqual([
-    {
-      message:
-        "Invalid pin label: pin3 = '1&#96;' - excluding from component. Pin labels can only contain letters, numbers and underscores.",
-      propertyName: "pinLabels['1&#96;']",
-    },
-    {
-      message:
-        "Invalid pin label: pin4 = '2&#96;' - excluding from component. Pin labels can only contain letters, numbers and underscores.",
-      propertyName: "pinLabels['2&#96;']",
-    },
-  ])
+    sourcePorts.find((port) => port.pin_number === 3)?.port_hints,
+  ).toContain("1_PRIME")
+  expect(
+    sourcePorts.find((port) => port.pin_number === 4)?.port_hints,
+  ).toContain("2_PRIME")
 })

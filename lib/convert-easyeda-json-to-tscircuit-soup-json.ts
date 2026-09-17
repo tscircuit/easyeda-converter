@@ -443,7 +443,7 @@ export const convertEasyEdaJsonToCircuitJson = (
   // Prepare pin labels for normalization
   const pinLabelSets = pads.map((pad) => {
     const labels = []
-    if (pad.number) labels.push(pad.number.toString())
+    if (pad.number) labels.push(...getEasyEdaPinAliases(pad.number.toString()))
 
     const pin = pins.find((p) => p.pinNumber === pad.number)
     if (pin) labels.push(...getEasyEdaPinAliases(pin.label))
