@@ -35,7 +35,7 @@ const reproCases = [
         pinNumber: 1,
         rawLabel: "(PCINT19/OC2B/INT1)PD3",
         parsedLabel: "(PCINT19/OC2B/INT1)PD3",
-        aliases: ["_PCINT19", "OC2B", "INT1_PD3"],
+        aliases: ["PCINT19", "OC2B", "INT1_PD3"],
       },
     ],
   },

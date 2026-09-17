@@ -6,7 +6,9 @@ export const getEasyEdaPinAliases = (label: string): string[] => {
   return label
     .split("/")
     .map((alias) =>
-      normalizeEasyEdaPinLabel(alias.trim()).replace(/[^a-zA-Z0-9_]/g, "_"),
+      normalizeEasyEdaPinLabel(alias.trim())
+        .replace(/^[()]+|[()]+$/g, "")
+        .replace(/[^a-zA-Z0-9_]/g, "_"),
     )
     .filter((alias) => /[a-zA-Z0-9]/.test(alias))
 }
