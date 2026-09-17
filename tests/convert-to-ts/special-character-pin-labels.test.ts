@@ -46,8 +46,8 @@ const reproCases = [
       {
         pinNumber: 3,
         rawLabel: "SINEIN–",
-        parsedLabel: "SINEIN–",
-        aliases: ["SINEIN_"],
+        parsedLabel: "SINEIN_NEG",
+        aliases: ["SINEIN_NEG"],
       },
     ],
   },
