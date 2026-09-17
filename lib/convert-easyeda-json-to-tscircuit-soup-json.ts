@@ -1,4 +1,5 @@
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
+import { getEasyEdaInsertionDirection } from "./utils/get-easyeda-insertion-direction"
 import {
   findBoundsAndCenter,
   getBoundsOfPcbElements,
@@ -1210,6 +1211,13 @@ export const convertEasyEdaJsonToCircuitJson = (
 
     // finalize pcb center after recentering
     pcb_component.center = { x: 0, y: 0 }
+  }
+
+  // Resolve metadata in the output footprint frame after converting EasyEDA's
+  // downward-positive Y coordinates. That conversion is not a PCB layer flip.
+  const insertionDirection = getEasyEdaInsertionDirection(easyEdaJson)
+  if (insertionDirection) {
+    pcb_component.insertion_direction = insertionDirection
   }
 
   return circuitElements

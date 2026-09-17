@@ -28,6 +28,9 @@ export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
   options: GenerateFootprintTsxOptions = {},
 ): string => {
+  // Converted EasyEDA geometry and metadata share the unrotated top-layer frame.
+  const insertionDirection =
+    su(circuitJson).pcb_component.list()[0]?.insertion_direction
   const holes = su(circuitJson).pcb_hole.list()
   const platedHoles = su(circuitJson).pcb_plated_hole.list()
   const smtPads = su(circuitJson).pcb_smtpad.list()
@@ -238,7 +241,7 @@ export const generateFootprintTsx = (
   }
 
   return `
-      <footprint>
+      <footprint${getStringAttr("insertionDirection", insertionDirection)}>
         ${elementStrings.join("\n")}
       </footprint>
   `.trim()
