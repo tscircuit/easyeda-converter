@@ -497,13 +497,22 @@ export const convertEasyEdaJsonToCircuitJson = (
 
   // Prepare pin labels for normalization
   const pinLabelSets = pads.map((pad) => {
-    const labels = []
-    if (pad.number) labels.push(...getEasyEdaPinAliases(pad.number.toString()))
-
+    const padAliases = pad.number
+      ? getEasyEdaPinAliases(pad.number.toString())
+      : []
     const pin = pins.find((p) => p.pinNumber === pad.number)
-    if (pin) labels.push(...getEasyEdaPinAliases(pin.label))
+    const schematicAliases = pin ? getEasyEdaPinAliases(pin.label) : []
 
-    return labels
+    // Prefer the schematic pin name for display while retaining the footprint
+    // pad identifier as a connection alias. Numeric schematic labels continue
+    // to use the footprint pad number first so canonical numbering is stable.
+    const hasNamedSchematicAlias = schematicAliases.some(
+      (alias) => !/^\d+$/.test(alias),
+    )
+
+    return hasNamedSchematicAlias
+      ? [...schematicAliases, ...padAliases]
+      : [...padAliases, ...schematicAliases]
   })
 
   // Repeated EasyEDA pad numbers are multiple copper geometries for one

@@ -6,7 +6,7 @@ import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-f
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 
-it("reproduces incorrect schematic pin grouping for USB-C C2765186", async () => {
+it("prefers schematic pin names over footprint pad identifiers", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
@@ -15,11 +15,9 @@ it("reproduces incorrect schematic pin grouping for USB-C C2765186", async () =>
 
   // Real-world reference using this imported component:
   // https://tscircuit.com/hrithik18k/air-mouse#schematic
-  // The live EasyEDA data is converted with footprint-oriented aliases before
-  // the logical USB-C labels, which makes consumers display the wrong names.
   expect(result).toContain('pin13: ["EH1"]')
-  expect(result).toContain('pin15: ["A1B12","GND1"]')
-  expect(result).toContain('pin25: ["B4A9","VBUS2"]')
+  expect(result).toContain('pin15: ["GND1","A1B12"]')
+  expect(result).toContain('pin25: ["VBUS2","B4A9"]')
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
