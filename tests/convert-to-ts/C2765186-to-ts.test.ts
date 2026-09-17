@@ -1,7 +1,7 @@
 import { expect, it } from "bun:test"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { runTscircuitCode } from "tscircuit"
-import chipRawEasy from "../assets/C2765186.raweasy.json"
+import chipRawEasy from "../assets/C2765186-repro.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
