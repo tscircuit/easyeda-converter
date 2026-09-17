@@ -1,3 +1,4 @@
+import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import {
   findBoundsAndCenter,
@@ -46,7 +47,6 @@ import {
 } from "./utils/get-silkscreen-arc-path"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
-import { normalizeSymbolName } from "./utils/normalize-symbol-name"
 import { isDiodeCategoryComponent } from "./websafe/convert-to-typescript-component/is-diode-category-component"
 import { isLedCategoryComponent } from "./websafe/convert-to-typescript-component/is-led-category-component"
 import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
@@ -498,10 +498,10 @@ export const convertEasyEdaJsonToCircuitJson = (
   // Prepare pin labels for normalization
   const pinLabelSets = pads.map((pad) => {
     const labels = []
-    if (pad.number) labels.push(pad.number.toString())
+    if (pad.number) labels.push(...getEasyEdaPinAliases(pad.number.toString()))
 
     const pin = pins.find((p) => p.pinNumber === pad.number)
-    if (pin) labels.push(normalizeSymbolName(pin.label))
+    if (pin) labels.push(...getEasyEdaPinAliases(pin.label))
 
     return labels
   })
