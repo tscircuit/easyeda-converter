@@ -30,6 +30,7 @@ import {
   normalizeResistorValue,
 } from "./is-resistor-component"
 import { isSwitchCategoryComponent } from "./is-switch-category-component"
+import { getMosfetMetadata } from "./get-mosfet-metadata"
 
 const getGeneratedComponentType = (
   betterEasy: BetterEasyEdaJson,
@@ -163,6 +164,8 @@ export const convertBetterEasyToTsx = async ({
     betterEasy,
     sourcePorts.length,
   )
+  const mosfetMetadata =
+    componentType === "chip" ? getMosfetMetadata(betterEasy) : undefined
   const isDipSwitch = isDipSwitchCategoryComponent(betterEasy)
   const inductance =
     componentType === "inductor"
@@ -227,6 +230,11 @@ export const convertBetterEasyToTsx = async ({
     symbolTsx,
     schPinArrangement,
     useSymbolPortsOnly: isDipSwitch && Boolean(symbolTsx),
+    mosfetMetadata:
+      mosfetMetadata &&
+      Object.keys(mosfetMetadata.pins).length === sourcePorts.length
+        ? mosfetMetadata
+        : undefined,
   })
 }
 
