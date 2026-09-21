@@ -3,25 +3,27 @@ import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
-import opampRawEasy from "../assets/C2059794.raweasy.json"
+import opampRawEasy from "../assets/C7972.raweasy.json"
 
-test("repro: TLV2760 preserves its op-amp drawing but imports as a generic chip", async () => {
+test("repro: five-pin LMV321 imports as a generic chip with a custom op-amp symbol", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(opampRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  // TI TLV2760 DBV pinout: https://www.ti.com/lit/ds/symlink/tlv2760.pdf#page=3
+  // TI LMV321 DBV pinout: https://www.ti.com/lit/ds/symlink/lmv321.pdf#page=3
   expect(betterEasy.dataStr.head.c_para["Manufacturer Part"]).toBe(
-    "TLV2760IDBVTG4",
+    "LMV321IDBVR",
   )
-  expect(betterEasy.lcsc.number).toBe("C2059794")
+  expect(betterEasy.lcsc.number).toBe("C7972")
+  expect(opampRawEasy.tags).toContain("Operational Amplifier")
   expect(result).toContain("<chip")
+  expect(result).not.toContain("<opamp")
   expect(result).toContain("symbol={")
 
   const circuitJson = await runTscircuitCode(`
     ${result}
     export default () => (
       <board>
-        <TLV2760IDBVTG4 name="U5" />
+        <LMV321IDBVR name="U1" />
       </board>
     )
   `)
@@ -29,18 +31,17 @@ test("repro: TLV2760 preserves its op-amp drawing but imports as a generic chip"
     (element) => element.type === "source_component",
   )
 
-  // Current behavior: the op-amp drawing survives, but its electrical identity
-  // does not. Feedback recognition needs amplifier input/output roles.
+  // Current behavior: a standard five-function op-amp loses its amplifier
+  // identity. A fix should emit <opamp> and preserve the physical pin mapping.
   expect(sourceComponent?.ftype).toBe("simple_chip")
   const ports = circuitJson.filter((element) => element.type === "source_port")
-  expect(ports).toHaveLength(6)
+  expect(ports).toHaveLength(5)
   for (const [pin, label] of [
-    [1, "OUT"],
+    [1, "_POS"],
     [2, "GND"],
-    [3, "IN_POS"],
-    [4, "IN_NEG"],
-    [5, "N_SHDN"],
-    [6, "VDD"],
+    [3, "_NEG"],
+    [4, "OUT"],
+    [5, "V_POS"],
   ] as const) {
     expect(ports.find((port) => port.pin_number === pin)?.port_hints).toContain(
       label,
@@ -49,6 +50,6 @@ test("repro: TLV2760 preserves its op-amp drawing but imports as a generic chip"
 
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
-    "C2059794-opamp-identity-repro",
+    "C7972-opamp-identity-repro",
   )
 }, 50_000)
