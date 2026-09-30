@@ -1,4 +1,5 @@
 import { expect, it } from "bun:test"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
@@ -18,7 +19,7 @@ it("reproduces missing VBUS power metadata for C2687116", async () => {
   )
   const vbusPort = circuitJson.find(
     (element) =>
-      element.type === "source_port" && element.port_hints.includes("VBUS"),
+      element.type === "source_port" && element.port_hints?.includes("VBUS"),
   )
   const missingPowerWarning = circuitJson.find(
     (element) => element.type === "source_no_power_pin_defined_warning",
@@ -33,4 +34,8 @@ it("reproduces missing VBUS power metadata for C2687116", async () => {
   expect(missingPowerWarning).toMatchObject({
     message: expect.stringContaining("has no pin with requires_power=true"),
   })
+  expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C2687116-vbus-power-metadata-repro",
+  )
 }, 50000)
