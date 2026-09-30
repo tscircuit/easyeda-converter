@@ -187,9 +187,27 @@ export const ArcShapeSchema = z
   .transform(parseArc)
   .pipe(ArcShapeOutputSchema)
 
+const pinElectricalTypeByCode = {
+  "0": "unspecified",
+  "1": "input",
+  "2": "output",
+  "3": "bidirectional",
+  "4": "power",
+} as const
+
+export type PinElectricalType =
+  (typeof pinElectricalTypeByCode)[keyof typeof pinElectricalTypeByCode]
+
+const pinElectricalTypeCodeSchema = z
+  .enum(["0", "1", "2", "3", "4"])
+  .transform((code) => pinElectricalTypeByCode[code])
+
 const PinShapeOutputSchema = z.object({
   type: z.literal("PIN"),
   visibility: z.enum(["show", "hide", "none"]),
+  electricalType: z
+    .enum(["unspecified", "input", "output", "bidirectional", "power"])
+    .optional(),
   pinNumber: z.union([z.string(), z.number()]),
   x: z.number(),
   y: z.number(),
@@ -203,7 +221,13 @@ const PinShapeOutputSchema = z.object({
 
 const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const parts = pinString.split("~")
-  const [, visibility, , pinNumber, x, y, rotation, id] = parts
+  const [, visibility, electricalTypeCode, pinNumber, x, y, rotation, id] =
+    parts
+  // EasyEDA's Power type does not distinguish an input from an output.
+  const electricalType =
+    electricalTypeCode === "" || electricalTypeCode === undefined
+      ? undefined
+      : pinElectricalTypeCodeSchema.parse(electricalTypeCode)
 
   // EasyEDA stores the pin name and pin number in separate text sections.
   const pinNameSection = pinString.split("^^")[3]
@@ -222,6 +246,7 @@ const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   return {
     type: "PIN",
     visibility: visibility as "show" | "hide" | "none",
+    electricalType,
     id,
     pinNumber: Number.isNaN(Number(pinNumber)) ? pinNumber : Number(pinNumber),
     x: Number.parseFloat(x),

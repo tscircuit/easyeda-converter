@@ -12,6 +12,7 @@ import {
   hasNonBoxSchematicSymbol,
 } from "./generate-symbol-tsx"
 import { generateTypescriptComponent } from "./generate-typescript-component"
+import { getPinElectricalTypes } from "./get-pin-electrical-types"
 import type { GeneratedComponentType } from "./generate-typescript-component"
 import {
   isCapacitorComponent,
@@ -212,6 +213,7 @@ export const convertBetterEasyToTsx = async ({
     componentName,
     manufacturerPartNumber,
     pinLabels,
+    pinElectricalTypes: getPinElectricalTypes({ betterEasy, sourcePorts }),
 
     objUrl: modelObjUrl,
     stepUrl: modelStepUrl,

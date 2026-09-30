@@ -9,7 +9,7 @@ import { runTscircuitCode } from "tscircuit"
 import rawEasy from "../assets/C3188679.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("records C3188679 VCC power semantics and physical pin mapping", async () => {
+it("does not require external power on C3188679 VCC", async () => {
   // TI LM5146 Table 6-1 identifies pin 14 as the internal regulator output.
   // The source symbol leaves its electrical type undefined (0).
   const rawVccPin = rawEasy.dataStr.shape.find(
@@ -44,10 +44,10 @@ it("records C3188679 VCC power semantics and physical pin mapping", async () => 
     hasInputArrow: schematicPort.has_input_arrow === true,
   }).toMatchInlineSnapshot(`
     {
-      "hasInputArrow": true,
+      "hasInputArrow": false,
       "label": "VCC",
       "pinNumber": 14,
-      "requiresPower": true,
+      "requiresPower": false,
     }
   `)
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
@@ -58,4 +58,37 @@ it("records C3188679 VCC power semantics and physical pin mapping", async () => 
     import.meta.path,
     "C3188679-vcc-pcb",
   )
+})
+
+it.each([
+  ["0", false],
+  ["1", true],
+  ["2", false],
+  ["3", false],
+  ["4", false],
+] as const)(
+  "honors EasyEDA electrical type %s on supply pins",
+  async (code, requiresPower) => {
+    const typedRawEasy = structuredClone(rawEasy)
+    typedRawEasy.dataStr.shape = typedRawEasy.dataStr.shape.map((shape) =>
+      shape.replace(/^P~show~0~14~/, `P~show~${code}~14~`),
+    )
+    const tsx = await convertRawEasyToTsx({ rawEasy: typedRawEasy })
+    expect(tsx.includes("pin14: {requiresPower: true}")).toBe(requiresPower)
+    expect(tsx).toContain("pin6: {requiresGround: true}")
+    expect(tsx).toContain("pin9: {doNotConnect: true}")
+  },
+)
+
+it("does not infer a power input when repeated symbol pins disagree", async () => {
+  const typedRawEasy = structuredClone(rawEasy)
+  const vccPin = typedRawEasy.dataStr.shape.find((shape) =>
+    shape.startsWith("P~show~0~14~"),
+  )
+  if (!vccPin) throw new Error("Missing VCC source pin")
+  typedRawEasy.dataStr.shape.push(
+    vccPin.replace(/^P~show~0~14~/, "P~show~1~14~"),
+  )
+  const tsx = await convertRawEasyToTsx({ rawEasy: typedRawEasy })
+  expect(tsx).not.toContain("pin14: {requiresPower: true}")
 })

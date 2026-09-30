@@ -14,7 +14,8 @@ it("should convert C46749 into typescript file", async () => {
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
   expect(result).toContain("pin1: {requiresGround: true}")
-  expect(result).toContain("pin8: {requiresPower: true}")
+  // This fixture leaves electrical direction unspecified, including VCC.
+  expect(result).not.toContain("pin8: {requiresPower: true}")
   expect(result).toContain("pinAttributes={pinAttributes}")
 
   const circuitJson = await runTscircuitCode(
@@ -27,7 +28,8 @@ it("should convert C46749 into typescript file", async () => {
   const powerPort = sourcePorts.find((element) => element.pin_number === 8)
 
   expect(groundPort?.requires_ground).toBe(true)
-  expect(powerPort?.requires_power).toBe(true)
+  expect(powerPort?.port_hints).toContain("VCC")
+  expect(powerPort?.requires_power).toBeUndefined()
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
@@ -45,8 +47,7 @@ it("should convert C46749 into typescript file", async () => {
     } as const
 
     const pinAttributes = {
-      pin1: {requiresGround: true},
-      pin8: {requiresPower: true}
+      pin1: {requiresGround: true}
     } as const
 
     export const NE555P = (props: ChipProps<typeof pinLabels>) => {

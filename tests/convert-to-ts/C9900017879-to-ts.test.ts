@@ -64,8 +64,7 @@ it("should convert C9900017879 into typescript file", async () => {
 
     const pinAttributes = {
       pin4: {requiresGround: true},
-      pin29: {requiresGround: true},
-      pin30: {requiresPower: true}
+      pin29: {requiresGround: true}
     } as const
 
     export const ARDUINO_NANO = (props: ChipProps<typeof pinLabels>) => {

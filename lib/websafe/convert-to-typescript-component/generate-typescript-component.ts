@@ -1,5 +1,6 @@
 import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
+import type { PinElectricalType } from "../../schemas/single-letter-shape-schema"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 import { inferPinAttributes } from "./infer-pin-attributes"
@@ -18,6 +19,7 @@ export type GeneratedComponentType =
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
+  pinElectricalTypes?: Record<string, PinElectricalType | undefined>
   componentName: string
   objUrl?: string
   stepUrl?: string
@@ -38,6 +40,7 @@ interface Params {
 
 export const generateTypescriptComponent = ({
   pinLabels,
+  pinElectricalTypes,
   componentName,
   objUrl,
   stepUrl,
@@ -83,7 +86,9 @@ export const generateTypescriptComponent = ({
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
   const inferredPinAttributes =
-    componentType === "chip" ? inferPinAttributes(simplifiedPinLabels) : {}
+    componentType === "chip"
+      ? inferPinAttributes(simplifiedPinLabels, pinElectricalTypes)
+      : {}
   const pinAttributesString = Object.entries(inferredPinAttributes)
     .map(([pin, attributes]) => {
       const attributesString = Object.entries(attributes)

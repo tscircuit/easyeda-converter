@@ -51,7 +51,6 @@ it("imports C5378731 supplier fabrication notes into its footprint string", asyn
     } as const
 
     const pinAttributes = {
-      pin1: {requiresPower: true},
       pin3: {requiresGround: true}
     } as const
 

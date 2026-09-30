@@ -14,6 +14,22 @@ const examples = [
   "P~show~0~8~445~285~0~gge12~0^^445~285^^M445,285h-10~#FF0000^^1~431.3~289~0~VCC~end~~~#FF0000^^1~435.5~284~0~8~start~~~#FF0000^^0~438~285^^0~M 435 282 L 432 285 L 435 288",
 ]
 
+it.each([
+  ["", undefined],
+  ["0", "unspecified"],
+  ["1", "input"],
+  ["2", "output"],
+  ["3", "bidirectional"],
+  ["4", "power"],
+] as const)("preserves electrical type %s as %s", (code, electricalType) => {
+  const pin = examples[2].replace("P~show~0~", `P~show~${code}~`)
+  expect(SingleLetterShapeSchema.parse(pin)).toMatchObject({
+    type: "PIN",
+    pinNumber: 1,
+    electricalType,
+  })
+})
+
 it("parses examples for single letter shape schema", () => {
   examples.forEach((example) => {
     expect(() => {

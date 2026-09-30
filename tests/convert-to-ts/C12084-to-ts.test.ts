@@ -41,8 +41,7 @@ it("should convert C12084 into typescript file", async () => {
     } as const
 
     const pinAttributes = {
-      pin2: {requiresGround: true},
-      pin3: {requiresPower: true}
+      pin2: {requiresGround: true}
     } as const
 
     export const SN65HVD230DR = (props: ChipProps<typeof pinLabels>) => {

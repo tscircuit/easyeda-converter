@@ -63,7 +63,6 @@ it("should convert C490691 into typescript file", async () => {
       pin7: {requiresGround: true},
       pin8: {doNotConnect: true},
       pin18: {requiresGround: true},
-      pin20: {requiresPower: true},
       pin21: {requiresGround: true},
       pin24: {doNotConnect: true},
       pin25: {requiresGround: true}

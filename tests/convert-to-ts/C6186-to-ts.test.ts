@@ -30,8 +30,7 @@ it("should convert C6186 into typescript file", async () => {
     } as const
 
     const pinAttributes = {
-      pin1: {requiresGround: true},
-      pin3: {requiresPower: true}
+      pin1: {requiresGround: true}
     } as const
 
     export const AMS1117_3_3 = (props: ChipProps<typeof pinLabels>) => {

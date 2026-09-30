@@ -30,7 +30,6 @@ it("should convert C2848306 into typescript file", async () => {
     } as const
 
     const pinAttributes = {
-      pin3: {requiresPower: true},
       pin4: {requiresGround: true}
     } as const
 

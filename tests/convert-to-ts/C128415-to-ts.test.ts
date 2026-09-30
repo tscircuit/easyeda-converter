@@ -34,8 +34,7 @@ it("should convert C128415 into typescript file", async () => {
     } as const
 
     const pinAttributes = {
-      pin1: {requiresGround: true},
-      pin8: {requiresPower: true}
+      pin1: {requiresGround: true}
     } as const
 
     export const NA555DR = (props: ChipProps<typeof pinLabels>) => {

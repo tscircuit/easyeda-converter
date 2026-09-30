@@ -1,4 +1,5 @@
 import type { PinAttributeMap } from "@tscircuit/props"
+import type { PinElectricalType } from "../../schemas/single-letter-shape-schema"
 
 type GeneratedPinLabels = Record<string, string | readonly string[]>
 
@@ -20,6 +21,7 @@ const getAttributeKind = (
 
 export const inferPinAttributes = (
   pinLabels: GeneratedPinLabels,
+  pinElectricalTypes: Record<string, PinElectricalType | undefined> = {},
 ): Record<string, PinAttributeMap> => {
   const pinAttributes: Record<string, PinAttributeMap> = {}
 
@@ -37,7 +39,11 @@ export const inferPinAttributes = (
 
     const [attributeKind] = attributeKinds
     if (attributeKind === "power") {
-      pinAttributes[pinName] = { requiresPower: true }
+      // A supply-like name (including VCC on an internal regulator output)
+      // does not establish that a pin requires external power.
+      if (pinElectricalTypes[pinName] === "input") {
+        pinAttributes[pinName] = { requiresPower: true }
+      }
     } else if (attributeKind === "ground") {
       pinAttributes[pinName] = { requiresGround: true }
     } else if (attributeKind === "no-connect") {

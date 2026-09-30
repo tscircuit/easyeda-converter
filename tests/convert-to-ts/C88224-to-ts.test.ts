@@ -54,8 +54,7 @@ it("should convert C88224 into typescript file", async () => {
       pin4: {requiresGround: true},
       pin9: {requiresGround: true},
       pin10: {requiresGround: true},
-      pin18: {requiresGround: true},
-      pin20: {requiresPower: true}
+      pin18: {requiresGround: true}
     } as const
 
     export const TB6612FNG_O_C_8_EL = (props: ChipProps<typeof pinLabels>) => {
