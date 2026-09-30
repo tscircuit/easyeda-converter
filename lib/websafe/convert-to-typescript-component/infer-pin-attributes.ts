@@ -2,7 +2,7 @@ import type { PinAttributeMap } from "@tscircuit/props"
 
 type GeneratedPinLabels = Record<string, string | readonly string[]>
 
-const POWER_PIN_LABEL = /^(?:VCC|VDD|VIN|VDDA)\d*$/
+const POWER_PIN_LABEL = /^(?:VCC|VDD|VIN|VDDA|VBUS)\d*$/
 const GROUND_PIN_LABEL = /^(?:GND|VSS|PGND|AGND)\d*$/
 const NO_CONNECT_PIN_LABEL = /^NC\d*$/
 
