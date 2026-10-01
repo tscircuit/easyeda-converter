@@ -5,12 +5,12 @@ export const isSwitchCategoryComponent = (
   betterEasy: BetterEasyEdaJson,
 ): boolean => {
   const cPara = betterEasy.dataStr.head.c_para
-  return [
+  return categoryValueContainsSwitch([
     betterEasy.tags,
     cPara.category,
     cPara.Category,
     cPara["LCSC Category"],
     cPara["JLCPCB Category"],
     betterEasy.category,
-  ].some(categoryValueContainsSwitch)
+  ])
 }

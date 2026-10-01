@@ -67,7 +67,7 @@ test("renders the C55266 schematic and PCB", async () => {
   )
 })
 
-test.failing("C55266 exposes all six IC pins in the schematic", async () => {
+test("C55266 exposes all six IC pins in the schematic", async () => {
   const circuitJson = await renderTps2553()
   const schematicPorts = circuitJson.filter((e) => e.type === "schematic_port")
   expect(
@@ -84,4 +84,36 @@ test.failing("C55266 exposes all six IC pins in the schematic", async () => {
   const sourceComponent = circuitJson.find((e) => e.type === "source_component")
   expect(sourceComponent?.ftype).toBe("simple_chip")
   expect(sourceComponent?.are_pins_interchangeable).not.toBe(true)
+})
+
+test.each(pinLabels)("connects C55266's %s signal", async (label) => {
+  const tsx = await convertRawEasyToTsx({ rawEasy: tps2553RawEasy })
+  expect(tsx).toContain("<chip")
+  expect(tsx).not.toContain("<switch")
+  const circuitJson = await runTscircuitCode(`${tsx}
+export default () => <board width={10} height={10}>
+  <TPS2553DBVR name="U1" />
+  <net name="probe" />
+  <trace from={${JSON.stringify(`.U1 > .${label}`)}} to="net.probe" />
+</board>
+`)
+  const pinNumber = pinLabels.indexOf(label) + 1
+  const sourcePort = circuitJson.find(
+    (e) => e.type === "source_port" && e.pin_number === pinNumber,
+  )
+  if (sourcePort?.type !== "source_port") {
+    throw new Error(`Missing source pin ${pinNumber}`)
+  }
+  const traces = circuitJson.filter((e) => e.type === "source_trace")
+  expect(traces).toHaveLength(1)
+  expect(traces[0].connected_source_port_ids).toEqual([
+    sourcePort.source_port_id,
+  ])
+  expect(
+    circuitJson.filter(
+      (e) =>
+        e.type === "schematic_port" &&
+        e.source_port_id === sourcePort.source_port_id,
+    ),
+  ).toHaveLength(1)
 })
