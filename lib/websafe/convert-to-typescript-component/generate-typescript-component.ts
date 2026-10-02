@@ -3,6 +3,8 @@ import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
 import { inferPinAttributes } from "./infer-pin-attributes"
+import type { MosfetTerminal } from "./get-mosfet-pin-metadata"
+import { generateMosfetSymbolTsx } from "./generate-mosfet-symbol-tsx"
 
 export type GeneratedComponentType =
   | "chip"
@@ -15,6 +17,7 @@ export type GeneratedComponentType =
   | "inductor"
   | "crystal"
   | "connector"
+  | "mosfet"
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
@@ -25,6 +28,7 @@ interface Params {
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
+  mosfetPins?: Record<string, MosfetTerminal>
   isPolarizedCapacitor?: boolean
   capacitance?: string
   resistance?: string
@@ -45,6 +49,7 @@ export const generateTypescriptComponent = ({
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
+  mosfetPins,
   isPolarizedCapacitor = false,
   capacitance,
   resistance,
@@ -61,11 +66,29 @@ export const generateTypescriptComponent = ({
   const polarizedPortHintsMap = polarizedPinMetadata?.portHintsMap
   const polarizedPinLabels = polarizedPinMetadata?.pinLabels
   const cadComponent = circuitJson.find((item) => item.type === "cad_component")
+  const mosfetPinLabels = mosfetPins
+    ? Object.fromEntries(
+        Object.entries(mosfetPins).map(([pin, terminal]) => {
+          const labels = safePinLabels[pin] ?? []
+          return [
+            pin,
+            [
+              ...new Set([
+                ...(typeof labels === "string" ? [labels] : labels),
+                terminal,
+              ]),
+            ],
+          ]
+        }),
+      )
+    : undefined
   const footprintTsx = generateFootprintTsx(
     circuitJson,
-    componentType === "diode" || componentType === "led"
-      ? { portHintsMap: polarizedPortHintsMap }
-      : undefined,
+    mosfetPinLabels
+      ? { portHintsMap: mosfetPinLabels }
+      : componentType === "diode" || componentType === "led"
+        ? { portHintsMap: polarizedPortHintsMap }
+        : undefined,
   )
 
   // The first label is the internal canonical pin name. Exclude it from the
@@ -158,6 +181,50 @@ ${symbolTsx
     .filter(Boolean)
     .map((line) => `        ${line}`)
     .join("\n")
+
+  if (componentType === "mosfet" && mosfetPins && mosfetPinLabels) {
+    return `
+import type { ChipProps, MosfetProps } from "@tscircuit/props"
+
+const pinLabels = ${JSON.stringify(mosfetPinLabels, null, 2)} as const
+
+type Props = Omit<MosfetProps, "connections"> & Pick<ChipProps<typeof pinLabels>, "connections">
+
+export const ${componentName} = (props: Props) => {
+  const { name, channelType, mosfetMode, connections, ...restProps } = props
+  if ((channelType !== "n" && channelType !== "p") ||
+      (mosfetMode !== "enhancement" && mosfetMode !== "depletion")) {
+    throw new Error("MOSFET imports require explicit channelType and mosfetMode")
+  }
+
+  return (
+    <mosfet
+      name={name}
+      channelType={channelType}
+      mosfetMode={mosfetMode}
+      symbol={${generateMosfetSymbolTsx(mosfetPins, mosfetPinLabels, manufacturerPartNumber)}}
+      supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
+      manufacturerPartNumber="${manufacturerPartNumber}"
+      footprint={${footprintTsx}}
+      ${
+        objUrl || stepUrl
+          ? `cadModel={{
+${cadModelLines}
+      }}`
+          : ""
+      }
+      {...restProps}
+    >
+      {Object.entries(connections ?? {}).flatMap(([pin, targets]) =>
+        (typeof targets === "string" ? [targets] : targets ?? []).map((target, index) => (
+          <trace key={\`\${pin}-\${index}\`} from={\`.\${name} > .\${pin}\`} to={target} />
+        ))
+      )}
+    </mosfet>
+  )
+}
+`.trim()
+  }
 
   if (componentType === "diode") {
     return `

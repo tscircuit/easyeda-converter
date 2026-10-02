@@ -13,6 +13,7 @@ import {
 } from "./generate-symbol-tsx"
 import { generateTypescriptComponent } from "./generate-typescript-component"
 import type { GeneratedComponentType } from "./generate-typescript-component"
+import { getMosfetPinMetadata } from "./get-mosfet-pin-metadata"
 import {
   isCapacitorComponent,
   isPolarizedCapacitorComponent,
@@ -159,10 +160,11 @@ export const convertBetterEasyToTsx = async ({
   const supplierPartNumbers: Record<string, string[]> = {
     jlcpcb: [betterEasy.lcsc.number],
   }
-  const componentType = getGeneratedComponentType(
-    betterEasy,
-    sourcePorts.length,
-  )
+  const mosfetPins = getMosfetPinMetadata(betterEasy)
+  const componentType =
+    mosfetPins && Object.keys(mosfetPins).length === sourcePorts.length
+      ? "mosfet"
+      : getGeneratedComponentType(betterEasy, sourcePorts.length)
   const isDipSwitch = isDipSwitchCategoryComponent(betterEasy)
   const inductance =
     componentType === "inductor"
@@ -218,6 +220,7 @@ export const convertBetterEasyToTsx = async ({
     circuitJson,
     supplierPartNumbers,
     componentType,
+    mosfetPins: componentType === "mosfet" ? mosfetPins : undefined,
     isPolarizedCapacitor: isPolarizedCapacitorComponent(betterEasy),
     capacitance,
     resistance,

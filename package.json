@@ -24,6 +24,7 @@
     "circuit-json-to-gltf": "^0.0.106",
     "circuit-to-svg": "^0.0.408",
     "looks-same": "^9.0.1",
+    "schematic-symbols": "^0.0.242",
     "transformation-matrix": "^2.16.1",
     "tscircuit": "^0.0.2436",
     "tsup": "^8.5.0"
