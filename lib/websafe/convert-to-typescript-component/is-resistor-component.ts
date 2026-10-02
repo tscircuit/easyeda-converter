@@ -48,9 +48,12 @@ export const normalizeResistorValue = (value: unknown): string | undefined => {
 export const isResistorComponent = (betterEasy: BetterEasyEdaJson): boolean => {
   const componentParameters = betterEasy.dataStr.head.c_para
   const packageName = componentParameters.package
+  const hasResistorCategory = betterEasy.tags.some((tag) =>
+    /\bresistors?\b/i.test(tag),
+  )
 
   return (
-    componentParameters.pre?.toUpperCase() === "R?" &&
+    (componentParameters.pre?.toUpperCase() === "R?" || hasResistorCategory) &&
     typeof packageName === "string" &&
     standardSmdResistorPackagePattern.test(packageName.trim()) &&
     normalizeResistorValue(componentParameters.Value) !== undefined
