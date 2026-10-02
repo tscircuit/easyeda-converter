@@ -8,7 +8,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { runTscircuitCode } from "tscircuit"
 import resistorRawEasy from "../assets/C5127775.raweasy.json"
 
-it("reproduces the missing resistance of a current-sense resistor with a U? prefix", async () => {
+it("preserves the resistance of a current-sense resistor with a U? prefix", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(resistorRawEasy)
   expect(betterEasy.tags).toContain("Current Sense Resistors/Shunt Resistors")
   expect(betterEasy.dataStr.head.c_para).toMatchObject({
@@ -19,8 +19,9 @@ it("reproduces the missing resistance of a current-sense resistor with a U? pref
   })
 
   const result = await convertBetterEasyToTsx({ betterEasy })
-  expect(result).toContain("<chip")
-  expect(result).not.toContain("resistance=")
+  expect(result).toContain("<resistor")
+  expect(result).toContain('resistance="180mohm"')
+  expect(result).not.toContain("<chip")
   expect(result).not.toContain("symbol={")
   expect(result).toContain(
     '<smtpad portHints={["pin1"]} pcbX="-1.478788mm" pcbY="0mm" width="1.207516mm" height="1.7010126mm" shape="rect" />',
@@ -36,10 +37,11 @@ it("reproduces the missing resistance of a current-sense resistor with a U? pref
     (element) => element.type === "source_component",
   )
   expect(sourceComponent).toMatchObject({
-    ftype: "simple_chip",
+    ftype: "simple_resistor",
+    resistance: 0.18,
+    display_resistance: "180mΩ",
     supplier_part_numbers: { jlcpcb: ["C5127775"] },
   })
-  expect(sourceComponent).not.toHaveProperty("resistance")
   expect(
     circuitJson.filter((element) => element.type === "source_port"),
   ).toHaveLength(2)
