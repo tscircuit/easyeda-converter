@@ -39,7 +39,9 @@ const getGeneratedComponentType = (
   if (isDiodeCategoryComponent(betterEasy) && pinCount === 2) return "diode"
   if (isPushbuttonCategoryComponent(betterEasy)) return "pushbutton"
   if (isDipSwitchCategoryComponent(betterEasy)) return "chip"
-  if (isSwitchCategoryComponent(betterEasy)) return "switch"
+  if (isSwitchCategoryComponent(betterEasy)) {
+    return pinCount > 2 ? "chip" : "switch"
+  }
   if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
   if (isInductorComponent(betterEasy) && pinCount === 2) return "inductor"
@@ -163,7 +165,9 @@ export const convertBetterEasyToTsx = async ({
     betterEasy,
     sourcePorts.length,
   )
-  const isDipSwitch = isDipSwitchCategoryComponent(betterEasy)
+  const isSwitchWithoutBuiltinSymbol =
+    isDipSwitchCategoryComponent(betterEasy) ||
+    (isSwitchCategoryComponent(betterEasy) && sourcePorts.length > 2)
   const inductance =
     componentType === "inductor"
       ? betterEasy.dataStr.head.c_para.Value?.trim()
@@ -199,6 +203,7 @@ export const convertBetterEasyToTsx = async ({
     (componentType === "chip" &&
       !isMultiPinDiode &&
       !isMultiPinInductor &&
+      !isSwitchWithoutBuiltinSymbol &&
       hasNonBoxSchematicSymbol(betterEasy))
       ? generateSymbolTsx(betterEasy, circuitJson, {
           alignPortsToDrawing: isPassiveWithCustomSymbol,
@@ -226,7 +231,6 @@ export const convertBetterEasyToTsx = async ({
     crystalPinVariant,
     symbolTsx,
     schPinArrangement,
-    useSymbolPortsOnly: isDipSwitch && Boolean(symbolTsx),
   })
 }
 

@@ -64,6 +64,8 @@ export const PadSchema = BaseShapeSchema.extend({
   net: z.union([z.string(), z.number()]).optional(),
   number: z.union([z.string(), z.number()]),
   holeRadius: tenthmil,
+  holeLength: tenthmil.optional(),
+  holePoints: z.array(PointSchema).length(2).optional(),
   points: z.array(PointSchema).optional(),
   rotation: safeNumber(0), // Will default to 0 if NaN or missing
   plated: z.boolean(),
@@ -228,6 +230,9 @@ export const ShapeItemSchema = z
           net,
           number: padNumber,
           holeRadius,
+          holeLength:
+            rest[3] === undefined || rest[3] === "" ? undefined : rest[3],
+          holePoints: rest[4] ? parsePoints(String(rest[4])) : undefined,
           points,
           rotation,
           plated: rest.includes("Y"),

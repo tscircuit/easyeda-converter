@@ -7,14 +7,14 @@ import { runTscircuitCode } from "tscircuit"
 import c4681RawEasy from "../assets/C4681.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("preserves the imported symbol for a Standard DIP switch", async () => {
+it("preserves all Standard DIP switch terminals in a chip box", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(c4681RawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
   expect(isDipSwitchCategoryComponent(betterEasy)).toBe(true)
   expect(result).toContain("import type { ChipProps }")
   expect(result).toContain("<chip")
-  expect(result).toContain("symbol={")
+  expect(result).not.toContain("symbol={")
   expect(result).not.toContain("<switch")
 
   const circuitJson = await runTscircuitCode(
@@ -26,5 +26,8 @@ it("preserves the imported symbol for a Standard DIP switch", async () => {
   )
   expect(
     circuitJson.filter((element) => element.type === "source_port"),
+  ).toHaveLength(18)
+  expect(
+    circuitJson.filter((element) => element.type === "schematic_port"),
   ).toHaveLength(18)
 }, 20_000)

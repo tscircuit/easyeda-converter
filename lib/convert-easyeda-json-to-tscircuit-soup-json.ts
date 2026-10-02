@@ -1,3 +1,4 @@
+import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
 import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import {
@@ -593,107 +594,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         pcb_component_id: "pcb_component_1",
         pcb_port_id: `pcb_port_${index + 1}`,
       }
-      let additionalPlatedHoleProps: any
-
-      if (pad.shape === "OVAL") {
-        // EasyEDA OVAL plated pads map cleanly to pill-shaped plated holes.
-        // We preserve the pad rotation so slots like C2961147 stay aligned.
-        // To compute the drill dimensions:
-        // 1. Find the smallest outer dimensions
-        // 2. Use the holeRadius to determine the distanceFromOuterPlatingToHole
-        // 3. Calculate the largest "inner dimension" (which is either the
-        //    holeWidth or holeHeight) by subtracting the distanceFromOuterPlatingToHole * 2
-        //    from the largest outer dimensions
-
-        const largestOuterDimensionName: "width" | "height" =
-          mil2mm(pad.width) > mil2mm(pad.height) ? "width" : "height"
-
-        const smallestOuterDimension = Math.min(
-          mil2mm(pad.width),
-          mil2mm(pad.height),
-        )
-        const largestOuterDimension = Math.max(
-          mil2mm(pad.width),
-          mil2mm(pad.height),
-        )
-
-        const distanceFromOuterPlatingToHole =
-          smallestOuterDimension / 2 - mil2mm(pad.holeRadius)
-
-        const largestInnerDimension =
-          largestOuterDimension - distanceFromOuterPlatingToHole * 2
-        const smallestInnerDimension = mil2mm(pad.holeRadius) * 2
-
-        const innerWidth =
-          largestOuterDimensionName === "width"
-            ? largestInnerDimension
-            : smallestInnerDimension
-        const innerHeight =
-          largestOuterDimensionName === "height"
-            ? largestInnerDimension
-            : smallestInnerDimension
-
-        additionalPlatedHoleProps = {
-          shape: "pill",
-          hole_width: innerWidth,
-          hole_height: innerHeight,
-          outer_width: mil2mm(pad.width),
-          outer_height: mil2mm(pad.height),
-          ccw_rotation: pad.rotation || 0,
-        }
-      } else if (pad.shape === "RECT") {
-        const padWidth = mil2mm(pad.width)
-        const padHeight = mil2mm(pad.height)
-        const holeRadius = mil2mm(pad.holeRadius)
-        const holeDiameter = holeRadius * 2 // Use normal diameter
-
-        // Check if the pad is significantly rectangular (not square)
-        const aspectRatio =
-          Math.max(padWidth, padHeight) / Math.min(padWidth, padHeight)
-        const isSignificantlyRectangular = aspectRatio > 1.5 // Only use pill holes for aspect ratios > 1.5
-
-        if (isSignificantlyRectangular) {
-          // Simple approach: create slim pill holes with consistent proportions
-          // Width = original hole diameter, Height = 2.6x width for good pill shape
-          const baseWidth = holeDiameter
-          const pillHeight = baseWidth * 2.6 // 2.6:1 aspect ratio for elegant pills
-
-          const holeWidth = padWidth > padHeight ? pillHeight : baseWidth
-          const holeHeight = padHeight > padWidth ? pillHeight : baseWidth
-
-          additionalPlatedHoleProps = {
-            shape: "rotated_pill_hole_with_rect_pad",
-            hole_shape: "rotated_pill",
-            pad_shape: "rect",
-            hole_width: holeWidth,
-            hole_height: holeHeight,
-            hole_ccw_rotation: pad.rotation || 0,
-            rect_ccw_rotation: pad.rotation || 0,
-            rect_pad_width: padWidth,
-            rect_pad_height: padHeight,
-          }
-        } else {
-          // Preserve the rectangular copper pad while using a circular drill.
-          additionalPlatedHoleProps = {
-            shape: "rotated_pill_hole_with_rect_pad",
-            hole_shape: "rotated_pill",
-            pad_shape: "rect",
-            hole_width: holeDiameter,
-            hole_height: holeDiameter,
-            hole_ccw_rotation: pad.rotation || 0,
-            rect_ccw_rotation: pad.rotation || 0,
-            rect_pad_width: padWidth,
-            rect_pad_height: padHeight,
-          }
-        }
-      } else {
-        additionalPlatedHoleProps = {
-          shape: "circle",
-          hole_diameter: mil2mm(pad.holeRadius) * 2,
-          outer_diameter: mil2mm(pad.width),
-          radius: mil2mm(pad.holeRadius),
-        }
-      }
+      const additionalPlatedHoleProps = getEasyEdaPlatedHoleGeometry(pad)
 
       circuitElements.push(
         pcb_plated_hole.parse({
