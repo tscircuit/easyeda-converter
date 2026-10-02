@@ -41,48 +41,41 @@ test("renders the C2941005 schematic and PCB", async () => {
   )
 })
 
-test.failing(
-  "preserves all six C2941005 schematic terminals and their PCB pad mappings",
-  async () => {
-    const circuitJson = await renderImportedSwitch()
-    const schematicPorts = circuitJson.filter(
-      (element) => element.type === "schematic_port",
-    )
+test("preserves all six C2941005 schematic terminals and their PCB pad mappings", async () => {
+  const circuitJson = await renderImportedSwitch()
+  const schematicPorts = circuitJson.filter(
+    (element) => element.type === "schematic_port",
+  )
+  expect(
+    schematicPorts.map((port) => port.pin_number).sort((a, b) => a! - b!),
+  ).toEqual([1, 2, 3, 4, 5, 6])
+
+  const sourcePorts = circuitJson.filter(
+    (element) => element.type === "source_port",
+  )
+  const pcbPorts = circuitJson.filter((element) => element.type === "pcb_port")
+  const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
+  expect(sourcePorts).toHaveLength(6)
+  expect(pcbPorts).toHaveLength(6)
+  expect(pads).toHaveLength(6)
+
+  for (const pinNumber of [1, 2, 3, 4, 5, 6]) {
+    const sourcePort = sourcePorts.find(
+      (port) => port.pin_number === pinNumber,
+    )!
+    const schematicPort = schematicPorts.find(
+      (port) => port.pin_number === pinNumber,
+    )!
+    const pad = pads.find((pad) => pad.port_hints?.includes(`pin${pinNumber}`))!
+    expect(schematicPort.source_port_id).toBe(sourcePort.source_port_id)
     expect(
-      schematicPorts.map((port) => port.pin_number).sort((a, b) => a! - b!),
-    ).toEqual([1, 2, 3, 4, 5, 6])
+      pcbPorts.find((port) => port.pcb_port_id === pad.pcb_port_id)
+        ?.source_port_id,
+    ).toBe(sourcePort.source_port_id)
+  }
 
-    const sourcePorts = circuitJson.filter(
-      (element) => element.type === "source_port",
-    )
-    const pcbPorts = circuitJson.filter(
-      (element) => element.type === "pcb_port",
-    )
-    const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
-    expect(sourcePorts).toHaveLength(6)
-    expect(pcbPorts).toHaveLength(6)
-    expect(pads).toHaveLength(6)
-
-    for (const pinNumber of [1, 2, 3, 4, 5, 6]) {
-      const sourcePort = sourcePorts.find(
-        (port) => port.pin_number === pinNumber,
-      )!
-      const schematicPort = schematicPorts.find(
-        (port) => port.pin_number === pinNumber,
-      )!
-      const pad = pads.find((pad) =>
-        pad.port_hints?.includes(`pin${pinNumber}`),
-      )!
-      expect(schematicPort.source_port_id).toBe(sourcePort.source_port_id)
-      expect(
-        pcbPorts.find((port) => port.pcb_port_id === pad.pcb_port_id)
-          ?.source_port_id,
-      ).toBe(sourcePort.source_port_id)
-    }
-
-    const sourceComponent = circuitJson.find(
-      (element) => element.type === "source_component",
-    )
-    expect(sourceComponent?.are_pins_interchangeable).not.toBe(true)
-  },
-)
+  const sourceComponent = circuitJson.find(
+    (element) => element.type === "source_component",
+  )
+  expect(sourceComponent?.are_pins_interchangeable).not.toBe(true)
+})
