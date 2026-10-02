@@ -165,7 +165,7 @@ export const convertBetterEasyToTsx = async ({
     betterEasy,
     sourcePorts.length,
   )
-  const isSwitchWithoutBuiltinSymbol =
+  const isSwitchRenderedAsChip =
     isDipSwitchCategoryComponent(betterEasy) ||
     (isSwitchCategoryComponent(betterEasy) && sourcePorts.length > 2)
   const inductance =
@@ -203,7 +203,7 @@ export const convertBetterEasyToTsx = async ({
     (componentType === "chip" &&
       !isMultiPinDiode &&
       !isMultiPinInductor &&
-      !isSwitchWithoutBuiltinSymbol &&
+      !isSwitchRenderedAsChip &&
       hasNonBoxSchematicSymbol(betterEasy))
       ? generateSymbolTsx(betterEasy, circuitJson, {
           alignPortsToDrawing: isPassiveWithCustomSymbol,
