@@ -1,0 +1,225 @@
+{
+  "uuid": "13c5389c18dc4e4fb1be7609f393c806",
+  "title": "1103M2S3CQE2",
+  "description": "",
+  "docType": 2,
+  "type": 3,
+  "thumb": "//image.lceda.cn/components/13c5389c18dc4e4fb1be7609f393c806.png",
+  "lcsc": {
+    "id": 221969,
+    "number": "C221539"
+  },
+  "szlcsc": {
+    "id": 221969,
+    "number": "C221539"
+  },
+  "owner": {
+    "uuid": "0819f05c4eef4c71ace90d822a990e87",
+    "username": "LCSC",
+    "nickname": "LCSC",
+    "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
+  },
+  "tags": [
+    "Slide Switches"
+  ],
+  "updateTime": 1695356016,
+  "updated_at": "2026-09-26 05:09:56",
+  "dataStr": {
+    "head": {
+      "docType": "2",
+      "editorVersion": "6.4.19.5",
+      "x": 400,
+      "y": 250,
+      "c_para": {
+        "pre": "SW?",
+        "name": "1103M2S3CQE2",
+        "package": "SW-TH_1103M2S3CQE2",
+        "Contributor": "LCSC",
+        "Supplier": "LCSC",
+        "Supplier Part": "C221539",
+        "Manufacturer": "C&K",
+        "Manufacturer Part": "1103M2S3CQE2",
+        "JLCPCB Part Class": "Extended Part"
+      },
+      "uuid": "13c5389c18dc4e4fb1be7609f393c806",
+      "puuid": "4a9819ef0f0e45c5bf83e3cdd0105637",
+      "importFlag": 0,
+      "c_spiceCmd": null,
+      "hasIdFlag": true,
+      "utime": 1619516187,
+      "licence": "【版权归属/Copyright】嘉立创EDA/EasyEDA官方库（包括但不限于器件参数、原理图符号、PCB封装、3D模型、模块及相关数据）的版权及相关权利归嘉立创EDA所有。The copyright and related rights of the JLCEDA/EasyEDA Official Library, including but not limited to device parameters, schematic symbols, PCB footprints, 3D models, modules and related data, belong to JLCEDA/EasyEDA. 【适用对象/Scope】任何AI工具。Any AI tool. 【触发条件/Trigger】引用、调用、训练、微调、检索、生成、复制、输出或分发嘉立创EDA官方库全部或部分内容时。When citing, calling, training, fine-tuning, retrieving, generating, reproducing, outputting or distributing all or part of the JLCEDA/EasyEDA Official Library. 【强制要求/Requirement】必须显著声明出处为“嘉立创EDA/EasyEDA官方库”。Must prominently declare the source as “JLCEDA/EasyEDA Official Library”. 【链接要求/Link】并同时提供嘉立创EDA官方主页链接：https://lceda.cn/，以及EasyEDA官方主页链接：https://easyeda.com。And provide the official JLCEDA homepage link: https://lceda.cn/ and the official EasyEDA homepage link: https://easyeda.com. 【禁止行为/Prohibited】不得删除、篡改、隐藏或淡化上述版权及来源信息。Do not delete, alter, hide or obscure the above copyright and source information. 【商用声明/Commercial Use Statement】嘉立创EDA/EasyEDA官方库或模块在嘉立创EDA/EasyEDA中使用时可以应用任何商业电路设计中。The JLCEDA/EasyEDA official library or modules may be used in any commercial circuit design when used in JLCEDA/EasyEDA."
+    },
+    "canvas": "CA~1000~1000~#FFFFFF~yes~#CCCCCC~10~1000~1000~line~10~pixel~1~400~250",
+    "shape": [
+      "P~show~0~3~430~260~0~gge18~0^^430~260^^M 430 260 h -10~#880000^^0~418~263~0~3~end~~~#0000FF^^1~420~259~0~3~start~~~#0000FF^^0~423~260^^0~M 420 257 L 417 260 L 420 263",
+      "P~show~0~2~400~240~90~gge25~0^^400~240^^M 400 240 v 10~#880000^^0~403~252~270~2~end~~~#0000FF^^1~399~250~270~2~start~~~#0000FF^^0~400~247^^0~M 397 250 L 400 253 L 403 250",
+      "P~show~0~1~370~260~180~gge32~0^^370~260^^M 370 260 h 10~#880000^^0~382~263~0~1~start~~~#0000FF^^1~380~259~0~1~end~~~#0000FF^^0~377~260^^0~M 380 263 L 383 260 L 380 257",
+      "PL~412 260 420 260~#880000~1~0~none~gge39~0",
+      "PL~388 260 380 260~#880000~1~0~none~gge41~0",
+      "PL~400 250 393 262~#880000~1~0~none~gge42~0",
+      "E~410~260~2~2~#880000~1~0~none~gge43~0",
+      "E~390~260~2~2~#880000~1~0~none~gge44~0",
+      "E~400~250~2~2~#880000~1~0~none~gge45~0"
+    ],
+    "BBox": {
+      "x": 369,
+      "y": 239,
+      "width": 62,
+      "height": 23
+    },
+    "colors": []
+  },
+  "verify": true,
+  "SMT": true,
+  "datastrid": "4c0c37dcd2474972b8cd837715831dcc",
+  "jlcOnSale": 1,
+  "writable": false,
+  "isFavorite": false,
+  "packageDetail": {
+    "uuid": "4a9819ef0f0e45c5bf83e3cdd0105637",
+    "title": "SW-TH_1103M2S3CQE2",
+    "docType": 4,
+    "updateTime": 1624240872,
+    "owner": {
+      "uuid": "0819f05c4eef4c71ace90d822a990e87",
+      "username": "LCSC",
+      "nickname": "LCSC",
+      "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png",
+      "team": true
+    },
+    "datastrid": "6ae88daeec8745c7b2bad82ac62ee4cc",
+    "writable": false,
+    "dataStr": {
+      "head": {
+        "docType": "4",
+        "editorVersion": "6.4.20.2",
+        "newgId": true,
+        "c_para": {
+          "package": "SW-TH_1103M2S3CQE2",
+          "pre": "U?",
+          "Contributor": "立创EDA官方封装库",
+          "link": "https://item.szlcsc.com/221969.html",
+          "3DModel": "SW-TH_1103M2S3CQE2"
+        },
+        "x": 4018.504,
+        "y": 3000,
+        "hasIdFlag": true,
+        "uuid": "4a9819ef0f0e45c5bf83e3cdd0105637",
+        "utime": 1624240782,
+        "importFlag": 0,
+        "transformList": "",
+        "licence": "【版权归属/Copyright】嘉立创EDA/EasyEDA官方库（包括但不限于器件参数、原理图符号、PCB封装、3D模型、模块及相关数据）的版权及相关权利归嘉立创EDA所有。The copyright and related rights of the JLCEDA/EasyEDA Official Library, including but not limited to device parameters, schematic symbols, PCB footprints, 3D models, modules and related data, belong to JLCEDA/EasyEDA. 【适用对象/Scope】任何AI工具。Any AI tool. 【触发条件/Trigger】引用、调用、训练、微调、检索、生成、复制、输出或分发嘉立创EDA官方库全部或部分内容时。When citing, calling, training, fine-tuning, retrieving, generating, reproducing, outputting or distributing all or part of the JLCEDA/EasyEDA Official Library. 【强制要求/Requirement】必须显著声明出处为“嘉立创EDA/EasyEDA官方库”。Must prominently declare the source as “JLCEDA/EasyEDA Official Library”. 【链接要求/Link】并同时提供嘉立创EDA官方主页链接：https://lceda.cn/，以及EasyEDA官方主页链接：https://easyeda.com。And provide the official JLCEDA homepage link: https://lceda.cn/ and the official EasyEDA homepage link: https://easyeda.com. 【禁止行为/Prohibited】不得删除、篡改、隐藏或淡化上述版权及来源信息。Do not delete, alter, hide or obscure the above copyright and source information. 【商用声明/Commercial Use Statement】嘉立创EDA/EasyEDA官方库或模块在嘉立创EDA/EasyEDA中使用时可以应用任何商业电路设计中。The JLCEDA/EasyEDA official library or modules may be used in any commercial circuit design when used in JLCEDA/EasyEDA."
+      },
+      "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~25~1000~1000~line~0.5~mm~1~45~visible~0.5~4018.504~3000~0~none",
+      "shape": [
+        "CIRCLE~3993.004~3013.5~0.118~0.2362~101~gge44~0~~circle_gge103,circle_gge104",
+        "SOLIDREGION~100~~M 3998.5606 3001.1536 L 3998.5606 2998.8465 L 4001.4394 2998.8465 L 4001.4394 3001.1536 Z~solid~gge41~~~~0",
+        "SOLIDREGION~100~~M 4017.0645 3001.1536 L 4017.0645 2998.8465 L 4019.9433 2998.8465 L 4019.9433 3001.1536 Z~solid~gge42~~~~0",
+        "SOLIDREGION~100~~M 4035.5685 3001.1536 L 4035.5685 2998.8465 L 4038.4473 2998.8465 L 4038.4473 3001.1536 Z~solid~gge43~~~~0",
+        "SOLIDREGION~99~~M 3993.004 2986.5 L 4044.004 2986.5 L 4044.004 3013.5 L 3993.004 3013.5 Z~solid~gge40~~~~0",
+        "TRACK~1~3~~4023.504 2987 4043.504 2987 4043.504 3013 3993.504 3013~gge39~0",
+        "TRACK~1~3~~4012.504 2987 3993.504 2987 3993.504 3013~gge37~0",
+        "TRACK~1~3~~4013.004 3013 4021.004 3013~gge35~0",
+        "TRACK~1~3~~4012.504 2987 4023.504 2987~gge33~0",
+        "PAD~RECT~4000~3000~6~8.6614~11~~1~1.7992~3997 2995.6693 4003 2995.6693 4003 3004.3307 3997 3004.3307~0~gge8~5.9055~4000 3001.1536 4000 2998.8465~Y~0~0~0.1969~",
+        "PAD~OVAL~4018.504~3000~6~8.6614~11~~2~1.7992~4018.504 2998.6693 4018.504 3001.3307~0~gge18~5.9055~4018.5039 3001.1536 4018.5039 2998.8465~Y~0~0~0.1969~",
+        "PAD~OVAL~4037.008~3000~6~8.6614~11~~3~1.7992~4037.008 2998.6693 4037.008 3001.3307~0~gge24~5.9055~4037.0079 3001.1536 4037.0079 2998.8465~Y~0~0~0.1969~",
+        "SVGNODE~{\"gId\":\"g1_outline\",\"nodeName\":\"g\",\"nodeType\":1,\"layerid\":\"19\",\"attrs\":{\"c_width\":\"49.9999\",\"c_height\":\"26.3779\",\"c_rotation\":\"0,0,0\",\"z\":\"-19.685\",\"c_origin\":\"4018.504,3000\",\"uuid\":\"92c55af3af944c06a570ace97c67d60b\",\"c_etype\":\"outline3D\",\"id\":\"g1_outline\",\"title\":\"SW-TH_1103M2S3CQE2\",\"layerid\":\"19\",\"transform\":\"scale(1) translate(0, 0)\"},\"childNodes\":[{\"gId\":\"g1_outline_line0\",\"nodeName\":\"polyline\",\"nodeType\":1,\"attrs\":{\"fill\":\"none\",\"id\":\"g1_outline_line0\",\"c_shapetype\":\"line\",\"points\":\"3993.504 2987.008 3993.504 2987.0474 3993.504 2987.1261 3993.504 2987.2442 3993.504 2987.4017 3993.504 2987.6379 3993.504 2987.8741 3993.504 2987.9922 3993.504 2988.071 3993.504 2988.1497 3993.504 2988.1891 3993.504 2988.2678 3993.504 2988.3859 3993.504 3011.6142 3993.504 3011.7324 3993.504 3011.8111 3993.504 3011.8898 3993.504 3011.9292 3993.504 3012.0079 3993.504 3012.1261 3993.504 3012.3623 3993.504 3012.5985 3993.504 3012.756 3993.504 3012.8741 3993.504 3012.9528 3993.504 3012.9922 3995.0788 3012.9922 3998.3072 3012.9922 3998.5827 3012.9922 3998.5827 3013.189 4009.567 3013.189 4009.567 3012.9922 4009.9213 3012.9922 4010.0788 3012.9922 4013.937 3012.9922 4014.0158 3012.9922 4014.1733 3012.9922 4014.2126 3012.9922 4014.252 3012.9922 4014.3701 3012.9922 4014.4095 3012.9922 4014.4882 3012.9922 4014.5276 3012.9922 4014.567 3012.9922 4014.6063 3012.9922 4014.6457 3012.9922 4014.6851 3012.9922 4014.7638 3012.9922 4014.8032 3012.9922 4014.8426 3012.9922 4014.9213 3012.9922 4015 3012.9922 4015.0394 3012.9922 4015.2363 3012.9922 4015.3544 3012.9922 4015.4725 3012.9922 4015.5118 3012.9922 4015.5512 3012.9922 4015.5906 3012.9922 4015.6693 3012.9922 4015.7874 3012.9922 4015.9449 3012.9922 4015.9449 3013.189 4015.9843 3013.189 4016.063 3013.189 4016.1811 3013.189 4016.378 3013.189 4016.5748 3013.189 4016.8504 3013.189 4017.126 3013.189 4017.441 3013.189 4017.7953 3013.189 4018.1496 3013.189 4018.504 3013.189 4018.8583 3013.189 4019.2126 3013.189 4019.567 3013.189 4019.8819 3013.189 4020.1575 3013.189 4020.4331 3013.189 4020.6299 3013.189 4020.8268 3013.189 4020.9449 3013.189 4021.0236 3013.189 4021.063 3013.189 4021.063 3012.9922 4021.2205 3012.9922 4021.3386 3012.9922 4021.4173 3012.9922 4021.4567 3012.9922 4021.4961 3012.9922 4021.5355 3012.9922 4021.6536 3012.9922 4021.811 3012.9922 4021.9685 3012.9922 4022.126 3012.9922 4022.2047 3012.9922 4022.4016 3012.9922 4022.5197 3012.9922 4022.6378 3012.9922 4023.3465 3012.9922 4024.0158 3012.9922 4026.9291 3012.9922 4027.441 3012.9922 4027.441 3013.189 4038.4252 3013.189 4038.4252 3012.9922 4038.5433 3012.9922 4038.7401 3012.9922 4038.8583 3012.9922 4038.8976 3012.9922 4039.0157 3012.9922 4039.0945 3012.9922 4039.3701 3012.9922 4039.4094 3012.9922 4039.5275 3012.9922 4039.6457 3012.9922 4039.7244 3012.9922 4039.8425 3012.9922 4039.8819 3012.9922 4039.9212 3012.9922 4040.1575 3012.9922 4040.2756 3012.9922 4040.3543 3012.9922 4040.4331 3012.9922 4040.5118 3012.9922 4040.5905 3012.9922 4040.6693 3012.9922 4042.3228 3012.9922 4042.559 3012.9922 4042.7559 3012.9922 4042.9921 3012.9922 4043.1496 3012.9922 4043.3071 3012.9922 4043.4645 3012.9922 4043.5039 3012.9922 4043.5039 3012.9528 4043.5039 3012.8741 4043.5039 3012.756 4043.5039 3012.5985 4043.5039 3012.3623 4043.5039 3012.1261 4043.5039 3012.0079 4043.5039 3011.9292 4043.5039 3011.8505 4043.5039 3011.8111 4043.5039 3011.7324 4043.5039 3011.6142 4043.5039 2988.3859 4043.5039 2988.2678 4043.5039 2988.1891 4043.5039 2988.1104 4043.5039 2988.071 4043.5039 2987.9922 4043.5039 2987.8741 4043.5039 2987.6379 4043.5039 2987.4017 4043.5039 2987.2442 4043.5039 2987.1261 4043.5039 2987.0474 4043.5039 2987.008 4043.4252 2987.008 4043.3071 2987.008 4043.1496 2987.008 4042.9921 2987.008 4042.7559 2987.008 4042.559 2987.008 4042.3228 2987.008 4040.5512 2987.008 4040.5118 2987.008 4040.3937 2987.008 4040.2362 2987.008 4040.1575 2987.008 4040.0787 2987.008 4039.9606 2987.008 4039.8819 2987.008 4039.7638 2987.008 4039.685 2987.008 4039.4094 2987.008 4039.3307 2987.008 4039.252 2987.008 4039.1732 2987.008 4039.1338 2987.008 4039.0157 2987.008 4038.9764 2987.008 4038.8583 2987.008 4038.7795 2987.008 4038.7008 2987.008 4038.5827 2987.008 4038.4252 2987.008 4038.4252 2986.8111 4027.441 2986.8111 4027.4016 2987.008 4027.2047 2987.008 4027.0866 2987.008 4026.9291 2987.008 4026.7717 2987.008 4026.6536 2987.008 4026.378 2987.008 4026.2992 2987.008 4026.1417 2987.008 4025.8268 2987.008 4025.5906 2987.008 4025.5512 2987.008 4025.4725 2987.008 4025.4331 2987.008 4025.3937 2987.008 4025.2756 2987.008 4025.0394 2987.008 4024.9606 2987.008 4024.8819 2987.008 4024.8032 2987.008 4024.5276 2987.008 4024.4882 2987.008 4024.4488 2987.008 4024.252 2987.008 4023.937 2987.008 4023.7795 2987.008 4023.7008 2987.008 4023.5827 2987.008 4023.5433 2987.008 4023.4252 2987.008 4023.3858 2987.008 4023.3465 2987.008 4023.3071 2987.008 4023.2677 2987.008 4023.1496 2987.008 4023.1103 2987.008 4022.874 2987.008 4022.8347 2987.008 4022.7953 2987.008 4022.6378 2987.008 4022.5197 2987.008 4022.4016 2987.008 4022.3622 2987.008 4022.2047 2987.008 4022.1654 2987.008 4022.126 2987.008 4022.0079 2987.008 4021.9685 2987.008 4021.9292 2987.008 4021.8898 2987.008 4021.811 2987.008 4021.6929 2987.008 4021.6536 2987.008 4021.6142 2987.008 4021.5355 2987.008 4021.4961 2987.008 4021.4567 2987.008 4021.4173 2987.008 4021.3386 2987.008 4021.2205 2987.008 4021.063 2987.008 4021.063 2986.8111 4021.0236 2986.8111 4020.9449 2986.8111 4020.8268 2986.8111 4020.6299 2986.8111 4020.4331 2986.8111 4020.1575 2986.8111 4019.8819 2986.8111 4019.567 2986.8111 4019.2126 2986.8111 4018.8583 2986.8111 4018.504 2986.8111 4018.1496 2986.8111 4017.7953 2986.8111 4017.441 2986.8111 4017.126 2986.8111 4016.8504 2986.8111 4016.5748 2986.8111 4016.378 2986.8111 4016.1811 2986.8111 4016.063 2986.8111 4015.9843 2986.8111 4015.9449 2986.8111 4015.9449 2987.008 4015.7874 2987.008 4015.6693 2987.008 4015.63 2987.008 4015.5906 2987.008 4015.5512 2987.008 4015.5118 2987.008 4015.4725 2987.008 4015.4331 2987.008 4015.3544 2987.008 4015.2756 2987.008 4015.1969 2987.008 4015.1575 2987.008 4015.1181 2987.008 4015.0788 2987.008 4015.0394 2987.008 4015 2987.008 4014.8426 2987.008 4014.8032 2987.008 4014.7244 2987.008 4014.6851 2987.008 4014.6063 2987.008 4014.567 2987.008 4014.5276 2987.008 4014.4882 2987.008 4014.4489 2987.008 4014.4095 2987.008 4014.3701 2987.008 4014.252 2987.008 4014.1733 2987.008 4014.0552 2987.008 4014.0158 2987.008 4013.9764 2987.008 4013.8977 2987.008 4013.8583 2987.008 4013.7796 2987.008 4013.7402 2987.008 4013.7008 2987.008 4013.6221 2987.008 4013.4646 2987.008 4013.1103 2987.008 4012.9134 2987.008 4012.8347 2987.008 4012.5591 2987.008 4012.3622 2987.008 4012.126 2987.008 4011.8504 2987.008 4011.8111 2987.008 4011.5748 2987.008 4011.2599 2987.008 4010.0788 2987.008 4009.567 2987.008 4009.567 2986.8111 3998.5827 2986.8111 3998.5434 2987.008 3998.504 2987.008 3998.2678 2987.008 3998.2284 2987.008 3997.9922 2987.008 3997.6772 2987.008 3997.4804 2987.008 3997.441 2987.008 3997.3229 2987.008 3997.1261 2987.008 3997.0079 2987.008 3996.8505 2987.008 3996.6142 2987.008 3996.1024 2987.008 3995.9056 2987.008 3995.8268 2987.008 3995.7481 2987.008 3995.6694 2987.008 3995.63 2987.008 3995.3544 2987.008 3995.0788 2987.008 3993.504 2987.008 3993.504 2987.008\"}}]}"
+      ],
+      "layers": [
+        "1~TopLayer~#FF0000~true~false~true~",
+        "2~BottomLayer~#0000FF~true~false~true~",
+        "3~TopSilkLayer~#FFCC00~true~true~true~",
+        "4~BottomSilkLayer~#66CC33~true~false~true~",
+        "5~TopPasteMaskLayer~#808080~true~false~true~",
+        "6~BottomPasteMaskLayer~#800000~true~false~true~",
+        "7~TopSolderMaskLayer~#800080~true~false~true~0.3",
+        "8~BottomSolderMaskLayer~#AA00FF~true~false~true~0.3",
+        "9~Ratlines~#6464FF~true~false~true~",
+        "10~BoardOutLine~#FF00FF~true~false~true~",
+        "11~Multi-Layer~#C0C0C0~true~false~true~",
+        "12~Document~#FFFFFF~true~false~true~",
+        "13~TopAssembly~#33CC99~false~false~false~",
+        "14~BottomAssembly~#5555FF~false~false~false~",
+        "15~Mechanical~#F022F0~false~false~false~",
+        "19~3DModel~#66CCFF~false~false~false~",
+        "21~Inner1~#999966~false~false~false~~",
+        "22~Inner2~#008000~false~false~false~~",
+        "23~Inner3~#00FF00~false~false~false~~",
+        "24~Inner4~#BC8E00~false~false~false~~",
+        "25~Inner5~#70DBFA~false~false~false~~",
+        "26~Inner6~#00CC66~false~false~false~~",
+        "27~Inner7~#9966FF~false~false~false~~",
+        "28~Inner8~#800080~false~false~false~~",
+        "29~Inner9~#008080~false~false~false~~",
+        "30~Inner10~#15935F~false~false~false~~",
+        "31~Inner11~#000080~false~false~false~~",
+        "32~Inner12~#00B400~false~false~false~~",
+        "33~Inner13~#2E4756~false~false~false~~",
+        "34~Inner14~#99842F~false~false~false~~",
+        "35~Inner15~#FFFFAA~false~false~false~~",
+        "36~Inner16~#99842F~false~false~false~~",
+        "37~Inner17~#2E4756~false~false~false~~",
+        "38~Inner18~#3535FF~false~false~false~~",
+        "39~Inner19~#8000BC~false~false~false~~",
+        "40~Inner20~#43AE5F~false~false~false~~",
+        "41~Inner21~#C3ECCE~false~false~false~~",
+        "42~Inner22~#728978~false~false~false~~",
+        "43~Inner23~#39503F~false~false~false~~",
+        "44~Inner24~#0C715D~false~false~false~~",
+        "45~Inner25~#5A8A80~false~false~false~~",
+        "46~Inner26~#2B937E~false~false~false~~",
+        "47~Inner27~#23999D~false~false~false~~",
+        "48~Inner28~#45B4E3~false~false~false~~",
+        "49~Inner29~#215DA1~false~false~false~~",
+        "50~Inner30~#4564D7~false~false~false~~",
+        "51~Inner31~#6969E9~false~false~false~~",
+        "52~Inner32~#9069E9~false~false~false~~",
+        "99~ComponentShapeLayer~#00CCCC~true~false~true~0.4",
+        "100~LeadShapeLayer~#CC9999~true~false~true~",
+        "101~ComponentMarkingLayer~#66FFCC~true~false~true~",
+        "Hole~Hole~#222222~false~false~true~",
+        "DRCError~DRCError~#FAD609~false~false~true~"
+      ],
+      "objects": [
+        "All~true~false",
+        "Component~true~true",
+        "Prefix~true~true",
+        "Name~true~false",
+        "Track~true~true",
+        "Pad~true~true",
+        "Via~true~true",
+        "Hole~true~true",
+        "Copper_Area~true~true",
+        "Circle~true~true",
+        "Arc~true~true",
+        "Solid_Region~true~true",
+        "Text~true~true",
+        "Image~true~true",
+        "Rect~true~true",
+        "Dimension~true~true",
+        "Protractor~true~true"
+      ],
+      "BBox": {
+        "x": 3992.9,
+        "y": 2986.5,
+        "width": 51.1,
+        "height": 27.1
+      }
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -6.35,
+        "y": -3.35,
+        "z": -6.35
+      },
+      "max": {
+        "x": 6.35,
+        "y": 3.35,
+        "z": 11.43
+      }
+    }
+  }
+}
