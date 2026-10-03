@@ -18,6 +18,7 @@ export type GeneratedComponentType =
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
+  pinAttributes?: ChipProps["pinAttributes"]
   componentName: string
   objUrl?: string
   stepUrl?: string
@@ -38,6 +39,7 @@ interface Params {
 
 export const generateTypescriptComponent = ({
   pinLabels,
+  pinAttributes,
   componentName,
   objUrl,
   stepUrl,
@@ -84,7 +86,9 @@ export const generateTypescriptComponent = ({
     .join(",\n")
   const inferredPinAttributes =
     componentType === "chip" ? inferPinAttributes(simplifiedPinLabels) : {}
-  const pinAttributesString = Object.entries(inferredPinAttributes)
+  // Caller-supplied rows replace label inference, including an explicit {}.
+  const resolvedPinAttributes = { ...inferredPinAttributes, ...pinAttributes }
+  const pinAttributesString = Object.entries(resolvedPinAttributes)
     .map(([pin, attributes]) => {
       const attributesString = Object.entries(attributes)
         .map(
@@ -96,10 +100,25 @@ export const generateTypescriptComponent = ({
       return `  ${pin}: {${attributesString}}`
     })
     .join(",\n")
+  const componentPropsType = {
+    chip: "ChipProps",
+    diode: "DiodeProps",
+    led: "LedProps",
+    pushbutton: "PushButtonProps",
+    switch: "SwitchProps",
+    capacitor: "CapacitorProps",
+    resistor: "ResistorProps",
+    inductor: "InductorProps",
+    crystal: "CrystalProps",
+    connector: "ConnectorProps",
+  }[componentType]
+  const pinAttributesType = Object.keys(pinAttributes ?? {}).length
+    ? `satisfies NonNullable<${componentPropsType}["pinAttributes"]>`
+    : "as const"
   const pinAttributesBlock = pinAttributesString
     ? `const pinAttributes = {
 ${pinAttributesString}
-} as const
+} ${pinAttributesType}
 
 `
     : ""
@@ -164,6 +183,7 @@ ${symbolTsx
 import type { DiodeProps } from "@tscircuit/props"
 
 ${polarizedPinLabelsBlock}\
+${pinAttributesBlock}\
 export const ${componentName} = (props: DiodeProps) => {
   const { name = "D1", ...restProps } = props
 
@@ -174,6 +194,7 @@ ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -194,6 +215,7 @@ ${cadModelLines}
 import type { LedProps } from "@tscircuit/props"
 
 ${polarizedPinLabelsBlock}\
+${pinAttributesBlock}\
 export const ${componentName} = (props: LedProps) => {
   const { name = "LED1", ...restProps } = props
 
@@ -204,6 +226,7 @@ ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -227,6 +250,7 @@ const pinLabels = {
 ${pinLabelsString}
 } as const
 
+${pinAttributesBlock}\
 export const ${componentName} = (props: PushButtonProps<typeof pinLabels>) => {
   const { name = "SW1", ...restProps } = props
 
@@ -237,6 +261,7 @@ export const ${componentName} = (props: PushButtonProps<typeof pinLabels>) => {
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -260,6 +285,7 @@ const pinLabels = {
 ${pinLabelsString}
 } as const
 
+${pinAttributesBlock}\
 export const ${componentName} = (props: SwitchProps) => {
   const { name = "SW1", ...restProps } = props
 
@@ -270,6 +296,7 @@ export const ${componentName} = (props: SwitchProps) => {
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -294,6 +321,7 @@ ${cadModelLines}
 import type { CapacitorProps } from "@tscircuit/props"
 
 ${capacitorPolarizedPinLabelsBlock}\
+${pinAttributesBlock}\
 export const ${componentName} = (props: Omit<CapacitorProps, "capacitance">) => {
   const { name = "C1", ...restProps } = props
 
@@ -306,6 +334,7 @@ ${polarizedProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -329,6 +358,7 @@ ${cadModelLines}
     return `
 import type { ResistorProps } from "@tscircuit/props"
 
+${pinAttributesBlock}\
 export const ${componentName} = (props: Omit<ResistorProps, "resistance">) => {
   const { name = "R1", ...restProps } = props
 
@@ -339,6 +369,7 @@ export const ${componentName} = (props: Omit<ResistorProps, "resistance">) => {
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -362,12 +393,14 @@ ${cadModelLines}
     return `
 import type { InductorProps } from "@tscircuit/props"
 
+${pinAttributesBlock}\
 export const ${componentName} = (props: Omit<InductorProps, "inductance">) => {
   return (
     <inductor
       inductance=${JSON.stringify(inductance)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -393,6 +426,7 @@ import type { CrystalProps } from "@tscircuit/props"
 
 type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
 
+${pinAttributesBlock}\
 export const ${componentName} = (props: ImportedCrystalProps) => {
   const { name = "X1", ...restProps } = props
 
@@ -403,6 +437,7 @@ export const ${componentName} = (props: ImportedCrystalProps) => {
       pinVariant=${JSON.stringify(crystalPinVariant)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -426,12 +461,14 @@ const pinLabels = {
 ${pinLabelsString}
 } as const
 
+${pinAttributesBlock}\
 export const ${componentName} = (props: ConnectorProps) => {
   return (
     <connector
       pinLabels={pinLabels}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber="${manufacturerPartNumber}"
+${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl

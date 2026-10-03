@@ -1,6 +1,6 @@
 import { su } from "@tscircuit/circuit-json-util"
 import type { ChipProps } from "@tscircuit/props"
-import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
+import { convertEasyEdaJsonToCircuitJsonWithPinAttributes } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import {
   type BetterEasyEdaJson,
   EasyEdaJsonSchema,
@@ -84,29 +84,40 @@ const getVisibleSchematicPinArrangement = (
   )
 }
 
-export const convertRawEasyToTsx = async ({ rawEasy }: { rawEasy: any }) => {
+export const convertRawEasyToTsx = async ({
+  rawEasy,
+  pinAttributes,
+}: {
+  rawEasy: any
+  pinAttributes?: ChipProps["pinAttributes"]
+}) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
+    pinAttributes,
   })
   return result
 }
 
 export const convertBetterEasyToTsx = async ({
   betterEasy,
+  pinAttributes,
 }: {
   betterEasy: BetterEasyEdaJson
+  pinAttributes?: ChipProps["pinAttributes"]
 }): Promise<string> => {
   const cadPlacement = await getEasyEdaCadModelPlacement(betterEasy)
-  const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy, {
-    useModelCdn: true,
-    shouldRecenter: true,
-    cadPositionXMm: cadPlacement?.positionXMm,
-    cadPositionYMm: cadPlacement?.positionYMm,
-    cadPositionZMm: cadPlacement?.positionZMm,
-    cadModelBounds: cadPlacement?.bounds,
-    showDesignator: true,
-  })
+  const { circuitJson, resolvedPinAttributes } =
+    convertEasyEdaJsonToCircuitJsonWithPinAttributes(betterEasy, {
+      pinAttributes,
+      useModelCdn: true,
+      shouldRecenter: true,
+      cadPositionXMm: cadPlacement?.positionXMm,
+      cadPositionYMm: cadPlacement?.positionYMm,
+      cadPositionZMm: cadPlacement?.positionZMm,
+      cadModelBounds: cadPlacement?.bounds,
+      showDesignator: true,
+    })
   const [cadComponent] = su(circuitJson).cad_component.list()
   if (cadComponent) {
     cadComponent.position.x = 0
@@ -217,6 +228,7 @@ export const convertBetterEasyToTsx = async ({
     componentName,
     manufacturerPartNumber,
     pinLabels,
+    pinAttributes: resolvedPinAttributes,
 
     objUrl: modelObjUrl,
     stepUrl: modelStepUrl,

@@ -1,4 +1,4 @@
-export * from "./convert-easyeda-json-to-tscircuit-soup-json"
+export { convertEasyEdaJsonToCircuitJson } from "./convert-easyeda-json-to-tscircuit-soup-json"
 export * from "./websafe/fetch-easyeda-json"
 export { convertRawEasyToTsx as convertRawEasyEdaToTs } from "./websafe/convert-to-typescript-component"
 export { normalizeManufacturerPartNumber } from "./utils/normalize-manufacturer-part-number"
