@@ -411,7 +411,7 @@ const TextShapeOutputSchema = z.object({
 const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
   const [
     ,
-    alignment,
+    textMark,
     x,
     y,
     rotation,
@@ -430,8 +430,11 @@ const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
 
   return {
     type: "TEXT",
-    // Some EasyEDA component payloads use "P" for start-aligned text.
-    alignment: (alignment === "P" ? "L" : alignment) as "L" | "C" | "R",
+    // EasyEDA's second text field is a mark: L=label, N=name, P=reference prefix.
+    // Text anchoring is a separate field (start/middle/end).
+    // https://docs.easyeda.com/en/DocumentFormat/2-EasyEDA-Schematic-File-Format/#annotations
+    // Preserve the existing normalized alignment representation for consumers.
+    alignment: (textMark === "P" ? "L" : textMark) as "L" | "C" | "R",
     x: Number(x),
     y: Number(y),
     rotation: Number(rotation),
@@ -443,7 +446,7 @@ const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
     fontDecoration,
     content,
     textType,
-    ...(alignment === "P" ? { isReferenceDesignator: true } : {}),
+    ...(textMark === "P" ? { isReferenceDesignator: true } : {}),
     visibility: visibility as "0" | "1",
     mirror,
     id,
