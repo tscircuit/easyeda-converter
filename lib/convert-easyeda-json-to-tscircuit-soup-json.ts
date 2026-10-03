@@ -215,16 +215,16 @@ const handleFabricationNotePath = (
     stroke_width: mil10ToMm(track.width),
   })
 
-const handleFabricationNoteSolidRegion = (
-  solidRegion: z.infer<typeof SolidRegionSchema>,
-  index: number,
-) => {
+/**
+ * Walk an EasyEDA SOLIDREGION pathData string into concrete points. The schema
+ * only recovers M/L commands, so A commands are expanded here to keep curved
+ * outlines faithful to the source.
+ */
+const expandEasyEdaPathData = (pathData: string) => {
   const rawRoute: Array<{ x: number; y: number }> = []
   let currentPoint: { x: number; y: number } | undefined
 
-  for (const commandMatch of solidRegion.pathData.matchAll(
-    /([MLAZ])([^MLAZ]*)/gi,
-  )) {
+  for (const commandMatch of pathData.matchAll(/([MLAZ])([^MLAZ]*)/gi)) {
     const command = commandMatch[1]?.toUpperCase()
     const values =
       commandMatch[2]
@@ -261,6 +261,15 @@ const handleFabricationNoteSolidRegion = (
       currentPoint = { x: endX!, y: endY! }
     }
   }
+
+  return rawRoute
+}
+
+const handleFabricationNoteSolidRegion = (
+  solidRegion: z.infer<typeof SolidRegionSchema>,
+  index: number,
+) => {
+  const rawRoute = expandEasyEdaPathData(solidRegion.pathData)
 
   const route = rawRoute.map((point) => ({
     x: mil10ToMm(point.x),
@@ -423,10 +432,45 @@ const handleCutout = (
 }
 
 const LEAD_SHAPE_LAYER = 100
+const NPTH_FILL_STYLE = "npth"
 
 const isPcbSolidRegionCutout = (shape: z.infer<typeof SolidRegionSchema>) => {
   // LeadShapeLayer cutouts describe package lead artwork, not board drills.
   return shape.fillStyle === "cutout" && shape.layermask !== LEAD_SHAPE_LAYER
+}
+
+const isPcbSolidRegionNpth = (shape: z.infer<typeof SolidRegionSchema>) =>
+  shape.fillStyle === NPTH_FILL_STYLE && shape.layermask !== LEAD_SHAPE_LAYER
+
+/**
+ * EasyEDA stores non-plated through-hole slots as SOLIDREGION paths on the
+ * multi-layer layer rather than as HOLE records, so they were previously
+ * dropped. A pcb_cutout polygon keeps the rounded outline exact; pcb_hole can
+ * only approximate such a slot as an oval.
+ */
+const handleNpthSlot = (
+  solidRegion: z.infer<typeof SolidRegionSchema>,
+  index: number,
+) => {
+  const rawRoute = expandEasyEdaPathData(solidRegion.pathData)
+  if (rawRoute.length < 2) return null
+
+  const points = rawRoute.map((point) => ({
+    x: milx10(point.x),
+    y: milx10(point.y),
+  }))
+  const firstPoint = points[0]!
+  const lastPoint = points.at(-1)!
+  if (firstPoint.x !== lastPoint.x || firstPoint.y !== lastPoint.y) {
+    points.push({ ...firstPoint })
+  }
+
+  return Soup.pcb_cutout.parse({
+    type: "pcb_cutout",
+    pcb_cutout_id: `pcb_cutout_npth_${index + 1}`,
+    shape: "polygon",
+    points,
+  } as Soup.PcbCutoutPolygonInput)
 }
 
 interface Options {
@@ -707,6 +751,17 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     )
     .forEach((sr, index) => {
       circuitElements.push(handleCutout(sr, index))
+    })
+
+  // Add non-plated through-hole slots from solid regions marked as npth
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter(
+      (shape): shape is z.infer<typeof SolidRegionSchema> =>
+        shape.type === "SOLIDREGION" && isPcbSolidRegionNpth(shape),
+    )
+    .forEach((sr, index) => {
+      const npthSlot = handleNpthSlot(sr, index)
+      if (npthSlot) circuitElements.push(npthSlot)
     })
 
   const boardOutlineTracks = easyEdaJson.packageDetail.dataStr.shape.filter(
