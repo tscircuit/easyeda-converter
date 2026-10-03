@@ -72,6 +72,7 @@ it("should convert C113367 into typescript file", async () => {
               <port name="pin4" pinNumber={4} aliases={["NC"]} direction="left" schX={-0.8} schY={-0.7} schStemLength={0.4} />
               <schematictext schX={0.72} schY={-0.02} text="+" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
               <schematictext schX={0.76} schY={-0.46} text="-" fontSize={0.2} anchor="left" color="#0000FF" schRotation={0} />
+              <schematictext schX={0.025} schY={0.922} text="{NAME}" fontSize={0.2} anchor="bottom_center" />
             </symbol>
           }
           supplierPartNumbers={{

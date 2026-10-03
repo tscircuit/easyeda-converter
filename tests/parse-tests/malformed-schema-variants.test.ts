@@ -24,7 +24,7 @@ it.each([undefined, null, ""])(
   },
 )
 
-it('normalizes text alignment "P" to left alignment', () => {
+it("normalizes prefix-marked text to legacy left alignment", () => {
   const payload: any = structuredClone(C113367EasyEdaJson)
   const textShapeIndex = payload.dataStr.shape.findIndex((shape: string) =>
     shape.startsWith("T~"),
