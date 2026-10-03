@@ -14,10 +14,10 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/alphabet": "^0.0.22",
-    "@tscircuit/circuit-json-util": "^0.0.111",
+    "@tscircuit/circuit-json-util": "^0.0.118",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
-    "@tscircuit/props": "^0.0.635",
+    "@tscircuit/props": "^0.0.677",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
     "circuit-json-to-3d-png": "^0.0.7",
@@ -25,7 +25,7 @@
     "circuit-to-svg": "^0.0.408",
     "looks-same": "^9.0.1",
     "transformation-matrix": "^2.16.1",
-    "tscircuit": "^0.0.2436",
+    "tscircuit": "^0.0.2742",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {

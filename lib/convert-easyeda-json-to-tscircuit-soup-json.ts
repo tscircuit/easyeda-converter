@@ -1,12 +1,10 @@
-import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
-import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
-import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import {
   findBoundsAndCenter,
   getBoundsOfPcbElements,
   transformPCBElements,
 } from "@tscircuit/circuit-json-util"
 import { mil2mm, mm } from "@tscircuit/mm"
+import type { CommonComponentProps } from "@tscircuit/props"
 import type {
   AnyCircuitElement,
   PcbComponentInput,
@@ -41,13 +39,21 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
+import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
+import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
+import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import {
-  getSilkscreenArcPath,
   type PackageArc,
   type PackageTrack,
+  getSilkscreenArcPath,
 } from "./utils/get-silkscreen-arc-path"
-import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
+import {
+  type SuppliedPinAttributes,
+  resolvePinAttributes,
+} from "./utils/resolve-pin-attributes"
+import { toSourcePinAttributes } from "./utils/to-source-pin-attributes"
 import { isDiodeCategoryComponent } from "./websafe/convert-to-typescript-component/is-diode-category-component"
 import { isLedCategoryComponent } from "./websafe/convert-to-typescript-component/is-led-category-component"
 import { getCadModelOffsetMmFromBounds } from "./websafe/get-easyeda-cad-placement-helpers"
@@ -424,6 +430,7 @@ const isPcbSolidRegionCutout = (shape: z.infer<typeof SolidRegionSchema>) => {
 }
 
 interface Options {
+  pinAttributes?: NonNullable<CommonComponentProps["pinAttributes"]>
   useModelCdn?: boolean
   shouldRecenter?: boolean
   cadPositionXMm?: number
@@ -452,7 +459,8 @@ const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
   return minZ - mil10ToMm(svgNodeZ)
 }
 
-export const convertEasyEdaJsonToCircuitJson = (
+/** Internal conversion also retains supplied rows for TSX inference precedence. */
+export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
   easyEdaJson: BetterEasyEdaJson,
   {
     useModelCdn,
@@ -462,11 +470,16 @@ export const convertEasyEdaJsonToCircuitJson = (
     cadPositionZMm,
     cadModelBounds,
     showDesignator = false,
+    pinAttributes,
   }: Options = {},
-): AnyCircuitElement[] => {
+): {
+  circuitJson: AnyCircuitElement[]
+  resolvedPinAttributes: SuppliedPinAttributes
+} => {
   const resolvedCadPositionZMm =
     cadPositionZMm ?? getCadPositionZMmFromMetadata(easyEdaJson)
   const circuitElements: AnyCircuitElement[] = []
+  const resolvedPinAttributes: SuppliedPinAttributes = {}
 
   // Add source component
   const source_component = any_source_component.parse({
@@ -495,6 +508,7 @@ export const convertEasyEdaJsonToCircuitJson = (
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
+  const physicalPinNumbers = pads.map((pad) => String(pad.number ?? "").trim())
 
   // Prepare pin labels for normalization
   const pinLabelSets = pads.map((pad) => {
@@ -566,6 +580,15 @@ export const convertEasyEdaJsonToCircuitJson = (
     const uniquePinIndex = uniquePinIndexByPad[index]
     if (!emittedSourcePinIndexes.has(uniquePinIndex)) {
       emittedSourcePinIndexes.add(uniquePinIndex)
+      const attributes = resolvePinAttributes(pinAttributes, {
+        physicalPinNumber: pad.number,
+        aliases: [...pinLabelSets[index], ...portHints].filter(
+          (alias) => alias !== canonicalPinName,
+        ),
+        physicalPinNumbers,
+      })
+      if (attributes !== undefined)
+        resolvedPinAttributes[canonicalPinName] = attributes
       circuitElements.push({
         type: "source_port",
         source_port_id: `source_port_${index + 1}`,
@@ -573,6 +596,7 @@ export const convertEasyEdaJsonToCircuitJson = (
         name: `pin${pinNumber}`,
         pin_number: pinNumber,
         port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
+        ...toSourcePinAttributes(attributes),
       })
     }
 
@@ -1122,5 +1146,12 @@ export const convertEasyEdaJsonToCircuitJson = (
     pcb_component.center = { x: 0, y: 0 }
   }
 
-  return circuitElements
+  return { circuitJson: circuitElements, resolvedPinAttributes }
 }
+
+export const convertEasyEdaJsonToCircuitJson = (
+  easyEdaJson: BetterEasyEdaJson,
+  options: Options = {},
+): AnyCircuitElement[] =>
+  convertEasyEdaJsonToCircuitJsonWithPinAttributes(easyEdaJson, options)
+    .circuitJson

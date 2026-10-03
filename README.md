@@ -108,6 +108,35 @@ const soupJson = convertEasyEdaJsonToCircuitJson(rawEasyJson, {
 })
 ```
 
+### Supplying Datasheet Pin Attributes
+
+Callers can provide a `pinAttributes` map using the `@tscircuit/props` schema.
+The converter matches rows to physical footprint pad identifiers: both `"1"`
+and `"pin1"` are accepted, as are `"A1"` and `"pinA1"` for BGA pads. A `pin`-prefixed
+row takes precedence when both forms specify the same attribute. Signal aliases
+are used only when no physical row is supplied, and conflicting alias rows are
+ignored.
+
+```tsx
+import { convertEasyEdaJsonToCircuitJson, convertRawEasyEdaToTs } from "easyeda"
+
+const pinAttributes = {
+  "1": { requiresPower: true, requiresVoltage: "2.8V" },
+  "2": { requiresGround: true },
+  "3": {}, // Explicitly undocumented electrical role
+}
+
+const circuitJson = convertEasyEdaJsonToCircuitJson(betterEasy, { pinAttributes })
+const tsx = await convertRawEasyEdaToTs({ rawEasy, pinAttributes })
+```
+
+Attributes are written onto Circuit JSON `source_port` records and included in
+the generated TSX. Supplied rows replace TSX label inference for that pin,
+including an explicit empty row. Other pins retain the existing inference.
+The browser exports `convertRawEasyToTsx` and `convertBetterEasyToTsx` accept the
+same option. Fetching and validating datasheet metadata remains the caller's
+responsibility; these options do not make a datasheet API request.
+
 ### Working with Generated TypeScript Components
 
 The generated TypeScript React components can be imported and used in your tscircuit projects:
