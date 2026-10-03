@@ -61,6 +61,7 @@ it("should convert C309274 into typescript file", async () => {
               <schematicpath points={[{"x":0.2,"y":-0.2},{"x":0.22,"y":-0.3}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":0.2},{"x":0.04,"y":0.2},{"x":0,"y":0.28},{"x":-0.04,"y":0.2}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0.4,"y":-0.2},{"x":0.14,"y":-0.2},{"x":0.1,"y":-0.12},{"x":0.06,"y":-0.2}]} strokeColor="#880000" />
+              <schematictext schX={0.06} schY={1.02} text="{NAME}" fontSize={0.2} anchor="bottom_center" />
             </symbol>
           }
           supplierPartNumbers={{

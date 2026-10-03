@@ -88,6 +88,7 @@ it("should convert C75749 into typescript file", async () => {
               <schematicpath points={[{"x":0.94,"y":-0.3},{"x":0.8,"y":-0.3}]} strokeColor="#880000" />
               <schematicpath svgPath="M 0.933048 -0.299462 A 0.06 0.08 0 0 1 0.995732 -0.190366" strokeColor="#880000" />
               <schematicpath points={[{"x":0.9,"y":0.22},{"x":1,"y":-0.2}]} strokeColor="#880000" />
+              <schematictext schX={-0.003} schY={0.92} text="{NAME}" fontSize={0.2} anchor="bottom_center" />
             </symbol>
           }
           supplierPartNumbers={{

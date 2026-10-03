@@ -51,6 +51,7 @@ it("should convert C18185602 into typescript file", async () => {
               <schematicrect schX={-0.72} schY={-0.2} width={0.08} height={0.32} strokeWidth={0.02} color="#880000" />
               <schematicpath points={[{"x":0,"y":0.2},{"x":-0.72,"y":0.2},{"x":-0.72,"y":-0.04}]} strokeColor="#880000" />
               <schematicpath points={[{"x":0,"y":-0.2},{"x":-0.36,"y":-0.2},{"x":-0.4,"y":-0.1},{"x":-0.44,"y":-0.2}]} strokeColor="#880000" />
+              <schematictext schX={-0.27} schY={0.602} text="{NAME}" fontSize={0.2} anchor="bottom_center" />
             </symbol>
           }
           supplierPartNumbers={{
