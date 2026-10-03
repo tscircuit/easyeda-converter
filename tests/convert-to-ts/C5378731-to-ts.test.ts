@@ -65,7 +65,8 @@ it("imports C5378731 supplier fabrication notes into its footprint string", asyn
         "C5378731"
       ]
     }}
-          manufacturerPartNumber="SK6812MINI-EA"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SK6812MINI-EA"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SK6812MINI-EA"}
           footprint={<footprint>
             <smtpad portHints={["pin4"]} pcbX="2.499995mm" pcbY="-0.750062mm" width="1.1999976mm" height="0.8199882mm" shape="rect" />
     <smtpad portHints={["pin3"]} pcbX="2.499995mm" pcbY="0.750062mm" width="1.1999976mm" height="0.8199882mm" shape="rect" />

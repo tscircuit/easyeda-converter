@@ -38,7 +38,8 @@ it("should convert C8465 into typescript file", async () => {
         "C8465"
       ]
     }}
-          manufacturerPartNumber="WJ500V-5.08-2P"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "WJ500V-5.08-2P"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "WJ500V-5.08-2P"}
           footprint={<footprint>
             <platedhole  portHints={["pin2"]} pcbX="2.54mm" pcbY="0mm" outerDiameter="1.999996mm" holeDiameter="1.3000228mm" shape="circle" />
     <platedhole  portHints={["pin1"]} pcbX="-2.54mm" pcbY="0mm" outerDiameter="1.999996mm" holeDiameter="1.3000228mm" shape="circle" />

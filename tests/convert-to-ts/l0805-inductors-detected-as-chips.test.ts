@@ -78,7 +78,8 @@ test("reproduces C1046 L0805 inductor being generated as a generic chip", async 
             "C1046"
           ]
         }}
-              manufacturerPartNumber="SDFL2012S100KTF"
+              mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SDFL2012S100KTF"}
+              manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SDFL2012S100KTF"}
               footprint={<footprint>
                 <smtpad portHints={["pin1"]} pcbX="-0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />
         <smtpad portHints={["pin2"]} pcbX="0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />
@@ -139,7 +140,8 @@ test("reproduces C281113 L0805 inductor being generated as a generic chip", asyn
             "C281113"
           ]
         }}
-              manufacturerPartNumber="MGFL2012F100MT-LF"
+              mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "MGFL2012F100MT-LF"}
+              manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "MGFL2012F100MT-LF"}
               footprint={<footprint>
                 <smtpad portHints={["pin1"]} pcbX="-0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />
         <smtpad portHints={["pin2"]} pcbX="0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />

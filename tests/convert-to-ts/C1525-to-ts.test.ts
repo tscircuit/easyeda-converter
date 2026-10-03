@@ -45,7 +45,9 @@ it("converts C1525 to a capacitor with its exact footprint", async () => {
   expect(result).not.toContain("<symbol>")
   expect(result).not.toContain("<schematicpath")
   expect(result).not.toContain("<port ")
-  expect(result).toContain('manufacturerPartNumber="CL05B104KO5NNNC"')
+  expect(result).toContain(
+    'mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "CL05B104KO5NNNC"}',
+  )
   expect(result).toContain('"C1525"')
   expect(result.match(/<smtpad /g)).toHaveLength(2)
   expect(result).toContain(

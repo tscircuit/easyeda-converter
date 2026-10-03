@@ -149,6 +149,13 @@ ${symbolTsx
 `
     : ""
 
+  const mpn = manufacturerPartNumber?.trim()
+  const partNumberExpression = `props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? ${JSON.stringify(mpn)}`
+  const manufacturerPartNumberProps = mpn
+    ? `      mpn={${partNumberExpression}}
+      manufacturerPartNumber={${partNumberExpression}}`
+    : ""
+
   const cadModelLines = [
     objUrl ? `objUrl: "${objUrl}",` : "",
     stepUrl ? `stepUrl: "${stepUrl}",` : "",
@@ -173,7 +180,7 @@ export const ${componentName} = (props: DiodeProps) => {
 ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -203,7 +210,7 @@ export const ${componentName} = (props: LedProps) => {
 ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -236,7 +243,7 @@ export const ${componentName} = (props: PushButtonProps<typeof pinLabels>) => {
       pinLabels={pinLabels}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -269,7 +276,7 @@ export const ${componentName} = (props: SwitchProps) => {
       pinLabels={pinLabels}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -305,7 +312,7 @@ ${capacitorPolarizedPinLabelsProp}\
 ${polarizedProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -338,7 +345,7 @@ export const ${componentName} = (props: Omit<ResistorProps, "resistance">) => {
       resistance=${JSON.stringify(resistance)}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -367,7 +374,7 @@ export const ${componentName} = (props: Omit<InductorProps, "inductance">) => {
     <inductor
       inductance=${JSON.stringify(inductance)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -402,7 +409,7 @@ export const ${componentName} = (props: ImportedCrystalProps) => {
       frequency=${JSON.stringify(crystalFrequency)}
       pinVariant=${JSON.stringify(crystalPinVariant)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -431,7 +438,7 @@ export const ${componentName} = (props: ConnectorProps) => {
     <connector
       pinLabels={pinLabels}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -463,7 +470,7 @@ ${pinAttributesProp}\
 ${symbolProp}\
 ${schPinArrangementProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+${manufacturerPartNumberProps}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl

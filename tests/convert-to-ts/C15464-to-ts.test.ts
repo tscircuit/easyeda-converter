@@ -66,7 +66,8 @@ it("normalizes C15464 active-low pin aliases", async () => {
         "C15464"
       ]
     }}
-          manufacturerPartNumber="BQ24075RGTR"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "BQ24075RGTR"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "BQ24075RGTR"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-1.499997mm" pcbY="0.750189mm" width="0.850011mm" height="0.2800096mm" radius="0.1400048mm" shape="pill" />
     <smtpad portHints={["pin2"]} pcbX="-1.499997mm" pcbY="0.250063mm" width="0.850011mm" height="0.2800096mm" radius="0.1400048mm" shape="pill" />

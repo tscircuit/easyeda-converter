@@ -67,7 +67,8 @@ it("repro: imports C8545 with its custom schematic symbol", async () => {
         "C8545"
       ]
     }}
-          manufacturerPartNumber="2N7002"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "2N7002"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "2N7002"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="0.999998mm" pcbY="-0.94996mm" width="0.999998mm" height="0.6500114mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="0.999998mm" pcbY="0.94996mm" width="0.999998mm" height="0.6500114mm" shape="rect" />

@@ -68,7 +68,8 @@ it("should convert C136720 slide switch as a chip box with all pin labels", asyn
         "C136720"
       ]
     }}
-          manufacturerPartNumber="SK-12E12-G5"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SK-12E12-G5"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SK-12E12-G5"}
           footprint={<footprint>
             <platedhole  portHints={["pin2"]} pcbX="0mm" pcbY="0.127mm" outerDiameter="1.524mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin3"]} pcbX="0mm" pcbY="-2.921mm" outerDiameter="1.524mm" holeDiameter="0.999998mm" shape="circle" />

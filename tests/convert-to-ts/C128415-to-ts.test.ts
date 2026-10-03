@@ -48,7 +48,8 @@ it("should convert C128415 into typescript file", async () => {
         "C128415"
       ]
     }}
-          manufacturerPartNumber="NA555DR"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "NA555DR"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "NA555DR"}
           footprint={<footprint>
             <smtpad portHints={["pin5"]} pcbX="1.905mm" pcbY="2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
     <smtpad portHints={["pin6"]} pcbX="0.635mm" pcbY="2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />

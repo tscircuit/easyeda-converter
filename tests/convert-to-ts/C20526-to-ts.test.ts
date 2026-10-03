@@ -52,7 +52,8 @@ it("repro: converts C20526 with a schematic snapshot", async () => {
         "C20526"
       ]
     }}
-          manufacturerPartNumber="MMBT3904(RANGE:100-300)"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "MMBT3904(RANGE:100-300)"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "MMBT3904(RANGE:100-300)"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="0.999998mm" pcbY="-0.94996mm" width="0.999998mm" height="0.6500114mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="0.999998mm" pcbY="0.94996mm" width="0.999998mm" height="0.6500114mm" shape="rect" />

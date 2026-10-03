@@ -79,7 +79,8 @@ it("should convert C490691 into typescript file", async () => {
         "C490691"
       ]
     }}
-          manufacturerPartNumber="FT232RL"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "FT232RL"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "FT232RL"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-4.225036mm" pcbY="-3.455162mm" width="0.3640074mm" height="2.01549mm" radius="0.1820037mm" shape="pill" />
     <smtpad portHints={["pin2"]} pcbX="-3.57505mm" pcbY="-3.455162mm" width="0.3640074mm" height="2.01549mm" radius="0.1820037mm" shape="pill" />

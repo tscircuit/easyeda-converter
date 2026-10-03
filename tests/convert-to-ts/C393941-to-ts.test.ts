@@ -55,7 +55,8 @@ it("should convert C393941 into typescript file", async () => {
         "C393941"
       ]
     }}
-          manufacturerPartNumber="TF PUSH"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "TF PUSH"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "TF PUSH"}
           footprint={<footprint>
             <hole pcbX="-4.949952mm" pcbY="-5.5500143mm" diameter="1.1999976mm" />
     <hole pcbX="3.050032mm" pcbY="-5.5500143mm" diameter="1.1999976mm" />

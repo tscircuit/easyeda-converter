@@ -17,7 +17,7 @@
     "@tscircuit/circuit-json-util": "^0.0.111",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
-    "@tscircuit/props": "^0.0.635",
+    "@tscircuit/props": "^0.0.680",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
     "circuit-json-to-3d-png": "^0.0.7",

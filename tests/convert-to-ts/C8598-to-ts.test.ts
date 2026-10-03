@@ -62,7 +62,8 @@ it("should normalize decorated C8598 diode polarity labels", async () => {
         "C8598"
       ]
     }}
-          manufacturerPartNumber="B5819W SL"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "B5819W SL"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "B5819W SL"}
           footprint={<footprint>
             <smtpad portHints={["pin2","anode","pos"]} pcbX="1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />
     <smtpad portHints={["pin1","cathode","neg"]} pcbX="-1.700022mm" pcbY="0mm" width="1.1999976mm" height="0.9500108mm" shape="rect" />

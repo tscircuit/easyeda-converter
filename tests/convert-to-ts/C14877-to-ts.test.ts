@@ -75,7 +75,8 @@ it("should convert C14877 into typescript file", async () => {
         "C14877"
       ]
     }}
-          manufacturerPartNumber="ATMEGA328P-AU"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ATMEGA328P-AU"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ATMEGA328P-AU"}
           footprint={<footprint>
             <smtpad portHints={["pin32"]} pcbX="-4.3815mm" pcbY="-2.7999944mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
     <smtpad portHints={["pin31"]} pcbX="-4.3815mm" pcbY="-1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />

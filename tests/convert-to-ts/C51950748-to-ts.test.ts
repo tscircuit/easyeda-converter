@@ -87,7 +87,8 @@ it("should convert C51950748 into typescript file", async () => {
         "C51950748"
       ]
     }}
-          manufacturerPartNumber="ESP32-C5-WROOM-1U-N8R8"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ESP32-C5-WROOM-1U-N8R8"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ESP32-C5-WROOM-1U-N8R8"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-8.877046mm" pcbY="7.3850373mm" width="1.499997mm" height="0.8999982mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="-8.876792mm" pcbY="6.1150373mm" width="1.499997mm" height="0.8999982mm" shape="rect" />

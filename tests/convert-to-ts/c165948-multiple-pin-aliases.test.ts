@@ -80,7 +80,8 @@ it("preserves all C165948 pin aliases in generated TSX", async () => {
         "C165948"
       ]
     }}
-          manufacturerPartNumber="TYPE-C-31-M-12"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "TYPE-C-31-M-12"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "TYPE-C-31-M-12"}
           footprint={<footprint>
             <hole pcbX="-2.899918mm" pcbY="0.9055672mm" diameter="0.7500112mm" />
     <hole pcbX="2.899918mm" pcbY="0.9055672mm" diameter="0.7500112mm" />

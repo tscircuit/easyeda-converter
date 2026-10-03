@@ -96,7 +96,8 @@ it("should convert C2040 into typescript file", async () => {
         "C2040"
       ]
     }}
-          manufacturerPartNumber="RP2040"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "RP2040"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "RP2040"}
           footprint={<footprint>
             <smtpad portHints={["pin57"]} pcbX="-0mm" pcbY="0.000127mm" width="3.0999938mm" height="3.0999938mm" shape="rect" />
     <smtpad portHints={["pin56"]} pcbX="-2.599944mm" pcbY="3.425063mm" width="0.1999996mm" height="0.850011mm" shape="rect" />

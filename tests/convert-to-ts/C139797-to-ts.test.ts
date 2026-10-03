@@ -53,7 +53,8 @@ it("should convert C139797 tactile switch into a pushbutton component", async ()
         "C139797"
       ]
     }}
-          manufacturerPartNumber="SKRPACE010"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SKRPACE010"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SKRPACE010"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-2.100072mm" pcbY="1.074928mm" width="1.0500106mm" height="0.6999986mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="2.100072mm" pcbY="1.074928mm" width="1.0500106mm" height="0.6999986mm" shape="rect" />

@@ -97,7 +97,8 @@ it("should convert C7203002 into typescript file", async () => {
         "C7203002"
       ]
     }}
-          manufacturerPartNumber="PICO"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "PICO"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "PICO"}
           footprint={<footprint>
             <smtpad portHints={["pin21"]} pcbX="23.38987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
     <smtpad portHints={["pin20"]} pcbX="23.38987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />

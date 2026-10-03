@@ -33,7 +33,8 @@ it("should convert diode category components to diode elements", async () => {
         "C57759"
       ]
     }}
-          manufacturerPartNumber="1N4148WS"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "1N4148WS"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "1N4148WS"}
           footprint={<footprint>
             <smtpad portHints={["pin1","cathode","neg"]} pcbX="-1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />
     <smtpad portHints={["pin2","anode","pos"]} pcbX="1.172591mm" pcbY="0mm" width="0.999998mm" height="0.7500112mm" shape="rect" />

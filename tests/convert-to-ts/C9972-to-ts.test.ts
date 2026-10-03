@@ -8,7 +8,9 @@ it("preserves the exact C9972 manufacturer part number", async () => {
   const result = await convertBetterEasyToTsx({ betterEasy })
 
   expect(result).toContain("export const XC6206P302MR_G")
-  expect(result).toContain('manufacturerPartNumber="XC6206P302MR-G"')
+  expect(result).toContain(
+    'mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "XC6206P302MR-G"}',
+  )
 })
 
 it("reports missing manufacturer part number metadata", async () => {

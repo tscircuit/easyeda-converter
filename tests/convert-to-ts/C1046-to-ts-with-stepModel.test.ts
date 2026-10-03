@@ -53,7 +53,8 @@ it("should include both obj and step cad model urls", async () => {
         "C1046"
       ]
     }}
-          manufacturerPartNumber="SDFL2012S100KTF"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SDFL2012S100KTF"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SDFL2012S100KTF"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="0.966216mm" pcbY="0mm" width="1.1325352mm" height="1.3770102mm" shape="rect" />

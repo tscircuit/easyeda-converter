@@ -46,7 +46,8 @@ it("should convert C5248081 into typescript file", async () => {
         "C5248081"
       ]
     }}
-          manufacturerPartNumber="HS91L02W2C01"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "HS91L02W2C01"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "HS91L02W2C01"}
           footprint={<footprint>
             <platedhole  portHints={["pin1"]} pcbX="0mm" pcbY="-3.81mm" outerDiameter="1.5999968mm" holeDiameter="0.999998mm" shape="circle" />
     <platedhole  portHints={["pin2"]} pcbX="0mm" pcbY="-1.27mm" outerDiameter="1.5999968mm" holeDiameter="0.999998mm" shape="circle" />

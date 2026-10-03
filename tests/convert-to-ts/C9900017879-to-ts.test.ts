@@ -78,7 +78,8 @@ it("should convert C9900017879 into typescript file", async () => {
         "C9900017879"
       ]
     }}
-          manufacturerPartNumber="ARDUINO_NANO"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ARDUINO_NANO"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ARDUINO_NANO"}
           footprint={<footprint>
             <platedhole  portHints={["pin1"]} pcbX="17.78mm" pcbY="7.62mm" holeWidth="0.9000236mm" holeHeight="0.9000236mm" outerWidth="1.5999968mm" outerHeight="1.5999968mm" rectPad={true} pcbRotation="0deg" shape="pill" />
     <platedhole  portHints={["pin29"]} pcbX="15.24mm" pcbY="-7.62mm" outerDiameter="1.5999968mm" holeDiameter="0.9000236mm" shape="circle" />

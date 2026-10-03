@@ -101,7 +101,7 @@ for (const resistorCase of resistorCases) {
     expect(result).not.toContain("<schematicrect")
     expect(result).not.toContain("<port ")
     expect(result).toContain(
-      `manufacturerPartNumber="${resistorCase.manufacturerPartNumber}"`,
+      `mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? ${JSON.stringify(resistorCase.manufacturerPartNumber)}}`,
     )
     expect(result).toContain(`"${resistorCase.partNumber}"`)
     expect(result).toContain(`objUrl: "${expectedObjUrl}"`)

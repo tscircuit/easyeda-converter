@@ -611,7 +611,8 @@ it("should import C2943786 into a snapshotted typescript component", async () =>
         "C2943786"
       ]
     }}
-          manufacturerPartNumber="RK3566"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "RK3566"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "RK3566"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-6.145149mm" pcbY="5.539994mm" radius="0.1099947mm" shape="circle" />
     <smtpad portHints={["pin2"]} pcbX="-5.495163mm" pcbY="5.539994mm" radius="0.1099947mm" shape="circle" />

@@ -59,7 +59,8 @@ it("converts C3273487 coupled inductor without losing terminals", async () => {
         "C3273487"
       ]
     }}
-          manufacturerPartNumber="SRF1280-101M"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SRF1280-101M"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "SRF1280-101M"}
           footprint={<footprint>
             <smtpad portHints={["pin3"]} pcbX="1.75006mm" pcbY="-4.2500042mm" width="2.1500084mm" height="4.499991mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="1.75006mm" pcbY="4.2500042mm" width="2.1500084mm" height="4.499991mm" shape="rect" />

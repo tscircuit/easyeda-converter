@@ -119,7 +119,8 @@ it("should convert C2913206 into typescript file", async () => {
         "C2913206"
       ]
     }}
-          manufacturerPartNumber="ESP32-S3-MINI-1-N8"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ESP32-S3-MINI-1-N8"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "ESP32-S3-MINI-1-N8"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-6.975094mm" pcbY="5.950077mm" width="0.7999984mm" height="0.3999992mm" shape="rect" />
     <smtpad portHints={["pin2"]} pcbX="-6.975094mm" pcbY="5.100193mm" width="0.7999984mm" height="0.3999992mm" shape="rect" />

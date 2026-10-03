@@ -79,7 +79,8 @@ it("should convert C113367 into typescript file", async () => {
         "C113367"
       ]
     }}
-          manufacturerPartNumber="PAM8302AASCR"
+          mpn={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "PAM8302AASCR"}
+          manufacturerPartNumber={props.mpn ?? props.manufacturerPartNumber ?? props.mfn ?? "PAM8302AASCR"}
           footprint={<footprint>
             <smtpad portHints={["pin1"]} pcbX="-0.975106mm" pcbY="-2.146046mm" width="0.3640074mm" height="1.6919956mm" radius="0.1820037mm" shape="pill" />
     <smtpad portHints={["pin2"]} pcbX="-0.324866mm" pcbY="-2.146046mm" width="0.3640074mm" height="1.6919956mm" radius="0.1820037mm" shape="pill" />
