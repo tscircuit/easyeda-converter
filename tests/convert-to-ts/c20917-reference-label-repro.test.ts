@@ -3,7 +3,7 @@ import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import rawEasy from "../assets/C20917.raweasy.json"
 import { renderImportedSymbolReferenceLabels } from "../fixtures/render-imported-symbol-reference-labels"
 
-test("repro: C20917 custom symbols omit their instance reference labels", async () => {
+test("C20917 custom symbols display their instance reference labels", async () => {
   const { tsx, circuitJson, referenceNames } =
     await renderImportedSymbolReferenceLabels({
       rawEasy,
@@ -12,12 +12,10 @@ test("repro: C20917 custom symbols omit their instance reference labels", async 
     })
 
   expect(tsx).toContain("symbol={")
-  const referenceTexts = circuitJson.filter(
-    (element) =>
-      element.type === "schematic_text" &&
-      referenceNames.includes(element.text),
-  )
-  expect(referenceTexts).toHaveLength(0)
+  const referenceTexts = circuitJson
+    .filter((element) => element.type === "schematic_text")
+    .filter((text) => referenceNames.includes(text.text))
+  expect(referenceTexts.map((text) => text.text).sort()).toEqual(referenceNames)
   await expect(
     convertCircuitJsonToSchematicSvg(circuitJson),
   ).toMatchSvgSnapshot(import.meta.path)

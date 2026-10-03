@@ -8,6 +8,7 @@ import type { AnyCircuitElement } from "circuit-json"
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 import type { SingleLetterShape } from "lib/schemas/single-letter-shape-schema"
 import { normalizeSymbolName } from "lib/utils/normalize-symbol-name"
+import { generateSymbolReferenceText } from "./generate-symbol-reference-text"
 
 const round = (value: number): number => Number(value.toFixed(6))
 
@@ -402,7 +403,8 @@ const generateShapeTsx = ({
   if (shape.type === "TEXT") {
     if (shape.visibility !== "1") return undefined
     const position = transformPoint({ x: shape.x, y: shape.y })
-    return `<schematictext schX={${position.x}} schY={${position.y}} text=${JSON.stringify(shape.content)} fontSize={${getTextFontSize(shape.fontSize)}} anchor=${JSON.stringify(getTextAnchor(shape.alignment))} color=${JSON.stringify(shape.fontColor)} schRotation={${round(-shape.rotation)}} />`
+    const text = shape.isReferenceDesignator ? "{NAME}" : shape.content
+    return `<schematictext schX={${position.x}} schY={${position.y}} text=${JSON.stringify(text)} fontSize={${getTextFontSize(shape.fontSize)}} anchor=${JSON.stringify(getTextAnchor(shape.alignment))} color=${JSON.stringify(shape.fontColor)} schRotation={${round(-shape.rotation)}} />`
   }
 
   if (shape.type === "PIN" && portMetadata) {
@@ -486,6 +488,13 @@ export const generateSymbolTsx = (
     .filter((tsx): tsx is string => Boolean(tsx))
 
   if (shapeTsx.length === 0) return undefined
+
+  const referenceTextTsx = generateSymbolReferenceText({
+    shapes,
+    bounds,
+    transformPoint,
+  })
+  if (referenceTextTsx) shapeTsx.push(referenceTextTsx)
 
   return `<symbol>
 ${shapeTsx.map((tsx) => `  ${tsx}`).join("\n")}
