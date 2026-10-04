@@ -26,7 +26,7 @@ import * as Soup from "circuit-json"
 import { applyToPoint, compose, scale, translate } from "transformation-matrix"
 import type { z } from "zod"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
-import { generateArcFromSweep, generateArcPathWithMid } from "./math/arc-utils"
+import { generateArcPathWithMid } from "./math/arc-utils"
 import type { BetterEasyEdaJson } from "./schemas/easy-eda-json-schema"
 import type {
   CircleSchema,
@@ -39,7 +39,9 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
+import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
 import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
@@ -219,48 +221,7 @@ const handleFabricationNoteSolidRegion = (
   solidRegion: z.infer<typeof SolidRegionSchema>,
   index: number,
 ) => {
-  const rawRoute: Array<{ x: number; y: number }> = []
-  let currentPoint: { x: number; y: number } | undefined
-
-  for (const commandMatch of solidRegion.pathData.matchAll(
-    /([MLAZ])([^MLAZ]*)/gi,
-  )) {
-    const command = commandMatch[1]?.toUpperCase()
-    const values =
-      commandMatch[2]
-        ?.match(/[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g)
-        ?.map(Number) ?? []
-
-    if ((command === "M" || command === "L") && values.length >= 2) {
-      currentPoint = { x: values[0]!, y: values[1]! }
-      rawRoute.push(currentPoint)
-    } else if (command === "A" && currentPoint && values.length >= 7) {
-      const [radiusX, , , largeArcFlag, sweepFlag, endX, endY] = values
-      const generatedArcRoute = generateArcFromSweep(
-        currentPoint.x,
-        currentPoint.y,
-        endX!,
-        endY!,
-        radiusX!,
-        largeArcFlag === 1,
-        sweepFlag === 1,
-      )
-      const maxArcSegments = 16
-      const arcRoute =
-        generatedArcRoute.length <= maxArcSegments + 1
-          ? generatedArcRoute
-          : Array.from({ length: maxArcSegments + 1 }, (_, pointIndex) =>
-              generatedArcRoute.at(
-                Math.round(
-                  (pointIndex * (generatedArcRoute.length - 1)) /
-                    maxArcSegments,
-                ),
-              ),
-            ).filter((point): point is { x: number; y: number } => !!point)
-      rawRoute.push(...arcRoute.slice(1))
-      currentPoint = { x: endX!, y: endY! }
-    }
-  }
+  const rawRoute = expandEasyEdaPathData(solidRegion.pathData)
 
   const route = rawRoute.map((point) => ({
     x: mil10ToMm(point.x),
@@ -423,11 +384,15 @@ const handleCutout = (
 }
 
 const LEAD_SHAPE_LAYER = 100
+const NPTH_FILL_STYLE = "npth"
 
 const isPcbSolidRegionCutout = (shape: z.infer<typeof SolidRegionSchema>) => {
   // LeadShapeLayer cutouts describe package lead artwork, not board drills.
   return shape.fillStyle === "cutout" && shape.layermask !== LEAD_SHAPE_LAYER
 }
+
+const isPcbSolidRegionNpth = (shape: z.infer<typeof SolidRegionSchema>) =>
+  shape.fillStyle === NPTH_FILL_STYLE && shape.layermask !== LEAD_SHAPE_LAYER
 
 interface Options {
   pinAttributes?: NonNullable<CommonComponentProps["pinAttributes"]>
@@ -707,6 +672,25 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     )
     .forEach((sr, index) => {
       circuitElements.push(handleCutout(sr, index))
+    })
+
+  // Add non-plated through-hole slots from solid regions marked as npth
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter(
+      (shape): shape is z.infer<typeof SolidRegionSchema> =>
+        shape.type === "SOLIDREGION" && isPcbSolidRegionNpth(shape),
+    )
+    .forEach((sr, index) => {
+      const geometry = getEasyEdaNpthSlotGeometry(sr)
+      if (!geometry) return
+      circuitElements.push(
+        Soup.pcb_cutout.parse({
+          type: "pcb_cutout",
+          pcb_cutout_id: `pcb_cutout_npth_${index + 1}`,
+          shape: "polygon",
+          points: geometry.points,
+        } as Soup.PcbCutoutPolygonInput),
+      )
     })
 
   const boardOutlineTracks = easyEdaJson.packageDetail.dataStr.shape.filter(
