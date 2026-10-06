@@ -18,7 +18,7 @@ import driverDatasheet from "./assets/drv8818-pwpr.pin-attributes.json"
 import driverRaw from "./assets/drv8818-pwpr.raweasy.json"
 
 type PinAttributes = NonNullable<CommonComponentProps["pinAttributes"]>
-const driverAttributes = driverDatasheet.pin_attributes as PinAttributes
+const driverAttributes = driverDatasheet.pin_attributes satisfies PinAttributes
 const parseDriver = () => EasyEdaJsonSchema.parse(structuredClone(driverRaw))
 const portsOf = (circuit: ReturnType<typeof convertEasyEdaJsonToCircuitJson>) =>
   circuit.filter((element) => element.type === "source_port")

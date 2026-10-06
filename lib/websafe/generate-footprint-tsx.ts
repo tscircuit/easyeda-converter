@@ -173,8 +173,11 @@ export const generateFootprintTsx = (
   }
 
   for (const fabricationNotePath of fabricationNotePaths) {
+    const filledAttr = fabricationNotePath.is_filled ? " isFilled" : ""
+    const strokeAttr =
+      fabricationNotePath.has_stroke === false ? " hasStroke={false}" : ""
     elementStrings.push(
-      `<fabricationnotepath route={${JSON.stringify(fabricationNotePath.route)}} strokeWidth="${mmStr(fabricationNotePath.stroke_width)}"${getStringAttr("color", fabricationNotePath.color)}${getLayerAttr(fabricationNotePath.layer)} />`,
+      `<fabricationnotepath route={${JSON.stringify(fabricationNotePath.route)}} strokeWidth="${mmStr(fabricationNotePath.stroke_width)}"${filledAttr}${strokeAttr}${getStringAttr("color", fabricationNotePath.color)}${getLayerAttr(fabricationNotePath.layer)} />`,
     )
   }
 
