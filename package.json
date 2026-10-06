@@ -17,13 +17,13 @@
     "@tscircuit/circuit-json-util": "^0.0.118",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
-    "@tscircuit/props": "https://pkg.pr.new/@tscircuit/props@f8e17e4",
+    "@tscircuit/props": "^0.0.693",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
     "circuit-json": "^0.0.518",
     "circuit-json-to-3d-png": "^0.0.7",
     "circuit-json-to-gltf": "^0.0.106",
-    "circuit-to-svg": "^0.0.443",
+    "circuit-to-svg": "^0.0.444",
     "looks-same": "^9.0.1",
     "transformation-matrix": "^2.16.1",
     "tscircuit": "^0.0.2748",
@@ -60,6 +60,6 @@
   "types": "./dist/index.d.ts",
   "overrides": {
     "@tscircuit/core": "https://pkg.pr.new/tscircuit/core/@tscircuit/core@e11a778",
-    "@tscircuit/props": "https://pkg.pr.new/@tscircuit/props@f8e17e4"
+    "@tscircuit/props": "^0.0.693"
   }
 }
