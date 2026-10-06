@@ -15,17 +15,19 @@
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/alphabet": "^0.0.22",
     "@tscircuit/circuit-json-util": "^0.0.118",
+    "@tscircuit/core": "^0.0.2100",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
-    "@tscircuit/props": "^0.0.677",
+    "@tscircuit/props": "^0.0.693",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
+    "circuit-json": "^0.0.518",
     "circuit-json-to-3d-png": "^0.0.7",
     "circuit-json-to-gltf": "^0.0.106",
-    "circuit-to-svg": "^0.0.408",
+    "circuit-to-svg": "^0.0.444",
     "looks-same": "^9.0.1",
     "transformation-matrix": "^2.16.1",
-    "tscircuit": "^0.0.2742",
+    "tscircuit": "^0.0.2748",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {
@@ -55,5 +57,9 @@
     "format": "biome format . --write",
     "add-test-for-part": "bun run scripts/add-test-for-part.ts"
   },
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "overrides": {
+    "@tscircuit/core": "^0.0.2100",
+    "@tscircuit/props": "^0.0.693"
+  }
 }
