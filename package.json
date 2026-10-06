@@ -15,6 +15,7 @@
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/alphabet": "^0.0.22",
     "@tscircuit/circuit-json-util": "^0.0.118",
+    "@tscircuit/core": "^0.0.2100",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
     "@tscircuit/props": "^0.0.693",
@@ -27,8 +28,7 @@
     "looks-same": "^9.0.1",
     "transformation-matrix": "^2.16.1",
     "tscircuit": "^0.0.2748",
-    "tsup": "^8.5.0",
-    "@tscircuit/core": "https://pkg.pr.new/tscircuit/core/@tscircuit/core@e11a778"
+    "tsup": "^8.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.5.2",
@@ -59,7 +59,7 @@
   },
   "types": "./dist/index.d.ts",
   "overrides": {
-    "@tscircuit/core": "https://pkg.pr.new/tscircuit/core/@tscircuit/core@e11a778",
+    "@tscircuit/core": "^0.0.2100",
     "@tscircuit/props": "^0.0.693"
   }
 }
