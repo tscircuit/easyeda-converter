@@ -246,9 +246,10 @@ const handleFabricationNoteSolidRegion = (
     pcb_component_id: "pcb_component_1",
     layer: "top",
     route,
-    // EasyEDA solid regions have no stroke width. Use its standard 1-unit
-    // document stroke so the closed region remains visible as a note path.
-    stroke_width: mil10ToMm(1),
+    // SOLIDREGION coordinates describe a filled boundary, not a stroke.
+    is_filled: solidRegion.fillStyle !== "none",
+    has_stroke: false,
+    stroke_width: 0,
   })
 }
 
