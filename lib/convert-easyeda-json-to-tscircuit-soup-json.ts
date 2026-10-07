@@ -425,7 +425,7 @@ const getCadPositionZMmFromMetadata = (easyEdaJson: BetterEasyEdaJson) => {
   return minZ - mil10ToMm(svgNodeZ)
 }
 
-/** Internal conversion also retains supplied rows for TSX inference precedence. */
+/** Internal conversion also retains source labels and supplied attribute rows. */
 export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
   easyEdaJson: BetterEasyEdaJson,
   {
@@ -440,11 +440,13 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
   }: Options = {},
 ): {
   circuitJson: AnyCircuitElement[]
+  sourcePinLabels: Record<string, string[]>
   resolvedPinAttributes: SuppliedPinAttributes
 } => {
   const resolvedCadPositionZMm =
     cadPositionZMm ?? getCadPositionZMmFromMetadata(easyEdaJson)
   const circuitElements: AnyCircuitElement[] = []
+  const sourcePinLabels: Record<string, string[]> = {}
   const resolvedPinAttributes: SuppliedPinAttributes = {}
 
   // Add source component
@@ -477,12 +479,15 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
   const physicalPinNumbers = pads.map((pad) => String(pad.number ?? "").trim())
 
   // Prepare pin labels for normalization
-  const pinLabelSets = pads.map((pad) => {
+  const schematicPinLabelSets = pads.map((pad) => {
+    const pin = pins.find((candidate) => candidate.pinNumber === pad.number)
+    return pin ? getEasyEdaPinAliases(pin.label) : []
+  })
+  const pinLabelSets = pads.map((pad, index) => {
     const padAliases = pad.number
       ? getEasyEdaPinAliases(pad.number.toString())
       : []
-    const pin = pins.find((p) => p.pinNumber === pad.number)
-    const schematicAliases = pin ? getEasyEdaPinAliases(pin.label) : []
+    const schematicAliases = schematicPinLabelSets[index]
 
     // Prefer the schematic pin name for display while retaining the footprint
     // pad identifier as a connection alias. Numeric schematic labels continue
@@ -546,6 +551,7 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     const uniquePinIndex = uniquePinIndexByPad[index]
     if (!emittedSourcePinIndexes.has(uniquePinIndex)) {
       emittedSourcePinIndexes.add(uniquePinIndex)
+      sourcePinLabels[canonicalPinName] = schematicPinLabelSets[index]
       const attributes = resolvePinAttributes(pinAttributes, {
         physicalPinNumber: pad.number,
         aliases: [...pinLabelSets[index], ...portHints].filter(
@@ -1131,7 +1137,11 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     pcb_component.center = { x: 0, y: 0 }
   }
 
-  return { circuitJson: circuitElements, resolvedPinAttributes }
+  return {
+    circuitJson: circuitElements,
+    sourcePinLabels,
+    resolvedPinAttributes,
+  }
 }
 
 export const convertEasyEdaJsonToCircuitJson = (

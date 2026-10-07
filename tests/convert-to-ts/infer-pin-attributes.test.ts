@@ -17,14 +17,14 @@ it("infers only unambiguous IC power, ground, and no-connect attributes", () => 
       pin11: ["VBUS"],
       pin12: ["VBUS2"],
       pin13: ["VBUS", "IO"],
+      pin14: ["VDD18"],
+      pin15: ["VDD33CR"],
     }),
   ).toEqual({
     pin1: { requiresGround: true },
     pin2: { requiresPower: true },
     pin3: { doNotConnect: true },
     pin7: { requiresGround: true },
-    pin8: { requiresPower: true },
     pin11: { requiresPower: true },
-    pin12: { requiresPower: true },
   })
 })

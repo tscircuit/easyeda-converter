@@ -2,16 +2,21 @@ import type { PinAttributeMap } from "@tscircuit/props"
 
 type GeneratedPinLabels = Record<string, string | readonly string[]>
 
-const POWER_PIN_LABEL = /^(?:VCC|VDD|VIN|VDDA|VBUS)\d*$/
+// A suffix can describe a voltage domain, regulator output, or pin index, so it
+// is not reliable enough to infer that power must flow into the pin.
+const POWER_PIN_LABEL = /^(?:VCC|VDD|VIN|VDDA|VBUS)$/
 const GROUND_PIN_LABEL = /^(?:GND|VSS|PGND|AGND)\d*$/
 const NO_CONNECT_PIN_LABEL = /^NC\d*$/
+
+export const isUnqualifiedPowerPinLabel = (label: string): boolean =>
+  POWER_PIN_LABEL.test(label.trim().toUpperCase())
 
 const getAttributeKind = (
   label: string,
 ): "power" | "ground" | "no-connect" | undefined => {
   const normalizedLabel = label.trim().toUpperCase()
 
-  if (POWER_PIN_LABEL.test(normalizedLabel)) return "power"
+  if (isUnqualifiedPowerPinLabel(normalizedLabel)) return "power"
   if (GROUND_PIN_LABEL.test(normalizedLabel)) return "ground"
   if (NO_CONNECT_PIN_LABEL.test(normalizedLabel)) return "no-connect"
 
