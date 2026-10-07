@@ -8,7 +8,7 @@ const POWER_PIN_LABEL = /^(?:VCC|VDD|VIN|VDDA|VBUS)$/
 const GROUND_PIN_LABEL = /^(?:GND|VSS|PGND|AGND)\d*$/
 const NO_CONNECT_PIN_LABEL = /^NC\d*$/
 
-export const isUnqualifiedPowerPinLabel = (label: string): boolean =>
+const isUnqualifiedPowerPinLabel = (label: string): boolean =>
   POWER_PIN_LABEL.test(label.trim().toUpperCase())
 
 const getAttributeKind = (

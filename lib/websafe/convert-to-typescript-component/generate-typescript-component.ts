@@ -2,10 +2,7 @@ import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
-import {
-  inferPinAttributes,
-  isUnqualifiedPowerPinLabel,
-} from "./infer-pin-attributes"
+import { inferPinAttributes } from "./infer-pin-attributes"
 
 export type GeneratedComponentType =
   | "chip"
@@ -21,7 +18,7 @@ export type GeneratedComponentType =
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
-  sourcePinLabels?: ChipProps["pinLabels"]
+  pinLabelsForInference?: ChipProps["pinLabels"]
   pinAttributes?: ChipProps["pinAttributes"]
   componentName: string
   objUrl?: string
@@ -43,7 +40,7 @@ interface Params {
 
 export const generateTypescriptComponent = ({
   pinLabels,
-  sourcePinLabels,
+  pinLabelsForInference,
   pinAttributes,
   componentName,
   objUrl,
@@ -89,32 +86,16 @@ export const generateTypescriptComponent = ({
   const pinLabelsString = Object.entries(simplifiedPinLabels)
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
-  const pinLabelsForInference = Object.fromEntries(
-    Object.entries(simplifiedPinLabels).map(([pin, labels]) => {
-      const rawSourceLabels = sourcePinLabels?.[pin]
-      if (!rawSourceLabels) return [pin, labels]
-      const sourceLabels =
-        typeof rawSourceLabels === "string"
-          ? [rawSourceLabels]
-          : rawSourceLabels
-      const sourcePowerLabels = sourceLabels.filter(isUnqualifiedPowerPinLabel)
-      if (sourcePowerLabels.length === 0) return [pin, labels]
-
-      const normalizedLabels = typeof labels === "string" ? [labels] : labels
-      const unrelatedAliases = normalizedLabels.filter(
-        (normalizedLabel) =>
-          !sourcePowerLabels.some((sourceLabel) => {
-            if (normalizedLabel === sourceLabel) return true
-            if (!normalizedLabel.startsWith(sourceLabel)) return false
-            return /^\d+$/.test(normalizedLabel.slice(sourceLabel.length))
-          }),
-      )
-
-      return [pin, [...new Set([...sourcePowerLabels, ...unrelatedAliases])]]
-    }),
+  const visiblePinLabelsForInference = Object.fromEntries(
+    Object.entries(simplifiedPinLabels).map(([pin, labels]) => [
+      pin,
+      pinLabelsForInference?.[pin] ?? labels,
+    ]),
   )
   const inferredPinAttributes =
-    componentType === "chip" ? inferPinAttributes(pinLabelsForInference) : {}
+    componentType === "chip"
+      ? inferPinAttributes(visiblePinLabelsForInference)
+      : {}
   // Caller-supplied rows replace label inference, including an explicit {}.
   const resolvedPinAttributes = { ...inferredPinAttributes, ...pinAttributes }
   const pinAttributesString = Object.entries(resolvedPinAttributes)

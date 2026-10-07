@@ -11,7 +11,7 @@ it("infers only unambiguous IC power, ground, and no-connect attributes", () => 
       pin5: ["FAULT_N"],
       pin6: ["VCC", "GND"],
       pin7: ["GND1"],
-      pin8: ["VDD2"],
+      pin8: ["VDD2"], // Numeric suffixes may be part of the genuine source alias.
       pin9: ["NC", "GPIO"],
       pin10: ["VCC", "IO"],
       pin11: ["VBUS"],
