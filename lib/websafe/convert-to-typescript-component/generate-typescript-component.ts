@@ -2,7 +2,6 @@ import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
-import { inferPinAttributes } from "./infer-pin-attributes"
 
 export type GeneratedComponentType =
   | "chip"
@@ -18,7 +17,6 @@ export type GeneratedComponentType =
 
 interface Params {
   pinLabels: ChipProps["pinLabels"]
-  pinLabelsForInference?: ChipProps["pinLabels"]
   pinAttributes?: ChipProps["pinAttributes"]
   componentName: string
   objUrl?: string
@@ -40,7 +38,6 @@ interface Params {
 
 export const generateTypescriptComponent = ({
   pinLabels,
-  pinLabelsForInference,
   pinAttributes,
   componentName,
   objUrl,
@@ -86,18 +83,7 @@ export const generateTypescriptComponent = ({
   const pinLabelsString = Object.entries(simplifiedPinLabels)
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
-  const visiblePinLabelsForInference = Object.fromEntries(
-    Object.entries(simplifiedPinLabels).map(([pin, labels]) => [
-      pin,
-      pinLabelsForInference?.[pin] ?? labels,
-    ]),
-  )
-  const inferredPinAttributes =
-    componentType === "chip"
-      ? inferPinAttributes(visiblePinLabelsForInference)
-      : {}
-  // Caller-supplied rows replace label inference, including an explicit {}.
-  const resolvedPinAttributes = { ...inferredPinAttributes, ...pinAttributes }
+  const resolvedPinAttributes = pinAttributes ?? {}
   const pinAttributesString = Object.entries(resolvedPinAttributes)
     .map(([pin, attributes]) => {
       const attributesString = Object.entries(attributes)

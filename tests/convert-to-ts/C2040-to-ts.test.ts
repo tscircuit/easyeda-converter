@@ -82,15 +82,10 @@ it("should convert C2040 into typescript file", async () => {
       pin57: ["GND"]
     } as const
 
-    const pinAttributes = {
-      pin57: {requiresGround: true}
-    } as const
-
     export const RP2040 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
-          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C2040"

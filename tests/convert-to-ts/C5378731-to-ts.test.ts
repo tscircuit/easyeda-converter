@@ -94,16 +94,10 @@ it("imports C5378731 supplier fabrication notes into its footprint string", asyn
       pin4: ["DIN"]
     } as const
 
-    const pinAttributes = {
-      pin1: {requiresPower: true},
-      pin3: {requiresGround: true}
-    } as const
-
     export const SK6812MINI_EA = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
-          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C5378731"

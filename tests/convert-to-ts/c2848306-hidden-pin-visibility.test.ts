@@ -48,16 +48,10 @@ it("preserves C2848306 EasyEDA-hidden EP pin visibility", async () => {
       pin4: ["VSS"]
     } as const
 
-    const pinAttributes = {
-      pin3: {requiresPower: true},
-      pin4: {requiresGround: true}
-    } as const
-
     export const SHT40_AD1B_R3 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
-          pinAttributes={pinAttributes}
           schPinArrangement={{"leftSide":[1,2],"rightSide":[3,4]}}
           supplierPartNumbers={{
       "jlcpcb": [

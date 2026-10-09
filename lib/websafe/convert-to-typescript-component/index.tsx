@@ -107,7 +107,7 @@ export const convertBetterEasyToTsx = async ({
   pinAttributes?: ChipProps["pinAttributes"]
 }): Promise<string> => {
   const cadPlacement = await getEasyEdaCadModelPlacement(betterEasy)
-  const { circuitJson, pinLabelsForInference, resolvedPinAttributes } =
+  const { circuitJson, resolvedPinAttributes } =
     convertEasyEdaJsonToCircuitJsonWithPinAttributes(betterEasy, {
       pinAttributes,
       useModelCdn: true,
@@ -228,7 +228,6 @@ export const convertBetterEasyToTsx = async ({
     componentName,
     manufacturerPartNumber,
     pinLabels,
-    pinLabelsForInference,
     pinAttributes: resolvedPinAttributes,
 
     objUrl: modelObjUrl,

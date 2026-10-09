@@ -22,7 +22,7 @@ it("should convert C490691 into typescript file", async () => {
   )
   const noConnectPort = sourcePorts.find((element) => element.pin_number === 8)
 
-  expect(noConnectPort?.do_not_connect).toBe(true)
+  expect(noConnectPort).not.toHaveProperty("do_not_connect")
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
@@ -59,21 +59,10 @@ it("should convert C490691 into typescript file", async () => {
       pin28: ["OSCO"]
     } as const
 
-    const pinAttributes = {
-      pin7: {requiresGround: true},
-      pin8: {doNotConnect: true},
-      pin18: {requiresGround: true},
-      pin20: {requiresPower: true},
-      pin21: {requiresGround: true},
-      pin24: {doNotConnect: true},
-      pin25: {requiresGround: true}
-    } as const
-
     export const FT232RL = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
-          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C490691"

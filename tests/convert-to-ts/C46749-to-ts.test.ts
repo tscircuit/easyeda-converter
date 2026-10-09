@@ -13,9 +13,9 @@ it("should convert C46749 into typescript file", async () => {
 
   expect(result).not.toContain("milmm")
   expect(result).not.toContain("NaNmm")
-  expect(result).toContain("pin1: {requiresGround: true}")
-  expect(result).toContain("pin8: {requiresPower: true}")
-  expect(result).toContain("pinAttributes={pinAttributes}")
+  expect(result).not.toContain("pin1: {requiresGround: true}")
+  expect(result).not.toContain("pin8: {requiresPower: true}")
+  expect(result).not.toContain("pinAttributes={pinAttributes}")
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
@@ -26,8 +26,8 @@ it("should convert C46749 into typescript file", async () => {
   const groundPort = sourcePorts.find((element) => element.pin_number === 1)
   const powerPort = sourcePorts.find((element) => element.pin_number === 8)
 
-  expect(groundPort?.requires_ground).toBe(true)
-  expect(powerPort?.requires_power).toBe(true)
+  expect(groundPort).not.toHaveProperty("requires_ground")
+  expect(powerPort).not.toHaveProperty("requires_power")
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
@@ -44,16 +44,10 @@ it("should convert C46749 into typescript file", async () => {
       pin8: ["VCC"]
     } as const
 
-    const pinAttributes = {
-      pin1: {requiresGround: true},
-      pin8: {requiresPower: true}
-    } as const
-
     export const NE555P = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
-          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C46749"

@@ -6,13 +6,13 @@ import { runTscircuitCode } from "tscircuit"
 import chipRawEasy from "../assets/C2687116.raweasy.json"
 import { wrapTsxWithBoardFor3dSnapshot } from "../fixtures/wrap-tsx-with-board-for-3d-snapshot"
 
-it("infers VBUS power metadata for C2687116", async () => {
+it("does not infer VBUS power metadata for C2687116", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
   expect(result).toContain('pin5: ["VBUS"]')
-  expect(result).toContain("pin2: {requiresGround: true}")
-  expect(result).toContain("pin5: {requiresPower: true}")
+  expect(result).not.toContain("pin2: {requiresGround: true}")
+  expect(result).not.toContain("pin5: {requiresPower: true}")
 
   const circuitJson = await runTscircuitCode(
     wrapTsxWithBoardFor3dSnapshot(result),
@@ -29,9 +29,9 @@ it("infers VBUS power metadata for C2687116", async () => {
     type: "source_port",
     name: "VBUS",
     pin_number: 5,
-    requires_power: true,
   })
-  expect(missingPowerWarning).toBeUndefined()
+  expect(vbusPort).not.toHaveProperty("requires_power")
+  expect(missingPowerWarning).toBeDefined()
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "C2687116-vbus-power-metadata-repro",

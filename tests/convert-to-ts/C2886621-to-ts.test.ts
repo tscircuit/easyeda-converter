@@ -58,15 +58,10 @@ it("should convert C2886621 into typescript file", async () => {
       pin33: ["EP"]
     } as const
 
-    const pinAttributes = {
-      pin16: {requiresGround: true}
-    } as const
-
     export const SSI2130 = (props: ChipProps<typeof pinLabels>) => {
       return (
         <chip
           pinLabels={pinLabels}
-          pinAttributes={pinAttributes}
           supplierPartNumbers={{
       "jlcpcb": [
         "C2886621"
