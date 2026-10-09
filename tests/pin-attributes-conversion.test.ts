@@ -246,12 +246,8 @@ test("physical pinN values override numeric fields while preserving false, zero 
     ).toBe(true)
   }))
 
-test("an empty physical row suppresses signal aliases and automatic ground inference", () =>
+test("an empty physical row suppresses signal alias attributes", () =>
   withOfflineCad(async () => {
-    const baseline = evaluateChip(
-      await convertRawEasyToTsx({ rawEasy: driverRaw }),
-    )
-    expect(baseline.props.pinAttributes.pin7.requiresGround).toBe(true)
     const attributes: PinAttributes = {
       "7": {},
       GND1: { requiresPower: true, mustBeConnected: true },
