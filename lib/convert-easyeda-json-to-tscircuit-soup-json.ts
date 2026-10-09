@@ -345,16 +345,6 @@ const handleHole = (hole: z.infer<typeof HoleSchema>, index: number) => {
   } as Soup.PcbHole)
 }
 
-const handleHoleCutout = (hole: z.infer<typeof HoleSchema>, index: number) => {
-  return Soup.pcb_cutout.parse({
-    type: "pcb_cutout",
-    pcb_cutout_id: `pcb_cutout_from_hole_${index + 1}`,
-    shape: "circle",
-    center: { x: milx10(hole.center.x), y: milx10(hole.center.y) },
-    radius: milx10(hole.radius),
-  } as Soup.PcbCutoutCircleInput)
-}
-
 const handleVia = (via: z.infer<typeof ViaSchema>, index: number) => {
   const holeDiameter = via.holeRadius * 2
 
@@ -655,7 +645,6 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     )
     .forEach((h, index) => {
       circuitElements.push(handleHole(h, index))
-      circuitElements.push(handleHoleCutout(h, index))
     })
 
   // Add vias
