@@ -51,8 +51,8 @@ export const generateFootprintTsx = (
   const elementStrings: string[] = []
 
   for (const cutout of su(circuitJson).pcb_cutout.list()) {
-    // Circular cutouts created alongside HOLE records are already emitted as
-    // <hole>; polygon board outlines and solid regions need their own element.
+    // Polygon board outlines and solid regions need their own element. The
+    // converter emits no circular cutouts: mounting holes are already <hole>.
     if (cutout.shape === "polygon") {
       elementStrings.push(
         `<cutout shape="polygon" points={${JSON.stringify(cutout.points)}} />`,
