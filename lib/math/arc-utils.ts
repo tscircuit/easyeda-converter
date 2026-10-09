@@ -118,13 +118,17 @@ export function generateArcFromSweep(
   const dy = endY - startY
   const distance = Math.sqrt(dx * dx + dy * dy)
 
-  // If the distance is zero or the radius is too small, return a straight line
-  if (distance === 0 || radius < distance / 2) {
+  // If the distance is zero or the radius is too small, return a straight line.
+  // A relative tolerance is required because an exact semicircle (chord == 2r)
+  // can compute as radius < distance / 2 purely from floating-point error.
+  const maxRadius = distance / 2
+  if (distance === 0 || radius < maxRadius * (1 - 1e-9)) {
     return [start, end]
   }
 
-  // Calculate the center of the arc
-  const h = Math.sqrt(radius * radius - (distance * distance) / 4)
+  // Calculate the center of the arc. Clamp the radicand: for a semicircle it
+  // can evaluate to a tiny negative number and sqrt would yield NaN.
+  const h = Math.sqrt(Math.max(0, radius * radius - (distance * distance) / 4))
   const angle = Math.atan2(dy, dx)
   // The large-arc and sweep flags together select one of the two possible
   // circle centers. Ignoring the large-arc flag puts large arcs on the
