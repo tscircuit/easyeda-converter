@@ -2,7 +2,11 @@ import type { PinAttributeMap } from "@tscircuit/props"
 
 type GeneratedPinLabels = Record<string, string | readonly string[]>
 
-const POWER_PIN_LABEL = /^(?:VCC|VDD|VIN|VDDA|VBUS)\d*$/
+// VDD with a numeric suffix names a supply rail (VDD18, VDD33) rather than a
+// supply input, and the label alone does not say which. Inferring requiresPower
+// from it marks regulator outputs as power inputs, so only a bare VDD infers
+// power. VCC/VIN/VBUS/VDDA keep accepting a suffix.
+const POWER_PIN_LABEL = /^(?:VCC|VIN|VBUS|VDDA)\d*$|^VDD$/
 const GROUND_PIN_LABEL = /^(?:GND|VSS|PGND|AGND)\d*$/
 const NO_CONNECT_PIN_LABEL = /^NC\d*$/
 
