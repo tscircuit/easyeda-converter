@@ -1,6 +1,7 @@
 export { convertEasyEdaJsonToCircuitJson } from "./convert-easyeda-json-to-tscircuit-soup-json"
 export * from "./websafe/fetch-easyeda-json"
 export { convertRawEasyToTsx as convertRawEasyEdaToTs } from "./websafe/convert-to-typescript-component"
+export * from "./websafe/convert-to-typescript-component/generate-typescript-component"
 export { normalizeManufacturerPartNumber } from "./utils/normalize-manufacturer-part-number"
 export { normalizePinLabels } from "./utils/normalize-pin-labels"
 export * from "./schemas/easy-eda-json-schema"
