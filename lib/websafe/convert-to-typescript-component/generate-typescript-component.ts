@@ -2,7 +2,7 @@ import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
-import { inferPinAttributes } from "./infer-pin-attributes"
+import { inferPinAttributes as inferAttributesFromLabels } from "./infer-pin-attributes"
 
 export type GeneratedComponentType =
   | "chip"
@@ -16,13 +16,12 @@ export type GeneratedComponentType =
   | "crystal"
   | "connector"
 
-interface Params {
+export type GenerateTypescriptComponentParams = {
   pinLabels: ChipProps["pinLabels"]
   pinAttributes?: ChipProps["pinAttributes"]
   componentName: string
   objUrl?: string
   stepUrl?: string
-  circuitJson: AnyCircuitElement[]
   supplierPartNumbers: SupplierPartNumbers
   manufacturerPartNumber: string
   componentType?: GeneratedComponentType
@@ -35,7 +34,11 @@ interface Params {
   symbolTsx?: string
   schPinArrangement?: ChipProps["schPinArrangement"]
   useSymbolPortsOnly?: boolean
-}
+  inferPinAttributes?: boolean
+} & (
+  | { circuitJson: AnyCircuitElement[]; footprint?: string }
+  | { footprint: string; circuitJson?: AnyCircuitElement[] }
+)
 
 export const generateTypescriptComponent = ({
   pinLabels,
@@ -43,7 +46,8 @@ export const generateTypescriptComponent = ({
   componentName,
   objUrl,
   stepUrl,
-  circuitJson,
+  circuitJson = [],
+  footprint,
   supplierPartNumbers,
   manufacturerPartNumber,
   componentType = "chip",
@@ -56,19 +60,31 @@ export const generateTypescriptComponent = ({
   symbolTsx,
   schPinArrangement,
   useSymbolPortsOnly = false,
-}: Params) => {
+  inferPinAttributes = true,
+}: GenerateTypescriptComponentParams): string => {
   // Ensure pinLabels is defined
   const safePinLabels = pinLabels ?? {}
   const polarizedPinMetadata = getPolarizedPinMetadata(safePinLabels)
   const polarizedPortHintsMap = polarizedPinMetadata?.portHintsMap
   const polarizedPinLabels = polarizedPinMetadata?.pinLabels
   const cadComponent = circuitJson.find((item) => item.type === "cad_component")
-  const footprintTsx = generateFootprintTsx(
-    circuitJson,
-    componentType === "diode" || componentType === "led"
-      ? { portHintsMap: polarizedPortHintsMap }
-      : undefined,
+  const footprintTsx =
+    footprint !== undefined
+      ? JSON.stringify(footprint)
+      : generateFootprintTsx(
+          circuitJson,
+          componentType === "diode" || componentType === "led"
+            ? { portHintsMap: polarizedPortHintsMap }
+            : undefined,
+        )
+  const serializedManufacturerPartNumber = JSON.stringify(
+    manufacturerPartNumber,
   )
+  const manufacturerPartNumberTsx =
+    serializedManufacturerPartNumber.slice(1, -1) !== manufacturerPartNumber ||
+    manufacturerPartNumber.includes("&")
+      ? `{${serializedManufacturerPartNumber}}`
+      : serializedManufacturerPartNumber
 
   // The first label is the internal canonical pin name. Exclude it from the
   // public aliases while preserving every EasyEDA label that follows it.
@@ -85,7 +101,9 @@ export const generateTypescriptComponent = ({
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
   const inferredPinAttributes =
-    componentType === "chip" ? inferPinAttributes(simplifiedPinLabels) : {}
+    componentType === "chip" && inferPinAttributes
+      ? inferAttributesFromLabels(simplifiedPinLabels)
+      : {}
   // Caller-supplied rows replace label inference, including an explicit {}.
   const resolvedPinAttributes = { ...inferredPinAttributes, ...pinAttributes }
   const pinAttributesString = Object.entries(resolvedPinAttributes)
@@ -193,7 +211,7 @@ export const ${componentName} = (props: DiodeProps) => {
 ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -225,7 +243,7 @@ export const ${componentName} = (props: LedProps) => {
 ${polarizedPinLabelsProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -260,7 +278,7 @@ export const ${componentName} = (props: PushButtonProps<typeof pinLabels>) => {
       pinLabels={pinLabels}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -295,7 +313,7 @@ export const ${componentName} = (props: SwitchProps) => {
       pinLabels={pinLabels}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -333,7 +351,7 @@ ${capacitorPolarizedPinLabelsProp}\
 ${polarizedProp}\
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -368,7 +386,7 @@ export const ${componentName} = (props: Omit<ResistorProps, "resistance">) => {
       resistance=${JSON.stringify(resistance)}
 ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -399,7 +417,7 @@ export const ${componentName} = (props: Omit<InductorProps, "inductance">) => {
     <inductor
       inductance=${JSON.stringify(inductance)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -436,7 +454,7 @@ export const ${componentName} = (props: ImportedCrystalProps) => {
       frequency=${JSON.stringify(crystalFrequency)}
       pinVariant=${JSON.stringify(crystalPinVariant)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -467,7 +485,7 @@ export const ${componentName} = (props: ConnectorProps) => {
     <connector
       pinLabels={pinLabels}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
       footprint={${footprintTsx}}
       ${
@@ -500,7 +518,7 @@ ${pinAttributesProp}\
 ${symbolProp}\
 ${schPinArrangementProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
-      manufacturerPartNumber="${manufacturerPartNumber}"
+      manufacturerPartNumber=${manufacturerPartNumberTsx}
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
