@@ -19,6 +19,7 @@ export type GeneratedComponentType =
 export type GenerateTypescriptComponentParams = {
   pinLabels: ChipProps["pinLabels"]
   pinAttributes?: ChipProps["pinAttributes"]
+  internallyConnectedPins?: ChipProps["internallyConnectedPins"]
   componentName: string
   objUrl?: string
   stepUrl?: string
@@ -43,6 +44,7 @@ export type GenerateTypescriptComponentParams = {
 export const generateTypescriptComponent = ({
   pinLabels,
   pinAttributes,
+  internallyConnectedPins,
   componentName,
   objUrl,
   stepUrl,
@@ -144,6 +146,11 @@ ${pinAttributesString}
     ? `      pinAttributes={pinAttributes}
 `
     : ""
+  const internallyConnectedPinsProp =
+    internallyConnectedPins !== undefined
+      ? `      internallyConnectedPins={${JSON.stringify(internallyConnectedPins)}}
+`
+      : ""
   const polarizedPinLabelsString = Object.entries(polarizedPinLabels ?? {})
     .map(([pin, labels]) => `  ${pin}: ${JSON.stringify(labels)}`)
     .join(",\n")
@@ -280,6 +287,7 @@ ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
+${internallyConnectedPinsProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -315,6 +323,7 @@ ${symbolProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
+${internallyConnectedPinsProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -487,6 +496,7 @@ export const ${componentName} = (props: ConnectorProps) => {
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
+${internallyConnectedPinsProp}\
       footprint={${footprintTsx}}
       ${
         objUrl || stepUrl
@@ -515,6 +525,7 @@ export const ${componentName} = (props: ChipProps<typeof pinLabels>) => {
     <chip
 ${useSymbolPortsOnly ? "" : "      pinLabels={pinLabels}\n"}\
 ${pinAttributesProp}\
+${internallyConnectedPinsProp}\
 ${symbolProp}\
 ${schPinArrangementProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
