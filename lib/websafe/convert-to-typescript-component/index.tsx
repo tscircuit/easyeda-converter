@@ -87,14 +87,17 @@ const getVisibleSchematicPinArrangement = (
 export const convertRawEasyToTsx = async ({
   rawEasy,
   pinAttributes,
+  internallyConnectedPins,
 }: {
   rawEasy: any
   pinAttributes?: ChipProps["pinAttributes"]
+  internallyConnectedPins?: ChipProps["internallyConnectedPins"]
 }) => {
   const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
   const result = await convertBetterEasyToTsx({
     betterEasy,
     pinAttributes,
+    internallyConnectedPins,
   })
   return result
 }
@@ -102,9 +105,11 @@ export const convertRawEasyToTsx = async ({
 export const convertBetterEasyToTsx = async ({
   betterEasy,
   pinAttributes,
+  internallyConnectedPins,
 }: {
   betterEasy: BetterEasyEdaJson
   pinAttributes?: ChipProps["pinAttributes"]
+  internallyConnectedPins?: ChipProps["internallyConnectedPins"]
 }): Promise<string> => {
   const cadPlacement = await getEasyEdaCadModelPlacement(betterEasy)
   const { circuitJson, resolvedPinAttributes } =
@@ -229,6 +234,7 @@ export const convertBetterEasyToTsx = async ({
     manufacturerPartNumber,
     pinLabels,
     pinAttributes: resolvedPinAttributes,
+    internallyConnectedPins,
 
     objUrl: modelObjUrl,
     stepUrl: modelStepUrl,
