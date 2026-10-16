@@ -26,7 +26,7 @@ const soupJson = convertEasyEdaJsonToCircuitJson(rawEasyJson)
 import { convertRawEasyEdaToTs } from "easyeda"
 
 // Convert to TypeScript React component
-const tsxComponent = await convertRawEasyEdaToTs(rawEasyJson)
+const tsxComponent = await convertRawEasyEdaToTs({ rawEasy: rawEasyJson })
 ```
 
 ### Full Example: Fetching and Converting to TSX
@@ -36,7 +36,7 @@ import { fetchEasyEDAComponent, convertRawEasyEdaToTs } from "easyeda"
 
 async function convertPartNumberToTsx(partNumber: string) {
   const rawEasyJson = await fetchEasyEDAComponent(partNumber)
-  const tsxComponent = await convertRawEasyEdaToTs(rawEasyJson)
+  const tsxComponent = await convertRawEasyEdaToTs({ rawEasy: rawEasyJson })
   return tsxComponent
 }
 
