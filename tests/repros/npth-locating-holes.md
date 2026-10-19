@@ -29,8 +29,9 @@ representation of the missing slot.
 The CLI's exact-footprint path calls `easyeda/browser.convertRawEasyToTsx`.
 That converts parsed EasyEDA data to Circuit JSON, then uses this repository's
 `lib/websafe/generate-footprint-tsx.ts`; it does not call the separate
-`circuit-json-to-tscircuit` package. The generator handles `circle` and `oval`
-holes but has no branches for `pill` or `rotated_pill`, silently omitting them.
+`circuit-json-to-tscircuit` package. Before the fix, the generator handled
+`circle` and `oval` holes but had no branches for `rect`, `pill`, or
+`rotated_pill`, silently omitting them.
 `oval` is an ellipse; a straight-sided slot with semicircular ends is `pill`.
 
 The raw converter also already supports `SOLIDREGION` paths marked `npth`,
@@ -50,16 +51,43 @@ independently verified generator bug; it is not an EasyEDA export.
 bun test tests/npth-locating-holes-repro.test.ts
 ```
 
-The reproduction test characterizes the current loss (two input holes, one
-generated hole), captures generated TSX inline, and renders both stages as PCB
-SVG snapshots using the same 12 × 4 mm board. The fix must update the
-characterization to require both holes and add numerical round-trip assertions.
+The reproduction PR characterizes the loss (two input holes, one generated
+hole). The fix updates that assertion to require both holes, checks their
+geometry and 8 mm spacing after rendering, captures generated TSX inline,
+and renders both stages as PCB SVG snapshots using the same 12 × 4 mm board.
+
+The fix adds generic dimensioned-hole branches, mapping `rotated_pill` to
+`<hole shape="pill" pcbRotation="…deg">`. It uses source dimensions and
+coordinates directly; it neither swaps axes nor substitutes an ellipse for a
+pill. No manufacturer name, part number, or locating-hole dimension is used in
+production code.
+
+`tests/npth-holes-roundtrip.test.ts` additionally renders ten holes and checks
+their output geometry: circle, ellipse (`oval`), rectangle, vertical pill,
+and rotated pills at 0°, 37°, 90°, -23°, 180°, and 270°. Asymmetric positions
+and seven-decimal dimensions detect rounding or recentering. Zero rotation is
+allowed to normalize to an ordinary pill. No hole may become plated.
 
 | Stage | Round NPTH | Slot NPTH |
 | --- | --- | --- |
 | Actual raw C5815189 | Not captured | Not captured |
 | Synthetic Circuit JSON | Ø0.71 at (-4, 0) | 1.01 × 0.71 at (4, 0), `pill` |
 | Generated footprint before fix | Preserved | Missing |
+| Generated footprint after fix | Preserved | 1.01 × 0.71 at (4, 0), `pill` |
+
+Before, the minimal generated footprint had just:
+
+```tsx
+<hole pcbX="-4mm" pcbY="0mm" diameter="0.71mm" />
+```
+
+After, it also has:
+
+```tsx
+<hole pcbX="4mm" pcbY="0mm" width="1.01mm" height="0.71mm" shape="pill" />
+```
 
 ![Intermediate PCB](../__snapshots__/npth-locating-holes-intermediate.snap.svg)
-![Generated PCB before fix](../__snapshots__/npth-locating-holes-generated.snap.svg)
+![Generated PCB before fix](npth-locating-holes-before.png)
+![Generated PCB after fix](../__snapshots__/npth-locating-holes-generated.snap.svg)
+![Generic NPTH regression PCB](../__snapshots__/npth-holes-roundtrip.snap.svg)
