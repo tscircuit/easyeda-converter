@@ -1,0 +1,19 @@
+[
+  {
+    "type": "pcb_hole",
+    "pcb_hole_id": "round_locator",
+    "hole_shape": "circle",
+    "x": -4,
+    "y": 0,
+    "hole_diameter": 0.71
+  },
+  {
+    "type": "pcb_hole",
+    "pcb_hole_id": "slotted_locator",
+    "hole_shape": "pill",
+    "x": 4,
+    "y": 0,
+    "hole_width": 1.01,
+    "hole_height": 0.71
+  }
+]
