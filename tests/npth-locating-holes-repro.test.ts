@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import type { AnyCircuitElement } from "circuit-json"
+import type { PcbHole } from "circuit-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { generateFootprintTsx } from "lib/websafe/generate-footprint-tsx"
 import { runTscircuitCode } from "tscircuit"
@@ -7,8 +7,8 @@ import locatingHoles from "./assets/npth-locating-holes.circuit.json"
 
 // Synthetic, minimal generator input using the drawing's nominal dimensions.
 // This is not a captured EasyEDA export of C5815189.
-test("reproduces a pill NPTH disappearing during footprint generation", async () => {
-  const holes = locatingHoles as AnyCircuitElement[]
+test("retains both non-plated locating holes during footprint generation", async () => {
+  const holes = locatingHoles as PcbHole[]
   const board = {
     type: "pcb_board",
     pcb_board_id: "board",
@@ -32,13 +32,21 @@ test("reproduces a pill NPTH disappearing during footprint generation", async ()
   expect(footprint).toMatchInlineSnapshot(`
     "<footprint>
             <hole pcbX="-4mm" pcbY="0mm" diameter="0.71mm" />
+    <hole pcbX="4mm" pcbY="0mm" width="1.01mm" height="0.71mm" shape="pill" />
           </footprint>"
   `)
-  // Characterize the bug on the reproduction branch; the fix must retain both.
-  expect(footprint.match(/<hole\b/g)).toHaveLength(1)
+  expect(footprint.match(/<hole\b/g)).toHaveLength(2)
   expect(
     rendered.filter((element) => element.type === "pcb_hole"),
-  ).toHaveLength(1)
+  ).toHaveLength(2)
+  const renderedHoles = rendered.filter(
+    (element) => element.type === "pcb_hole",
+  )
+  expect(renderedHoles[1]!.x - renderedHoles[0]!.x).toBe(8)
+  for (const [index, hole] of renderedHoles.entries()) {
+    const { pcb_hole_id, ...geometry } = holes[index]!
+    expect(hole).toMatchObject(geometry)
+  }
   expect(convertCircuitJsonToPcbSvg([board, ...holes])).toMatchSvgSnapshot(
     import.meta.path,
     "npth-locating-holes-intermediate",

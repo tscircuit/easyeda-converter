@@ -65,9 +65,20 @@ export const generateFootprintTsx = (
       elementStrings.push(
         `<hole pcbX="${mmStr(hole.x)}" pcbY="${mmStr(hole.y)}" diameter="${mmStr(hole.hole_diameter)}" />`,
       )
-    } else if (hole.hole_shape === "oval") {
+    } else if (
+      hole.hole_shape === "oval" ||
+      hole.hole_shape === "rect" ||
+      hole.hole_shape === "pill" ||
+      hole.hole_shape === "rotated_pill"
+    ) {
+      const shape =
+        hole.hole_shape === "rotated_pill" ? "pill" : hole.hole_shape
+      const rotationAttr =
+        hole.hole_shape === "rotated_pill"
+          ? getRotationAttr(hole.ccw_rotation)
+          : ""
       elementStrings.push(
-        `<hole pcbX="${mmStr(hole.x)}" pcbY="${mmStr(hole.y)}" width="${mmStr(hole.hole_width)}" height="${mmStr(hole.hole_height)}" shape="oval" />`,
+        `<hole pcbX="${mmStr(hole.x)}" pcbY="${mmStr(hole.y)}" width="${mmStr(hole.hole_width)}" height="${mmStr(hole.hole_height)}" shape="${shape}"${rotationAttr} />`,
       )
     }
   }
