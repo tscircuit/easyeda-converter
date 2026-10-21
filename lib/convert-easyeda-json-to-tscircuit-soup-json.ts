@@ -39,6 +39,7 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { convertDocumentShapeToFabricationPath } from "./utils/convert-document-shape-to-fabrication-path"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
@@ -705,6 +706,13 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       shape.type === "TRACK" && isSilkscreenLayer(shape.layer),
   )
   easyEdaJson.packageDetail.dataStr.shape.forEach((shape, index) => {
+    if (
+      isDocumentLayer(shape.layer) &&
+      (shape.type === "CIRCLE" || shape.type === "RECT" || shape.type === "ARC")
+    ) {
+      circuitElements.push(convertDocumentShapeToFabricationPath(shape, index))
+      return
+    }
     if (shape.type === "TRACK") {
       if (isSilkscreenLayer(shape.layer)) {
         circuitElements.push(handleSilkscreenPath(shape, index))
@@ -752,29 +760,38 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
         hasFoundDesignator = true
       }
 
+      const textProperties = {
+        pcb_component_id: "pcb_component_1",
+        text,
+        anchor_position: {
+          x: mil2mm(shape.x),
+          y: mil2mm(shape.y),
+        },
+        anchor_alignment: (
+          {
+            L: "bottom_left",
+            C: "center",
+            R: "bottom_right",
+          } as const
+        )[shape.textAnchor ?? "L"],
+        font_size: shape.size_mm || 1.0,
+        ...(shape.rotation !== undefined && {
+          ccw_rotation: shape.rotation,
+        }),
+        layer: getSideFromLayer(shape.layer),
+      }
       circuitElements.push(
-        Soup.pcb_silkscreen_text.parse({
-          type: "pcb_silkscreen_text",
-          pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
-          pcb_component_id: "pcb_component_1",
-          text,
-          anchor_position: {
-            x: mil2mm(shape.x),
-            y: mil2mm(shape.y),
-          },
-          anchor_alignment: (
-            {
-              L: "bottom_left",
-              C: "center",
-              R: "bottom_right",
-            } as const
-          )[shape.textAnchor ?? "L"],
-          font_size: shape.size_mm || 1.0,
-          ...(shape.rotation !== undefined && {
-            ccw_rotation: shape.rotation,
-          }),
-          layer: "top",
-        } as Soup.PcbSilkscreenTextInput),
+        isDocumentLayer(shape.layer)
+          ? Soup.pcb_fabrication_note_text.parse({
+              ...textProperties,
+              type: "pcb_fabrication_note_text",
+              pcb_fabrication_note_text_id: `pcb_fabrication_note_text_${index + 1}`,
+            })
+          : Soup.pcb_silkscreen_text.parse({
+              ...textProperties,
+              type: "pcb_silkscreen_text",
+              pcb_silkscreen_text_id: `pcb_silkscreen_text_${index + 1}`,
+            }),
       )
     }
   })
