@@ -141,29 +141,25 @@ export function generateArcFromSweep(
   const startAngle = Math.atan2(startY - centerY, startX - centerX)
   let endAngle = Math.atan2(endY - centerY, endX - centerX)
 
-  // Adjust end angle based on sweep and large arc flags
-  if (sweepFlag && endAngle > startAngle) {
-    endAngle -= 2 * Math.PI
-  } else if (!sweepFlag && endAngle < startAngle) {
+  // SVG sweep=1 follows increasing angles in the source coordinate system.
+  // The selected circle center already accounts for the large-arc flag.
+  // Reversing the sweep and correcting by arc size only worked away from
+  // exact semicircles, where both choices have the same absolute angle.
+  if (sweepFlag && endAngle < startAngle) {
     endAngle += 2 * Math.PI
-  }
-
-  if (
-    (!largeArcFlag && Math.abs(endAngle - startAngle) > Math.PI) ||
-    (largeArcFlag && Math.abs(endAngle - startAngle) < Math.PI)
-  ) {
-    if (endAngle > startAngle) {
-      endAngle -= 2 * Math.PI
-    } else {
-      endAngle += 2 * Math.PI
-    }
+  } else if (!sweepFlag && endAngle > startAngle) {
+    endAngle -= 2 * Math.PI
   }
 
   // Generate points along the arc
-  const numPoints = Math.max(
-    2,
-    Math.ceil(Math.abs(endAngle - startAngle) * radius),
-  )
+  const arcAngle = Math.abs(endAngle - startAngle)
+  const minNumPoints = Math.max(2, Math.ceil(arcAngle * radius))
+  // Include the midpoint of a semicircle so an axis-aligned slot retains
+  // its full radius instead of losing its extremum to an odd segment count.
+  const isSemicircle = Math.abs(arcAngle - Math.PI) < 1e-6
+  const numPoints = isSemicircle
+    ? minNumPoints + (minNumPoints % 2)
+    : minNumPoints
   const path: Point[] = []
 
   for (let i = 0; i <= numPoints; i++) {

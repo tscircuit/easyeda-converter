@@ -29,7 +29,7 @@ const getNpthCutout = (circuitJson: AnyCircuitElement[]) => {
   return cutout
 }
 
-test("captures C5815189's actual inward-pinched NPTH cutout", () => {
+test("preserves C5815189's source capsule dimensions and convexity", () => {
   const cutout = getNpthCutout(circuitJson)
   const xs = cutout.points.map((point) => point.x)
   const ys = cutout.points.map((point) => point.y)
@@ -38,11 +38,22 @@ test("captures C5815189's actual inward-pinched NPTH cutout", () => {
     throw new Error("Expected the captured round locator")
   }
 
-  // Characterize the live defect before the stacked fix. The source SVG
-  // describes a convex 1.5099792 x 0.7099808 mm capsule, not this polygon.
-  expect(cutout.points).toHaveLength(13)
-  expect(Math.max(...xs) - Math.min(...xs)).toBeCloseTo(0.7999984, 7)
+  // Preserve the actual supplier path, whose width differs from drawing A2.
+  expect(Math.max(...xs) - Math.min(...xs)).toBeCloseTo(1.5099792, 7)
   expect(Math.max(...ys) - Math.min(...ys)).toBeCloseTo(0.7099808, 7)
+  const vertices = cutout.points.slice(0, -1)
+  const turns = vertices.map((point, index) => {
+    const next = vertices[(index + 1) % vertices.length]!
+    const afterNext = vertices[(index + 2) % vertices.length]!
+    return (
+      (next.x - point.x) * (afterNext.y - next.y) -
+      (next.y - point.y) * (afterNext.x - next.x)
+    )
+  })
+  expect(
+    turns.every((turn) => turn >= -1e-10) ||
+      turns.every((turn) => turn <= 1e-10),
+  ).toBe(true)
   expect(roundHole.hole_diameter).toBeCloseTo(0.7099808, 7)
   expect((Math.max(...xs) + Math.min(...xs)) / 2 - roundHole.x).toBeCloseTo(
     7.999984,
@@ -81,19 +92,14 @@ test("preserves the captured polygon through footprint TSX and native PCB render
   )
 })
 
-test.failing(
-  "expands the actual SVG end caps outside their vertical endpoint chords",
-  () => {
-    const region = betterEasy.packageDetail.dataStr.shape.find(
-      (shape) => shape.type === "SOLIDREGION" && shape.fillStyle === "npth",
-    )
-    if (!region || region.type !== "SOLIDREGION") {
-      throw new Error("Expected the captured NPTH SOLIDREGION")
-    }
-    const route = expandEasyEdaPathData(region.pathData)
-    expect(Math.min(...route.map((point) => point.x))).toBeLessThan(4004.8422)
-    expect(Math.max(...route.map((point) => point.x))).toBeGreaterThan(
-      4007.9918,
-    )
-  },
-)
+test("expands the actual SVG end caps outside their vertical endpoint chords", () => {
+  const region = betterEasy.packageDetail.dataStr.shape.find(
+    (shape) => shape.type === "SOLIDREGION" && shape.fillStyle === "npth",
+  )
+  if (!region || region.type !== "SOLIDREGION") {
+    throw new Error("Expected the captured NPTH SOLIDREGION")
+  }
+  const route = expandEasyEdaPathData(region.pathData)
+  expect(Math.min(...route.map((point) => point.x))).toBeLessThan(4004.8422)
+  expect(Math.max(...route.map((point) => point.x))).toBeGreaterThan(4007.9918)
+})
