@@ -25,7 +25,7 @@ HOLE~3974.921~3010.956~1.3976~gge946~0
 The slot uses `SOLIDREGION npth`, which becomes a polygon `pcb_cutout`.
 `expandEasyEdaPathData` passes the SVG sweep flag into
 `generateArcFromSweep`, whose decreasing-angle sweep bends the semicircular
-end caps into the slot. The intermediate polygon spans 0.7999984 x
+end caps into the slot. Before the fix, the intermediate polygon spans 0.7999984 x
 0.7099808 mm, with 13 points and a 0.1247665 mm centerline opening.
 The generated TSX and native runtime preserve those points exactly.
 
@@ -45,10 +45,23 @@ This defect predates PR #605. The NPTH path was introduced in #593;
 before and after #605. That PR fixed omitted dimensioned `pcb_hole` shapes,
 using a synthetic fixture, and did not modify the actual `pcb_cutout` path.
 
-The reproduction PR records the current geometry and an expected-failing
-source-arc assertion. The stacked fix should turn that assertion into an
-ordinary test and regenerate the same three PCB SVG snapshots using the
-existing `convertCircuitJsonToPcbSvg` and `toMatchSvgSnapshot` helpers.
+The reproduction PR records the broken geometry and an expected-failing
+source-arc assertion. The stacked fix makes the shared helper follow SVG's
+increasing-angle sweep for sweep=1, without an arc-size correction that
+reverses exact semicircles. An even segment count for semicircles retains
+their midpoint, preserving the source slot's full 1.5099792 mm width.
+
+After the fix, the slot is convex and measures **1.5099792 x 0.7099808 mm**.
+The round diameter and relative center spacing are unchanged; normal footprint
+recentering translates the locators together. The source-arc assertion
+is now an ordinary passing test. Eight generic cases cover both sweep flags,
+both large-arc flags, and semicircular/non-semicircular arcs. Existing
+silkscreen arc and semicircle-tolerance regressions also pass.
+
+The same three PCB SVG snapshots below are regenerated with the existing
+`convertCircuitJsonToPcbSvg` and `toMatchSvgSnapshot` helpers. They change from
+the pinched outline to the outward capsule; the fixture and board coordinates
+are unchanged. The reproduction PR retains the original versions.
 
 ![Intermediate PCB](../__snapshots__/c5815189-intermediate.snap.svg)
 ![Isolated locators](../__snapshots__/c5815189-locators.snap.svg)
