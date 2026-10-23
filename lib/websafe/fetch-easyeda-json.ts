@@ -1,6 +1,7 @@
 import type { RawEasyEdaJson } from "../schemas/easy-eda-json-schema"
 import { getModelCdnUrl } from "./get-model-cdn-url"
 import { parseEasyEdaSearchResponse } from "./parse-easyeda-search-response"
+import { parseEasyEdaComponentResponse } from "./parse-easyeda-component-response"
 
 type ModelBounds = {
   min: { x: number; y: number; z: number }
@@ -166,8 +167,10 @@ export async function fetchEasyEDAComponent(
     )
   }
 
-  const componentResult = await componentResponse.json()
-  const result = componentResult.result as RawEasyEdaJson
+  const result = parseEasyEdaComponentResponse(
+    await componentResponse.json(),
+    jlcpcbPartNumber,
+  )
 
   if (includeModelMetadata) {
     const modelUuid = getModelUuidFromRawPackageDetail(result)
