@@ -23,7 +23,7 @@ import {
   pcb_via,
 } from "circuit-json"
 import * as Soup from "circuit-json"
-import { applyToPoint, compose, scale, translate } from "transformation-matrix"
+import { compose, scale, translate } from "transformation-matrix"
 import type { z } from "zod"
 import { DEFAULT_PCB_THICKNESS_MM } from "./constants"
 import { generateArcPathWithMid } from "./math/arc-utils"
@@ -39,6 +39,7 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { convertEasyEdaSolderPasteRegion } from "./utils/convert-easyeda-solder-paste-region"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
@@ -654,6 +655,20 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       circuitElements.push(handleVia(v, index))
     })
 
+  // Explicit stencil geometry is independent of copper pads and plated holes.
+  easyEdaJson.packageDetail.dataStr.shape
+    .filter(
+      (shape): shape is z.infer<typeof SolidRegionSchema> =>
+        shape.type === "SOLIDREGION" &&
+        shape.fillStyle === "solid" &&
+        (shape.layermask === 5 || shape.layermask === 6),
+    )
+    .forEach((solidRegion, regionIndex) => {
+      circuitElements.push(
+        convertEasyEdaSolderPasteRegion(solidRegion, regionIndex),
+      )
+    })
+
   // Add pcb cutouts from solid regions marked as cutout
   easyEdaJson.packageDetail.dataStr.shape
     .filter(
@@ -933,6 +948,7 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       (e) =>
         e.type !== "pcb_component" &&
         e.type !== "cad_component" &&
+        e.type !== "pcb_solder_paste" &&
         e.type !== "pcb_silkscreen_circle",
     )
 
@@ -944,33 +960,12 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
         scale(1, -1),
       )
 
-      // Transform all PCB elems except polygon SMT pads (no x,y) and the cad
+      // The shared transformer handles points-only copper, paste and cutouts.
+      // Applying a second local transform would move these contours twice.
       const elementsForTransform = circuitElements.filter(
-        (e) =>
-          !(e.type === "pcb_smtpad" && e.shape === "polygon") &&
-          e.type !== "cad_component",
+        (e) => e.type !== "cad_component",
       )
       transformPCBElements(elementsForTransform, matrix)
-
-      // Manually transform polygons/cutouts
-      for (const e of circuitElements) {
-        if (e.type === "pcb_cutout") {
-          if (e.shape === "polygon") {
-            e.points = e.points.map((p) => applyToPoint(matrix, p))
-          } else if (e.shape === "circle" || e.shape === "rect") {
-            e.center = applyToPoint(matrix, e.center)
-          } else if ("route" in e) {
-            const cutoutPath = e as unknown as {
-              route: { x: number; y: number }[]
-            }
-            cutoutPath.route = cutoutPath.route.map((p) =>
-              applyToPoint(matrix, p),
-            )
-          }
-        } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
-          e.points = e.points.map((p) => applyToPoint(matrix, p))
-        }
-      }
 
       const cad = circuitElements.find(
         (e): e is Soup.CadComponent => e.type === "cad_component",

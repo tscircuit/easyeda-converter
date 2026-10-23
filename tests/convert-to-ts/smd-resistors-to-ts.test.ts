@@ -106,7 +106,8 @@ for (const resistorCase of resistorCases) {
     expect(result).toContain(`"${resistorCase.partNumber}"`)
     expect(result).toContain(`objUrl: "${expectedObjUrl}"`)
     expect(result).toContain(`stepUrl: "${expectedStepUrl}"`)
-    expect(result.match(/<footprint>/g)).toHaveLength(1)
+    expect(result.match(/<footprint noSolderPaste>/g)).toHaveLength(1)
+    expect(result.match(/<solderpaste /g)).toHaveLength(2)
     expect(result.match(/<smtpad /g)).toHaveLength(2)
     expect(result).toContain(
       `<smtpad portHints={["pin1"]} pcbX="-${resistorCase.padX}" pcbY="0mm" width="${resistorCase.padWidth}" height="${resistorCase.padHeight}" shape="rect" />`,

@@ -69,7 +69,8 @@ test("round-trips NPTH shapes, dimensions, positions, and rotations", async () =
       expect(result.hole_height).toBeCloseTo(source.hole_height, 7)
       if (source.hole_shape === "rotated_pill") {
         const rotation = "ccw_rotation" in result ? result.ccw_rotation : 0
-        expect(rotation).toBe(source.ccw_rotation)
+        // Native output can normalize an equivalent angle into [0, 360).
+        expect((rotation + 360) % 360).toBe((source.ccw_rotation + 360) % 360)
       }
     }
   }

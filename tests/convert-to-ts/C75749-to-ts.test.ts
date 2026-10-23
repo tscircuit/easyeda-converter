@@ -116,10 +116,10 @@ it("should convert C75749 into typescript file", async () => {
     <silkscreenpath route={[{"x":9.500107999999983,"y":14.569922599999984},{"x":15.500121399999955,"y":14.569922599999984},{"x":15.500121399999955,"y":10.45992320000002}]} />
     <silkscreenpath route={[{"x":15.500121399999955,"y":-14.540077600000004},{"x":15.500121399999955,"y":-10.430078200000011},{"x":9.500107999999983,"y":-10.430078200000011}]} />
     <silkscreenpath route={[{"x":9.500107999999983,"y":-14.570074999999989},{"x":15.500121399999955,"y":-14.570074999999989}]} />
-    <silkscreentext text="1" pcbX="-1.97866mm" pcbY="7.348601mm" anchorAlignment="bottom_left" pcbRotation="270deg" fontSize="1.27mm" />
-    <silkscreentext text="5" pcbX="-1.87706mm" pcbY="-6.799199mm" anchorAlignment="bottom_left" pcbRotation="270deg" fontSize="1.27mm" />
-    <silkscreentext text="9" pcbX="1.17094mm" pcbY="-6.697599mm" anchorAlignment="bottom_left" pcbRotation="270deg" fontSize="1.27mm" />
-    <silkscreentext text="6" pcbX="1.01854mm" pcbY="7.374001mm" anchorAlignment="bottom_left" pcbRotation="270deg" fontSize="1.27mm" />
+    <silkscreentext text="1" pcbX="-1.97866mm" pcbY="7.348601mm" anchorAlignment="bottom_left" pcbRotation="90.00000000000001deg" fontSize="1.27mm" />
+    <silkscreentext text="5" pcbX="-1.87706mm" pcbY="-6.799199mm" anchorAlignment="bottom_left" pcbRotation="90.00000000000001deg" fontSize="1.27mm" />
+    <silkscreentext text="9" pcbX="1.17094mm" pcbY="-6.697599mm" anchorAlignment="bottom_left" pcbRotation="90.00000000000001deg" fontSize="1.27mm" />
+    <silkscreentext text="6" pcbX="1.01854mm" pcbY="7.374001mm" anchorAlignment="bottom_left" pcbRotation="90.00000000000001deg" fontSize="1.27mm" />
     <silkscreentext text="{NAME}" pcbX="6.309614mm" pcbY="16.519527mm" anchorAlignment="center" fontSize="1mm" />
     <courtyardoutline outline={[{"x":-2.9998548000000085,"y":15.699981800000018},{"x":16.00010819999997,"y":15.699981800000018},{"x":16.00010819999997,"y":-15.699956400000005},{"x":-2.9998548000000085,"y":-15.699956400000005},{"x":-2.9998548000000085,"y":15.699981800000018}]} />
           </footprint>}
