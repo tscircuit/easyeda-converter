@@ -13,11 +13,14 @@ const safeNumber = (defaultValue = 0) =>
 const tenthmil = z
   .union([z.number(), z.string()])
   .optional()
-  .transform((n) =>
-    typeof n === "string" && n.endsWith("mil")
-      ? n
-      : `${Number.parseFloat(n as string) * 10}mil`,
-  )
+  .transform((n) => {
+    if (typeof n === "string" && n.endsWith("mil")) return n
+    // parseFloat(undefined)/non-numeric input is NaN, which previously produced
+    // the nonsensical unit string "NaNmil" (and later "NaNmm" in output). Fall
+    // back to 0, matching the safeNumber(0) convention above.
+    const parsed = Number.parseFloat(n as string)
+    return `${(Number.isNaN(parsed) ? 0 : parsed) * 10}mil`
+  })
   .pipe(z.string())
 
 export const PointSchema = z
