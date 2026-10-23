@@ -92,19 +92,13 @@ test("captures 16 explicit top-paste regions without losing copper or slots", ()
   ).toHaveLength(4)
 })
 
-test.failing(
-  "preserves all supplier paste vertices in intermediate Circuit JSON",
-  () => {
-    expectSupplierPasteGeometry(circuitJson)
-  },
-)
+test("preserves all supplier paste vertices in intermediate Circuit JSON", () => {
+  expectSupplierPasteGeometry(circuitJson)
+})
 
-test.failing(
-  "preserves the exact stencil through generated TSX and native rendering",
-  async () => {
-    expectSupplierPasteGeometry(await renderNativeFootprint())
-  },
-)
+test("preserves the exact stencil through generated TSX and native rendering", async () => {
+  expectSupplierPasteGeometry(await renderNativeFootprint())
+})
 
 test("snapshots intermediate and native PCB/paste with the existing renderers", async () => {
   const intermediate = [board, ...circuitJson]

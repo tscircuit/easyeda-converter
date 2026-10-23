@@ -2,8 +2,6 @@ name: Test and Benchmark
 
 on:
   pull_request:
-    branches:
-      - main
 
 jobs:
   build:

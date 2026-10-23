@@ -31,6 +31,7 @@ export const generateFootprintTsx = (
   const holes = su(circuitJson).pcb_hole.list()
   const platedHoles = su(circuitJson).pcb_plated_hole.list()
   const smtPads = su(circuitJson).pcb_smtpad.list()
+  const solderPaste = su(circuitJson).pcb_solder_paste.list()
   const vias = su(circuitJson).pcb_via.list()
   const silkscreenPaths = su(circuitJson).pcb_silkscreen_path.list()
   const silkscreenCircles = su(circuitJson).pcb_silkscreen_circle.list()
@@ -49,6 +50,30 @@ export const generateFootprintTsx = (
   const courtyardOutlines = su(circuitJson).pcb_courtyard_outline.list()
 
   const elementStrings: string[] = []
+
+  for (const aperture of solderPaste) {
+    const layerAttr = getLayerAttr(aperture.layer)
+    if (aperture.shape === "polygon") {
+      const holesAttr = aperture.holes
+        ? ` holes={${JSON.stringify(aperture.holes)}}`
+        : ""
+      elementStrings.push(
+        `<solderpaste shape="polygon" points={${JSON.stringify(aperture.points)}}${holesAttr}${layerAttr} />`,
+      )
+    } else if (aperture.shape === "circle") {
+      elementStrings.push(
+        `<solderpaste shape="circle" pcbX="${mmStr(aperture.x)}" pcbY="${mmStr(aperture.y)}" radius="${mmStr(aperture.radius)}"${layerAttr} />`,
+      )
+    } else if (aperture.shape === "rect") {
+      elementStrings.push(
+        `<solderpaste shape="rect" pcbX="${mmStr(aperture.x)}" pcbY="${mmStr(aperture.y)}" width="${mmStr(aperture.width)}" height="${mmStr(aperture.height)}"${layerAttr} />`,
+      )
+    } else {
+      throw new Error(
+        `Unsupported solder-paste shape for footprint TSX: ${aperture.shape}`,
+      )
+    }
+  }
 
   for (const cutout of su(circuitJson).pcb_cutout.list()) {
     // Polygon board outlines and solid regions need their own element. The
@@ -252,7 +277,7 @@ export const generateFootprintTsx = (
   }
 
   return `
-      <footprint>
+      <footprint${solderPaste.length > 0 ? " noSolderPaste" : ""}>
         ${elementStrings.join("\n")}
       </footprint>
   `.trim()
