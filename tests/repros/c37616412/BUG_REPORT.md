@@ -41,7 +41,7 @@ supplier JSON is unchanged.
 
 The normal passing regression and four argument/conversion tests cover the real
 part, repeated M/L and A groups, and generated TSX. The focused suite, including
-existing NPTH and arc cases, passes **31 tests**. Typecheck, formatting and library
+existing NPTH and arc cases, passes **33 tests**. Typecheck, formatting and library
 build also pass. A focused GitHub workflow runs for source-path changes on stacked
 PRs, since the repository's existing workflows filter for a `main` base.
 
@@ -49,6 +49,12 @@ The existing C41430893 PCB snapshot also changes: its document region `gge414`
 contains another repeated A group. The fix restores two arc points at that
 marking's rounded tip; all other Circuit JSON records for that part are unchanged.
 This is the same parser correction, not a supplier-footprint edit.
+
+Comparing old/new conversion for all 115 captured raw fixtures changes only three
+fabrication records: C37616412 (12→19 points), C2961147 (3→5), and C410353 (83→85).
+The latter two snapshots are regenerated as well; their restored vertices come
+from the original repeated argument groups, and their source fixtures and other
+Circuit JSON records stay unchanged.
 
 ## Independent latest-CLI confirmation
 
