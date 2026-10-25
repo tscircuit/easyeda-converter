@@ -1,0 +1,22 @@
+Building 1 file(s)...
+Building index.circuit.tsx...
+Generating circuit JSON...
+Circuit JSON written to dist/index/circuit.json
+U1 has no pin with requires_power=true
+U1 has no pin with requires_ground=true
+All pins on U1 are underspecified (no pinAttributes set)
+No <schematicsheet> was found. Add a <schematicsheet> to define the schematic drawing area.
+Datasheet information for chip "U1" could not be fetched: Proxy refused to open a tunnel: 403 Forbidden. Pin attributes may not be populated.
+Generating preview images...
+[index] Generating PCB SVG...
+[index] Written pcb.svg
+[index] Generating PCB PNG...
+[index] Written pcb.png
+
+Build complete
+  Circuits  1 passed
+  Options   pcb-png, pcb-svgs
+  Output    dist
+
+✓ Done
+Build exiting with code 0: build finished successfully
