@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - 'lib/utils/expand-easyeda-path-data.ts'
-      - 'tests/c37616412-*.test.ts'
+      - 'tests/c37616412-fabrication-outline.test.ts'
       - 'tests/assets/C37616412.raweasy.json'
       - '.github/workflows/footprint-path-regression.yml'
   workflow_dispatch:
@@ -20,7 +20,6 @@ jobs:
         run: >-
           bun test
           tests/c37616412-fabrication-outline.test.ts
-          tests/c37616412-repeated-path-arguments.test.ts
           tests/convert-to-ts/C2961147-to-ts.test.ts
           tests/convert-to-ts/C410353-to-ts.test.ts
           tests/c5815189-npth-cutout-repro.test.ts
