@@ -23,8 +23,32 @@ imported USB-C footprint; [index.circuit.tsx](index.circuit.tsx) is generated
 rather than hand-edited. Only formatting is applied after generation.
 
 The reproduction branch records the malformed PCB, fabrication-only and native
-PCB SVG snapshots. Its source-geometry assertion is `test.failing`; the stacked
-fix must make it an ordinary passing test and change these same snapshots.
+PCB SVG snapshots with a `test.failing` source-geometry assertion. The fix branch
+changes the shared parser directly and turns that assertion into a passing test.
+All three SVG snapshots and the evidence SVGs are regenerated from the same raw
+fixture, without editing imported definitions.
+
+## Direct upstream fix
+
+The parser now consumes every complete M/L pair and A seven-value group, updating
+the endpoint each time. The native route changes from **12 to 19 points** and
+removes the **9.961452 mm** diagonal. Its filled area changes from 24.770837 to
+4.760562 mm²; fill/stroke flags are preserved. All **117 other native circuit
+records** are unchanged (apart from the expected source digest). The original
+supplier JSON is unchanged.
+
+![Native PCB before and after the direct parser fix](before-after.png)
+
+The normal passing regression and four argument/conversion tests cover the real
+part, repeated M/L and A groups, and generated TSX. The focused suite, including
+existing NPTH and arc cases, passes **31 tests**. Typecheck, formatting and library
+build also pass. A focused GitHub workflow runs for source-path changes on stacked
+PRs, since the repository's existing workflows filter for a `main` base.
+
+The existing C41430893 PCB snapshot also changes: its document region `gge414`
+contains another repeated A group. The fix restores two arc points at that
+marking's rounded tip; all other Circuit JSON records for that part are unchanged.
+This is the same parser correction, not a supplier-footprint edit.
 
 ## Independent latest-CLI confirmation
 
@@ -61,9 +85,9 @@ Expected: preserve the supplier's thin U-shaped filled document marking and
 leave its interior empty. Actual: a filled wedge with a diagonal across the
 connector body, already present in generated TSX and Circuit JSON.
 
-![Native PCB with an annotation overlay](pcb-highlighted.png)
+![Baseline native PCB with an annotation overlay](pcb-highlighted.png)
 
-- [Native PCB SVG](pcb.svg), [PNG](pcb.png), [complete Circuit JSON](circuit.json).
+- [Current native PCB SVG](pcb.svg), [PNG](pcb.png), [complete Circuit JSON](circuit.json).
 - [Fabrication SVG](fabrication.svg), [PNG](fabrication.png),
   [native fabrication record](fabrication.json).
 - [Literal supplier region](source-document-region.txt),
@@ -72,9 +96,9 @@ connector body, already present in generated TSX and Circuit JSON.
   [fabrication](../../__snapshots__/c37616412-fabrication.snap.svg),
   [native PCB](../../__snapshots__/c37616412-native.snap.svg).
 
-The native Circuit JSON has one component, 12 SMT pads, four plated shell holes
+The baseline native Circuit JSON has one component, 12 SMT pads, four plated shell holes
 and zero PCB traces. `pcb_fabrication_note_path_0` has `is_filled:true`,
-`has_stroke:false`, `stroke_width:0` and a malformed 12-point route. Points 9→10:
+`has_stroke:false`, `stroke_width:0` and a baseline 12-point route (19 points after the fix). Baseline points 9→10:
 
 ```json
 [

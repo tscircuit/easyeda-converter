@@ -17,33 +17,42 @@ export const expandEasyEdaPathData = (pathData: string) => {
         ?.map(Number) ?? []
 
     if ((command === "M" || command === "L") && values.length >= 2) {
-      currentPoint = { x: values[0]!, y: values[1]! }
-      rawRoute.push(currentPoint)
+      // SVG commands may omit repeated command letters between argument groups.
+      // Extra M coordinate pairs are implicit L commands.
+      for (let offset = 0; offset + 1 < values.length; offset += 2) {
+        currentPoint = { x: values[offset]!, y: values[offset + 1]! }
+        rawRoute.push(currentPoint)
+      }
     } else if (command === "A" && currentPoint && values.length >= 7) {
-      const [radiusX, , , largeArcFlag, sweepFlag, endX, endY] = values
-      const generatedArcRoute = generateArcFromSweep(
-        currentPoint.x,
-        currentPoint.y,
-        endX!,
-        endY!,
-        radiusX!,
-        largeArcFlag === 1,
-        sweepFlag === 1,
-      )
-      const maxArcSegments = 16
-      const arcRoute =
-        generatedArcRoute.length <= maxArcSegments + 1
-          ? generatedArcRoute
-          : Array.from({ length: maxArcSegments + 1 }, (_, pointIndex) =>
-              generatedArcRoute.at(
-                Math.round(
-                  (pointIndex * (generatedArcRoute.length - 1)) /
-                    maxArcSegments,
+      for (let offset = 0; offset + 6 < values.length; offset += 7) {
+        const [radiusX, , , largeArcFlag, sweepFlag, endX, endY] = values.slice(
+          offset,
+          offset + 7,
+        )
+        const generatedArcRoute = generateArcFromSweep(
+          currentPoint.x,
+          currentPoint.y,
+          endX!,
+          endY!,
+          radiusX!,
+          largeArcFlag === 1,
+          sweepFlag === 1,
+        )
+        const maxArcSegments = 16
+        const arcRoute =
+          generatedArcRoute.length <= maxArcSegments + 1
+            ? generatedArcRoute
+            : Array.from({ length: maxArcSegments + 1 }, (_, pointIndex) =>
+                generatedArcRoute.at(
+                  Math.round(
+                    (pointIndex * (generatedArcRoute.length - 1)) /
+                      maxArcSegments,
+                  ),
                 ),
-              ),
-            ).filter((point): point is { x: number; y: number } => !!point)
-      rawRoute.push(...arcRoute.slice(1))
-      currentPoint = { x: endX!, y: endY! }
+              ).filter((point): point is { x: number; y: number } => !!point)
+        rawRoute.push(...arcRoute.slice(1))
+        currentPoint = { x: endX!, y: endY! }
+      }
     }
   }
 

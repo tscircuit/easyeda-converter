@@ -67,14 +67,11 @@ test("preserves the imported region through generated TSX and native PCB renderi
   )
 })
 
-test.failing(
-  "the source U marking must not gain a body-spanning diagonal",
-  () => {
-    const route = getFabricationNote(circuitJson).route
-    for (let i = 1; i < route.length; i++) {
-      const dx = Math.abs(route[i]!.x - route[i - 1]!.x)
-      const dy = Math.abs(route[i]!.y - route[i - 1]!.y)
-      expect(dx > 1 && dy > 1).toBe(false)
-    }
-  },
-)
+test("the source U marking must not gain a body-spanning diagonal", () => {
+  const route = getFabricationNote(circuitJson).route
+  for (let i = 1; i < route.length; i++) {
+    const dx = Math.abs(route[i]!.x - route[i - 1]!.x)
+    const dy = Math.abs(route[i]!.y - route[i - 1]!.y)
+    expect(dx > 1 && dy > 1).toBe(false)
+  }
+})
