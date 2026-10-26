@@ -27,8 +27,12 @@ The test uses the real converter and captured supplier data. It removes only
 the parsed CAD model node to avoid a model download; schematic pins and PCB
 pads are retained. Rendering is a footprint/port check with PCB routing disabled.
 
-The generation check and explicit-value control pass. The proposed
-self-contained-import expectation intentionally fails:
+The tests characterize the current incorrect output and commit SVG snapshots
+using `convertCircuitJsonToSchematicSvg` and `toMatchSvgSnapshot`. They pass while
+the captured behavior remains unchanged. A future fix should update the failure
+assertions and snapshot to require the component's four pins.
+
+Without an override, the captured diagnostic is:
 
 ```text
 Could not create crystal "X1". Invalid props for crystal "X1": loadCapacitance (Required)
@@ -40,6 +44,16 @@ With `<ABM11W_32_0000MHZ_6_B1U_T3 name="X1" loadCapacitance="6pF" />`,
 all four physical pins and pads render, with a recorded load capacitance of
 `6e-12` F. The supplied `6pF` value is a control/workaround, not a default
 inferred by the converter.
+
+## Visual snapshots
+
+- [Missing load capacitance: rejected crystal, no pins](../convert-to-ts/__snapshots__/C5548373-missing-load-capacitance-schematic.snap.svg)
+- [Explicit 6 pF: four-pin crystal](../convert-to-ts/__snapshots__/C5548373-explicit-6pf-schematic.snap.svg)
+
+The SVGs are native schematic renders of the evaluator's Circuit JSON. The
+failure snapshot enables the native error-text overlay and trims only the
+serialized React-props suffix from its diagnostic text. Structural assertions
+use the unmodified runtime output. No symbol or missing pins are drawn manually.
 
 The no-override case is deliberately evaluated as a TSX string. It is not a
 type-correct consumer of the current generated API, which requires this prop.

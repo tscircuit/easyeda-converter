@@ -1,4 +1,6 @@
 import { beforeAll, expect, it } from "bun:test"
+import type { AnyCircuitElement } from "circuit-json"
+import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
@@ -25,12 +27,25 @@ const renderImportedCrystal = (instanceProps = "") =>
 
     export default () => (
       <board width={10} height={10} routingDisabled>
-        <schematicsheet name="Crystal">
-          <ABM11W_32_0000MHZ_6_B1U_T3 name="X1" ${instanceProps} />
-        </schematicsheet>
+        <ABM11W_32_0000MHZ_6_B1U_T3 name="X1" ${instanceProps} />
       </board>
     )
   `)
+
+const getSnapshotSvg = (circuitJson: AnyCircuitElement[]) =>
+  convertCircuitJsonToSchematicSvg(
+    circuitJson.map((element) =>
+      element.type === "source_failed_to_create_component_error"
+        ? {
+            ...element,
+            // Keep the actual error, excluding the verbose serialized React
+            // props. Assertions below still use the original Circuit JSON.
+            message: element.message.split(" Details:")[0],
+          }
+        : element,
+    ),
+    { showErrorsInTextOverlay: true },
+  )
 
 it("converts captured C5548373 data to a four-pin 32 MHz crystal", () => {
   expect(generatedTsx).toContain("<crystal")
@@ -70,12 +85,16 @@ it("renders all four C5548373 pins with the explicit 6 pF workaround", async () 
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),
   ).toHaveLength(4)
+
+  await expect(getSnapshotSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C5548373-explicit-6pf-schematic",
+  )
 })
 
-// Reproduction-only regression: this currently fails because the generated
-// import does not supply loadCapacitance. The source fixture has no CL field;
-// the control above supplies a known value without proposing an inferred default.
-it("renders C5548373 without an additional load-capacitance override", async () => {
+// Characterize the current failure and snapshot it. A fix should update these
+// assertions and the snapshot to require the component's four pins instead.
+it("snapshots C5548373 rejection when loadCapacitance is omitted", async () => {
   const circuitJson = await renderImportedCrystal()
   const creationErrors = circuitJson
     .filter(
@@ -83,14 +102,21 @@ it("renders C5548373 without an additional load-capacitance override", async () 
     )
     .map((error) => error.message.split(" Details:")[0])
 
-  expect(creationErrors).toEqual([])
+  expect(creationErrors).toEqual([
+    'Could not create crystal "X1". Invalid props for crystal "X1": loadCapacitance (Required)',
+  ])
   expect(
     circuitJson.filter((element) => element.type === "source_port"),
-  ).toHaveLength(4)
+  ).toHaveLength(0)
   expect(
     circuitJson.filter((element) => element.type === "pcb_port"),
-  ).toHaveLength(4)
+  ).toHaveLength(0)
   expect(
     circuitJson.filter((element) => element.type === "pcb_smtpad"),
-  ).toHaveLength(4)
+  ).toHaveLength(0)
+
+  await expect(getSnapshotSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "C5548373-missing-load-capacitance-schematic",
+  )
 })
