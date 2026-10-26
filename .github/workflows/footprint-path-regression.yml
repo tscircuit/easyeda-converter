@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'lib/utils/expand-easyeda-path-data.ts'
+      - 'tests/expand-easyeda-path-data.test.ts'
       - 'tests/c37616412-fabrication-outline.test.ts'
       - 'tests/assets/C37616412.raweasy.json'
       - '.github/workflows/footprint-path-regression.yml'
@@ -19,6 +20,7 @@ jobs:
       - name: Converter, native PCB, and existing arc regressions
         run: >-
           bun test
+          tests/expand-easyeda-path-data.test.ts
           tests/c37616412-fabrication-outline.test.ts
           tests/convert-to-ts/C2961147-to-ts.test.ts
           tests/convert-to-ts/C410353-to-ts.test.ts
