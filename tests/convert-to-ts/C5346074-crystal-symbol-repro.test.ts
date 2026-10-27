@@ -20,7 +20,7 @@ test("C5346074 imports as a native crystal component", async () => {
     ${result}
     export default () => (
       <board>
-        <${componentName} name="X1" />
+        <${componentName} name="X1" loadCapacitance="10pF" />
       </board>
     )
   `)
@@ -30,7 +30,7 @@ test("C5346074 imports as a native crystal component", async () => {
   ).toEqual([])
   expect(
     circuitJson.filter((element) => element.type === "schematic_component"),
-  ).toHaveLength(2)
+  ).toHaveLength(1)
 
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
