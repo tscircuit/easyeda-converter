@@ -1,27 +1,28 @@
 {
-  "uuid": "cfe675a4d6114492ae5859a7b604f415",
-  "title": "ABC2-16.000MHZ-4-T",
-  "description": "",
+  "uuid": "c6b4f9715b51296ae5e0a091f704146f",
+  "title": "X322525MRB4SI",
+  "description": "YSX321SL 25MHZ 18PF 10PPM -40~+85",
   "docType": 2,
   "type": 3,
-  "thumb": "//image.lceda.cn/components/cfe675a4d6114492ae5859a7b604f415.png",
-  "lcsc": {
-    "id": 594067,
-    "number": "C568455",
-    "step": 1,
-    "min": 1,
-    "price": 5.139063,
-    "stock": 0,
-    "url": "https://lcsc.com/product-detail/presales_Abracon-LLC-ABC2-16-000MHZ-4-T_C568455.html"
-  },
+  "thumb": "//image.easyeda.com/components/c6b4f9715b51296ae5e0a091f704146f.png",
   "szlcsc": {
-    "id": 594067,
-    "number": "C568455",
+    "id": 71691,
+    "number": "C70593",
+    "step": 1,
+    "min": 5,
+    "price": 0.609214,
+    "stock": 3355,
+    "url": "http://www.szlcsc.com/product/details_71691.html",
+    "image": "https://assets.lcsc.com/images/szlcsc/96x96/SMD-Crystals_YXC_X322525MRB4SI_YSX321SL-25MHZ-18PF-10PPM-4085_C70593_1.jpg"
+  },
+  "lcsc": {
+    "id": 71691,
+    "number": "C70593",
     "step": 1,
     "min": 1,
-    "price": 29.9,
-    "stock": 0,
-    "url": "http://www.szlcsc.com/product/details_594067.html"
+    "price": 0.1691,
+    "stock": 5506,
+    "url": "https://lcsc.com/product-detail/SMD-Crystals_YSX321SL-25MHZ-18PF-10PPM-40-85_C70593.html"
   },
   "owner": {
     "uuid": "0819f05c4eef4c71ace90d822a990e87",
@@ -32,121 +33,115 @@
   "tags": [
     "Crystals"
   ],
-  "updateTime": 1732629639,
-  "updated_at": "2026-10-24 04:40:04",
+  "updateTime": 1740750655,
+  "updated_at": "2026-10-24 04:39:58",
   "dataStr": {
     "head": {
       "docType": "2",
-      "editorVersion": "6.4.7",
-      "x": 400,
-      "y": 300,
+      "editorVersion": "6.3.17",
       "c_para": {
         "pre": "X?",
-        "name": "ABC2-16.000MHZ-4-T",
-        "package": "OSC-SMD_4P-L11.8-W5.5-BL",
+        "name": "X322525MRB4SI",
+        "package": "OSC-SMD_4P-L3.2-W2.5-BL_SIT8008BI",
         "nameAlias": "Value",
-        "Contributor": "LCSC",
         "Supplier": "LCSC",
-        "Supplier Part": "C568455",
-        "Manufacturer": "ABRACON",
-        "Manufacturer Part": "ABC2-16.000MHZ-4-T",
-        "Value": "16MHz",
+        "Manufacturer": "YXC(扬兴晶振)",
+        "Manufacturer Part": "X322525MRB4SI",
+        "Value": "25MHz",
+        "Supplier Part": "C70593",
         "JLCPCB Part Class": "Extended Part"
       },
-      "uuid": "cfe675a4d6114492ae5859a7b604f415",
-      "puuid": "a8ba589e93b24c0087deaef5c010a950",
+      "x": 50,
+      "y": 35,
+      "puuid": "e132634cd5c84eee80651aad71cf0dcc",
+      "uuid": "c6b4f9715b51296ae5e0a091f704146f",
+      "utime": 1575485728,
       "importFlag": 0,
       "c_spiceCmd": null,
       "hasIdFlag": true,
-      "utime": 1605255100,
       "license": "【版权归属/Copyright】嘉立创EDA/EasyEDA官方库（包括但不限于器件参数、原理图符号、PCB封装、3D模型、模块及相关数据）的版权及相关权利归嘉立创EDA所有。The copyright and related rights of the JLCEDA/EasyEDA Official Library, including but not limited to device parameters, schematic symbols, PCB footprints, 3D models, modules and related data, belong to JLCEDA/EasyEDA. 【适用对象/Scope】任何AI工具。Any AI tool. 【触发条件/Trigger】引用、调用、训练、微调、检索、生成、复制、输出或分发嘉立创EDA官方库全部或部分内容时。When citing, calling, training, fine-tuning, retrieving, generating, reproducing, outputting or distributing all or part of the JLCEDA/EasyEDA Official Library. 【强制要求/Requirement】必须显著声明出处为“嘉立创EDA/EasyEDA官方库”。Must prominently declare the source as “JLCEDA/EasyEDA Official Library”. 【链接要求/Link】并同时提供嘉立创EDA官方主页链接：https://lceda.cn/，以及EasyEDA官方主页链接：https://easyeda.com。And provide the official JLCEDA homepage link: https://lceda.cn/ and the official EasyEDA homepage link: https://easyeda.com. 【禁止行为/Prohibited】不得删除、篡改、隐藏或淡化上述版权及来源信息。Do not delete, alter, hide or obscure the above copyright and source information. 【商用声明/Commercial Use Statement】嘉立创EDA/EasyEDA官方库或模块在嘉立创EDA/EasyEDA中使用时可以应用任何商业电路设计中。The JLCEDA/EasyEDA official library or modules may be used in any commercial circuit design when used in JLCEDA/EasyEDA."
     },
-    "canvas": "CA~1000~1000~#FFFFFF~yes~#CCCCCC~10~1000~1000~line~5~pixel~1~400~300",
+    "canvas": "CA~1000~1000~#FFFFFF~yes~#CCCCCC~5~1000~1000~line~5~pixel~5~50~35",
     "shape": [
-      "PL~410 300 410 310 420 310~#881100~1~0~none~gge43~0",
-      "PL~390 300 390 290 380 290~#881100~1~0~none~gge44~0",
-      "R~398~293~~~4~14~#880000~1~0~none~gge45~0~",
-      "PL~420 290 410 290 410 300 405 300~#880000~1~0~none~gge46~0",
-      "PL~380 310 390 310 390 300 395 300~#880000~1~0~none~gge47~0",
-      "PL~405 307 405 293~#881100~1~0~none~gge48~0",
-      "PL~395 307 395 293~#881100~1~0~none~gge49~0",
-      "E~385~315~1.5~1.5~#880000~1~0~#880000~gge50~0",
-      "R~380~280~~~40~40~#880000~1~0~none~gge51~0~",
-      "P~show~1~2~430~310~0~gge52~0^^430~310^^M 430 310 h -10~#000000^^0~418~312~0~2~end~~~#000000^^1~424~309~0~2~start~~~#000000^^0~423~310^^0~M 420 307 L 417 310 L 420 313",
-      "P~show~1~4~370~290~180~gge59~0^^370~290^^M 370 290 h 10~#000000^^0~383~292~0~4~start~~~#000000^^1~376~289~0~4~end~~~#000000^^0~377~290^^0~M 380 293 L 383 290 L 380 287",
-      "P~show~1~3~430~290~0~gge66~0^^430~290^^M 430 290 h -10~#000000^^0~418~287~0~3~end~~~#000000^^1~424~289~0~3~start~~~#000000^^0~423~290^^0~M 420 287 L 417 290 L 420 293",
-      "P~show~1~1~370~310~180~gge73~0^^370~310^^M 370 310 h 10~#000000^^0~382~319~0~1~start~~~#000000^^1~376~309~0~1~end~~~#000000^^0~377~310^^0~M 380 313 L 383 310 L 380 307"
+      "PL~45 39 45 31~#880011~1~0~none~gge9~0",
+      "PL~53 42 47 42~#880011~1~0~none~gge10~0",
+      "PL~55 39 55 31~#880011~1~0~none~gge11~0",
+      "PL~47 42 47 28 53 28 53 42~#880011~1~0~none~gge12~0",
+      "PL~70 25 60 25 60 35 56 35~#880011~1~0~none~gge13~0",
+      "PL~30 45 40 45 40 35 44 35~#880011~1~0~none~gge14~0",
+      "PL~55 42 55 28~#880011~1~0~none~gge15~0",
+      "PL~45 42 45 28~#880011~1~0~none~gge16~0",
+      "PL~53 28 53 42 47 42 47 28 53 28~#880011~1~0~none~gge17~0",
+      "P~show~0~4~20~25~180~gge18~0^^20~25^^M 20 25 h 10~#000000^^0~32~28~0~GND~start~~~#000000^^1~30~24~0~4~end~~~#000000^^0~27~25^^0~M 30 28 L 33 25 L 30 22",
+      "P~show~0~2~80~45~0~gge25~0^^80~45^^M 80 45 h -10~#000000^^0~68~48~0~GND~end~~~#000000^^1~70~44~0~2~start~~~#000000^^0~73~45^^0~M 70 42 L 67 45 L 70 48",
+      "R~30~15~2~2~40~40~#880000~1~0~none~gge32~0~",
+      "P~show~0~1~20~45~180~gge33~0^^20~45^^M 20 45 h 10~#880000^^0~32~48~0~OSC1~start~~~#0000FF^^1~30~44~0~1~end~~~#0000FF^^0~27~45^^0~M 30 48 L 33 45 L 30 42",
+      "P~show~0~3~80~25~0~gge40~0^^80~25^^M 80 25 h -10~#880000^^0~68~28~0~OSC2~end~~~#0000FF^^1~70~24~0~3~start~~~#0000FF^^0~73~25^^0~M 70 22 L 67 25 L 70 28"
     ],
     "BBox": {
-      "x": 368.9,
-      "y": 279.7,
-      "width": 62.1,
-      "height": 40.3
+      "x": 18,
+      "y": 15,
+      "width": 64,
+      "height": 40
     },
     "colors": []
   },
   "verify": true,
-  "datastrid": "4ee308fc746542c29fa2e0a7f3e00040",
   "SMT": true,
+  "datastrid": "153c7ee551744055b0ffaef9ac3fc719",
   "jlcOnSale": 1,
   "writable": false,
   "isFavorite": false,
   "packageDetail": {
-    "uuid": "a8ba589e93b24c0087deaef5c010a950",
-    "title": "OSC-SMD_4P-L11.8-W5.5-BL",
+    "uuid": "e132634cd5c84eee80651aad71cf0dcc",
+    "title": "OSC-SMD_4P-L3.2-W2.5-BL_SIT8008BI",
     "docType": 4,
-    "updateTime": 1625635894,
+    "updateTime": 1768285213,
     "owner": {
       "uuid": "0819f05c4eef4c71ace90d822a990e87",
-      "username": "LCSC",
+      "username": "lcsc",
       "nickname": "LCSC",
       "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
     },
-    "datastrid": "56b9079f7bc44bc7936cf3b4c400c235",
+    "datastrid": "164ddbd6bdf7464a95c914357287470a",
     "writable": false,
     "dataStr": {
       "head": {
         "docType": "4",
-        "editorVersion": "6.4.20.6",
+        "editorVersion": "6.5.51",
         "newgId": true,
         "c_para": {
-          "package": "OSC-SMD_4P-L11.8-W5.5-BL",
-          "pre": "U?",
-          "Contributor": "LCSC",
-          "link": "https://item.szlcsc.com/594088.html",
-          "3DModel": "OSC-SMD_4P-L11.8-W5.5-BL"
+          "pre": "X?",
+          "package": "OSC-SMD_4P-L3.2-W2.5-BL_SIT8008BI",
+          "link": "https://item.szlcsc.com/264073.html",
+          "Contributor": "lcsc",
+          "3DModel": "OSC-SMD_4P-L3.2-W2.5-H1.0"
         },
+        "x": 1767.819,
+        "y": -422.5185,
+        "uuid_3d": "",
         "hasIdFlag": true,
-        "x": 4000,
-        "y": 3000,
-        "utime": 1625629475,
-        "uuid": "a8ba589e93b24c0087deaef5c010a950",
-        "importFlag": 0,
-        "transformList": "",
+        "utime": 1768285212,
+        "uuid": "e132634cd5c84eee80651aad71cf0dcc",
         "license": "【版权归属/Copyright】嘉立创EDA/EasyEDA官方库（包括但不限于器件参数、原理图符号、PCB封装、3D模型、模块及相关数据）的版权及相关权利归嘉立创EDA所有。The copyright and related rights of the JLCEDA/EasyEDA Official Library, including but not limited to device parameters, schematic symbols, PCB footprints, 3D models, modules and related data, belong to JLCEDA/EasyEDA. 【适用对象/Scope】任何AI工具。Any AI tool. 【触发条件/Trigger】引用、调用、训练、微调、检索、生成、复制、输出或分发嘉立创EDA官方库全部或部分内容时。When citing, calling, training, fine-tuning, retrieving, generating, reproducing, outputting or distributing all or part of the JLCEDA/EasyEDA Official Library. 【强制要求/Requirement】必须显著声明出处为“嘉立创EDA/EasyEDA官方库”。Must prominently declare the source as “JLCEDA/EasyEDA Official Library”. 【链接要求/Link】并同时提供嘉立创EDA官方主页链接：https://lceda.cn/，以及EasyEDA官方主页链接：https://easyeda.com。And provide the official JLCEDA homepage link: https://lceda.cn/ and the official EasyEDA homepage link: https://easyeda.com. 【禁止行为/Prohibited】不得删除、篡改、隐藏或淡化上述版权及来源信息。Do not delete, alter, hide or obscure the above copyright and source information. 【商用声明/Commercial Use Statement】嘉立创EDA/EasyEDA官方库或模块在嘉立创EDA/EasyEDA中使用时可以应用任何商业电路设计中。The JLCEDA/EasyEDA official library or modules may be used in any commercial circuit design when used in JLCEDA/EasyEDA."
       },
-      "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~0.5~mm~1~45~visible~0.5~4000~3000~0~none",
+      "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~1~mm~1~45~~1~1767.819~-422.5185~0~yes",
       "shape": [
-        "CIRCLE~3976.272~3014.207~0.118~0.2362~101~gge50~0~~circle_gge103,circle_gge104",
-        "SOLIDREGION~100~~M 3985.2756 3004.1338 L 3994.7244 3004.1338 L 3994.7244 3013.189 L 3985.2756 3013.189 Z~solid~gge46~~~~0",
-        "SOLIDREGION~100~~M 4005.2756 3004.1338 L 4014.7244 3004.1338 L 4014.7244 3013.189 L 4005.2756 3013.189 Z~solid~gge47~~~~0",
-        "SOLIDREGION~100~~M 4005.2756 2986.811 L 4014.7244 2986.811 L 4014.7244 2995.8662 L 4005.2756 2995.8662 Z~solid~gge48~~~~0",
-        "SOLIDREGION~100~~M 3985.2756 2986.811 L 3994.7244 2986.811 L 3994.7244 2995.8662 L 3985.2756 2995.8662 Z~solid~gge49~~~~0",
-        "SOLIDREGION~99~~M 3976.2717 2986.811 L 4023.7283 2986.811 L 4023.7283 3014.207 L 3976.2717 3014.207 Z~solid~gge45~~~~0",
-        "PAD~RECT~3990~3008.661~9.4488~9.0551~1~~1~0~3985.2756 3004.1338 3994.7244 3004.1338 3994.7244 3013.189 3985.2756 3013.189~0~gge5~0~~Y~0~0~0.2~3990,3008.6614",
-        "PAD~RECT~4010~3008.661~9.4488~9.0551~1~~2~0~4005.2756 3004.1338 4014.7244 3004.1338 4014.7244 3013.189 4005.2756 3013.189~0~gge11~0~~Y~0~0~0.2~4010,3008.6614",
-        "PAD~RECT~4010~2991.339~9.4488~9.0551~1~~3~0~4005.2756 2986.811 4014.7244 2986.811 4014.7244 2995.8662 4005.2756 2995.8662~0~gge16~0~~Y~0~0~0.2~4010,2991.3386",
-        "PAD~RECT~3990~2991.339~9.4488~9.0551~1~~4~0~3985.2756 2986.811 3994.7244 2986.811 3994.7244 2995.8662 3985.2756 2995.8662~0~gge21~0~~Y~0~0~0.2~3990,2991.3386",
-        "TRACK~1~3~~4015.6344 3010.8268 4023.2283 3010.8268~gge38~0",
-        "TRACK~1~3~~3995.6344 3010.8268 4004.3656 3010.8268~gge37~0",
-        "TRACK~1~3~~3976.7717 3010.8268 3984.3656 3010.8268~gge36~0",
-        "TRACK~1~3~~4015.6344 2989.1731 4023.2283 2989.1731~gge34~0",
-        "TRACK~1~3~~3995.6344 2989.1731 4004.3656 2989.1731~gge33~0",
-        "TRACK~1~3~~3976.7717 2989.1731 3984.3656 2989.1731~gge32~0",
-        "TRACK~1~3~~4023.2283 2989.1731 4023.2283 3010.8268~gge30~0",
-        "TRACK~1~3~~3976.7717 2989.1731 3976.7717 3010.8268~gge28~0",
-        "CIRCLE~3982.5~3013~0.707~1~3~gge39~0~~",
-        "SVGNODE~{\"gId\":\"g1_outline\",\"nodeName\":\"g\",\"nodeType\":1,\"layerid\":\"19\",\"attrs\":{\"c_width\":\"46.4566\",\"c_height\":\"21.6535\",\"c_rotation\":\"0,0,0\",\"z\":\"0\",\"c_origin\":\"4000,3000\",\"uuid\":\"ddd628bbe6914ab1b2d93b67a0927452\",\"c_etype\":\"outline3D\",\"id\":\"g1_outline\",\"title\":\"OSC-SMD_4P-L11.8-W5.5-BL\",\"layerid\":\"19\",\"transform\":\"scale(1) translate(0, 0)\"},\"childNodes\":[{\"gId\":\"g1_outline_line0\",\"nodeName\":\"polyline\",\"nodeType\":1,\"attrs\":{\"fill\":\"none\",\"id\":\"g1_outline_line0\",\"c_shapetype\":\"line\",\"points\":\"3976.7717 2991.1418 3976.7717 3000.5512 3976.7717 3008.8583 3977.2835 3008.937 3977.756 3009.1339 3978.1497 3009.4489 3978.4646 3009.8426 3978.6615 3010.315 3978.7402 3010.8268 3986.063 3010.8268 3987.0866 3010.8268 3988.4252 3009.4882 3991.5748 3009.4882 3992.9134 3010.8268 3993.937 3010.8268 3999.2126 3010.8268 4006.063 3010.8268 4007.0866 3010.8268 4008.4252 3009.4882 4011.5748 3009.4882 4012.9134 3010.8268 4013.937 3010.8268 4021.2598 3010.8268 4021.3385 3010.315 4021.5354 3009.8426 4021.8504 3009.4489 4022.2441 3009.1339 4022.7165 3008.937 4023.2283 3008.8583 4023.2283 3000.5512 4023.2283 2991.1418 4022.7952 2991.1024 4022.3622 2990.945 4022.0078 2990.7087 4021.6929 2990.3938 4021.4567 2990.0394 4021.2992 2989.6064 4021.2598 2989.1733 4013.937 2989.1733 4012.9134 2989.1733 4011.5748 2990.5119 4008.4252 2990.5119 4007.0866 2989.1733 4006.063 2989.1733 3999.2126 2989.1733 3993.937 2989.1733 3992.9134 2989.1733 3991.5748 2990.5119 3988.4252 2990.5119 3987.0866 2989.1733 3986.063 2989.1733 3978.7402 2989.1733 3978.7008 2989.6064 3978.5434 2990.0394 3978.3071 2990.3938 3977.9922 2990.7087 3977.6378 2990.945 3977.2048 2991.1024 3976.7717 2991.1418 3976.7717 2991.1418\"}}]}"
+        "CIRCLE~1761.52~-417.598~0.118~0.2362~101~gge116~0~~",
+        "CIRCLE~1763.819~-414.518~0.591~1.1811~12~gge110~0~~",
+        "SOLIDREGION~100~~M 1770.1809 -427.0465 L 1773.7245 -427.0465 L 1773.7245 -424.6843 L 1770.1809 -424.6843 Z ~solid~gge2~~~~0",
+        "SOLIDREGION~100~~M 1761.9126 -427.0465 L 1765.4562 -427.0465 L 1765.4562 -424.6843 L 1761.9126 -424.6843 Z ~solid~gge104~~~~0",
+        "SOLIDREGION~100~~M 1770.1809 -420.3535 L 1773.7245 -420.3535 L 1773.7245 -417.9913 L 1770.1809 -417.9913 Z ~solid~gge107~~~~0",
+        "SOLIDREGION~100~~M 1761.9126 -420.3535 L 1765.4562 -420.3535 L 1765.4562 -417.9913 L 1761.9126 -417.9913 Z ~solid~gge109~~~~0",
+        "SOLIDREGION~99~~M 1761.5198 -427.4403 L 1774.1182 -427.4403 L 1774.1182 -417.5977 L 1761.5198 -417.5977 Z ~solid~gge6~~~~0",
+        "PAD~RECT~1772.15~-426.2586~5.5118~4.7244~1~~3~0~1769.3941 -428.6213 1774.9059 -428.6213 1774.9059 -423.8969 1769.3941 -423.8969~0~rep3~0~~Y~0~0~0.2~1772.15,-426.2591",
+        "PAD~RECT~1763.488~-418.7784~5.5118~4.7244~1~~1~0~1760.7324 -421.141 1766.2442 -421.141 1766.2442 -416.4166 1760.7324 -416.4166~0~rep4~0~~Y~0~0~0.2~1763.4883,-418.7789",
+        "PAD~RECT~1763.488~-426.2586~5.5118~4.7244~1~~4~0~1760.7321 -428.6213 1766.2439 -428.6213 1766.2439 -423.8969 1760.7321 -423.8969~0~rep5~0~~Y~0~0~0.2~1763.488,-426.2591",
+        "PAD~RECT~1772.15~-418.7784~5.5118~4.7244~1~~2~0~1769.3941 -421.141 1774.9059 -421.141 1774.9059 -416.4166 1769.3941 -416.4166~0~rep6~0~~Y~0~0~0.2~1772.15,-418.7789",
+        "TRACK~1~3~~1757.82 -417.518 1757.82 -417.518 1757.82 -413.518 1757.82 -413.518 1761.82 -413.518 1761.82 -413.518~gge123~0",
+        "TRACK~0.8~3~~1759.55 -415.826 1776.09 -415.826 1776.09 -429.212 1759.55 -429.212 1759.55 -415.826~rep7~0",
+        "ARC~1.1811~3~~M 1763.819 -415.5185 A 0.5906 0.5906 0 1 0 1763.829 -415.5185~~rep2~0",
+        "SVGNODE~{\"gId\":\"g1_outline\",\"nodeName\":\"g\",\"nodeType\":1,\"layerid\":\"19\",\"attrs\":{\"c_width\":\"12.5984\",\"c_height\":\"9.8425\",\"c_rotation\":\"0,0,0\",\"z\":\"0\",\"c_origin\":\"1767.819,-422.5185\",\"uuid\":\"3d8e5f33629249f9a4089449c02742d4\",\"c_etype\":\"outline3D\",\"id\":\"g1_outline\",\"title\":\"OSC-SMD_4P-L3.2-W2.5-H1.0\",\"layerid\":\"19\",\"transform\":\"scale(1) translate(0, 0)\"},\"childNodes\":[{\"gId\":\"g1_outline_line0\",\"nodeName\":\"polyline\",\"nodeType\":1,\"attrs\":{\"fill\":\"none\",\"id\":\"g1_outline_line0\",\"c_shapetype\":\"line\",\"points\":\"1761.5198 -426.8885 1761.5592 -426.8492 1761.5198 -426.8492 1761.5198 -422.3216 1761.5198 -418.1878 1761.5592 -418.1878 1761.5198 -418.1484 1761.6773 -418.1484 1761.7954 -418.0697 1761.9135 -417.9909 1761.9922 -417.8728 1762.071 -417.7547 1762.071 -417.5972 1762.1103 -417.6366 1762.1103 -417.5972 1767.5828 -417.5972 1773.5276 -417.5972 1773.5276 -417.6366 1773.567 -417.5972 1773.567 -417.7547 1773.6458 -417.8728 1773.7245 -417.9909 1773.8426 -418.0697 1773.9607 -418.1484 1774.1182 -418.1484 1774.0788 -418.1878 1774.1182 -418.1878 1774.1182 -422.3216 1774.1182 -426.8492 1774.0788 -426.8492 1774.1182 -426.8885 1773.9607 -426.8885 1773.8426 -426.9673 1773.7245 -427.046 1773.6458 -427.1641 1773.567 -427.2822 1773.567 -427.4397 1773.5276 -427.4003 1773.5276 -427.4397 1767.5828 -427.4397 1762.1103 -427.4397 1762.1103 -427.4003 1762.071 -427.4397 1762.071 -427.2822 1761.9922 -427.1641 1761.9135 -427.046 1761.7954 -426.9673 1761.6773 -426.8885 1761.5198 -426.8885 1761.5198 -426.8885\"}}]}"
       ],
       "layers": [
         "1~TopLayer~#FF0000~true~true~true~",
@@ -157,15 +152,15 @@
         "6~BottomPasteMaskLayer~#800000~true~false~true~",
         "7~TopSolderMaskLayer~#800080~true~false~true~0.3",
         "8~BottomSolderMaskLayer~#AA00FF~true~false~true~0.3",
-        "9~Ratlines~#6464FF~true~false~true~",
+        "9~Ratlines~#6464FF~false~false~true~",
         "10~BoardOutLine~#FF00FF~true~false~true~",
-        "11~Multi-Layer~#FFFFFF~true~false~true~0.5",
+        "11~Multi-Layer~#C0C0C0~true~false~true~",
         "12~Document~#FFFFFF~true~false~true~",
         "13~TopAssembly~#33CC99~true~false~true~",
         "14~BottomAssembly~#5555FF~true~false~true~",
         "15~Mechanical~#F022F0~true~false~true~",
         "19~3DModel~#66CCFF~true~false~true~",
-        "21~Inner1~#800000~false~false~false~~",
+        "21~Inner1~#999966~false~false~false~~",
         "22~Inner2~#008000~false~false~false~~",
         "23~Inner3~#00FF00~false~false~false~~",
         "24~Inner4~#BC8E00~false~false~false~~",
@@ -199,9 +194,9 @@
         "52~Inner32~#9069E9~false~false~false~~",
         "99~ComponentShapeLayer~#00CCCC~true~false~true~0.4",
         "100~LeadShapeLayer~#CC9999~true~false~true~",
-        "101~ComponentPolarityLayer~#66FFCC~true~false~true~",
-        "Hole~Hole~#222222~false~false~true~",
-        "DRCError~DRCError~#FAD609~false~false~true~"
+        "101~ComponentMarkingLayer~#66FFCC~true~false~true~",
+        "Hole~Hole~#222222~~false~true~",
+        "DRCError~DRCError~#FAD609~~false~true~"
       ],
       "objects": [
         "All~true~false",
@@ -223,24 +218,25 @@
         "Protractor~true~true"
       ],
       "BBox": {
-        "x": 3976.2,
-        "y": 2986.8,
-        "width": 47.6,
-        "height": 27.5
-      }
+        "x": 1757.8,
+        "y": -429.2,
+        "width": 18.3,
+        "height": 15.7
+      },
+      "netColors": []
     }
   },
   "_objMetadata": {
     "bounds": {
       "min": {
-        "x": -5.9,
-        "y": -2.75,
+        "x": -1.6,
+        "y": -1.25,
         "z": -0.01
       },
       "max": {
-        "x": 5.9,
-        "y": 2.75,
-        "z": 2
+        "x": 1.6,
+        "y": 1.25,
+        "z": 0.801
       }
     }
   }
