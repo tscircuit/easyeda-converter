@@ -25,6 +25,13 @@ test("C5346074 imports as a native crystal component", async () => {
     )
   `)
 
+  expect(
+    circuitJson.filter((element) => element.type.endsWith("_error")),
+  ).toEqual([])
+  expect(
+    circuitJson.filter((element) => element.type === "schematic_component"),
+  ).toHaveLength(2)
+
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "C5346074-crystal-symbol-repro",
