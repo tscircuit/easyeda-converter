@@ -25,28 +25,12 @@ it("should convert C281113 into typescript file", async () => {
   await expect(circuitJson).toMatch3dSnapshot(import.meta.path)
 
   expect(result).toMatchInlineSnapshot(`
-    "import type { ChipProps } from "@tscircuit/props"
+    "import type { InductorProps } from "@tscircuit/props"
 
-    const pinLabels = {
-      pin1: ["pin1"],
-      pin2: ["pin2"]
-    } as const
-
-    export const MGFL2012F100MT_LF = (props: ChipProps<typeof pinLabels>) => {
+    export const MGFL2012F100MT_LF = (props: Omit<InductorProps, "inductance">) => {
       return (
-        <chip
-          pinLabels={pinLabels}
-          symbol={
-            <symbol>
-              <port name="pin2" pinNumber={2} aliases={["2"]} direction="right" schX={0.4} schY={0} schStemLength={0.06} />
-              <port name="pin1" pinNumber={1} aliases={["1"]} direction="left" schX={-0.4} schY={0} schStemLength={0.06} />
-              <schematicpath svgPath="M -0.33766 0.00136 A 0.08 0.078 0 1 0 -0.17836 0.00128" strokeColor="#880000" />
-              <schematicpath svgPath="M -0.168 0.00142 A 0.08 0.078 0 1 0 -0.0087 0.00132" strokeColor="#880000" />
-              <schematicpath svgPath="M 0.00134 0.00142 A 0.08 0.078 0 1 0 0.16064 0.00132" strokeColor="#880000" />
-              <schematicpath svgPath="M 0.174 0.00138 A 0.08 0.078 0 1 0 0.3333 0.00128" strokeColor="#880000" />
-              <schematictext schX={0} schY={0.286} text="{NAME}" fontSize={0.2} anchor="bottom_center" />
-            </symbol>
-          }
+        <inductor
+          inductance="10uH"
           supplierPartNumbers={{
       "jlcpcb": [
         "C281113"
