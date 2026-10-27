@@ -6,9 +6,12 @@ export const isInductorComponent = (betterEasy: BetterEasyEdaJson): boolean => {
   const componentParameters = betterEasy.dataStr.head.c_para
   const packageName = componentParameters.package
   const value = componentParameters.Value
+  const hasInductorIdentity =
+    componentParameters.pre?.toUpperCase() === "L?" ||
+    packageName?.toUpperCase().startsWith("IND-") === true
 
   return (
-    packageName?.toUpperCase().startsWith("IND-") === true &&
+    hasInductorIdentity &&
     typeof value === "string" &&
     inductancePattern.test(value.trim())
   )
