@@ -20,7 +20,7 @@ it("preserves rotated silkscreen text in the PCB snapshot", () => {
     (element) => element.type === "pcb_silkscreen_text",
   )
 
-  expect(silkscreenText).toMatchObject({ ccw_rotation: -90 })
+  expect(silkscreenText).toMatchObject({ ccw_rotation: 90 })
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
   )

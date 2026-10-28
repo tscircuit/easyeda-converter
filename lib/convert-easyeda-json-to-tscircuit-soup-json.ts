@@ -948,9 +948,17 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       const elementsForTransform = circuitElements.filter(
         (e) =>
           !(e.type === "pcb_smtpad" && e.shape === "polygon") &&
+          e.type !== "pcb_silkscreen_text" &&
           e.type !== "cad_component",
       )
       transformPCBElements(elementsForTransform, matrix)
+
+      // EasyEDA text rotation is already expressed in tscircuit's CCW
+      // convention. Recenter its position without reflecting the angle again.
+      for (const e of circuitElements) {
+        if (e.type !== "pcb_silkscreen_text") continue
+        e.anchor_position = applyToPoint(matrix, e.anchor_position)
+      }
 
       // Polygon SMT pads have no x/y center, so transform their points here.
       // Cutouts are transformed by transformPCBElements.
