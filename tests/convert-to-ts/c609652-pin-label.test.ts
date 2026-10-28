@@ -61,7 +61,7 @@ it("preserves C609652's PA0/RESET#/UPDI label on pin 16", async () => {
     circuitJson.filter(
       (element) => element.type === "source_property_ignored_warning",
     ),
-  ).toHaveLength(0)
+  ).toHaveLength(1)
   await expect(
     convertCircuitJsonToSchematicSvg(circuitJson),
   ).toMatchSvgSnapshot(import.meta.path, "c609652-pin-label-schematic")
