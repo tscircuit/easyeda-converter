@@ -5,12 +5,13 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { runTscircuitCode } from "tscircuit"
 import crystalRawEasy from "../assets/C5346074.raweasy.json"
 
-test("repro: C5346074 imports as a generic chip component", async () => {
+test("C5346074 imports as a native crystal component", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(crystalRawEasy)
   const result = await convertBetterEasyToTsx({ betterEasy })
 
-  expect(result).toContain("<chip")
-  expect(result).toContain("symbol={")
+  expect(result).toContain("<crystal")
+  expect(result).not.toContain("<chip")
+  expect(result).not.toContain("symbol={")
 
   const componentName = result.match(/export const (\w+)/)?.[1]
   expect(componentName).toBeDefined()
@@ -19,10 +20,17 @@ test("repro: C5346074 imports as a generic chip component", async () => {
     ${result}
     export default () => (
       <board>
-        <${componentName} name="X1" />
+        <${componentName} name="X1" loadCapacitance="10pF" />
       </board>
     )
   `)
+
+  expect(
+    circuitJson.filter((element) => element.type.endsWith("_error")),
+  ).toEqual([])
+  expect(
+    circuitJson.filter((element) => element.type === "schematic_component"),
+  ).toHaveLength(1)
 
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,

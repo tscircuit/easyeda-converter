@@ -45,7 +45,9 @@ const getGeneratedComponentType = (
   if (isCapacitorComponent(betterEasy)) return "capacitor"
   if (isResistorComponent(betterEasy) && pinCount === 2) return "resistor"
   if (isInductorComponent(betterEasy) && pinCount === 2) return "inductor"
-  if (isCrystalComponent(betterEasy)) return "crystal"
+  if (isCrystalComponent(betterEasy) && (pinCount === 2 || pinCount === 4)) {
+    return "crystal"
+  }
   if (isMicroUsbConnectorComponent(betterEasy)) return "connector"
   return "chip"
 }
