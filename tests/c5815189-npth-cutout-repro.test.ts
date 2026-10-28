@@ -56,7 +56,7 @@ test("preserves C5815189's source capsule dimensions and convexity", () => {
   ).toBe(true)
   expect(roundHole.hole_diameter).toBeCloseTo(0.7099808, 7)
   expect((Math.max(...xs) + Math.min(...xs)) / 2 - roundHole.x).toBeCloseTo(
-    -1005.8299416,
+    7.999984,
     7,
   )
 

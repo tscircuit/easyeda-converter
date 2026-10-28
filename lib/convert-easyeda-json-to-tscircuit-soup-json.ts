@@ -952,22 +952,10 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       )
       transformPCBElements(elementsForTransform, matrix)
 
-      // Manually transform polygons/cutouts
+      // Polygon SMT pads have no x/y center, so transform their points here.
+      // Cutouts are transformed by transformPCBElements.
       for (const e of circuitElements) {
-        if (e.type === "pcb_cutout") {
-          if (e.shape === "polygon") {
-            e.points = e.points.map((p) => applyToPoint(matrix, p))
-          } else if (e.shape === "circle" || e.shape === "rect") {
-            e.center = applyToPoint(matrix, e.center)
-          } else if ("route" in e) {
-            const cutoutPath = e as unknown as {
-              route: { x: number; y: number }[]
-            }
-            cutoutPath.route = cutoutPath.route.map((p) =>
-              applyToPoint(matrix, p),
-            )
-          }
-        } else if (e.type === "pcb_smtpad" && e.shape === "polygon") {
+        if (e.type === "pcb_smtpad" && e.shape === "polygon") {
           e.points = e.points.map((p) => applyToPoint(matrix, p))
         }
       }
