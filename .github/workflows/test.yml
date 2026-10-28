@@ -30,9 +30,25 @@ jobs:
         run: bun-test-plan
 
       - name: Run tests for node ${{ matrix.node }}
+        env:
+          BUN_UPDATE_SNAPSHOTS: "1"
         run: |
           mapfile -t test_files < .bun-test-plan/testplans/testplan${{ matrix.node }}.txt
           bun test "${test_files[@]}" --timeout 60_000
+
+      - name: Upload regenerated 3D snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regenerated-3d-snapshots-node${{ matrix.node }}
+          path: |
+            tests/convert-to-ts/__snapshots__/C131337-to-ts-simple-3d.snap.png
+            tests/convert-to-ts/__snapshots__/C18185602-to-ts-simple-3d.snap.png
+            tests/convert-to-ts/__snapshots__/C3178291-to-ts-simple-3d.snap.png
+            tests/convert-to-ts/__snapshots__/C5378731-to-ts-simple-3d.snap.png
+            tests/convert-to-ts/__snapshots__/C165948-to-ts-simple-3d.snap.png
+            tests/convert-to-ts/__snapshots__/C2961147-to-ts-simple-3d.snap.png
+            tests/convert-to-ts/__snapshots__/c2943786-to-ts-simple-3d.snap.png
 
       - name: Upload diff PNG artifacts
         if: failure()
