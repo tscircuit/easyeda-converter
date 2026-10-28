@@ -43,10 +43,7 @@ it("emits the C5378731 non-plated through-hole slot as a pcb_cutout", async () =
   // expanded outline must be richer than the 9 M/L points alone.
   expect(npthCutout.points.length).toBeGreaterThan(9)
 
-  expect((Math.min(...xs) + Math.max(...xs)) / 2).toBeCloseTo(
-    -1026.9603667,
-    3,
-  )
+  expect((Math.min(...xs) + Math.max(...xs)) / 2).toBeCloseTo(-1026.9603667, 3)
   expect((Math.min(...ys) + Math.max(...ys)) / 2).toBeCloseTo(768.1284104, 3)
 
   const result = await convertBetterEasyToTsx({ betterEasy })
