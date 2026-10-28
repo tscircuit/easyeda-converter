@@ -1,6 +1,10 @@
 import { expect, it } from "bun:test"
 import { convertCircuitJsonToSchematicSvg } from "circuit-to-svg"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import {
+  isCapacitorComponent,
+  normalizeCapacitanceValue,
+} from "lib/websafe/convert-to-typescript-component/is-capacitor-component"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { runTscircuitCode } from "tscircuit"
 import capacitorRawEasy from "../assets/C1525.raweasy.json"
@@ -150,4 +154,32 @@ it("preserves imported capacitor polarity with the native symbol", async () => {
       symbol_name: "capacitor_polarized_right",
     }),
   )
+})
+
+it("normalizes capacitance unit casing and detects capacitor categories with non-C prefixes", async () => {
+  expect(normalizeCapacitanceValue("100nf")).toBe("100nF")
+  expect(normalizeCapacitanceValue("10UF")).toBe("10uF")
+  expect(normalizeCapacitanceValue("4.7 pf")).toBe("4.7pF")
+
+  const rawEasy = structuredClone(capacitorRawEasy)
+  rawEasy.dataStr.head.c_para.pre = "U?"
+  rawEasy.dataStr.head.c_para.Value = "100nf"
+  const betterEasy = EasyEdaJsonSchema.parse(rawEasy)
+
+  expect(isCapacitorComponent(betterEasy)).toBe(true)
+  const result = await convertBetterEasyToTsx({ betterEasy })
+  expect(result).toContain('capacitance="100nF"')
+
+  const circuitJson = await runTscircuitCode(result)
+  expect(circuitJson).toContainEqual(
+    expect.objectContaining({
+      type: "source_component",
+      ftype: "simple_capacitor",
+      capacitance: 1e-7,
+    }),
+  )
+
+  betterEasy.tags = ["Switched Capacitor Regulators"]
+  betterEasy.dataStr.head.c_para.package = "SOIC-8"
+  expect(isCapacitorComponent(betterEasy)).toBe(false)
 })

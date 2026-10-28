@@ -1,29 +1,57 @@
 import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 
-const capacitancePattern = /^\d+(?:\.\d+)?\s*(?:pF|nF|[uµμ]F|mF|F)$/i
+const capacitancePattern = /^(\d+(?:\.\d+)?)\s*([pnuµμm]?)F$/i
+
+const categoryValueContainsCapacitor = (value: unknown): boolean => {
+  if (typeof value === "string") {
+    return (
+      !/\b(?:switched\s+capacitor|capacitive|touch|controllers?|sensors?|ics?)\b/i.test(
+        value,
+      ) && /\b(?:capacitors?|supercapacitors?|mlcc)\b/i.test(value)
+    )
+  }
+  return Array.isArray(value) && value.some(categoryValueContainsCapacitor)
+}
+
+const hasCapacitorCategory = (betterEasy: BetterEasyEdaJson): boolean => {
+  const cPara = betterEasy.dataStr.head.c_para as Record<string, unknown>
+  return [
+    betterEasy.tags,
+    cPara.category,
+    cPara.Category,
+    cPara["LCSC Category"],
+    cPara["JLCPCB Category"],
+    (betterEasy as Record<string, unknown>).category,
+  ].some(categoryValueContainsCapacitor)
+}
 
 export const normalizeCapacitanceValue = (
   value: unknown,
 ): string | undefined => {
   if (typeof value !== "string") return undefined
 
-  const trimmedValue = value.trim()
-  if (!capacitancePattern.test(trimmedValue)) return undefined
+  const match = value.trim().match(capacitancePattern)
+  if (!match) return undefined
 
-  return trimmedValue.replace(/\s+/g, "").replace(/[µμ]/g, "u")
+  const [, magnitude, rawScale] = match
+  const normalizedScale = rawScale.replace(/[µμ]/g, "u").toLowerCase()
+
+  return `${magnitude}${normalizedScale}F`
 }
 
 export const isCapacitorComponent = (
   betterEasy: BetterEasyEdaJson,
 ): boolean => {
   const componentParameters = betterEasy.dataStr.head.c_para
-  const prefix = componentParameters.pre
+  const prefix = componentParameters.pre?.toUpperCase()
+  const packageName = componentParameters.package?.toUpperCase()
   const value = componentParameters.Value
+  const hasCapacitorIdentity =
+    prefix === "C?" ||
+    packageName?.startsWith("CAP-") === true ||
+    hasCapacitorCategory(betterEasy)
 
-  return (
-    prefix?.toUpperCase() === "C?" &&
-    normalizeCapacitanceValue(value) !== undefined
-  )
+  return hasCapacitorIdentity && normalizeCapacitanceValue(value) !== undefined
 }
 
 const polarizedCapacitorMetadataPattern =
