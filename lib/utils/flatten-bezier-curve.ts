@@ -3,7 +3,9 @@ import {
   type Point,
   pointToSegmentDistance,
 } from "@tscircuit/math-utils"
-import { EasyEdaPathError } from "./easyeda-path-error"
+
+const MAX_SUBDIVISION_DEPTH = 20
+const MAX_CURVE_POINTS = 8192
 
 /** Subdivide the control polygon until its entire hull is within tolerance. */
 export const flattenBezierCurve = (
@@ -18,7 +20,7 @@ export const flattenBezierCurve = (
       (point) => !Number.isFinite(point.x) || !Number.isFinite(point.y),
     )
   ) {
-    throw new EasyEdaPathError("Invalid Bezier curve geometry")
+    throw new Error("Invalid Bezier curve geometry")
   }
 
   const route = [controlPoints[0]!]
@@ -38,8 +40,11 @@ export const flattenBezierCurve = (
       route.push(end)
       continue
     }
-    if (depth >= 20 || route.length + pending.length >= 8192) {
-      throw new EasyEdaPathError("Bezier curve exceeds the subdivision limit")
+    if (
+      depth >= MAX_SUBDIVISION_DEPTH ||
+      route.length + pending.length >= MAX_CURVE_POINTS
+    ) {
+      throw new Error("Bezier curve exceeds the subdivision limit")
     }
 
     let level = points

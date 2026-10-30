@@ -40,12 +40,12 @@ import type {
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { convertEasyEdaNpthCutoutsToHoles } from "./utils/convert-easyeda-npth-cutouts-to-holes"
-import { EasyEdaPathError } from "./utils/easyeda-path-error"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
 import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
+import { parseEasyEdaPathCommands } from "./utils/parse-easyeda-path-commands"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import {
   type PackageArc,
@@ -223,16 +223,19 @@ const handleFabricationNoteSolidRegion = (
   solidRegion: z.infer<typeof SolidRegionSchema>,
   index: number,
 ) => {
-  let rawRoute: ReturnType<typeof expandEasyEdaPathData>
-  try {
-    rawRoute = expandEasyEdaPathData(solidRegion.pathData)
-  } catch (error) {
-    if (!(error instanceof EasyEdaPathError)) throw error
+  const commands = parseEasyEdaPathCommands(solidRegion.pathData)
+  const pathWarning = !commands
+    ? "Invalid EasyEDA SOLIDREGION path"
+    : commands.slice(1).some(({ command }) => command.toUpperCase() === "M")
+      ? "Multiple EasyEDA SOLIDREGION subpaths are not supported"
+      : undefined
+  if (pathWarning) {
     console.warn(
-      `Skipping EasyEDA fabrication note ${solidRegion.id ?? index + 1}: ${error.message}`,
+      `Skipping EasyEDA fabrication note ${solidRegion.id ?? index + 1}: ${pathWarning}`,
     )
     return null
   }
+  const rawRoute = expandEasyEdaPathData(solidRegion.pathData)
 
   const route = rawRoute.map((point) => ({
     x: mil10ToMm(point.x),
