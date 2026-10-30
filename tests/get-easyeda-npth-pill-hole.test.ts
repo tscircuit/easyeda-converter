@@ -72,3 +72,53 @@ test.each([
 ])("does not replace a non-capsule or open path: %s", (pathData) => {
   expect(getEasyEdaNpthPillHole(pathData)).toBeNull()
 })
+
+test.each([0, 37, -90])(
+  "accepts circular semicircles with arc rotation %s",
+  (arcRotationDegrees) => {
+    for (const firstLargeArcFlag of [0, 1]) {
+      for (const secondLargeArcFlag of [0, 1]) {
+        const pathData = `M 4 1 L 0 1 A 1 1 ${arcRotationDegrees} ${firstLargeArcFlag} 1 0 -1 L 4 -1 A 1 1 ${arcRotationDegrees} ${secondLargeArcFlag} 1 4 1 Z`
+        const hole = getEasyEdaNpthPillHole(pathData)
+        expect(hole?.hole_shape).toBe("pill")
+        expect(hole?.hole_width).toBeCloseTo(1.524, 7)
+        expect(hole?.hole_height).toBeCloseTo(0.508, 7)
+      }
+    }
+  },
+)
+
+test.each([
+  "M 4 1 L 0 1 A 1 1 0 0 1 0 -1 L 4 -1 A 1 1 0 0 1 4 1 Z H 100 V 100",
+  "M 4 1 L 0 1 A 1 1 0 0 1 0 -1 L 4 -1 A 1 1 0 0 1 4 1 Z C 1 2 3 4 5 6",
+  "M 4 1 L 0 1 A 1 1 0 0 1 0 -1 L 4 -1 A 1 1 0 0 1 4 1 Z 1 2",
+  "M 4 1 L 0 1 A 1 1 0 0 1 0 -1 L 4 -1 A 1 1 0 0 1 4 1 Z garbage",
+  "M 4 1 L 0 1 A 1 1 1e999 0 1 0 -1 L 4 -1 A 1 1 0 0 1 4 1 Z",
+  "M 4 1 L 0 1 A 1 1 0 2 1 0 -1 L 4 -1 A 1 1 0 0 1 4 1 Z",
+])("does not ignore extra or invalid SVG content: %s", (pathData) => {
+  expect(getEasyEdaNpthPillHole(pathData)).toBeNull()
+})
+
+test.each([0, 1])(
+  "rejects near-semicircles with large-arc flag %s",
+  (largeArcFlag) => {
+    expect(
+      getEasyEdaNpthPillHole(
+        `M 4 1 L 0 1 A 1.00004 1.00004 0 ${largeArcFlag} 1 0 -1 L 4 -1 A 1.00004 1.00004 0 ${largeArcFlag} 1 4 1 Z`,
+      ),
+    ).toBeNull()
+  },
+)
+
+test("rejects slightly elliptical or asymmetric end caps", () => {
+  expect(
+    getEasyEdaNpthPillHole(
+      "M 4 1 L 0 1 A 1 1.00004 37 0 1 0 -1 L 4 -1 A 1 1.00004 37 0 1 4 1 Z",
+    ),
+  ).toBeNull()
+  expect(
+    getEasyEdaNpthPillHole(
+      "M 4 1 L 0 1 A 1 1 0 0 1 0 -1 L 4 -0.99996 A 1 1 0 0 1 4 1 Z",
+    ),
+  ).toBeNull()
+})

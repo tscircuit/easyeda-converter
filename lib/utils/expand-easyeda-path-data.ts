@@ -1,4 +1,5 @@
 import { generateArcFromSweep } from "../math/arc-utils"
+import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
 /**
  * Walk an EasyEDA SOLIDREGION pathData string into concrete points. The schema
@@ -9,26 +10,28 @@ export const expandEasyEdaPathData = (pathData: string) => {
   const rawRoute: Array<{ x: number; y: number }> = []
   let currentPoint: { x: number; y: number } | undefined
 
-  for (const commandMatch of pathData.matchAll(/([MLAZ])([^MLAZ]*)/gi)) {
-    const command = commandMatch[1]?.toUpperCase()
-    const values =
-      commandMatch[2]
-        ?.match(/[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g)
-        ?.map(Number) ?? []
+  for (const pathCommand of parseEasyEdaPathCommands(pathData) ?? []) {
+    const command = pathCommand.command.toUpperCase()
+    const commandArguments = pathCommand.arguments
 
-    if ((command === "M" || command === "L") && values.length >= 2) {
+    if ((command === "M" || command === "L") && commandArguments.length >= 2) {
       // SVG commands may omit repeated command letters between argument groups.
       // Extra M coordinate pairs are implicit L commands.
-      for (let offset = 0; offset + 1 < values.length; offset += 2) {
-        currentPoint = { x: values[offset]!, y: values[offset + 1]! }
+      for (let offset = 0; offset + 1 < commandArguments.length; offset += 2) {
+        currentPoint = {
+          x: commandArguments[offset]!,
+          y: commandArguments[offset + 1]!,
+        }
         rawRoute.push(currentPoint)
       }
-    } else if (command === "A" && currentPoint && values.length >= 7) {
-      for (let offset = 0; offset + 6 < values.length; offset += 7) {
-        const [radiusX, , , largeArcFlag, sweepFlag, endX, endY] = values.slice(
-          offset,
-          offset + 7,
-        )
+    } else if (
+      command === "A" &&
+      currentPoint &&
+      commandArguments.length >= 7
+    ) {
+      for (let offset = 0; offset + 6 < commandArguments.length; offset += 7) {
+        const [radiusX, , , largeArcFlag, sweepFlag, endX, endY] =
+          commandArguments.slice(offset, offset + 7)
         const generatedArcRoute = generateArcFromSweep(
           currentPoint.x,
           currentPoint.y,

@@ -1,23 +1,26 @@
 import { mil2mm } from "@tscircuit/mm"
 import type { PcbHolePillInput } from "circuit-json"
+import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
-const isClose = (a: number, b: number) => Math.abs(a - b) < 0.0001
+// Allow floating-point cancellation, not dimensional rounding: a near-semicircle
+// can bulge substantially more than its radius/chord discrepancy suggests.
+const PATH_GEOMETRY_TOLERANCE = 1e-9
+const isClose = (a: number, b: number) =>
+  Math.abs(a - b) < PATH_GEOMETRY_TOLERANCE
 
 /** Recognize axis-aligned capsules; leave all other NPTH outlines as polygons. */
 export const getEasyEdaNpthPillHole = (
   pathData: string,
 ): Omit<PcbHolePillInput, "type" | "pcb_hole_id"> | null => {
-  const commands = [...pathData.matchAll(/([MLAZmlaz])([^MLAZmlaz]*)/g)]
-  if (commands.map((command) => command[1]).join("") !== "MLALAZ") return null
+  const commands = parseEasyEdaPathCommands(pathData)
+  if (
+    !commands ||
+    commands.map((command) => command.command).join("") !== "MLALAZ"
+  ) {
+    return null
+  }
 
-  const coordinates = commands
-    .slice(0, -1)
-    .map(
-      (command) =>
-        command[2]
-          .match(/[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g)
-          ?.map(Number) ?? [],
-    )
+  const coordinates = commands.slice(0, -1).map((command) => command.arguments)
   if (coordinates.map((command) => command.length).join(",") !== "2,2,7,2,7") {
     return null
   }
@@ -27,6 +30,8 @@ export const getEasyEdaNpthPillHole = (
   const secondArcEnd = secondArc.slice(5)
   const radius = firstArc[0]
 
+  // Circular semicircles are rotation-invariant, and either large-arc flag
+  // selects the same 180-degree arc. Validate flag ranges rather than force 0.
   if (
     radius <= 0 ||
     !isClose(firstArc[1], radius) ||
@@ -59,7 +64,7 @@ export const getEasyEdaNpthPillHole = (
   const straightLength = horizontal
     ? Math.abs(start[0] - firstLineEnd[0])
     : Math.abs(start[1] - firstLineEnd[1])
-  if (straightLength < 0.0001) return null
+  if (straightLength < PATH_GEOMETRY_TOLERANCE) return null
 
   // The semicircles must bend outward. The opposite sweep pinches the slot.
   const crossProduct =

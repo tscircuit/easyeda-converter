@@ -25,5 +25,12 @@ The test requires two non-plated holes, checks the capsule's source dimensions,
 and round-trips the generated TSX. It was `test.failing` in the repro PR.
 An additional native DRC test now requires a trace/hole overlap error.
 
+The capsule recognizer and path expander share a command parser that consumes
+the complete path and checks finite arguments and command arity. Trailing SVG
+commands cannot disappear into `Z`. Capsule comparisons allow only floating-point
+error, so near-semicircles and slightly elliptical caps retain their polygon
+representation. Exact circular semicircles support arbitrary arc rotations and
+both large-arc flags; regression tests cover those equivalent encodings.
+
 ![NPTH slot and crossing trace](../__snapshots__/c5815189-npth-locator-trace.snap.svg)
 ![Native DRC reports the crossing](../__snapshots__/c5815189-npth-hole-drc.snap.svg)
