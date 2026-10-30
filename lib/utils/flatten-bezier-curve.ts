@@ -6,6 +6,8 @@ import {
 
 const MAX_SUBDIVISION_DEPTH = 20
 const MAX_CURVE_POINTS = 8192
+export const BEZIER_SUBDIVISION_LIMIT_MESSAGE =
+  "Bezier curve exceeds the subdivision limit"
 
 /** Subdivide the control polygon until its entire hull is within tolerance. */
 export const flattenBezierCurve = (
@@ -42,9 +44,9 @@ export const flattenBezierCurve = (
     }
     if (
       depth >= MAX_SUBDIVISION_DEPTH ||
-      route.length + pending.length >= MAX_CURVE_POINTS
+      route.length + pending.length + 2 > MAX_CURVE_POINTS
     ) {
-      throw new Error("Bezier curve exceeds the subdivision limit")
+      throw new Error(BEZIER_SUBDIVISION_LIMIT_MESSAGE)
     }
 
     let level = points

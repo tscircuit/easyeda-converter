@@ -7,6 +7,8 @@ import { runTscircuitCode } from "tscircuit"
 import rawJson from "tests/assets/C41413180.raweasy.json"
 
 const cubicPath = "M 3992 2998 C 3992 2999 3994 2999 3994 2998 L 3992 2998 Z"
+const overBudgetPath =
+  "M 3992 3000 Q 10000003992 10000003000 20000003992 3000 L 3992 3000 Z"
 
 test("reference footprint retains pads and supported fabrication artwork", async () => {
   const circuitJson = convertEasyEdaJsonToCircuitJson(
@@ -159,4 +161,59 @@ test("still rejects malformed physical NPTH geometry", () => {
   expect(() =>
     convertEasyEdaJsonToCircuitJson(EasyEdaJsonSchema.parse(withPhysicalHole)),
   ).toThrow("Invalid EasyEDA SOLIDREGION path")
+})
+
+test("warns and skips over-budget decorative artwork without changing the footprint", () => {
+  const withDecoration = structuredClone(rawJson)
+  withDecoration.packageDetail.dataStr.shape.push(
+    `SOLIDREGION~12~~${overBudgetPath}~solid~over-budget-artwork~~~~0`,
+  )
+  const expected = convertEasyEdaJsonToCircuitJson(
+    EasyEdaJsonSchema.parse(rawJson),
+  )
+  const warn = spyOn(console, "warn").mockImplementation(() => {})
+  try {
+    expect(
+      convertEasyEdaJsonToCircuitJson(EasyEdaJsonSchema.parse(withDecoration)),
+    ).toEqual(expected)
+    expect(warn).toHaveBeenCalledTimes(1)
+    expect(warn).toHaveBeenCalledWith(
+      "Skipping EasyEDA fabrication note over-budget-artwork: Bezier curve exceeds the subdivision limit",
+    )
+  } finally {
+    warn.mockRestore()
+  }
+})
+
+test.each([11, 12])(
+  "still rejects an over-budget physical NPTH on layer %s",
+  (layer) => {
+    const withPhysicalHole = structuredClone(rawJson)
+    withPhysicalHole.packageDetail.dataStr.shape.push(
+      `SOLIDREGION~${layer}~~${overBudgetPath}~npth~over-budget-hole~~~~0`,
+    )
+    expect(() =>
+      convertEasyEdaJsonToCircuitJson(
+        EasyEdaJsonSchema.parse(withPhysicalHole),
+      ),
+    ).toThrow("Bezier curve exceeds the subdivision limit")
+  },
+)
+
+test("does not treat other Bezier errors as subdivision-limit failures", () => {
+  const withInvalidCurve = structuredClone(rawJson)
+  withInvalidCurve.packageDetail.dataStr.shape.push(
+    "SOLIDREGION~12~~M 1e308 0 c 1e308 0 1e308 1 1e308 0 Z~solid~overflowing-artwork~~~~0",
+  )
+  const warn = spyOn(console, "warn").mockImplementation(() => {})
+  try {
+    expect(() =>
+      convertEasyEdaJsonToCircuitJson(
+        EasyEdaJsonSchema.parse(withInvalidCurve),
+      ),
+    ).toThrow("Invalid Bezier curve geometry")
+    expect(warn).not.toHaveBeenCalled()
+  } finally {
+    warn.mockRestore()
+  }
 })

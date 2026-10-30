@@ -104,3 +104,16 @@ test("fails rather than relaxing tolerance when the subdivision budget is exceed
     ),
   ).toThrow("Bezier curve exceeds the subdivision limit")
 })
+
+test("enforces the point limit at the subdivision boundary", () => {
+  expect(() =>
+    flattenBezierCurve(
+      [
+        { x: 0, y: 0 },
+        { x: 100000, y: 100000 },
+        { x: 200000, y: 0 },
+      ],
+      0.001 / 0.254,
+    ),
+  ).toThrow("Bezier curve exceeds the subdivision limit")
+})
