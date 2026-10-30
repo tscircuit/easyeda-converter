@@ -33,7 +33,13 @@ test.each([
     // its major arc must travel 300 degrees. The possible centers are
     // (0, sqrt(3)) and (0, -sqrt(3)). Accumulate signed angles between
     // consecutive radial vectors so endpoint wrapping cannot hide a minor arc.
-    const route = generateArcFromSweep(-1, 0, 1, 0, 2, largeArcFlag, sweepFlag)
+    const route = generateArcFromSweep({
+      start: { x: -1, y: 0 },
+      end: { x: 1, y: 0 },
+      radius: 2,
+      largeArcFlag,
+      sweepFlag,
+    })
     const signedSpanRadians = route
       .slice(1)
       .reduce((spanRadians, point, index) => {
@@ -70,15 +76,13 @@ test.each([
 ])(
   "preserves SVG arc direction for %j",
   ({ radius, largeArcFlag, sweepFlag }) => {
-    const route = generateArcFromSweep(
-      -1,
-      0,
-      1,
-      0,
+    const route = generateArcFromSweep({
+      start: { x: -1, y: 0 },
+      end: { x: 1, y: 0 },
       radius,
       largeArcFlag,
       sweepFlag,
-    )
+    })
     const ys = route.map((point) => point.y)
     if (sweepFlag) {
       expect(Math.min(...ys)).toBeLessThan(-0.1)

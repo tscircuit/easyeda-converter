@@ -1,16 +1,19 @@
 import { generateArcFromSweep } from "../math/arc-utils"
+import { appendEasyEdaPathPoint } from "./append-easyeda-path-point"
+import { MAX_EASYEDA_PATH_POINTS } from "./easyeda-path-limits"
+import { expandEasyEdaBezierCommand } from "./expand-easyeda-bezier-command"
 import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
 /**
  * Expand a single EasyEDA SOLIDREGION outline, including relative commands,
- * axis-aligned lines, and circular arcs. Reject unsupported geometry rather
- * than returning a partial outline.
+ * axis-aligned lines, circular arcs, and Bezier curves. Reject unsupported
+ * geometry rather than returning a partial outline.
  */
 export const expandEasyEdaPathData = (pathData: string) => {
   const commands = parseEasyEdaPathCommands(pathData)
   if (!commands) throw new Error("Invalid EasyEDA SOLIDREGION path")
   for (const { command } of commands) {
-    if (!/^[MLHVAZ]$/i.test(command)) {
+    if (!/^[MLHVAZCSQT]$/i.test(command)) {
       throw new Error(
         `Unsupported EasyEDA SOLIDREGION path command: ${command}`,
       )
@@ -24,18 +27,22 @@ export const expandEasyEdaPathData = (pathData: string) => {
   let currentPoint: { x: number; y: number } | undefined
   let subpathStart: { x: number; y: number } | undefined
   let afterClose = false
+  let cubicControl: { x: number; y: number } | undefined
+  let quadraticControl: { x: number; y: number } | undefined
 
   for (const pathCommand of commands) {
     const command = pathCommand.command.toUpperCase()
     const relative = pathCommand.command !== command
     const commandArguments = pathCommand.arguments
+    if (command !== "C" && command !== "S") cubicControl = undefined
+    if (command !== "Q" && command !== "T") quadraticControl = undefined
 
     // Callers close the final outline. Add an intermediate close only when
     // another segment follows Z, preserving existing exported vertices.
     if (afterClose && command !== "Z" && currentPoint) {
       const lastPoint = rawRoute.at(-1)
       if (lastPoint?.x !== currentPoint.x || lastPoint?.y !== currentPoint.y) {
-        rawRoute.push(currentPoint)
+        appendEasyEdaPathPoint(rawRoute, currentPoint)
       }
     }
     afterClose = command === "Z"
@@ -51,7 +58,7 @@ export const expandEasyEdaPathData = (pathData: string) => {
             commandArguments[offset + 1]! +
             (relative ? (currentPoint?.y ?? 0) : 0),
         }
-        rawRoute.push(currentPoint)
+        appendEasyEdaPathPoint(rawRoute, currentPoint)
         if (command === "M" && offset === 0) subpathStart = currentPoint
       }
     } else if ((command === "H" || command === "V") && currentPoint) {
@@ -66,8 +73,19 @@ export const expandEasyEdaPathData = (pathData: string) => {
               ? coordinate + (relative ? currentPoint.y : 0)
               : currentPoint.y,
         }
-        rawRoute.push(currentPoint)
+        appendEasyEdaPathPoint(rawRoute, currentPoint)
       }
+    } else if (/^[CSQT]$/.test(command) && currentPoint) {
+      const curve = expandEasyEdaBezierCommand(pathCommand, {
+        currentPoint,
+        cubicControl,
+        quadraticControl,
+        remainingPoints: MAX_EASYEDA_PATH_POINTS - rawRoute.length,
+      })
+      for (const point of curve.route) appendEasyEdaPathPoint(rawRoute, point)
+      currentPoint = curve.currentPoint
+      cubicControl = curve.cubicControl
+      quadraticControl = curve.quadraticControl
     } else if (
       command === "A" &&
       currentPoint &&
@@ -78,28 +96,17 @@ export const expandEasyEdaPathData = (pathData: string) => {
           commandArguments.slice(offset, offset + 7)
         const endX: number = endpointX! + (relative ? currentPoint.x : 0)
         const endY: number = endpointY! + (relative ? currentPoint.y : 0)
-        const generatedArcRoute = generateArcFromSweep(
-          currentPoint.x,
-          currentPoint.y,
-          endX,
-          endY,
-          radiusX!,
-          largeArcFlag === 1,
-          sweepFlag === 1,
-        )
-        const maxArcSegments = 16
-        const arcRoute =
-          generatedArcRoute.length <= maxArcSegments + 1
-            ? generatedArcRoute
-            : Array.from({ length: maxArcSegments + 1 }, (_, pointIndex) =>
-                generatedArcRoute.at(
-                  Math.round(
-                    (pointIndex * (generatedArcRoute.length - 1)) /
-                      maxArcSegments,
-                  ),
-                ),
-              ).filter((point): point is { x: number; y: number } => !!point)
-        rawRoute.push(...arcRoute.slice(1))
+        const arcRoute = generateArcFromSweep({
+          start: currentPoint,
+          end: { x: endX, y: endY },
+          radius: radiusX!,
+          largeArcFlag: largeArcFlag === 1,
+          sweepFlag: sweepFlag === 1,
+          maxSegments: 16,
+        })
+        for (let index = 1; index < arcRoute.length; index++) {
+          appendEasyEdaPathPoint(rawRoute, arcRoute[index]!)
+        }
         currentPoint = { x: endX, y: endY }
       }
     } else if (command === "Z" && subpathStart) {

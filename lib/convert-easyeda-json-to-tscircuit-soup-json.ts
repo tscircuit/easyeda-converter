@@ -41,10 +41,19 @@ import type {
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { convertEasyEdaNpthCutoutsToHoles } from "./utils/convert-easyeda-npth-cutouts-to-holes"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
+import {
+  BEZIER_SUBDIVISION_LIMIT_MESSAGE,
+  INVALID_BEZIER_GEOMETRY_MESSAGE,
+} from "./utils/flatten-bezier-curve"
+import {
+  EASYEDA_PATH_LIMIT_MESSAGE,
+  INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
+} from "./utils/easyeda-path-limits"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
 import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
+import { parseEasyEdaPathCommands } from "./utils/parse-easyeda-path-commands"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import {
   type PackageArc,
@@ -222,7 +231,38 @@ const handleFabricationNoteSolidRegion = (
   solidRegion: z.infer<typeof SolidRegionSchema>,
   index: number,
 ) => {
-  const rawRoute = expandEasyEdaPathData(solidRegion.pathData)
+  const commands = parseEasyEdaPathCommands(solidRegion.pathData)
+  const pathWarning = !commands
+    ? "Invalid EasyEDA SOLIDREGION path"
+    : commands.slice(1).some(({ command }) => command.toUpperCase() === "M")
+      ? "Multiple EasyEDA SOLIDREGION subpaths are not supported"
+      : undefined
+  if (pathWarning) {
+    console.warn(
+      `Skipping EasyEDA fabrication note ${solidRegion.id ?? index + 1}: ${pathWarning}`,
+    )
+    return null
+  }
+  let rawRoute: ReturnType<typeof expandEasyEdaPathData>
+  try {
+    rawRoute = expandEasyEdaPathData(solidRegion.pathData)
+  } catch (error) {
+    if (
+      !(error instanceof Error) ||
+      ![
+        BEZIER_SUBDIVISION_LIMIT_MESSAGE,
+        EASYEDA_PATH_LIMIT_MESSAGE,
+        INVALID_BEZIER_GEOMETRY_MESSAGE,
+        INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
+      ].includes(error.message)
+    ) {
+      throw error
+    }
+    console.warn(
+      `Skipping EasyEDA fabrication note ${solidRegion.id ?? index + 1}: ${error.message}`,
+    )
+    return null
+  }
 
   const route = rawRoute.map((point) => ({
     x: mil10ToMm(point.x),
