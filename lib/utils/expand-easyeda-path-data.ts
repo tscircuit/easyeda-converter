@@ -2,25 +2,69 @@ import { generateArcFromSweep } from "../math/arc-utils"
 import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
 /**
- * Walk an EasyEDA SOLIDREGION pathData string into concrete points. The schema
- * only recovers M/L commands, so A commands are expanded here to keep curved
- * outlines faithful to the source.
+ * Expand a single EasyEDA SOLIDREGION outline, including relative commands,
+ * axis-aligned lines, and circular arcs. Reject unsupported geometry rather
+ * than returning a partial outline.
  */
 export const expandEasyEdaPathData = (pathData: string) => {
+  const commands = parseEasyEdaPathCommands(pathData)
+  if (!commands) throw new Error("Invalid EasyEDA SOLIDREGION path")
+  for (const { command } of commands) {
+    if (!/^[MLHVAZ]$/i.test(command)) {
+      throw new Error(
+        `Unsupported EasyEDA SOLIDREGION path command: ${command}`,
+      )
+    }
+  }
+  if (commands.slice(1).some(({ command }) => command.toUpperCase() === "M")) {
+    throw new Error("Multiple EasyEDA SOLIDREGION subpaths are not supported")
+  }
+
   const rawRoute: Array<{ x: number; y: number }> = []
   let currentPoint: { x: number; y: number } | undefined
+  let subpathStart: { x: number; y: number } | undefined
+  let afterClose = false
 
-  for (const pathCommand of parseEasyEdaPathCommands(pathData) ?? []) {
+  for (const pathCommand of commands) {
     const command = pathCommand.command.toUpperCase()
+    const relative = pathCommand.command !== command
     const commandArguments = pathCommand.arguments
+
+    // Callers close the final outline. Add an intermediate close only when
+    // another segment follows Z, preserving existing exported vertices.
+    if (afterClose && command !== "Z" && currentPoint) {
+      const lastPoint = rawRoute.at(-1)
+      if (lastPoint?.x !== currentPoint.x || lastPoint?.y !== currentPoint.y) {
+        rawRoute.push(currentPoint)
+      }
+    }
+    afterClose = command === "Z"
 
     if ((command === "M" || command === "L") && commandArguments.length >= 2) {
       // SVG commands may omit repeated command letters between argument groups.
       // Extra M coordinate pairs are implicit L commands.
       for (let offset = 0; offset + 1 < commandArguments.length; offset += 2) {
         currentPoint = {
-          x: commandArguments[offset]!,
-          y: commandArguments[offset + 1]!,
+          x:
+            commandArguments[offset]! + (relative ? (currentPoint?.x ?? 0) : 0),
+          y:
+            commandArguments[offset + 1]! +
+            (relative ? (currentPoint?.y ?? 0) : 0),
+        }
+        rawRoute.push(currentPoint)
+        if (command === "M" && offset === 0) subpathStart = currentPoint
+      }
+    } else if ((command === "H" || command === "V") && currentPoint) {
+      for (const coordinate of commandArguments) {
+        currentPoint = {
+          x:
+            command === "H"
+              ? coordinate + (relative ? currentPoint.x : 0)
+              : currentPoint.x,
+          y:
+            command === "V"
+              ? coordinate + (relative ? currentPoint.y : 0)
+              : currentPoint.y,
         }
         rawRoute.push(currentPoint)
       }
@@ -30,13 +74,15 @@ export const expandEasyEdaPathData = (pathData: string) => {
       commandArguments.length >= 7
     ) {
       for (let offset = 0; offset + 6 < commandArguments.length; offset += 7) {
-        const [radiusX, , , largeArcFlag, sweepFlag, endX, endY] =
+        const [radiusX, , , largeArcFlag, sweepFlag, endpointX, endpointY] =
           commandArguments.slice(offset, offset + 7)
+        const endX: number = endpointX! + (relative ? currentPoint.x : 0)
+        const endY: number = endpointY! + (relative ? currentPoint.y : 0)
         const generatedArcRoute = generateArcFromSweep(
           currentPoint.x,
           currentPoint.y,
-          endX!,
-          endY!,
+          endX,
+          endY,
           radiusX!,
           largeArcFlag === 1,
           sweepFlag === 1,
@@ -54,8 +100,10 @@ export const expandEasyEdaPathData = (pathData: string) => {
                 ),
               ).filter((point): point is { x: number; y: number } => !!point)
         rawRoute.push(...arcRoute.slice(1))
-        currentPoint = { x: endX!, y: endY! }
+        currentPoint = { x: endX, y: endY }
       }
+    } else if (command === "Z" && subpathStart) {
+      currentPoint = subpathStart
     }
   }
 
