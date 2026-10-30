@@ -1,3 +1,8 @@
+import {
+  INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
+  MAX_EASYEDA_PATH_POINTS,
+} from "../utils/easyeda-path-limits"
+
 export interface Point {
   x: number
   y: number
@@ -97,17 +102,30 @@ This syntax describes an SVG path command for drawing an arc. Let's break down e
 
 This command draws an arc starting at (3923.0512, 2968.5197) and ending at (3923.0512, 2963.5197), using a circular path with a radius of 2.5 units.
  */
-export function generateArcFromSweep(
-  startX: number,
-  startY: number,
-  endX: number,
-  endY: number,
-  radius: number,
-  largeArcFlag: boolean,
-  sweepFlag: boolean,
-): Point[] {
-  const start: Point = { x: startX, y: startY }
-  const end: Point = { x: endX, y: endY }
+export function generateArcFromSweep({
+  start,
+  end,
+  radius,
+  largeArcFlag,
+  sweepFlag,
+  maxSegments = MAX_EASYEDA_PATH_POINTS - 1,
+}: {
+  start: Point
+  end: Point
+  radius: number
+  largeArcFlag: boolean
+  sweepFlag: boolean
+  maxSegments?: number
+}): Point[] {
+  const { x: startX, y: startY } = start
+  const { x: endX, y: endY } = end
+  if (
+    ![startX, startY, endX, endY, radius].every(Number.isFinite) ||
+    !Number.isInteger(maxSegments) ||
+    maxSegments < 1
+  ) {
+    throw new Error(INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE)
+  }
 
   // Calculate the midpoint between start and end
   const midX = (startX + endX) / 2
@@ -160,13 +178,36 @@ export function generateArcFromSweep(
   const numPoints = isSemicircle
     ? minNumPoints + (minNumPoints % 2)
     : minNumPoints
+  if (
+    ![centerX, centerY, startAngle, endAngle, numPoints].every(Number.isFinite)
+  ) {
+    throw new Error(INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE)
+  }
+  const sampledSegments = Math.min(
+    numPoints,
+    maxSegments,
+    MAX_EASYEDA_PATH_POINTS - 1,
+  )
   const path: Point[] = []
 
-  for (let i = 0; i <= numPoints; i++) {
-    const t = i / numPoints
+  for (let i = 0; i <= sampledSegments; i++) {
+    // Select the same vertices as the old full-array/downsample pipeline,
+    // without allocating the discarded points.
+    const pointIndex =
+      sampledSegments === numPoints
+        ? i
+        : Math.round(
+            numPoints <= Number.MAX_SAFE_INTEGER / sampledSegments
+              ? (i * numPoints) / sampledSegments
+              : (i / sampledSegments) * numPoints,
+          )
+    const t = pointIndex / numPoints
     const angle = startAngle + t * (endAngle - startAngle)
     const x = centerX + radius * Math.cos(angle)
     const y = centerY + radius * Math.sin(angle)
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      throw new Error(INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE)
+    }
     path.push({ x, y })
   }
 

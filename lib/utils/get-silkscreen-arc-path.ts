@@ -78,24 +78,23 @@ export const getSilkscreenArcPath = (
   footprintCenter: Point,
   silkscreenTracks: PackageTrack[],
 ): Point[] => {
-  const generateArcPath = (sweepFlag: boolean) =>
-    generateArcFromSweep(
-      arc.start.x,
-      arc.start.y,
-      arc.end.x,
-      arc.end.y,
-      arc.radiusX,
-      arc.largeArc,
-      sweepFlag,
-    )
+  const arcOptions = {
+    start: arc.start,
+    end: arc.end,
+    radius: arc.radiusX,
+    largeArcFlag: arc.largeArc,
+  }
 
   const sweepFlag = arc.sweepDirection === "CW"
-  const arcPath = generateArcPath(sweepFlag)
+  const arcPath = generateArcFromSweep({ ...arcOptions, sweepFlag })
   const semicircleRole = classifySemicircle(arc, silkscreenTracks)
 
   if (!semicircleRole) return arcPath
 
-  const oppositeArcPath = generateArcPath(!sweepFlag)
+  const oppositeArcPath = generateArcFromSweep({
+    ...arcOptions,
+    sweepFlag: !sweepFlag,
+  })
   const arcDistance = distanceFromRouteMidpoint(arcPath, footprintCenter)
   const oppositeDistance = distanceFromRouteMidpoint(
     oppositeArcPath,

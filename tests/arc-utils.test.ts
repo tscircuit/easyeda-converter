@@ -3,7 +3,13 @@ import { generateArcFromSweep } from "../lib/math/arc-utils"
 
 describe("generateArcFromSweep", () => {
   test("uses the near circle center for a small arc", () => {
-    const route = generateArcFromSweep(-1, 0, 1, 0, 2, false, false)
+    const route = generateArcFromSweep({
+      start: { x: -1, y: 0 },
+      end: { x: 1, y: 0 },
+      radius: 2,
+      largeArcFlag: false,
+      sweepFlag: false,
+    })
 
     expect(Math.max(...route.map(({ y }) => y))).toBeLessThan(0.25)
     expect(Math.min(...route.map(({ x }) => x))).toBeGreaterThan(-1.01)
@@ -11,8 +17,20 @@ describe("generateArcFromSweep", () => {
   })
 
   test("uses the opposite circle center for a large arc", () => {
-    const route = generateArcFromSweep(-1, 0, 1, 0, 2, true, false)
-    const reversedSweepRoute = generateArcFromSweep(-1, 0, 1, 0, 2, true, true)
+    const route = generateArcFromSweep({
+      start: { x: -1, y: 0 },
+      end: { x: 1, y: 0 },
+      radius: 2,
+      largeArcFlag: true,
+      sweepFlag: false,
+    })
+    const reversedSweepRoute = generateArcFromSweep({
+      start: { x: -1, y: 0 },
+      end: { x: 1, y: 0 },
+      radius: 2,
+      largeArcFlag: true,
+      sweepFlag: true,
+    })
 
     expect(Math.max(...route.map(({ y }) => y))).toBeGreaterThan(3.5)
     expect(Math.min(...route.map(({ x }) => x))).toBeLessThan(-1.9)

@@ -96,27 +96,14 @@ export const expandEasyEdaPathData = (pathData: string) => {
           commandArguments.slice(offset, offset + 7)
         const endX: number = endpointX! + (relative ? currentPoint.x : 0)
         const endY: number = endpointY! + (relative ? currentPoint.y : 0)
-        const generatedArcRoute = generateArcFromSweep(
-          currentPoint.x,
-          currentPoint.y,
-          endX,
-          endY,
-          radiusX!,
-          largeArcFlag === 1,
-          sweepFlag === 1,
-        )
-        const maxArcSegments = 16
-        const arcRoute =
-          generatedArcRoute.length <= maxArcSegments + 1
-            ? generatedArcRoute
-            : Array.from({ length: maxArcSegments + 1 }, (_, pointIndex) =>
-                generatedArcRoute.at(
-                  Math.round(
-                    (pointIndex * (generatedArcRoute.length - 1)) /
-                      maxArcSegments,
-                  ),
-                ),
-              ).filter((point): point is { x: number; y: number } => !!point)
+        const arcRoute = generateArcFromSweep({
+          start: currentPoint,
+          end: { x: endX, y: endY },
+          radius: radiusX!,
+          largeArcFlag: largeArcFlag === 1,
+          sweepFlag: sweepFlag === 1,
+          maxSegments: 16,
+        })
         for (let index = 1; index < arcRoute.length; index++) {
           appendEasyEdaPathPoint(rawRoute, arcRoute[index]!)
         }

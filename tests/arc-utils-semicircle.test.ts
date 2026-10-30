@@ -13,15 +13,13 @@ const ARC_CHORD = 4.606
 const SEMICIRCLE_PATH = `M 3982.4568 3012.0237 A ${ARC_RADIUS} ${ARC_RADIUS} 0 1 1 3987.0628 3012.0237 A ${ARC_RADIUS} ${ARC_RADIUS} 0 1 1 3982.4568 3012.0237 Z`
 
 const arc = (largeArcFlag: boolean, sweepFlag: boolean) =>
-  generateArcFromSweep(
-    3982.4568,
-    3012.0237,
-    3987.0628,
-    3012.0237,
-    ARC_RADIUS,
+  generateArcFromSweep({
+    start: { x: 3982.4568, y: 3012.0237 },
+    end: { x: 3987.0628, y: 3012.0237 },
+    radius: ARC_RADIUS,
     largeArcFlag,
     sweepFlag,
-  )
+  })
 
 describe("generateArcFromSweep semicircle tolerance", () => {
   test("arcs an exact semicircle instead of returning a flat chord", () => {
@@ -46,7 +44,13 @@ describe("generateArcFromSweep semicircle tolerance", () => {
   })
 
   test("still returns a flat chord when the radius is genuinely too small", () => {
-    const route = generateArcFromSweep(0, 0, 10, 0, 2, false, false)
+    const route = generateArcFromSweep({
+      start: { x: 0, y: 0 },
+      end: { x: 10, y: 0 },
+      radius: 2,
+      largeArcFlag: false,
+      sweepFlag: false,
+    })
 
     expect(route).toHaveLength(2)
     expect(route[0]).toEqual({ x: 0, y: 0 })
@@ -54,7 +58,13 @@ describe("generateArcFromSweep semicircle tolerance", () => {
   })
 
   test("still returns a flat chord for a zero-length path", () => {
-    const route = generateArcFromSweep(5, 5, 5, 5, 10, false, false)
+    const route = generateArcFromSweep({
+      start: { x: 5, y: 5 },
+      end: { x: 5, y: 5 },
+      radius: 10,
+      largeArcFlag: false,
+      sweepFlag: false,
+    })
 
     expect(route).toHaveLength(2)
     expect(route[0]).toEqual({ x: 5, y: 5 })

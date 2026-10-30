@@ -207,6 +207,10 @@ test.each([11, 12])(
 test.each([
   ["M 1e308 0 c 1e308 0 1e308 1 1e308 0 Z", "Invalid Bezier curve geometry"],
   ["M 1e308 0 h 1e308 Z", "Invalid EasyEDA SOLIDREGION path geometry"],
+  [
+    "M 0 0 A 1e308 1e308 0 0 1 2 0 Z",
+    "Invalid EasyEDA SOLIDREGION path geometry",
+  ],
 ])(
   "warns and skips invalid generated artwork coordinates: %s",
   (pathData, reason) => {
