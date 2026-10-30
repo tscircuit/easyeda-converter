@@ -40,6 +40,7 @@ import type {
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { convertEasyEdaNpthCutoutsToHoles } from "./utils/convert-easyeda-npth-cutouts-to-holes"
+import { EasyEdaPathError } from "./utils/easyeda-path-error"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
@@ -222,7 +223,16 @@ const handleFabricationNoteSolidRegion = (
   solidRegion: z.infer<typeof SolidRegionSchema>,
   index: number,
 ) => {
-  const rawRoute = expandEasyEdaPathData(solidRegion.pathData)
+  let rawRoute: ReturnType<typeof expandEasyEdaPathData>
+  try {
+    rawRoute = expandEasyEdaPathData(solidRegion.pathData)
+  } catch (error) {
+    if (!(error instanceof EasyEdaPathError)) throw error
+    console.warn(
+      `Skipping EasyEDA fabrication note ${solidRegion.id ?? index + 1}: ${error.message}`,
+    )
+    return null
+  }
 
   const route = rawRoute.map((point) => ({
     x: mil10ToMm(point.x),

@@ -1,4 +1,5 @@
 import { generateArcFromSweep } from "../math/arc-utils"
+import { EasyEdaPathError } from "./easyeda-path-error"
 import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
 /**
@@ -8,16 +9,18 @@ import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
  */
 export const expandEasyEdaPathData = (pathData: string) => {
   const commands = parseEasyEdaPathCommands(pathData)
-  if (!commands) throw new Error("Invalid EasyEDA SOLIDREGION path")
+  if (!commands) throw new EasyEdaPathError("Invalid EasyEDA SOLIDREGION path")
   for (const { command } of commands) {
     if (!/^[MLHVAZ]$/i.test(command)) {
-      throw new Error(
+      throw new EasyEdaPathError(
         `Unsupported EasyEDA SOLIDREGION path command: ${command}`,
       )
     }
   }
   if (commands.slice(1).some(({ command }) => command.toUpperCase() === "M")) {
-    throw new Error("Multiple EasyEDA SOLIDREGION subpaths are not supported")
+    throw new EasyEdaPathError(
+      "Multiple EasyEDA SOLIDREGION subpaths are not supported",
+    )
   }
 
   const rawRoute: Array<{ x: number; y: number }> = []
