@@ -6,11 +6,8 @@ import { expandEasyEdaPathData } from "./expand-easyeda-path-data"
 /**
  * EasyEDA stores non-plated through-hole slots as SOLIDREGION paths on the
  * multi-layer layer rather than as HOLE records, so they are easy to miss.
- * Returns polygon points for a pcb_cutout, or null when the path has no usable
- * outline. Callers wrap this in pcb_cutout.parse.
- *
- * A pcb_cutout polygon keeps a rounded outline exact; pcb_hole can only
- * approximate such a slot as an oval.
+ * Returns polygon points for recentering; recognizable capsules are replaced
+ * with pill-shaped holes after the existing placement and CAD calculations.
  */
 export const getEasyEdaNpthSlotGeometry = (
   solidRegion: z.infer<typeof SolidRegionSchema>,

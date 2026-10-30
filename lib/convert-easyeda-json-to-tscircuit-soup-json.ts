@@ -39,6 +39,7 @@ import type {
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
+import { convertEasyEdaNpthCutoutsToHoles } from "./utils/convert-easyeda-npth-cutouts-to-holes"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
@@ -665,23 +666,22 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     })
 
   // Add non-plated through-hole slots from solid regions marked as npth
-  easyEdaJson.packageDetail.dataStr.shape
-    .filter(
-      (shape): shape is z.infer<typeof SolidRegionSchema> =>
-        shape.type === "SOLIDREGION" && isPcbSolidRegionNpth(shape),
+  const npthRegions = easyEdaJson.packageDetail.dataStr.shape.filter(
+    (shape): shape is z.infer<typeof SolidRegionSchema> =>
+      shape.type === "SOLIDREGION" && isPcbSolidRegionNpth(shape),
+  )
+  npthRegions.forEach((sr, index) => {
+    const geometry = getEasyEdaNpthSlotGeometry(sr)
+    if (!geometry) return
+    circuitElements.push(
+      Soup.pcb_cutout.parse({
+        type: "pcb_cutout",
+        pcb_cutout_id: `pcb_cutout_npth_${index + 1}`,
+        shape: "polygon",
+        points: geometry.points,
+      } as Soup.PcbCutoutPolygonInput),
     )
-    .forEach((sr, index) => {
-      const geometry = getEasyEdaNpthSlotGeometry(sr)
-      if (!geometry) return
-      circuitElements.push(
-        Soup.pcb_cutout.parse({
-          type: "pcb_cutout",
-          pcb_cutout_id: `pcb_cutout_npth_${index + 1}`,
-          shape: "polygon",
-          points: geometry.points,
-        } as Soup.PcbCutoutPolygonInput),
-      )
-    })
+  })
 
   const boardOutlineTracks = easyEdaJson.packageDetail.dataStr.shape.filter(
     (shape): shape is PackageTrack =>
@@ -1116,7 +1116,10 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     pcb_component.center = { x: 0, y: 0 }
   }
 
-  return { circuitJson: circuitElements, resolvedPinAttributes }
+  return {
+    circuitJson: convertEasyEdaNpthCutoutsToHoles(circuitElements, npthRegions),
+    resolvedPinAttributes,
+  }
 }
 
 export const convertEasyEdaJsonToCircuitJson = (
