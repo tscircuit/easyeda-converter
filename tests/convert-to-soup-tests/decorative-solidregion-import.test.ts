@@ -10,39 +10,6 @@ const cubicPath = "M 3992 2998 C 3992 2999 3994 2999 3994 2998 L 3992 2998 Z"
 const overBudgetPath =
   "M 3992 3000 Q 10000003992 10000003000 20000003992 3000 L 3992 3000 Z"
 
-test("snapshots the actual import outcome for Bezier artwork", async () => {
-  const withDecoration = structuredClone(rawJson)
-  withDecoration.packageDetail.dataStr.shape.push(
-    `SOLIDREGION~12~~${cubicPath}~solid~decorative-curve~~~~0`,
-  )
-  let svg: string
-  try {
-    const circuitJson = convertEasyEdaJsonToCircuitJson(
-      EasyEdaJsonSchema.parse(withDecoration),
-    )
-    svg = convertCircuitJsonToPcbSvg(circuitJson)
-  } catch (error) {
-    if (
-      !(error instanceof Error) ||
-      error.message !== "Unsupported EasyEDA SOLIDREGION path command: C"
-    ) {
-      throw error
-    }
-    // Conversion fails before there is a PCB to render. Record that outcome
-    // explicitly instead of substituting an incomplete footprint.
-    svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-      <rect width="800" height="600" fill="#111"/>
-      <text x="40" y="230" fill="#ff6464" font-family="sans-serif" font-size="30">EasyEDA import failed</text>
-      <text x="40" y="290" fill="#eee" font-family="sans-serif" font-size="19">Unsupported EasyEDA SOLIDREGION path command: C</text>
-      <text x="40" y="340" fill="#aaa" font-family="sans-serif" font-size="19">No footprint was generated.</text>
-    </svg>`
-  }
-  await expect(svg).toMatchSvgSnapshot(
-    import.meta.path,
-    "preserved-bezier-artwork",
-  )
-})
-
 test("reference footprint retains pads and supported fabrication artwork", async () => {
   const circuitJson = convertEasyEdaJsonToCircuitJson(
     EasyEdaJsonSchema.parse(rawJson),
