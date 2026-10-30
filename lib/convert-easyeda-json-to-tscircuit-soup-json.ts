@@ -41,7 +41,14 @@ import type {
 import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { convertEasyEdaNpthCutoutsToHoles } from "./utils/convert-easyeda-npth-cutouts-to-holes"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
-import { BEZIER_SUBDIVISION_LIMIT_MESSAGE } from "./utils/flatten-bezier-curve"
+import {
+  BEZIER_SUBDIVISION_LIMIT_MESSAGE,
+  INVALID_BEZIER_GEOMETRY_MESSAGE,
+} from "./utils/flatten-bezier-curve"
+import {
+  EASYEDA_PATH_LIMIT_MESSAGE,
+  INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
+} from "./utils/easyeda-path-limits"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
 import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
@@ -242,7 +249,12 @@ const handleFabricationNoteSolidRegion = (
   } catch (error) {
     if (
       !(error instanceof Error) ||
-      error.message !== BEZIER_SUBDIVISION_LIMIT_MESSAGE
+      ![
+        BEZIER_SUBDIVISION_LIMIT_MESSAGE,
+        EASYEDA_PATH_LIMIT_MESSAGE,
+        INVALID_BEZIER_GEOMETRY_MESSAGE,
+        INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
+      ].includes(error.message)
     ) {
       throw error
     }

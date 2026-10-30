@@ -60,7 +60,7 @@ test.each([3, 4])(
             { x: 10, y: 0 },
           ]
     const tolerance = 0.001 / 0.254
-    const route = flattenBezierCurve(controlPoints, tolerance)
+    const route = flattenBezierCurve({ controlPoints, tolerance })
     for (let index = 0; index <= 1000; index++) {
       const t = index / 1000
       const u = 1 - t
@@ -94,26 +94,26 @@ test("does not collapse collinear overshoots or closed Bezier loops", () => {
 
 test("fails rather than relaxing tolerance when the subdivision budget is exceeded", () => {
   expect(() =>
-    flattenBezierCurve(
-      [
+    flattenBezierCurve({
+      controlPoints: [
         { x: 0, y: 0 },
         { x: 1e10, y: 1e10 },
         { x: 2e10, y: 0 },
       ],
-      1e-12,
-    ),
+      tolerance: 1e-12,
+    }),
   ).toThrow("Bezier curve exceeds the subdivision limit")
 })
 
 test("enforces the point limit at the subdivision boundary", () => {
   expect(() =>
-    flattenBezierCurve(
-      [
+    flattenBezierCurve({
+      controlPoints: [
         { x: 0, y: 0 },
         { x: 100000, y: 100000 },
         { x: 200000, y: 0 },
       ],
-      0.001 / 0.254,
-    ),
-  ).toThrow("Bezier curve exceeds the subdivision limit")
+      tolerance: 0.001 / 0.254,
+    }),
+  ).toThrow("EasyEDA SOLIDREGION path exceeds the vertex limit")
 })

@@ -200,20 +200,32 @@ test.each([11, 12])(
   },
 )
 
-test("does not treat other Bezier errors as subdivision-limit failures", () => {
-  const withInvalidCurve = structuredClone(rawJson)
-  withInvalidCurve.packageDetail.dataStr.shape.push(
-    "SOLIDREGION~12~~M 1e308 0 c 1e308 0 1e308 1 1e308 0 Z~solid~overflowing-artwork~~~~0",
-  )
-  const warn = spyOn(console, "warn").mockImplementation(() => {})
-  try {
-    expect(() =>
-      convertEasyEdaJsonToCircuitJson(
-        EasyEdaJsonSchema.parse(withInvalidCurve),
-      ),
-    ).toThrow("Invalid Bezier curve geometry")
-    expect(warn).not.toHaveBeenCalled()
-  } finally {
-    warn.mockRestore()
-  }
-})
+test.each([
+  ["M 1e308 0 c 1e308 0 1e308 1 1e308 0 Z", "Invalid Bezier curve geometry"],
+  ["M 1e308 0 h 1e308 Z", "Invalid EasyEDA SOLIDREGION path geometry"],
+])(
+  "warns and skips invalid generated artwork coordinates: %s",
+  (pathData, reason) => {
+    const withInvalidCurve = structuredClone(rawJson)
+    withInvalidCurve.packageDetail.dataStr.shape.push(
+      `SOLIDREGION~12~~${pathData}~solid~overflowing-artwork~~~~0`,
+    )
+    const expected = convertEasyEdaJsonToCircuitJson(
+      EasyEdaJsonSchema.parse(rawJson),
+    )
+    const warn = spyOn(console, "warn").mockImplementation(() => {})
+    try {
+      expect(
+        convertEasyEdaJsonToCircuitJson(
+          EasyEdaJsonSchema.parse(withInvalidCurve),
+        ),
+      ).toEqual(expected)
+      expect(warn).toHaveBeenCalledTimes(1)
+      expect(warn).toHaveBeenCalledWith(
+        `Skipping EasyEDA fabrication note overflowing-artwork: ${reason}`,
+      )
+    } finally {
+      warn.mockRestore()
+    }
+  },
+)

@@ -3,17 +3,26 @@ import {
   type Point,
   pointToSegmentDistance,
 } from "@tscircuit/math-utils"
+import {
+  EASYEDA_PATH_LIMIT_MESSAGE,
+  MAX_EASYEDA_PATH_POINTS,
+} from "./easyeda-path-limits"
 
 const MAX_SUBDIVISION_DEPTH = 20
-const MAX_CURVE_POINTS = 8192
 export const BEZIER_SUBDIVISION_LIMIT_MESSAGE =
   "Bezier curve exceeds the subdivision limit"
+export const INVALID_BEZIER_GEOMETRY_MESSAGE = "Invalid Bezier curve geometry"
 
 /** Subdivide the control polygon until its entire hull is within tolerance. */
-export const flattenBezierCurve = (
-  controlPoints: Point[],
-  tolerance: number,
-) => {
+export const flattenBezierCurve = ({
+  controlPoints,
+  tolerance,
+  maxPoints = MAX_EASYEDA_PATH_POINTS,
+}: {
+  controlPoints: Point[]
+  tolerance: number
+  maxPoints?: number
+}) => {
   if (
     ![3, 4].includes(controlPoints.length) ||
     !Number.isFinite(tolerance) ||
@@ -22,8 +31,12 @@ export const flattenBezierCurve = (
       (point) => !Number.isFinite(point.x) || !Number.isFinite(point.y),
     )
   ) {
-    throw new Error("Invalid Bezier curve geometry")
+    throw new Error(INVALID_BEZIER_GEOMETRY_MESSAGE)
   }
+  if (!Number.isInteger(maxPoints) || maxPoints < 2) {
+    throw new Error(EASYEDA_PATH_LIMIT_MESSAGE)
+  }
+  const pointLimit = Math.min(maxPoints, MAX_EASYEDA_PATH_POINTS)
 
   const route = [controlPoints[0]!]
   const pending = [{ points: controlPoints, depth: 0 }]
@@ -42,11 +55,11 @@ export const flattenBezierCurve = (
       route.push(end)
       continue
     }
-    if (
-      depth >= MAX_SUBDIVISION_DEPTH ||
-      route.length + pending.length + 2 > MAX_CURVE_POINTS
-    ) {
+    if (depth >= MAX_SUBDIVISION_DEPTH) {
       throw new Error(BEZIER_SUBDIVISION_LIMIT_MESSAGE)
+    }
+    if (route.length + pending.length + 2 > pointLimit) {
+      throw new Error(EASYEDA_PATH_LIMIT_MESSAGE)
     }
 
     let level = points

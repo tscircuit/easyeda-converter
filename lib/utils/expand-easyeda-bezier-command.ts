@@ -1,5 +1,6 @@
 import type { Point } from "@tscircuit/math-utils"
 import { mil10ToMm } from "./easyeda-unit-to-mm"
+import { EASYEDA_PATH_LIMIT_MESSAGE } from "./easyeda-path-limits"
 import { flattenBezierCurve } from "./flatten-bezier-curve"
 import type { EasyEdaPathCommand } from "./parse-easyeda-path-commands"
 
@@ -7,6 +8,7 @@ interface BezierContext {
   currentPoint: Point
   cubicControl?: Point
   quadraticControl?: Point
+  remainingPoints: number
 }
 
 // EasyEDA path units are ten mils. Bound curve deviation to one micrometre.
@@ -27,6 +29,9 @@ export const expandEasyEdaBezierCommand = (
     offset < pathCommand.arguments.length;
     offset += groupSize
   ) {
+    if (route.length >= ctx.remainingPoints) {
+      throw new Error(EASYEDA_PATH_LIMIT_MESSAGE)
+    }
     const coordinates: Point[] = []
     for (let index = offset; index < offset + groupSize; index += 2) {
       coordinates.push({
@@ -62,7 +67,14 @@ export const expandEasyEdaBezierCommand = (
       cubicControl = undefined
       controlPoints = [currentPoint, quadraticControl, end]
     }
-    route.push(...flattenBezierCurve(controlPoints, BEZIER_TOLERANCE).slice(1))
+    const points = flattenBezierCurve({
+      controlPoints,
+      tolerance: BEZIER_TOLERANCE,
+      maxPoints: ctx.remainingPoints - route.length + 1,
+    })
+    for (let index = 1; index < points.length; index++) {
+      route.push(points[index]!)
+    }
     currentPoint = end
   }
   return { route, currentPoint, cubicControl, quadraticControl }

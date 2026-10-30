@@ -1,4 +1,6 @@
 import { generateArcFromSweep } from "../math/arc-utils"
+import { appendEasyEdaPathPoint } from "./append-easyeda-path-point"
+import { MAX_EASYEDA_PATH_POINTS } from "./easyeda-path-limits"
 import { expandEasyEdaBezierCommand } from "./expand-easyeda-bezier-command"
 import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
@@ -40,7 +42,7 @@ export const expandEasyEdaPathData = (pathData: string) => {
     if (afterClose && command !== "Z" && currentPoint) {
       const lastPoint = rawRoute.at(-1)
       if (lastPoint?.x !== currentPoint.x || lastPoint?.y !== currentPoint.y) {
-        rawRoute.push(currentPoint)
+        appendEasyEdaPathPoint(rawRoute, currentPoint)
       }
     }
     afterClose = command === "Z"
@@ -56,7 +58,7 @@ export const expandEasyEdaPathData = (pathData: string) => {
             commandArguments[offset + 1]! +
             (relative ? (currentPoint?.y ?? 0) : 0),
         }
-        rawRoute.push(currentPoint)
+        appendEasyEdaPathPoint(rawRoute, currentPoint)
         if (command === "M" && offset === 0) subpathStart = currentPoint
       }
     } else if ((command === "H" || command === "V") && currentPoint) {
@@ -71,15 +73,16 @@ export const expandEasyEdaPathData = (pathData: string) => {
               ? coordinate + (relative ? currentPoint.y : 0)
               : currentPoint.y,
         }
-        rawRoute.push(currentPoint)
+        appendEasyEdaPathPoint(rawRoute, currentPoint)
       }
     } else if (/^[CSQT]$/.test(command) && currentPoint) {
       const curve = expandEasyEdaBezierCommand(pathCommand, {
         currentPoint,
         cubicControl,
         quadraticControl,
+        remainingPoints: MAX_EASYEDA_PATH_POINTS - rawRoute.length,
       })
-      rawRoute.push(...curve.route)
+      for (const point of curve.route) appendEasyEdaPathPoint(rawRoute, point)
       currentPoint = curve.currentPoint
       cubicControl = curve.cubicControl
       quadraticControl = curve.quadraticControl
@@ -114,7 +117,9 @@ export const expandEasyEdaPathData = (pathData: string) => {
                   ),
                 ),
               ).filter((point): point is { x: number; y: number } => !!point)
-        rawRoute.push(...arcRoute.slice(1))
+        for (let index = 1; index < arcRoute.length; index++) {
+          appendEasyEdaPathPoint(rawRoute, arcRoute[index]!)
+        }
         currentPoint = { x: endX, y: endY }
       }
     } else if (command === "Z" && subpathStart) {
