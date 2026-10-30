@@ -116,18 +116,6 @@ describe("expandEasyEdaPathData relative commands", () => {
 })
 
 describe("expandEasyEdaPathData unsupported geometry", () => {
-  test.each([
-    ["C", "1 2 3 4 5 6"],
-    ["S", "1 2 3 4"],
-    ["Q", "1 2 3 4"],
-    ["T", "1 2"],
-    ["c", "1 2 3 4 5 6"],
-  ])("rejects %s instead of silently dropping a segment", (command, args) => {
-    expect(() =>
-      expandEasyEdaPathData(`M 0 0 L 1 0 ${command} ${args} L 0 1 Z`),
-    ).toThrow(`Unsupported EasyEDA SOLIDREGION path command: ${command}`)
-  })
-
   test("rejects multiple subpaths instead of connecting separate outlines", () => {
     expect(() =>
       expandEasyEdaPathData("M 0 0 L 1 0 L 1 1 Z M 2 2 L 3 2 L 3 3 Z"),

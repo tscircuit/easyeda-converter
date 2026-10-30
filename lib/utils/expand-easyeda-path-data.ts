@@ -1,17 +1,18 @@
 import { generateArcFromSweep } from "../math/arc-utils"
 import { EasyEdaPathError } from "./easyeda-path-error"
+import { expandEasyEdaBezierCommand } from "./expand-easyeda-bezier-command"
 import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
 /**
  * Expand a single EasyEDA SOLIDREGION outline, including relative commands,
- * axis-aligned lines, and circular arcs. Reject unsupported geometry rather
- * than returning a partial outline.
+ * axis-aligned lines, circular arcs, and Bezier curves. Reject unsupported
+ * geometry rather than returning a partial outline.
  */
 export const expandEasyEdaPathData = (pathData: string) => {
   const commands = parseEasyEdaPathCommands(pathData)
   if (!commands) throw new EasyEdaPathError("Invalid EasyEDA SOLIDREGION path")
   for (const { command } of commands) {
-    if (!/^[MLHVAZ]$/i.test(command)) {
+    if (!/^[MLHVAZCSQT]$/i.test(command)) {
       throw new EasyEdaPathError(
         `Unsupported EasyEDA SOLIDREGION path command: ${command}`,
       )
@@ -27,11 +28,15 @@ export const expandEasyEdaPathData = (pathData: string) => {
   let currentPoint: { x: number; y: number } | undefined
   let subpathStart: { x: number; y: number } | undefined
   let afterClose = false
+  let cubicControl: { x: number; y: number } | undefined
+  let quadraticControl: { x: number; y: number } | undefined
 
   for (const pathCommand of commands) {
     const command = pathCommand.command.toUpperCase()
     const relative = pathCommand.command !== command
     const commandArguments = pathCommand.arguments
+    if (command !== "C" && command !== "S") cubicControl = undefined
+    if (command !== "Q" && command !== "T") quadraticControl = undefined
 
     // Callers close the final outline. Add an intermediate close only when
     // another segment follows Z, preserving existing exported vertices.
@@ -71,6 +76,16 @@ export const expandEasyEdaPathData = (pathData: string) => {
         }
         rawRoute.push(currentPoint)
       }
+    } else if (/^[CSQT]$/.test(command) && currentPoint) {
+      const curve = expandEasyEdaBezierCommand(pathCommand, {
+        currentPoint,
+        cubicControl,
+        quadraticControl,
+      })
+      rawRoute.push(...curve.route)
+      currentPoint = curve.currentPoint
+      cubicControl = curve.cubicControl
+      quadraticControl = curve.quadraticControl
     } else if (
       command === "A" &&
       currentPoint &&

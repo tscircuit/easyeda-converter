@@ -2,10 +2,11 @@ import { expect, spyOn, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { generateFootprintTsx } from "lib/websafe/generate-footprint-tsx"
+import { runTscircuitCode } from "tscircuit"
 import rawJson from "tests/assets/C41413180.raweasy.json"
 
-const unsupportedCubicPath =
-  "M 3992 3000 C 3992 3001 3994 3001 3994 3000 L 3992 3000 Z"
+const cubicPath = "M 3992 2998 C 3992 2999 3994 2999 3994 2998 L 3992 2998 Z"
 
 test("reference footprint retains pads and supported fabrication artwork", async () => {
   const circuitJson = convertEasyEdaJsonToCircuitJson(
@@ -25,11 +26,11 @@ test("reference footprint retains pads and supported fabrication artwork", async
   )
 })
 
-test("warns and skips an unsupported decorative curve without aborting the import", () => {
+test("preserves decorative Bezier artwork without warning or dropping geometry", async () => {
   // Synthetic documentation-layer artwork, not a captured supplier defect.
   const withDecoration = structuredClone(rawJson)
   withDecoration.packageDetail.dataStr.shape.push(
-    `SOLIDREGION~12~~${unsupportedCubicPath}~solid~decorative-curve~~~~0`,
+    `SOLIDREGION~12~~${cubicPath}~solid~decorative-curve~~~~0`,
   )
   const expected = convertEasyEdaJsonToCircuitJson(
     EasyEdaJsonSchema.parse(rawJson),
@@ -39,30 +40,61 @@ test("warns and skips an unsupported decorative curve without aborting the impor
     const actual = convertEasyEdaJsonToCircuitJson(
       EasyEdaJsonSchema.parse(withDecoration),
     )
-    expect(actual).toEqual(expected)
-    expect(warn).toHaveBeenCalledTimes(1)
-    expect(warn).toHaveBeenCalledWith(
-      "Skipping EasyEDA fabrication note decorative-curve: Unsupported EasyEDA SOLIDREGION path command: C",
+    const notes = actual.filter(
+      (element) => element.type === "pcb_fabrication_note_path",
     )
+    expect(notes).toHaveLength(5)
+    const curve = notes.at(-1)!
+    expect(curve.route.length).toBeGreaterThan(4)
+    expect(
+      Math.max(...curve.route.map((point) => point.y)) -
+        Math.min(...curve.route.map((point) => point.y)),
+    ).toBeCloseTo(0.75 * 0.254, 7)
+    expect(actual.filter((element) => element !== curve)).toEqual(expected)
+    expect(warn).not.toHaveBeenCalled()
+    await expect(convertCircuitJsonToPcbSvg(actual)).toMatchSvgSnapshot(
+      import.meta.path,
+      "preserved-bezier-artwork",
+    )
+    const footprint = generateFootprintTsx(actual)
+    const rendered = await runTscircuitCode(`
+      export default () => <board width="8mm" height="8mm">
+        <chip name="U1" footprint={${footprint}} />
+      </board>
+    `)
+    const nativeNotes = rendered.filter(
+      (element) => element.type === "pcb_fabrication_note_path",
+    )
+    expect(nativeNotes).toHaveLength(5)
+    const nativeCurve = nativeNotes.at(-1)!
+    expect(nativeCurve.route).toHaveLength(curve.route.length)
+    for (const [index, point] of nativeCurve.route.entries()) {
+      expect(point.x).toBeCloseTo(curve.route[index]!.x, 7)
+      expect(point.y).toBeCloseTo(curve.route[index]!.y, 7)
+    }
   } finally {
     warn.mockRestore()
   }
 })
 
-test.each([11, 12])(
-  "still rejects an unsupported physical NPTH on layer %s",
-  (layer) => {
-    const withPhysicalHole = structuredClone(rawJson)
-    withPhysicalHole.packageDetail.dataStr.shape.push(
-      `SOLIDREGION~${layer}~~${unsupportedCubicPath}~npth~physical-hole~~~~0`,
-    )
-    expect(() =>
-      convertEasyEdaJsonToCircuitJson(
-        EasyEdaJsonSchema.parse(withPhysicalHole),
-      ),
-    ).toThrow("Unsupported EasyEDA SOLIDREGION path command: C")
-  },
-)
+test.each([11, 12])("preserves a curved physical NPTH on layer %s", (layer) => {
+  const withPhysicalHole = structuredClone(rawJson)
+  withPhysicalHole.packageDetail.dataStr.shape.push(
+    `SOLIDREGION~${layer}~~${cubicPath}~npth~physical-hole~~~~0`,
+  )
+  const circuitJson = convertEasyEdaJsonToCircuitJson(
+    EasyEdaJsonSchema.parse(withPhysicalHole),
+  )
+  const cutout = circuitJson.find((element) => element.type === "pcb_cutout")
+  if (!cutout || cutout.shape !== "polygon")
+    throw new Error("Expected curved NPTH polygon")
+  expect(cutout.points.length).toBeGreaterThan(4)
+  expect(cutout.points[0]).toEqual(cutout.points.at(-1)!)
+  expect(
+    Math.max(...cutout.points.map((point) => point.y)) -
+      Math.min(...cutout.points.map((point) => point.y)),
+  ).toBeCloseTo(0.75 * 0.254, 7)
+})
 
 test.each([
   ["M 3992 3000 L 3994", "Invalid EasyEDA SOLIDREGION path"],
@@ -117,4 +149,14 @@ test("propagates unexpected errors instead of reporting them as unsupported artw
   } finally {
     warn.mockRestore()
   }
+})
+
+test("still rejects malformed physical NPTH geometry", () => {
+  const withPhysicalHole = structuredClone(rawJson)
+  withPhysicalHole.packageDetail.dataStr.shape.push(
+    "SOLIDREGION~11~~M 3992 3000 C 3992 3001~npth~invalid-hole~~~~0",
+  )
+  expect(() =>
+    convertEasyEdaJsonToCircuitJson(EasyEdaJsonSchema.parse(withPhysicalHole)),
+  ).toThrow("Invalid EasyEDA SOLIDREGION path")
 })
