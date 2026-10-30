@@ -74,6 +74,10 @@ test("preserves decorative Bezier artwork without warning or dropping geometry",
       expect(point.x).toBeCloseTo(curve.route[index]!.x, 7)
       expect(point.y).toBeCloseTo(curve.route[index]!.y, 7)
     }
+    await expect(convertCircuitJsonToPcbSvg(rendered)).toMatchSvgSnapshot(
+      import.meta.path,
+      "preserved-bezier-artwork-native",
+    )
   } finally {
     warn.mockRestore()
   }
