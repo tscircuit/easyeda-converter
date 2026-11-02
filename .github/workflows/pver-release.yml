@@ -8,6 +8,10 @@ permissions:
   id-token: write
   pull-requests: write
 
+env:
+  UPSTREAM_REPOS: "cli"
+  PACKAGE_NAMES: "easyeda"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -24,3 +28,21 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run build
       - run: pver release
+
+      - name: Trigger upstream repo updates
+        if: env.UPSTREAM_REPOS && env.PACKAGE_NAMES
+        env:
+          GH_TOKEN: ${{ secrets.TSCIRCUIT_BOT_GITHUB_TOKEN }}
+        run: |
+          IFS=',' read -ra REPOS <<< "$UPSTREAM_REPOS"
+          for repo in "${REPOS[@]}"; do
+            if [[ -n "$repo" ]]; then
+              echo "Triggering update for repo: $repo"
+              curl --fail-with-body -X POST \
+                -H "Accept: application/vnd.github.v3+json" \
+                -H "Authorization: token $GH_TOKEN" \
+                -H "Content-Type: application/json" \
+                "https://api.github.com/repos/tscircuit/$repo/actions/workflows/update-package.yml/dispatches" \
+                -d "{\"ref\":\"main\",\"inputs\":{\"package_names\":\"$PACKAGE_NAMES\"}}"
+            fi
+          done
