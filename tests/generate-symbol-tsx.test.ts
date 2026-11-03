@@ -89,11 +89,14 @@ test("uses the symbol bounds when EasyEDA head coordinates are stale", () => {
   expect(symbolTsx).not.toContain("-101.854")
 })
 
-test("maps duplicate EasyEDA symbol pin numbers to unused footprint ports", () => {
+test("uses physical pin numbers when the symbol has duplicate SPICE numbers", () => {
   const symbolTsx = generateSymbolFromRawEasy(duplicateSymbolPinRawEasy)
 
   expect(symbolTsx).toContain(
-    '<port name="pin4" pinNumber={4} aliases={["NC"]}',
+    '<port name="pin2" pinNumber={2} aliases={["NC"]}',
+  )
+  expect(symbolTsx).toContain(
+    '<port name="pin4" pinNumber={4} aliases={["IN_NEG"]}',
   )
   expect(symbolTsx.match(/name="pin8"/g)).toHaveLength(1)
 })

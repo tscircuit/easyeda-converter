@@ -203,10 +203,19 @@ const PinShapeOutputSchema = z.object({
 
 const parsePin = (pinString: string): z.infer<typeof PinShapeOutputSchema> => {
   const parts = pinString.split("~")
-  const [, visibility, , pinNumber, x, y, rotation, id] = parts
+  const [, visibility, , spicePinNumber, x, y, rotation, id] = parts
 
-  // EasyEDA stores the pin name and pin number in separate text sections.
-  const pinNameSection = pinString.split("^^")[3]
+  // The header contains the SPICE order; the number text section identifies the
+  // physical footprint pad, even when that text is hidden. See EasyEDA's format:
+  // https://docs.easyeda.com/en/DocumentFormat/2-EasyEDA-Schematic-File-Format/index.html#pin
+  const sections = pinString.split("^^")
+  const physicalPinNumber = sections[4]?.split("~")[4]?.trim()
+  const pinNumber =
+    physicalPinNumber &&
+    !["undefined", "null"].includes(physicalPinNumber.toLowerCase())
+      ? physicalPinNumber
+      : spicePinNumber
+  const pinNameSection = sections[3]
   let label = pinNameSection?.split("~")[4] ?? ""
   if (!label.includes("/")) label = normalizeEasyEdaPinLabel(label)
 

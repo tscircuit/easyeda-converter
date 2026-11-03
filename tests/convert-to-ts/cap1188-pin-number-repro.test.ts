@@ -14,7 +14,6 @@ const betterEasy = EasyEdaJsonSchema.parse(raw)
 const groundPin = betterEasy.dataStr.shape.find(
   (shape) => shape.type === "PIN" && shape.label === "GND",
 )
-// Setup failures must not be counted as a successful expected-failure repro.
 if (groundPin?.type !== "PIN") throw new Error("Missing supplier GND pin")
 
 test("CAP1188 supplier GND uses SPICE number 23 and physical/display number 25", () => {
@@ -32,32 +31,33 @@ test("CAP1188 supplier GND uses SPICE number 23 and physical/display number 25",
   expect(pad).toBeDefined()
 })
 
-test.failing(
-  "maps CAP1188 GND to physical pad 25 rather than SPICE pin 23",
-  () => {
-    expect(groundPin.pinNumber).toBe(25)
-  },
-)
+test("maps CAP1188 GND to physical pad 25 rather than SPICE pin 23", () => {
+  expect(groundPin.pinNumber).toBe(25)
+})
 
-test("CAP1188 conversion loses GND on pad 25: generated TSX and schematic", async () => {
+test("CAP1188 conversion preserves GND on pad 25: generated TSX and schematic", async () => {
   const source = await convertBetterEasyToTsx({ betterEasy })
-  expect(groundPin.pinNumber).toBe(23)
-  expect(source).toContain('pin25: ["pin25"]')
-  expect(source).not.toContain("pin25: {requiresGround: true}")
+  expect(groundPin.pinNumber).toBe(25)
+  expect(source).toContain('pin25: ["GND"]')
+  expect(source).toContain("pin25: {requiresGround: true}")
   expect(source.replace(/[\t ]+$/gm, "")).toMatchSnapshot(
-    "CAP1188 physical pin 25 missing GND TSX",
+    "CAP1188 physical pin 25 GND TSX",
   )
 
   const json = await runTscircuitCode(wrapTsxWithBoardFor3dSnapshot(source))
   const ep = json.find((e) => e.type === "source_port" && e.pin_number === 25)
-  expect(ep).toMatchObject({ type: "source_port", pin_number: 25 })
-  expect(ep).not.toHaveProperty("requires_ground")
+  expect(ep).toMatchObject({
+    type: "source_port",
+    pin_number: 25,
+    name: "GND",
+    requires_ground: true,
+  })
   expect(
     json.find((e) => e.type === "source_port" && e.pin_number === 23),
   ).toMatchObject({ name: "VDD", requires_power: true })
   expect(
     json.find((e) => e.type === "source_no_ground_pin_defined_warning"),
-  ).toBeDefined()
+  ).toBeUndefined()
   expect(
     convertCircuitJsonToSchematicSvg(json).replace(/[\t ]+$/gm, ""),
   ).toMatchSvgSnapshot(import.meta.path, "cap1188-physical-pin25-missing-gnd")

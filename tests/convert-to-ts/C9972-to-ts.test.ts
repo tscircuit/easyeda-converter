@@ -9,6 +9,11 @@ it("preserves the exact C9972 manufacturer part number", async () => {
 
   expect(result).toContain("export const XC6206P302MR_G")
   expect(result).toContain('manufacturerPartNumber="XC6206P302MR-G"')
+  // SPICE orders 2/3 differ from the physical number fields: Vin is pad 3.
+  expect(result).toContain('pin2: ["Vout"]')
+  expect(result).toContain('pin3: ["Vin"]')
+  expect(result).toContain("pin3: {requiresPower: true}")
+  expect(result).not.toContain("pin2: {requiresPower: true}")
 })
 
 it("reports missing manufacturer part number metadata", async () => {

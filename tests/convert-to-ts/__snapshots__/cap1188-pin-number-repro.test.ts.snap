@@ -1,6 +1,6 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
-exports[`CAP1188 conversion loses GND on pad 25: generated TSX and schematic: CAP1188 physical pin 25 missing GND TSX 1`] = `
+exports[`CAP1188 conversion preserves GND on pad 25: generated TSX and schematic: CAP1188 physical pin 25 GND TSX 1`] = `
 "import type { ChipProps } from "@tscircuit/props"
 
 const pinLabels = {
@@ -28,11 +28,12 @@ const pinLabels = {
   pin22: ["CS1"],
   pin23: ["VDD"],
   pin24: ["RESET"],
-  pin25: ["pin25"]
+  pin25: ["GND"]
 } as const
 
 const pinAttributes = {
-  pin23: {requiresPower: true}
+  pin23: {requiresPower: true},
+  pin25: {requiresGround: true}
 } as const
 
 export const CAP1188_1_CP_TR = (props: ChipProps<typeof pinLabels>) => {
