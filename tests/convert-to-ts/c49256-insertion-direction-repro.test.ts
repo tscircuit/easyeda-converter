@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { runTscircuitCode } from "tscircuit"
@@ -40,6 +41,31 @@ test("C49256 generated TSX omits insertionDirection and triggers inferred side-a
   )
   expect(warning).toBeDefined()
   expect(warning?.message).toContain("no explicit footprint insertionDirection")
+
+  // Render the unmodified footprint, then wrap the actual diagnostic below it.
+  // The default warning label is a single long line that clips outside the SVG.
+  const headerSvg = convertCircuitJsonToPcbSvg(json, {
+    width: 1000,
+    height: 300,
+    shouldDrawWarnings: false,
+    showPinNumbers: true,
+    viewport: { minX: -13, maxX: 13, minY: -4, maxY: 4 },
+  })
+  const escapeXml = (text: string) =>
+    text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+  const warningLines = warning!.message.match(/.{1,105}(?:\s|$)/g)!
+  const pcbSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560">
+<rect width="1000" height="560" fill="#111827" />
+<text x="24" y="32" fill="white" font-family="monospace" font-size="20">C49256 vertical 1x8 header - PCB detail (50 x 48 mm board)</text>
+<svg x="0" y="50" width="1000" height="300">${headerSvg}</svg>
+<text x="24" y="380" fill="#facc15" font-family="monospace" font-size="17">Actual checker warning (missing insertionDirection):</text>
+<text x="24" y="414" fill="white" font-family="monospace" font-size="14">${warningLines.map((line, i) => `<tspan x="24" dy="${i === 0 ? 0 : 22}">${escapeXml(line.trim())}</tspan>`).join("")}</text>
+</svg>`
+  expect(pcbSvg).toContain("J1 is inferred to face")
+  expect(pcbSvg.replace(/[\t ]+$/gm, "")).toMatchSvgSnapshot(
+    import.meta.path,
+    "c49256-missing-insertion-direction-pcb",
+  )
 }, 50_000)
 
 test.failing(
