@@ -166,7 +166,7 @@ export const PackageDetailShapeSchema = z.discriminatedUnion("type", [
 
 const pairs = <T>(arr: T[]): [T, T][] => {
   const pairs: [T, T][] = []
-  for (let i = 0; i < arr.length; i += 2) {
+  for (let i = 0; i + 1 < arr.length; i += 2) {
     pairs.push([arr[i], arr[i + 1]])
   }
   return pairs
@@ -176,7 +176,8 @@ const parsePoints = (pointsStr: string): number[][] =>
   pairs(
     pointsStr
       .trim()
-      .split(" ")
+      .split(/[\s,]+/)
+      .filter(Boolean)
       .map((n) => Number(n)),
   )
 
@@ -242,10 +243,15 @@ export const ShapeItemSchema = z
       }
       case "ARC": {
         const [width, layer, , arcData] = shape.data.split("~")
+        const num = "([-+]?(?:\\d*\\.\\d+|\\d+\\.?)(?:[eE][-+]?\\d+)?)"
+        const sep = "(?:\\s*,\\s*|\\s+)"
         // A rx ry x-axis-rotation large-arc-flag sweep-flag x  y
         // A rx ry x-axis-rotation large-arc-flag sweep-flag dx dy
         const match = arcData.match(
-          /M\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*A\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)\s*([\d.-]+)(?:\s*,\s*|\s+)([\d.-]+)/,
+          new RegExp(
+            `M\\s*${num}${sep}${num}\\s*A\\s*${num}${sep}${num}\\s*${num}\\s*([01])(?:\\s*,\\s*|\\s*)([01])\\s*${num}${sep}${num}`,
+            "i",
+          ),
         )
 
         if (!match) {
@@ -315,12 +321,12 @@ export const ShapeItemSchema = z
       }
       case "SOLIDREGION": {
         const [layermask, , pathData, fillStyle, id] = shape.data.split("~")
-        const points =
-          pathData.match(/[ML] ?(-?[\d.]+)[ ,](-?[\d.]+)/g)?.map((point) => {
-            const [, x, y] =
-              point.match(/[ML]? ?(-?[\d.]+)[ ,](-?[\d.]+)/) || []
-            return [Number(x), Number(y)]
-          }) || []
+        const pointMatches = Array.from(
+          pathData.matchAll(
+            /[ML]\s*([-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?)(?:\s*,\s*|\s+)([-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?)/gi,
+          ),
+        )
+        const points = pointMatches.map(([, x, y]) => [Number(x), Number(y)])
         return SolidRegionSchema.parse({
           type: "SOLIDREGION",
           layermask: Number(layermask),
@@ -338,13 +344,14 @@ export const ShapeItemSchema = z
         const [x, y, width, height, layer, id, rotation, lineWidth, fillStyle] =
           shape.data.split("~")
         const r = rotation ? Number(rotation) : undefined
+        const parsedLineWidth = lineWidth ? Number(lineWidth) : 0
         return RectSchema.parse({
           type: "RECT",
           x,
           y,
           width,
           height,
-          lineWidth: Number(lineWidth),
+          lineWidth: Number.isNaN(parsedLineWidth) ? 0 : parsedLineWidth,
           id,
           rotation: Number.isNaN(r as number) ? undefined : r,
           layer: layer ? Number(layer) : undefined,
