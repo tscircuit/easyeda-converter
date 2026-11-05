@@ -38,22 +38,21 @@ import type {
   TrackSchema,
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
-import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { convertEasyEdaNpthCutoutsToHoles } from "./utils/convert-easyeda-npth-cutouts-to-holes"
+import {
+  EASYEDA_PATH_LIMIT_MESSAGE,
+  INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
+} from "./utils/easyeda-path-limits"
+import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import {
   BEZIER_SUBDIVISION_LIMIT_MESSAGE,
   INVALID_BEZIER_GEOMETRY_MESSAGE,
 } from "./utils/flatten-bezier-curve"
-import {
-  EASYEDA_PATH_LIMIT_MESSAGE,
-  INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
-} from "./utils/easyeda-path-limits"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
 import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
-import { parseEasyEdaPathCommands } from "./utils/parse-easyeda-path-commands"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
 import {
   type PackageArc,
@@ -61,6 +60,7 @@ import {
   getSilkscreenArcPath,
 } from "./utils/get-silkscreen-arc-path"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
+import { parseEasyEdaPathCommands } from "./utils/parse-easyeda-path-commands"
 import {
   type SuppliedPinAttributes,
   resolvePinAttributes,
@@ -989,15 +989,20 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
         (e) =>
           !(e.type === "pcb_smtpad" && e.shape === "polygon") &&
           e.type !== "pcb_silkscreen_text" &&
+          e.type !== "pcb_courtyard_rect" &&
           e.type !== "cad_component",
       )
       transformPCBElements(elementsForTransform, matrix)
 
-      // EasyEDA text rotation is already expressed in tscircuit's CCW
-      // convention. Recenter its position without reflecting the angle again.
+      // EasyEDA text and courtyard rect rotation is already expressed in
+      // tscircuit's CCW convention. Recenter their position without reflecting
+      // the angle again.
       for (const e of circuitElements) {
-        if (e.type !== "pcb_silkscreen_text") continue
-        e.anchor_position = applyToPoint(matrix, e.anchor_position)
+        if (e.type === "pcb_silkscreen_text") {
+          e.anchor_position = applyToPoint(matrix, e.anchor_position)
+        } else if (e.type === "pcb_courtyard_rect") {
+          e.center = applyToPoint(matrix, e.center)
+        }
       }
 
       // Polygon SMT pads have no x/y center, so transform their points here.
