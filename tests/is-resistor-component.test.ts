@@ -58,3 +58,44 @@ it("keeps multi-pin components as chips even with resistor metadata", async () =
   expect(result).toContain("<chip")
   expect(result).not.toContain("<resistor")
 })
+
+for (const packageName of [
+  "RES-SMD_L1.55-W0.85",
+  "RES-SMD_L2-W1",
+  "RES-SMD_L1.6-W0.8-H0.5",
+]) {
+  it(`recognizes a dimensional resistor package: ${packageName}`, () => {
+    const betterEasy = EasyEdaJsonSchema.parse(resistorRawEasy)
+    Object.assign(betterEasy.dataStr.head.c_para, {
+      pre: "R?",
+      package: packageName,
+      Value: "60kΩ",
+    })
+    expect(isResistorComponent(betterEasy)).toBe(true)
+    betterEasy.dataStr.head.c_para.pre = "U?"
+    betterEasy.tags = []
+    expect(isResistorComponent(betterEasy)).toBe(false)
+    betterEasy.tags = ["Chip Resistor - Surface Mount"]
+    expect(isResistorComponent(betterEasy)).toBe(true)
+    betterEasy.dataStr.head.c_para.Value = "3.9uH"
+    expect(isResistorComponent(betterEasy)).toBe(false)
+  })
+}
+
+for (const packageName of [
+  "RES-SMD",
+  "RES-SMD_L1.55-W",
+  "RES-SMD_L1.55-W0.85oops",
+  "CAP-SMD_L1.55-W0.85",
+  "RES-TH_L1.55-W0.85",
+]) {
+  it(`rejects an unsupported dimensional package: ${packageName}`, () => {
+    const betterEasy = EasyEdaJsonSchema.parse(resistorRawEasy)
+    Object.assign(betterEasy.dataStr.head.c_para, {
+      pre: "R?",
+      package: packageName,
+      Value: "60kΩ",
+    })
+    expect(isResistorComponent(betterEasy)).toBe(false)
+  })
+}
