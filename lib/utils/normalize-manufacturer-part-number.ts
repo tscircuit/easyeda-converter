@@ -1,6 +1,7 @@
 export function normalizeManufacturerPartNumber(partNumber: string): string {
   // Step 1: Replace dashes and invalid symbols with underscores
   let normalized = partNumber
+    .trim()
     .replace(/[-]/g, "_")
     .replace(/[^a-zA-Z0-9_$]/g, "_")
 

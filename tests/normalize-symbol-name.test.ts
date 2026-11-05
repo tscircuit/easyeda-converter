@@ -33,4 +33,12 @@ describe("normalizeSymbolName", () => {
     expect(normalizeSymbolName("")).toBe("")
     expect(normalizeSymbolName("   ")).toBe("")
   })
+
+  test("handles Unicode en-dash and minus sign and repeated internal dashes", () => {
+    expect(normalizeSymbolName("–")).toBe("_NEG")
+    expect(normalizeSymbolName("−")).toBe("_NEG")
+    expect(normalizeSymbolName("2G4–OUT")).toBe("2G4_OUT")
+    expect(normalizeSymbolName("2G4−OUT")).toBe("2G4_OUT")
+    expect(normalizeSymbolName("2G4--OUT")).toBe("2G4_OUT")
+  })
 })
