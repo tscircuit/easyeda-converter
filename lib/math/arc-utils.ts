@@ -12,14 +12,23 @@ export function calculateCenter(start: Point, mid: Point, end: Point): Point {
   const mid1 = { x: (start.x + mid.x) / 2, y: (start.y + mid.y) / 2 }
   const mid2 = { x: (mid.x + end.x) / 2, y: (mid.y + end.y) / 2 }
 
-  const slope1 = -(start.x - mid.x) / (start.y - mid.y)
-  const slope2 = -(mid.x - end.x) / (mid.y - end.y)
+  const dx1 = mid.x - start.x
+  const dy1 = mid.y - start.y
+  const dx2 = end.x - mid.x
+  const dy2 = end.y - mid.y
+  const determinant = dx1 * dy2 - dy1 * dx2
 
-  const centerX =
-    (mid1.y - mid2.y + slope2 * mid2.x - slope1 * mid1.x) / (slope2 - slope1)
-  const centerY = mid1.y + slope1 * (centerX - mid1.x)
+  if (Math.abs(determinant) < 1e-12) {
+    return { x: Number.NaN, y: Number.NaN }
+  }
 
-  return { x: centerX, y: centerY }
+  const rhs1 = dx1 * mid1.x + dy1 * mid1.y
+  const rhs2 = dx2 * mid2.x + dy2 * mid2.y
+
+  return {
+    x: (rhs1 * dy2 - rhs2 * dy1) / determinant,
+    y: (dx1 * rhs2 - dx2 * rhs1) / determinant,
+  }
 }
 
 function calculateRadius(center: Point, point: Point): number {
@@ -30,19 +39,33 @@ function calculateAngle(center: Point, point: Point): number {
   return Math.atan2(point.y - center.y, point.x - center.x)
 }
 
-export const getArcLength = (start: Point, mid: Point, end: Point) => {
-  const center = calculateCenter(start, mid, end)
-  const radius = calculateRadius(center, start)
-
+function calculateSignedArcAngle(
+  center: Point,
+  start: Point,
+  mid: Point,
+  end: Point,
+): { angleStart: number; angleDelta: number } {
   const angleStart = calculateAngle(center, start)
+  const angleMid = calculateAngle(center, mid)
   const angleEnd = calculateAngle(center, end)
 
-  let angleDelta = angleEnd - angleStart
-  if (angleDelta < 0) {
-    angleDelta += 2 * Math.PI
-  }
+  const twoPi = 2 * Math.PI
+  const ccwMid = (((angleMid - angleStart) % twoPi) + twoPi) % twoPi
+  const ccwEnd = (((angleEnd - angleStart) % twoPi) + twoPi) % twoPi
 
-  return radius * angleDelta
+  const angleDelta = ccwMid <= ccwEnd ? ccwEnd : ccwEnd - twoPi
+  return { angleStart, angleDelta }
+}
+
+export const getArcLength = (start: Point, mid: Point, end: Point) => {
+  const center = calculateCenter(start, mid, end)
+  if (!Number.isFinite(center.x) || !Number.isFinite(center.y)) {
+    return Math.hypot(end.x - start.x, end.y - start.y)
+  }
+  const radius = calculateRadius(center, start)
+  const { angleDelta } = calculateSignedArcAngle(center, start, mid, end)
+
+  return radius * Math.abs(angleDelta)
 }
 
 export function generateArcPathWithMid(
@@ -52,15 +75,20 @@ export function generateArcPathWithMid(
   numPoints: number,
 ): Point[] {
   const center = calculateCenter(start, mid, end)
-  const radius = calculateRadius(center, start)
-
-  const angleStart = calculateAngle(center, start)
-  const angleEnd = calculateAngle(center, end)
-
-  let angleDelta = angleEnd - angleStart
-  if (angleDelta < 0) {
-    angleDelta += 2 * Math.PI
+  if (
+    !Number.isFinite(center.x) ||
+    !Number.isFinite(center.y) ||
+    numPoints <= 0
+  ) {
+    return [start, end]
   }
+  const radius = calculateRadius(center, start)
+  const { angleStart, angleDelta } = calculateSignedArcAngle(
+    center,
+    start,
+    mid,
+    end,
+  )
 
   const path: Point[] = []
 
