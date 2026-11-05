@@ -3,6 +3,9 @@ import type { BetterEasyEdaJson } from "lib/schemas/easy-eda-json-schema"
 const standardSmdResistorPackagePattern =
   /^R(?:01005|0201|0402|0504|0603|0805|1206|1210|1812|2010|2512)(?:$|[_-])/i
 
+const dimensionalSmdResistorPackagePattern =
+  /^RES-SMD_L\d+(?:\.\d+)?-W\d+(?:\.\d+)?(?:$|[_-])/i
+
 const normalizeExplicitScale = (scale: string): string => {
   if (scale === "k" || scale === "K") return "k"
   if (scale === "m") return "m"
@@ -55,7 +58,8 @@ export const isResistorComponent = (betterEasy: BetterEasyEdaJson): boolean => {
   return (
     (componentParameters.pre?.toUpperCase() === "R?" || hasResistorCategory) &&
     typeof packageName === "string" &&
-    standardSmdResistorPackagePattern.test(packageName.trim()) &&
+    (standardSmdResistorPackagePattern.test(packageName.trim()) ||
+      dimensionalSmdResistorPackagePattern.test(packageName.trim())) &&
     normalizeResistorValue(componentParameters.Value) !== undefined
   )
 }
