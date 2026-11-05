@@ -31,6 +31,7 @@ export type GenerateTypescriptComponentParams = {
   resistance?: string
   inductance?: string
   crystalFrequency?: string
+  crystalLoadCapacitance?: string
   crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
   schPinArrangement?: ChipProps["schPinArrangement"]
@@ -58,6 +59,7 @@ export const generateTypescriptComponent = ({
   resistance,
   inductance,
   crystalFrequency,
+  crystalLoadCapacitance,
   crystalPinVariant,
   symbolTsx,
   schPinArrangement,
@@ -448,10 +450,17 @@ ${cadModelLines}
       throw new Error("Crystal frequency and pin variant are required")
     }
 
+    const importedCrystalPropsType = crystalLoadCapacitance
+      ? 'Omit<CrystalProps, "frequency" | "pinVariant" | "loadCapacitance"> & { loadCapacitance?: CrystalProps["loadCapacitance"] }'
+      : 'Omit<CrystalProps, "frequency" | "pinVariant">'
+    const loadCapacitanceProp = crystalLoadCapacitance
+      ? `      loadCapacitance=${JSON.stringify(crystalLoadCapacitance)}\n`
+      : ""
+
     return `
 import type { CrystalProps } from "@tscircuit/props"
 
-type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
+type ImportedCrystalProps = ${importedCrystalPropsType}
 
 ${pinAttributesBlock}\
 export const ${componentName} = (props: ImportedCrystalProps) => {
@@ -462,6 +471,7 @@ export const ${componentName} = (props: ImportedCrystalProps) => {
       name={name}
       frequency=${JSON.stringify(crystalFrequency)}
       pinVariant=${JSON.stringify(crystalPinVariant)}
+${loadCapacitanceProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\

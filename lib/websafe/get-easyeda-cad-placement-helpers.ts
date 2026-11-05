@@ -9,8 +9,6 @@ import {
 
 type ModelBounds = NonNullable<BetterEasyEdaJson["_objMetadata"]>["bounds"]
 
-type RotationDeg = 0 | 90 | 180 | 270
-
 type SvgChildNodeWithAttrs = {
   attrs?: {
     points?: string | number
@@ -37,7 +35,7 @@ const getXyBoundsFromModelBounds = (bounds: ModelBounds): Bounds => ({
   maxY: bounds.max.y,
 })
 
-const rotateScenePoint = (point: Point, rotationDeg: RotationDeg): Point => {
+const rotateScenePoint = (point: Point, rotationDeg: number): Point => {
   switch (rotationDeg) {
     case 0:
       return point
@@ -47,6 +45,15 @@ const rotateScenePoint = (point: Point, rotationDeg: RotationDeg): Point => {
       return { x: -point.x, y: -point.y }
     case 270:
       return { x: -point.y, y: point.x }
+    default: {
+      const radians = (rotationDeg * Math.PI) / 180
+      const cos = Math.cos(radians)
+      const sin = Math.sin(radians)
+      return {
+        x: point.x * cos + point.y * sin,
+        y: -point.x * sin + point.y * cos,
+      }
+    }
   }
 }
 
@@ -129,8 +136,8 @@ export const getCadModelOffsetMmFromBounds = (
   )
     .split(",")
     .map((value) => Number(value.trim()))
-  const rotationDeg = (((rotationZRaw % 360) + 360) % 360) as RotationDeg
-  if (![0, 90, 180, 270].includes(rotationDeg)) return null
+  if (!Number.isFinite(rotationZRaw)) return null
+  const rotationDeg = ((rotationZRaw % 360) + 360) % 360
 
   const modelCenter = getBoundsCenter(getXyBoundsFromModelBounds(bounds))
   const footprintCenter = easyEdaJson.packageDetail.dataStr.head
