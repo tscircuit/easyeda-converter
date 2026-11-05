@@ -29,7 +29,10 @@ export const categoryValueContainsSwitch = (category: unknown): boolean => {
 
   return categoryStrings.some(
     (category) =>
-      /(?:slide|toggle|dip|key|micro|limit)\s+switch(?:es)?/.test(category) ||
+      /(?:slide|toggle|dip|key|micro|limit|rotary|push)\s+switch(?:es)?/.test(
+        category,
+      ) ||
+      /\bsw[-_\s]+(?:th|smd)(?:\b|[_-])/.test(category) ||
       /(^|[^a-z])switch(?:es)?([^a-z]|$)/.test(category),
   )
 }

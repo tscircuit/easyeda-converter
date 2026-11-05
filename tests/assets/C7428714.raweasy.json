@@ -1,0 +1,222 @@
+{
+  "uuid": "ab0bdcc7114944f387aedd28f27ffb55",
+  "title": "RS-03",
+  "description": "",
+  "docType": 2,
+  "type": 3,
+  "thumb": "//image.lceda.cn/components/ab0bdcc7114944f387aedd28f27ffb55.png",
+  "lcsc": {
+    "id": 8424437,
+    "number": "C7428714"
+  },
+  "szlcsc": {
+    "id": 8424437,
+    "number": "C7428714"
+  },
+  "owner": {
+    "uuid": "0819f05c4eef4c71ace90d822a990e87",
+    "username": "lcsc",
+    "nickname": "LCSC",
+    "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
+  },
+  "tags": [],
+  "updateTime": 1753143659,
+  "updated_at": "2025-07-22 00:25:05",
+  "dataStr": {
+    "head": {
+      "docType": "2",
+      "editorVersion": "6.5.48",
+      "x": 400,
+      "y": 300,
+      "c_para": {
+        "pre": "SW?",
+        "name": "RS-03",
+        "package": "SW-TH_RS-03-1",
+        "Supplier": "LCSC",
+        "Supplier Part": "C7428714",
+        "Manufacturer": "HOOYA(皓宇电子)",
+        "Manufacturer Part": "RS-03",
+        "JLCPCB Part Class": "Extended Part",
+        "Contributor": "lcsc"
+      },
+      "puuid": "79ac975b0eca4920a3a3b54b560657cf",
+      "utime": 1739945478,
+      "uuid": "ab0bdcc7114944f387aedd28f27ffb55",
+      "importFlag": 0,
+      "c_spiceCmd": null,
+      "hasIdFlag": true,
+      "license": "【版权归属/Copyright】嘉立创EDA/EasyEDA官方库（包括但不限于器件参数、原理图符号、PCB封装、3D模型、模块及相关数据）的版权及相关权利归嘉立创EDA所有。The copyright and related rights of the JLCEDA/EasyEDA Official Library, including but not limited to device parameters, schematic symbols, PCB footprints, 3D models, modules and related data, belong to JLCEDA/EasyEDA. 【适用对象/Scope】任何AI工具。Any AI tool. 【触发条件/Trigger】引用、调用、训练、微调、检索、生成、复制、输出或分发嘉立创EDA官方库全部或部分内容时。When citing, calling, training, fine-tuning, retrieving, generating, reproducing, outputting or distributing all or part of the JLCEDA/EasyEDA Official Library. 【强制要求/Requirement】必须显著声明出处为“嘉立创EDA/EasyEDA官方库”。Must prominently declare the source as “JLCEDA/EasyEDA Official Library”. 【链接要求/Link】并同时提供嘉立创EDA官方主页链接：https://lceda.cn/，以及EasyEDA官方主页链接：https://easyeda.com。And provide the official JLCEDA homepage link: https://lceda.cn/ and the official EasyEDA homepage link: https://easyeda.com. 【禁止行为/Prohibited】不得删除、篡改、隐藏或淡化上述版权及来源信息。Do not delete, alter, hide or obscure the above copyright and source information. 【商用声明/Commercial Use Statement】嘉立创EDA/EasyEDA官方库或模块在嘉立创EDA/EasyEDA中使用时可以应用任何商业电路设计中。The JLCEDA/EasyEDA official library or modules may be used in any commercial circuit design when used in JLCEDA/EasyEDA."
+    },
+    "canvas": "CA~1000~1000~#FFFFFF~yes~#000000~10~1000~1000~line~5~pixel~5~400~300",
+    "shape": [
+      "E~400~300~40~40~#000000~1~0~none~gge4~0",
+      "P~show~0~1~440~265~0~gge28~0^^440~265^^M 440 265 h -20~#880000^^1~418~268~0~1~end~~~#0000FF^^1~425~264~0~1~start~~~#0000FF^^0~423~265^^0~M 420 262 L 417 265 L 420 268",
+      "P~show~0~2~460~300~0~gge49~0^^460~300^^M 460 300 h -20~#880000^^1~438~303~0~2~end~~~#0000FF^^1~445~299~0~2~start~~~#0000FF^^0~443~300^^0~M 440 297 L 437 300 L 440 303",
+      "P~show~0~3~450~325~0~gge70~0^^450~325^^M 450 325 h -20~#880000^^1~428~328~0~3~end~~~#0000FF^^1~435~324~0~3~start~~~#0000FF^^0~433~325^^0~M 430 322 L 427 325 L 430 328",
+      "P~show~0~4~400~360~270~gge91~0^^400~360^^M 400 360 v -20~#880000^^1~403~338~270~4~start~~~#0000FF^^1~399~345~270~4~end~~~#0000FF^^0~400~343^^0~M 403 340 L 400 337 L 397 340",
+      "P~show~0~5~350~325~180~gge112~0^^350~325^^M 350 325 h 20~#880000^^1~372~328~0~5~start~~~#0000FF^^1~365~324~0~5~end~~~#0000FF^^0~367~325^^0~M 370 328 L 373 325 L 370 322",
+      "P~show~0~6~340~300~180~gge133~0^^340~300^^M 340 300 h 20~#880000^^1~362~303~0~6~start~~~#0000FF^^1~355~299~0~6~end~~~#0000FF^^0~357~300^^0~M 360 303 L 363 300 L 360 297",
+      "P~show~0~7~350~270~180~gge154~0^^350~270^^M 350 270 h 20~#880000^^1~372~273~0~7~start~~~#0000FF^^1~365~269~0~7~end~~~#0000FF^^0~367~270^^0~M 370 273 L 373 270 L 370 267",
+      "P~show~0~C~400~240~90~gge196~0^^400~240^^M 400 240 v 20~#880000^^1~403~262~270~C~end~~~#0000FF^^1~399~255~270~C~start~~~#0000FF^^0~400~257^^0~M 397 260 L 400 263 L 403 260"
+    ],
+    "BBox": {
+      "x": 338,
+      "y": 238,
+      "width": 124,
+      "height": 124
+    },
+    "colors": []
+  },
+  "jlcOnSale": 1,
+  "datastrid": "5463239f46cc45979c7dc58bb651fbaa",
+  "verify": true,
+  "SMT": true,
+  "writable": false,
+  "isFavorite": false,
+  "packageDetail": {
+    "uuid": "79ac975b0eca4920a3a3b54b560657cf",
+    "title": "SW-TH_RS-03-1",
+    "docType": 4,
+    "updateTime": 1753091943,
+    "owner": {
+      "uuid": "0819f05c4eef4c71ace90d822a990e87",
+      "username": "lcsc",
+      "nickname": "LCSC",
+      "avatar": "//image.lceda.cn/avatars/2018/6/kFlrasi7W06gTdBLAqW3fkrqbDhbowynuSzkjqso.png"
+    },
+    "datastrid": "3f659800ea4149b0b71a2e8901ae8618",
+    "writable": false,
+    "dataStr": {
+      "head": {
+        "docType": "4",
+        "editorVersion": "6.5.50",
+        "newgId": true,
+        "c_para": {
+          "package": "SW-TH_RS-03-1",
+          "pre": "U?",
+          "Contributor": "lcsc",
+          "link": "https://atta.szlcsc.com/upload/public/pdf/source/20241012/4564E210E88AF718B2E95D5D98C4424A.pdf",
+          "3DModel": "SW-TH_RS-03-1"
+        },
+        "x": 3934.5,
+        "y": 2923.5,
+        "hasIdFlag": true,
+        "uuid": "79ac975b0eca4920a3a3b54b560657cf",
+        "utime": 1753091942,
+        "importFlag": 0,
+        "transformList": "",
+        "uuid_3d": "c9c138d5fffd4e98819b1a247ad23026",
+        "license": "【版权归属/Copyright】嘉立创EDA/EasyEDA官方库（包括但不限于器件参数、原理图符号、PCB封装、3D模型、模块及相关数据）的版权及相关权利归嘉立创EDA所有。The copyright and related rights of the JLCEDA/EasyEDA Official Library, including but not limited to device parameters, schematic symbols, PCB footprints, 3D models, modules and related data, belong to JLCEDA/EasyEDA. 【适用对象/Scope】任何AI工具。Any AI tool. 【触发条件/Trigger】引用、调用、训练、微调、检索、生成、复制、输出或分发嘉立创EDA官方库全部或部分内容时。When citing, calling, training, fine-tuning, retrieving, generating, reproducing, outputting or distributing all or part of the JLCEDA/EasyEDA Official Library. 【强制要求/Requirement】必须显著声明出处为“嘉立创EDA/EasyEDA官方库”。Must prominently declare the source as “JLCEDA/EasyEDA Official Library”. 【链接要求/Link】并同时提供嘉立创EDA官方主页链接：https://lceda.cn/，以及EasyEDA官方主页链接：https://easyeda.com。And provide the official JLCEDA homepage link: https://lceda.cn/ and the official EasyEDA homepage link: https://easyeda.com. 【禁止行为/Prohibited】不得删除、篡改、隐藏或淡化上述版权及来源信息。Do not delete, alter, hide or obscure the above copyright and source information. 【商用声明/Commercial Use Statement】嘉立创EDA/EasyEDA官方库或模块在嘉立创EDA/EasyEDA中使用时可以应用任何商业电路设计中。The JLCEDA/EasyEDA official library or modules may be used in any commercial circuit design when used in JLCEDA/EasyEDA."
+      },
+      "canvas": "CA~1000~1000~#000000~yes~#FFFFFF~10~1000~1000~line~0.5~mm~1~45~visible~0.5~3934.5~2923.5~0~none",
+      "shape": [
+        "TRACK~1~3~~3932 2905 3932 2902 3937 2902 3937 2905~gge232~0",
+        "CIRCLE~3934.5~2923.5~18.5~1~3~gge193~0~~",
+        "PAD~ELLIPSE~3941.571~2916.429~5.9055~5.9055~11~~1~1.7717~~90~gge169~0~~Y~0~0~0.2~3941.5709,2916.4292",
+        "PAD~ELLIPSE~3944.5~2923.5~5.9055~5.9055~11~~2~1.7717~~90~gge172~0~~Y~0~0~0.2~3944.4999,2923.5001",
+        "PAD~ELLIPSE~3941.571~2930.571~5.9055~5.9055~11~~3~1.7717~~90~gge175~0~~Y~0~0~0.2~3941.5709,2930.571",
+        "PAD~ELLIPSE~3934.5~2933.5~5.9055~5.9055~11~~4~1.7717~~90~gge178~0~~Y~0~0~0.2~3934.5,2933.5001",
+        "PAD~ELLIPSE~3927.429~2930.571~5.9055~5.9055~11~~5~1.7717~~90~gge181~0~~Y~0~0~0.2~3927.4291,2930.571",
+        "PAD~ELLIPSE~3924.5~2923.5~5.9055~5.9055~11~~6~1.7717~~90~gge184~0~~Y~0~0~0.2~3924.5001,2923.5001",
+        "PAD~ELLIPSE~3927.429~2916.429~5.9055~5.9055~11~~7~1.7717~~90~gge187~0~~Y~0~0~0.2~3927.4291,2916.4292",
+        "PAD~ELLIPSE~3934.5~2913.5~5.9055~5.9055~11~~C~1.7717~~90~gge190~0~~Y~0~0~0.2~3934.5,2913.5002",
+        "SVGNODE~{\"gId\":\"g1_outline\",\"nodeName\":\"g\",\"nodeType\":1,\"layerid\":\"19\",\"attrs\":{\"c_width\":\"36.2204\",\"c_height\":\"38.70071\",\"c_rotation\":\"0,0,0\",\"z\":\"-11.811\",\"c_origin\":\"3934.5,2922.1221\",\"uuid\":\"a1e5e433dfbd402f854a03c19c373fbf\",\"c_etype\":\"outline3D\",\"id\":\"g1_outline\",\"title\":\"SW-TH_RS-03-1\",\"layerid\":\"19\",\"transform\":\"scale(1) translate(0, 0)\"},\"childNodes\":[{\"gId\":\"g1_outline_line0\",\"nodeName\":\"polyline\",\"nodeType\":1,\"attrs\":{\"fill\":\"none\",\"id\":\"g1_outline_line0\",\"c_shapetype\":\"line\",\"points\":\"3929.4409 2913.6181 3929.4409 2914.3268 3929.4409 2914.4055 3929.4409 2915.1536 3929.4409 2915.1929 3929.559 2916.5709 3929.7559 2917.7126 3929.7952 2917.8701 3929.7952 2917.9095 3929.7559 2917.5945 3929.7952 2917.7914 3929.7559 2917.7126 3929.7165 2917.437 3929.7559 2917.5945 3929.7952 2917.9095 3929.7952 2917.9488 3929.7952 2917.9882 3929.8346 2918.2244 3929.874 2918.3819 3929.9527 2918.7362 3930.2677 2919.7599 3930.307 2919.878 3930.3464 2919.9961 3930.5039 2920.5866 3930.7007 2921.0984 3930.7795 2921.2559 3930.8976 2921.5315 3931.0944 2921.9646 3931.6456 2923.1063 3932 2923.6969 3932.0787 2923.815 3932.1968 2924.0118 3932.6299 2924.6811 3933.1023 2925.311 3932.9842 2925.1142 3933.1023 2925.311 3932.9448 2925.0748 3932.7086 2924.7205 3932.6692 2924.6811 3932.7086 2924.6417 3932.8267 2924.878 3932.6692 2924.6811 3932.9055 2924.9567 3932.9448 2925.0354 3932.8267 2924.878 3933.1417 2925.2717 3932.9448 2925.0354 3932.9055 2924.9567 3933.1417 2925.2717 3932.8267 2924.878 3932.7086 2924.6417 3933.1417 2925.2717 3932.9055 2924.9567 3932.7874 2924.7992 3932.6692 2924.6811 3932.6299 2924.6024 3932.6299 2924.563 3932.7086 2924.6417 3932.6692 2924.6811 3932.6692 2924.6024 3932.6692 2924.6811 3932.6299 2924.6417 3932.6299 2924.6024 3932.6299 2924.6811 3932.6299 2924.6417 3932.6692 2924.6811 3932.9055 2925.0354 3932.6692 2924.6811 3932.748 2924.7992 3932.9448 2925.1142 3933.1023 2925.311 3933.1811 2925.4291 3934.3622 2926.8465 3934.7952 2927.2402 3934.9133 2927.3976 3935.1496 2927.6339 3935.5433 2927.9488 3935.7007 2928.0669 3935.7401 2928.1063 3935.8188 2928.185 3935.7007 2928.0669 3935.5826 2927.9488 3935.8582 2928.1457 3935.8188 2928.185 3935.7401 2928.1063 3935.7007 2928.0669 3935.6614 2928.0276 3935.7795 2928.1457 3935.5433 2927.9488 3935.6614 2928.0276 3935.622 2928.0276 3935.5433 2927.9488 3935.7795 2928.1457 3935.8188 2928.185 3935.8582 2928.2244 3936.3307 2928.6181 3936.5275 2928.7756 3936.6456 2928.8543 3936.9212 2929.0905 3937.1574 2929.248 3937.2362 2929.2874 3937.2755 2929.3268 3937.6299 2929.563 3938.9684 2930.3504 3938.8897 2930.311 3938.811 2930.2323 3938.9684 2930.3504 3938.7322 2930.1929 3938.6929 2930.1535 3938.181 2929.8779 3938.1417 2929.8386 3938.7716 2930.2323 3938.181 2929.8779 3938.6929 2930.1535 3938.6535 2930.1535 3938.2598 2929.8779 3938.9684 2930.3504 3938.7716 2930.2323 3938.6929 2930.1535 3938.7322 2930.1929 3938.6535 2930.1535 3938.6929 2930.1535 3938.7716 2930.2323 3938.1417 2929.8386 3937.6299 2929.4842 3937.7873 2929.6024 3938.2598 2929.8779 3937.9448 2929.7205 3937.6299 2929.5236 3938.1417 2929.8386 3938.181 2929.8779 3937.6299 2929.5236 3937.9448 2929.7205 3938.6535 2930.1535 3938.7322 2930.1929 3938.8897 2930.311 3938.9684 2930.3504 3939.0472 2930.3898 3939.1259 2930.4291 3939.2047 2930.4685 3939.2834 2930.5079 3939.3621 2930.5472 3939.5196 2930.626 3939.1259 2930.4291 3939.2834 2930.5079 3939.4015 2930.5472 3939.3621 2930.5472 3939.2834 2930.4685 3939.559 2930.5866 3939.5196 2930.626 3939.4015 2930.5472 3939.2834 2930.5079 3939.2047 2930.4685 3939.1259 2930.4291 3939.2834 2930.4685 3939.3621 2930.5472 3939.2047 2930.4685 3929.4409 2913.6181 3929.4409 2913.6181\"}}]}"
+      ],
+      "layers": [
+        "1~TopLayer~#FF0000~true~true~true~",
+        "2~BottomLayer~#0000FF~true~false~true~",
+        "3~TopSilkLayer~#FFCC00~true~false~true~",
+        "4~BottomSilkLayer~#66CC33~true~false~true~",
+        "5~TopPasteMaskLayer~#808080~true~false~true~",
+        "6~BottomPasteMaskLayer~#800000~true~false~true~",
+        "7~TopSolderMaskLayer~#800080~true~false~true~0.3",
+        "8~BottomSolderMaskLayer~#AA00FF~true~false~true~0.3",
+        "9~Ratlines~#6464FF~false~false~true~",
+        "10~BoardOutLine~#FF00FF~true~false~true~",
+        "11~Multi-Layer~#C0C0C0~true~false~true~",
+        "12~Document~#FFFFFF~true~false~true~",
+        "13~TopAssembly~#33CC99~true~false~true~",
+        "14~BottomAssembly~#5555FF~true~false~true~",
+        "15~Mechanical~#F022F0~true~false~true~",
+        "19~3DModel~#66CCFF~true~false~true~",
+        "21~Inner1~#999966~false~false~false~~",
+        "22~Inner2~#008000~false~false~false~~",
+        "23~Inner3~#00FF00~false~false~false~~",
+        "24~Inner4~#BC8E00~false~false~false~~",
+        "25~Inner5~#70DBFA~false~false~false~~",
+        "26~Inner6~#00CC66~false~false~false~~",
+        "27~Inner7~#9966FF~false~false~false~~",
+        "28~Inner8~#800080~false~false~false~~",
+        "29~Inner9~#008080~false~false~false~~",
+        "30~Inner10~#15935F~false~false~false~~",
+        "31~Inner11~#000080~false~false~false~~",
+        "32~Inner12~#00B400~false~false~false~~",
+        "33~Inner13~#2E4756~false~false~false~~",
+        "34~Inner14~#99842F~false~false~false~~",
+        "35~Inner15~#FFFFAA~false~false~false~~",
+        "36~Inner16~#99842F~false~false~false~~",
+        "37~Inner17~#2E4756~false~false~false~~",
+        "38~Inner18~#3535FF~false~false~false~~",
+        "39~Inner19~#8000BC~false~false~false~~",
+        "40~Inner20~#43AE5F~false~false~false~~",
+        "41~Inner21~#C3ECCE~false~false~false~~",
+        "42~Inner22~#728978~false~false~false~~",
+        "43~Inner23~#39503F~false~false~false~~",
+        "44~Inner24~#0C715D~false~false~false~~",
+        "45~Inner25~#5A8A80~false~false~false~~",
+        "46~Inner26~#2B937E~false~false~false~~",
+        "47~Inner27~#23999D~false~false~false~~",
+        "48~Inner28~#45B4E3~false~false~false~~",
+        "49~Inner29~#215DA1~false~false~false~~",
+        "50~Inner30~#4564D7~false~false~false~~",
+        "51~Inner31~#6969E9~false~false~false~~",
+        "52~Inner32~#9069E9~false~false~false~~",
+        "99~ComponentShapeLayer~#00CCCC~true~false~true~0.4",
+        "100~LeadShapeLayer~#CC9999~true~false~true~",
+        "101~ComponentMarkingLayer~#66FFCC~true~false~true~",
+        "Hole~Hole~#222222~false~false~true~",
+        "DRCError~DRCError~#FAD609~false~false~true~"
+      ],
+      "objects": [
+        "All~true~false",
+        "Component~true~true",
+        "Prefix~true~true",
+        "Name~true~false",
+        "Track~true~true",
+        "Pad~true~true",
+        "Via~true~true",
+        "Hole~true~true",
+        "Copper_Area~true~true",
+        "Circle~true~true",
+        "Arc~true~true",
+        "Solid_Region~true~true",
+        "Text~true~true",
+        "Image~true~true",
+        "Rect~true~true",
+        "Dimension~true~true",
+        "Protractor~true~true"
+      ],
+      "BBox": {
+        "x": 3916,
+        "y": 2902,
+        "width": 37,
+        "height": 40
+      },
+      "netColors": []
+    }
+  },
+  "_objMetadata": {
+    "bounds": {
+      "min": {
+        "x": -4.6,
+        "y": -4.6,
+        "z": -3
+      },
+      "max": {
+        "x": 4.6,
+        "y": 5.23,
+        "z": 15.1
+      }
+    }
+  }
+}

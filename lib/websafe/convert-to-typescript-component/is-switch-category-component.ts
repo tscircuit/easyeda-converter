@@ -11,6 +11,7 @@ export const isSwitchCategoryComponent = (
     cPara.Category,
     cPara["LCSC Category"],
     cPara["JLCPCB Category"],
+    cPara.package,
     betterEasy.category,
   ])
 }
