@@ -1,4 +1,4 @@
-import { it, expect } from "bun:test"
+import { expect, it } from "bun:test"
 import { SingleLetterShapeSchema } from "lib/schemas/single-letter-shape-schema"
 
 const examples = [
@@ -109,5 +109,61 @@ it("parses schematic drawing colors, paths, and pin stems", () => {
     lineWidth: 1,
     sweepFlag: true,
     id: "gge79",
+  })
+})
+
+it("parses C~ schematic circles, T~N~/T~PK~ text marks, comma/trailing-space polylines, and O~/J~/PIE~ annotations", () => {
+  expect(
+    SingleLetterShapeSchema.parse("C~370~280~1.5~#880000~1~0~#880000~gge2~0"),
+  ).toMatchObject({
+    type: "ELLIPSE",
+    center: { x: 370, y: 280 },
+    radiusX: 1.5,
+    radiusY: 1.5,
+    color: "#880000",
+    lineWidth: 1,
+    fillColor: "#880000",
+    id: "gge2",
+  })
+
+  expect(
+    SingleLetterShapeSchema.parse(
+      "T~N~400~270~0~#0000FF~~7pt~~~~comment~NE555~~start~gge11~0~",
+    ),
+  ).toMatchObject({
+    type: "TEXT",
+    alignment: "L",
+    content: "NE555",
+    visibility: "1",
+    id: "gge11",
+  })
+
+  expect(
+    SingleLetterShapeSchema.parse(
+      "PL~355,285 365,285 ~#880000~1~0~none~gge5~0",
+    ),
+  ).toMatchObject({
+    type: "POLYLINE",
+    points: [
+      { x: 355, y: 285 },
+      { x: 365, y: 285 },
+    ],
+    color: "#880000",
+    lineWidth: 1,
+    id: "gge5",
+  })
+
+  expect(
+    SingleLetterShapeSchema.parse("O~355~285~gge20~M351,281L359,289~0"),
+  ).toEqual({
+    type: "IGNORED",
+    sourceType: "O",
+  })
+
+  expect(
+    SingleLetterShapeSchema.parse("J~355~285~2.5~#CC0000~gge21~0"),
+  ).toEqual({
+    type: "IGNORED",
+    sourceType: "J",
   })
 })
