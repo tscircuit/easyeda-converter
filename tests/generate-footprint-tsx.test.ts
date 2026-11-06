@@ -162,3 +162,75 @@ it("preserves fabrication and user notes in generated footprints", async () => {
     circuitJson.find((element) => element.type === "pcb_fabrication_note_text"),
   ).toMatchObject({ text: "+" })
 })
+
+it("emits valid JSX for quotes, entities, and {NAME}", async () => {
+  const cases = [
+    {
+      type: "pcb_silkscreen_text" as const,
+      text: 'Connector 1/4"',
+      expectedJsx: `text={"Connector 1/4\\""}`,
+      roundTrip: true,
+    },
+    {
+      type: "pcb_fabrication_note_text" as const,
+      text: "&amp;",
+      expectedJsx: `text={"&amp;"}`,
+      roundTrip: true,
+    },
+    {
+      type: "pcb_note_text" as const,
+      text: "&#65;",
+      expectedJsx: `text={"&#65;"}`,
+      roundTrip: true,
+    },
+    {
+      type: "pcb_silkscreen_text" as const,
+      text: "{NAME}",
+      expectedJsx: `text="{NAME}"`,
+      roundTrip: false,
+    },
+    {
+      type: "pcb_fabrication_note_dimension" as const,
+      text: '1/4"\nwide',
+      expectedJsx: `text={"1/4\\"\\nwide"}`,
+      roundTrip: true,
+    },
+  ]
+
+  for (const testCase of cases) {
+    const footprint = generateFootprintTsx([
+      testCase.type === "pcb_fabrication_note_dimension"
+        ? ({
+            type: "pcb_fabrication_note_dimension",
+            from: { x: 0, y: 0 },
+            to: { x: 1, y: 0 },
+            text: testCase.text,
+            font: "tscircuit2024",
+            font_size: 0.5,
+            arrow_size: 0.4,
+            offset_distance: 0.5,
+            layer: "top",
+          } as never)
+        : ({
+            type: testCase.type,
+            text: testCase.text,
+            anchor_position: { x: 0, y: 0 },
+            anchor_alignment: "center",
+            layer: "top",
+            font: "tscircuit2024",
+            font_size: 1,
+          } as never),
+    ])
+    expect(footprint).toContain(testCase.expectedJsx)
+
+    if (!testCase.roundTrip) continue
+
+    const circuitJson = await runTscircuitCode(`
+      export default () => ${footprint}
+    `)
+    const element = circuitJson.find((item) => item.type === testCase.type) as
+      | { text?: string }
+      | undefined
+    expect(element?.text).toBe(testCase.text)
+  }
+})
