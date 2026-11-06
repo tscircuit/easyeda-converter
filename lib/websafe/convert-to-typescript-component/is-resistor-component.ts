@@ -19,7 +19,7 @@ export const normalizeResistorValue = (value: unknown): string | undefined => {
 
   const compactValue = value.trim().replace(/\s+/g, "")
   const explicitUnitMatch = compactValue.match(
-    /^(\d+(?:\.\d+)?)([mMkKgG]?)(?:Ω|ohms?)$/i,
+    /^(\d+(?:\.\d+)?)([rRmMkKgG]?)(?:Ω|Ω|ohms?)$/i,
   )
 
   if (explicitUnitMatch) {
@@ -28,7 +28,16 @@ export const normalizeResistorValue = (value: unknown): string | undefined => {
     return `${magnitude}${normalizeExplicitScale(scale)}ohm`
   }
 
-  const resistorCodeMatch = compactValue.match(/^(\d+)([RrKkMm])(\d*)$/)
+  const decimalScaleMatch = compactValue.match(/^(\d+\.\d+)([rRmMkKgG])$/)
+  if (decimalScaleMatch) {
+    const [, magnitude, scale] = decimalScaleMatch
+    if (Number(magnitude) === 0) return "0ohm"
+    return `${magnitude}${normalizeExplicitScale(scale)}ohm`
+  }
+
+  const resistorCodeMatch = compactValue.match(
+    /^(\d+)([RrKkMm])(\d*)(?:Ω|Ω|ohms?)?$/i,
+  )
   if (resistorCodeMatch) {
     const [, whole, multiplier, fraction] = resistorCodeMatch
     const magnitude = fraction ? `${whole}.${fraction}` : whole
@@ -48,12 +57,33 @@ export const normalizeResistorValue = (value: unknown): string | undefined => {
   return undefined
 }
 
+const categoryValueContainsResistor = (value: unknown): boolean => {
+  if (typeof value === "string") {
+    return /\bresistors?\b/i.test(value.trim())
+  }
+
+  if (Array.isArray(value)) {
+    return value.some(categoryValueContainsResistor)
+  }
+
+  if (value && typeof value === "object") {
+    return Object.values(value).some(categoryValueContainsResistor)
+  }
+
+  return false
+}
+
 export const isResistorComponent = (betterEasy: BetterEasyEdaJson): boolean => {
   const componentParameters = betterEasy.dataStr.head.c_para
   const packageName = componentParameters.package
-  const hasResistorCategory = betterEasy.tags.some((tag) =>
-    /\bresistors?\b/i.test(tag),
-  )
+  const hasResistorCategory = [
+    betterEasy.tags,
+    componentParameters.category,
+    componentParameters.Category,
+    componentParameters["LCSC Category"],
+    componentParameters["JLCPCB Category"],
+    betterEasy.category,
+  ].some(categoryValueContainsResistor)
 
   return (
     (componentParameters.pre?.toUpperCase() === "R?" || hasResistorCategory) &&

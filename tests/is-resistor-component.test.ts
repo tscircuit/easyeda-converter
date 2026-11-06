@@ -1,7 +1,10 @@
 import { expect, it } from "bun:test"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-component"
-import { isResistorComponent } from "lib/websafe/convert-to-typescript-component/is-resistor-component"
+import {
+  isResistorComponent,
+  normalizeResistorValue,
+} from "lib/websafe/convert-to-typescript-component/is-resistor-component"
 import resistorRawEasy from "./assets/C5127775.raweasy.json"
 
 for (const category of [
@@ -16,6 +19,22 @@ for (const category of [
     expect(isResistorComponent(betterEasy)).toBe(true)
   })
 }
+
+it("recognizes resistor category in componentParameters and top-level category when tags are empty", () => {
+  const betterEasy = EasyEdaJsonSchema.parse(resistorRawEasy)
+  betterEasy.tags = []
+  betterEasy.dataStr.head.c_para["JLCPCB Category"] =
+    "Chip Resistor - Surface Mount"
+  expect(isResistorComponent(betterEasy)).toBe(true)
+})
+
+it("normalizes Unicode Ohm sign (U+2126), R-codes with Ohm suffix, and decimal scale values", () => {
+  expect(normalizeResistorValue("10kΩ")).toBe("10kohm")
+  expect(normalizeResistorValue("4R7Ω")).toBe("4.7ohm")
+  expect(normalizeResistorValue("100RΩ")).toBe("100ohm")
+  expect(normalizeResistorValue("4.7k")).toBe("4.7kohm")
+  expect(normalizeResistorValue("2.2M")).toBe("2.2Mohm")
+})
 
 it("keeps R? resistor detection when categories are absent", () => {
   const betterEasy = EasyEdaJsonSchema.parse(resistorRawEasy)
