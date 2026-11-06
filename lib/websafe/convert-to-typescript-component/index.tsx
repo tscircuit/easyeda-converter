@@ -21,6 +21,7 @@ import {
 import { isCrystalComponent } from "./is-crystal-component"
 import { isDiodeCategoryComponent } from "./is-diode-category-component"
 import { isDipSwitchCategoryComponent } from "./is-dip-switch-category-component"
+import { isFpcConnectorComponent } from "./is-fpc-connector-component"
 import { isInductorComponent } from "./is-inductor-component"
 import { isLedCategoryComponent } from "./is-led-category-component"
 import { isMicroUsbConnectorComponent } from "./is-micro-usb-connector-component"
@@ -48,7 +49,12 @@ const getGeneratedComponentType = (
   if (isCrystalComponent(betterEasy) && (pinCount === 2 || pinCount === 4)) {
     return "crystal"
   }
-  if (isMicroUsbConnectorComponent(betterEasy)) return "connector"
+  if (
+    isMicroUsbConnectorComponent(betterEasy) ||
+    isFpcConnectorComponent(betterEasy)
+  ) {
+    return "connector"
+  }
   return "chip"
 }
 
