@@ -1,8 +1,8 @@
-import { fetchEasyEDAComponent } from "lib/websafe/fetch-easyeda-json"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
-import { convertRawEasyToTsx } from "lib/websafe/convert-to-typescript-component"
 import { normalizeManufacturerPartNumber } from "lib/utils/normalize-manufacturer-part-number"
+import { convertRawEasyToTsx } from "lib/websafe/convert-to-typescript-component"
+import { fetchEasyEDAComponent } from "lib/websafe/fetch-easyeda-json"
 
 export const convertEasyEdaJsonToVariousFormats = async ({
   jlcpcbPartNumberOrFilepath,
