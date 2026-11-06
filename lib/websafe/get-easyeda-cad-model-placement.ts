@@ -21,10 +21,7 @@ export type EasyEdaCadModelPlacement = {
   bounds: ModelBounds
 }
 
-const placementCache = new Map<
-  string,
-  Promise<EasyEdaCadModelPlacement | null>
->()
+const boundsCache = new Map<string, Promise<ModelBounds | null>>()
 
 const parseObjBounds = (objText: string): ModelBounds | null => {
   let minX = Number.POSITIVE_INFINITY
@@ -109,40 +106,50 @@ export const getEasyEdaCadModelPlacement = async (
     }
   }
 
-  const cacheKey = `${modelObjUrl}::${svgNodeZOffsetMm}`
-  const cachedPlacement = placementCache.get(cacheKey)
-  if (cachedPlacement) return cachedPlacement
+  let boundsPromise = boundsCache.get(modelObjUrl)
+  if (!boundsPromise) {
+    boundsPromise = (async () => {
+      try {
+        const response = await fetch(modelObjUrl)
+        if (!response.ok) {
+          boundsCache.delete(modelObjUrl)
+          return null
+        }
 
-  const placementPromise = (async () => {
-    try {
-      const response = await fetch(modelObjUrl)
-      if (!response.ok) return null
+        const objText = await response.text()
+        const parsedBounds = parseObjBounds(objText)
+        if (!parsedBounds) {
+          boundsCache.delete(modelObjUrl)
+          return null
+        }
 
-      const objText = await response.text()
-      const bounds = parseObjBounds(objText)
-      if (!bounds) return null
-
-      const derivedOffsetMm = getCadModelOffsetMmFromBounds(easyEdaJson, bounds)
-      if (!derivedOffsetMm) return null
-
-      return {
-        modelObjUrl,
-        positionXMm: derivedOffsetMm.x,
-        positionYMm: derivedOffsetMm.y,
-        modelStepUrl,
-        bounds,
-        // Align the EasyEDA SVG-node Z against the model's minimum Z.
-        positionZMm: getPositionZMmFromBounds(bounds, svgNodeZOffsetMm),
+        return parsedBounds
+      } catch (error) {
+        boundsCache.delete(modelObjUrl)
+        console.error(
+          `Error resolving EasyEDA CAD placement for ${partNumber}:`,
+          error,
+        )
+        return null
       }
-    } catch (error) {
-      console.error(
-        `Error resolving EasyEDA CAD placement for ${partNumber}:`,
-        error,
-      )
-      return null
-    }
-  })()
+    })()
 
-  placementCache.set(cacheKey, placementPromise)
-  return placementPromise
+    boundsCache.set(modelObjUrl, boundsPromise)
+  }
+
+  const bounds = await boundsPromise
+  if (!bounds) return null
+
+  const derivedOffsetMm = getCadModelOffsetMmFromBounds(easyEdaJson, bounds)
+  if (!derivedOffsetMm) return null
+
+  return {
+    modelObjUrl,
+    positionXMm: derivedOffsetMm.x,
+    positionYMm: derivedOffsetMm.y,
+    modelStepUrl,
+    bounds,
+    // Align the EasyEDA SVG-node Z against the model's minimum Z.
+    positionZMm: getPositionZMmFromBounds(bounds, svgNodeZOffsetMm),
+  }
 }
