@@ -1,0 +1,6 @@
+{
+  "part_number": "C388629",
+  "description": "Reproduction case for Invalid shape type A~M error in JLCPCB import",
+  "error_message": "Invalid shape type: A~M",
+  "easyeda_raw_data_fragment": "A~M 380 304 A 4 4 0 1 1 380 296~~#880000~1~0~none~gge7~0"
+}
