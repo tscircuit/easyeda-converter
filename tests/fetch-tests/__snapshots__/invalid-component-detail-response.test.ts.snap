@@ -1,0 +1,29 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`rejects malformed component detail response: null response 1`] = `"Invalid EasyEDA component detail response for "C2040": expected a boolean success field"`;
+
+exports[`rejects malformed component detail response: null response 2`] = `"Invalid EasyEDA component detail response for "C2040": expected a boolean success field"`;
+
+exports[`rejects malformed component detail response: missing success flag 1`] = `"Invalid EasyEDA component detail response for "C2040": expected a boolean success field"`;
+
+exports[`rejects malformed component detail response: missing success flag 2`] = `"Invalid EasyEDA component detail response for "C2040": expected a boolean success field"`;
+
+exports[`rejects malformed component detail response: string success flag 1`] = `"Invalid EasyEDA component detail response for "C2040": expected a boolean success field"`;
+
+exports[`rejects malformed component detail response: string success flag 2`] = `"Invalid EasyEDA component detail response for "C2040": expected a boolean success field"`;
+
+exports[`rejects malformed component detail response: missing result 1`] = `"Invalid EasyEDA component detail response for "C2040": missing result"`;
+
+exports[`rejects malformed component detail response: missing result 2`] = `"Invalid EasyEDA component detail response for "C2040": missing result"`;
+
+exports[`rejects malformed component detail response: null result 1`] = `"Invalid EasyEDA component detail response for "C2040": missing result"`;
+
+exports[`rejects malformed component detail response: null result 2`] = `"Invalid EasyEDA component detail response for "C2040": missing result"`;
+
+exports[`rejects malformed component detail response: API rejection with error code and message 1`] = `"EasyEDA API rejected the component details request for "C2040" (code 1007): part not found"`;
+
+exports[`rejects malformed component detail response: API rejection with error code and message 2`] = `"EasyEDA API rejected the component details request for "C2040" (code 1007): part not found"`;
+
+exports[`rejects malformed component detail response: API rejection that still returns geometry-shaped result 1`] = `"EasyEDA API rejected the component details request for "C2040" (code 0)"`;
+
+exports[`rejects malformed component detail response: API rejection that still returns geometry-shaped result 2`] = `"EasyEDA API rejected the component details request for "C2040" (code 0)"`;
