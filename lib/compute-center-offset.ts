@@ -8,6 +8,13 @@ export const computeCenterOffset = (easyeda: BetterEasyEdaJson) => {
     (shape): shape is z.infer<typeof PadSchema> => shape.type === "PAD",
   )
 
+  if (pads.length === 0) {
+    return {
+      x: 0,
+      y: 0,
+    }
+  }
+
   const minX = Math.min(...pads.map((pad) => mm(pad.center.x)))
   const maxX = Math.max(...pads.map((pad) => mm(pad.center.x)))
   const minY = Math.min(...pads.map((pad) => mm(pad.center.y)))
