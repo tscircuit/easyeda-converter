@@ -1,6 +1,6 @@
-import { z } from "zod"
 import { mil10ToMm } from "lib/utils/easyeda-unit-to-mm"
 import { normalizeEasyEdaPinLabel } from "lib/utils/normalize-easyeda-pin-label"
+import { z } from "zod"
 
 /**
  I'll break down the elements in the `dataStr.head.shape` array and explain what they represent. This array contains instructions for drawing the schematic symbol of the component.
@@ -137,6 +137,27 @@ export const EllipseShapeSchema = z
   .transform(parseEllipse)
   .pipe(EllipseShapeOutputSchema)
 
+const parseCircle = (str: string): z.infer<typeof EllipseShapeOutputSchema> => {
+  const [, x, y, radius, color, lineWidth, , fillColor, id] = str.split("~")
+  const numericRadius = Number(radius)
+  return {
+    type: "ELLIPSE",
+    center: { x: Number(x), y: Number(y) },
+    radiusX: numericRadius,
+    radiusY: numericRadius,
+    color,
+    lineWidth: Number(lineWidth),
+    fillColor,
+    id,
+  }
+}
+
+export const CircleShapeSchema = z
+  .string()
+  .startsWith("C~")
+  .transform(parseCircle)
+  .pipe(EllipseShapeOutputSchema)
+
 const ArcShapeOutputSchema = z.object({
   type: z.literal("ARC"),
   pathData: z.string(),
@@ -259,7 +280,9 @@ const PolylineShapeOutputSchema = z.object({
 
 const parsePoints = (pointsStr: string): Array<{ x: number; y: number }> => {
   return pointsStr
-    .split(" ")
+    .trim()
+    .split(/[\s,]+/)
+    .filter(Boolean)
     .reduce<Array<{ x: number; y: number }>>((acc, value, index) => {
       if (index % 2 === 0) {
         acc.push({ x: Number(value), y: 0 })
@@ -351,23 +374,22 @@ export const PathShapeSchema = z
 
 const IgnoredShapeOutputSchema = z.object({
   type: z.literal("IGNORED"),
-  sourceType: z.enum(["AR", "I"]),
+  sourceType: z.enum(["AR", "I", "O", "J", "N", "F", "B", "BE", "PIE"]),
 })
 
 /**
- * EasyEDA uses AR for display-only arrowheads and I for embedded schematic
- * images. The converter does not currently render either annotation, but
- * they are safe to ignore instead of making an otherwise usable payload
- * retryable.
+ * EasyEDA uses AR for display-only arrowheads, I for embedded schematic
+ * images, and O/J/N/F/B/BE/PIE for non-component schematic annotations. The
+ * converter does not currently render these annotations, so they are safely
+ * ignored instead of failing symbol parsing.
  */
 const IgnoredShapeSchema = z
   .string()
   .transform((shape) => {
-    const sourceType = shape.startsWith("AR~")
-      ? "AR"
-      : shape.startsWith("I~")
-        ? "I"
-        : undefined
+    const prefix = shape.split("~")[0]
+    const sourceType = (
+      ["AR", "I", "O", "J", "N", "F", "B", "BE", "PIE"] as const
+    ).find((type) => type === prefix)
 
     if (!sourceType) {
       throw new Error(`Invalid ignored shape: ${shape}`)
@@ -439,11 +461,14 @@ const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
 
   return {
     type: "TEXT",
-    // EasyEDA's second text field is a mark: L=label, N=name, P=reference prefix.
+    // EasyEDA's second text field is a mark: L=label, N=name, P=reference prefix, PK=package.
     // Text anchoring is a separate field (start/middle/end).
     // https://docs.easyeda.com/en/DocumentFormat/2-EasyEDA-Schematic-File-Format/#annotations
     // Preserve the existing normalized alignment representation for consumers.
-    alignment: (textMark === "P" ? "L" : textMark) as "L" | "C" | "R",
+    alignment: (["P", "N", "PK"].includes(textMark) ? "L" : textMark) as
+      | "L"
+      | "C"
+      | "R",
     x: Number(x),
     y: Number(y),
     rotation: Number(rotation),
@@ -456,7 +481,7 @@ const parseText = (str: string): z.input<typeof TextShapeOutputSchema> => {
     content,
     textType,
     ...(textMark === "P" ? { isReferenceDesignator: true } : {}),
-    visibility: visibility as "0" | "1",
+    visibility: (visibility === "0" ? "0" : "1") as "0" | "1",
     mirror,
     id,
   }
@@ -474,12 +499,13 @@ export const SingleLetterShapeSchema = z
     // We do some discrimination here for better errors
     if (x.startsWith("R~")) return RectangleShapeSchema.parse(x)
     if (x.startsWith("E~")) return EllipseShapeSchema.parse(x)
+    if (x.startsWith("C~")) return CircleShapeSchema.parse(x)
     if (x.startsWith("P~")) return PinShapeSchema.parse(x)
     if (x.startsWith("PL~")) return PolylineShapeSchema.parse(x)
     if (x.startsWith("PG~")) return PolygonShapeSchema.parse(x)
     if (x.startsWith("PT~")) return PathShapeSchema.parse(x)
     if (x.startsWith("T~")) return TextShapeSchema.parse(x)
-    if (x.startsWith("AR~") || x.startsWith("I~")) {
+    if (/^(?:AR|I|O|J|N|F|B|BE|PIE)~/.test(x)) {
       return IgnoredShapeSchema.parse(x)
     }
     if (x.startsWith("A~")) return ArcShapeSchema.parse(x)
