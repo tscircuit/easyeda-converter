@@ -29,7 +29,10 @@ test.each([
   "Key Switches",
   "Micro Switches",
   "Limit Switches",
+  "Rotary Switches",
   "Power Toggle Switches",
+  "SW-TH_RS-03-1",
+  "SW-SMD_MSK12C02",
 ])("retains mechanical %s categories", (category) => {
   expect(categoryValueContainsSwitch(category)).toBe(true)
   expect(
