@@ -202,6 +202,12 @@ export const convertBetterEasyToTsx = async ({
     componentType === "crystal"
       ? betterEasy.dataStr.head.c_para.Value?.trim()
       : undefined
+  const crystalLoadCapacitance =
+    componentType === "crystal"
+      ? normalizeCapacitanceValue(
+          betterEasy.dataStr.head.c_para["Load Capacitance"],
+        )
+      : undefined
   const crystalPinVariant =
     componentType !== "crystal"
       ? undefined
@@ -248,6 +254,7 @@ export const convertBetterEasyToTsx = async ({
     resistance,
     inductance,
     crystalFrequency,
+    crystalLoadCapacitance,
     crystalPinVariant,
     symbolTsx,
     schPinArrangement,

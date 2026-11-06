@@ -42,4 +42,25 @@ describe("getCadModelOffsetMmFromBounds", () => {
     expect(offset?.x).toBeCloseTo(1.383957099999975, 12)
     expect(offset?.y).toBeCloseTo(-0.0050000000000001155, 12)
   })
+
+  test("supports non-orthogonal c_rotation Z angles", () => {
+    const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
+    const bounds = betterEasy._objMetadata?.bounds
+
+    if (!bounds) {
+      throw new Error("Expected fixture to include _objMetadata.bounds")
+    }
+
+    const rotated = structuredClone(betterEasy)
+    const svgNode = rotated.packageDetail.dataStr.shape.find(
+      (shape) => shape.type === "SVGNODE",
+    )
+    if (!svgNode || svgNode.type !== "SVGNODE") {
+      throw new Error("Expected fixture to include SVGNODE")
+    }
+    svgNode.svgData.attrs.c_rotation = "0,0,45"
+
+    const offset = getCadModelOffsetMmFromBounds(rotated, bounds)
+    expect(offset).not.toBeNull()
+  })
 })
