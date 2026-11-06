@@ -162,3 +162,58 @@ it("preserves fabrication and user notes in generated footprints", async () => {
     circuitJson.find((element) => element.type === "pcb_fabrication_note_text"),
   ).toMatchObject({ text: "+" })
 })
+
+it("preserves courtyard rectangles and bottom-layer courtyard outlines in generated footprints", async () => {
+  const footprint = generateFootprintTsx([
+    {
+      type: "pcb_courtyard_rect",
+      pcb_courtyard_rect_id: "pcb_courtyard_rect_1",
+      pcb_component_id: "pcb_component_1",
+      center: { x: 1.5, y: -2 },
+      width: 6,
+      height: 4,
+      ccw_rotation: 90,
+      layer: "bottom",
+    } as never,
+    {
+      type: "pcb_courtyard_outline",
+      pcb_courtyard_outline_id: "pcb_courtyard_outline_1",
+      pcb_component_id: "pcb_component_1",
+      layer: "bottom",
+      outline: [
+        { x: -3, y: -2 },
+        { x: 3, y: -2 },
+        { x: 3, y: 2 },
+        { x: -3, y: 2 },
+        { x: -3, y: -2 },
+      ],
+    } as never,
+  ])
+
+  expect(footprint).toContain(
+    '<courtyardrect pcbX="1.5mm" pcbY="-2mm" width="6mm" height="4mm" pcbRotation="90deg" layer="bottom" />',
+  )
+  expect(footprint).toContain("<courtyardoutline outline={")
+  expect(footprint.match(/ layer="bottom"/g)).toHaveLength(2)
+
+  const circuitJson = await runTscircuitCode(`
+    export default () => ${footprint}
+  `)
+
+  expect(
+    circuitJson.find((element) => element.type === "pcb_courtyard_rect"),
+  ).toMatchObject({
+    type: "pcb_courtyard_rect",
+    center: { x: 1.5, y: -2 },
+    width: 6,
+    height: 4,
+    ccw_rotation: 90,
+    layer: "bottom",
+  })
+  expect(
+    circuitJson.find((element) => element.type === "pcb_courtyard_outline"),
+  ).toMatchObject({
+    type: "pcb_courtyard_outline",
+    layer: "bottom",
+  })
+})
