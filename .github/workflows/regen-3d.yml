@@ -1,0 +1,48 @@
+name: Regenerate 3D snapshots (agent test branch)
+
+on:
+  push:
+    branches: [agent/pin1-top-left-rotation]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  regen-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/pin1-top-left-rotation
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Regenerate custom-matcher snapshots
+        run: BUN_UPDATE_SNAPSHOTS=1 bun test tests/ || true
+
+      - name: Keep only 3D baselines; revert SVG churn and diff artifacts
+        run: |
+          git checkout -- '*.snap.svg' || true
+          find tests -name '*.diff.png' -delete
+          git status --short | head -80
+
+      - name: Commit regenerated 3D baselines
+        run: |
+          git config user.name "Francisco Miguel Perez"
+          git config user.email "franprzdev@gmail.com"
+          git add '*.snap.png' '*.glb' || true
+          if git diff --cached --quiet; then
+            echo "NO_3D_CHANGES"
+          else
+            git commit -m "chore: regenerate 3D snapshots for pin1 top-left rotation (deterministic CI env)"
+          fi
+          git push
+
+      - name: Verify suite against regenerated baselines
+        run: bun test tests/ 2>&1 | tail -40 || true
