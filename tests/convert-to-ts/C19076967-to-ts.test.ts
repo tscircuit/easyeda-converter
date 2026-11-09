@@ -47,35 +47,35 @@ it("should convert C19076967 into typescript file", async () => {
     }}
           manufacturerPartNumber="MFR01-A1F03L1S-B"
           footprint={<footprint>
-            <platedhole  portHints={["pin5"]} pcbX="-0.016891mm" pcbY="-12.100052mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="270deg" shape="pill" />
-    <platedhole  portHints={["pin11"]} pcbX="0.016891mm" pcbY="12.100052mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="270deg" shape="pill" />
-    <platedhole  portHints={["pin9"]} pcbX="-7.098919mm" pcbY="9.798812mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="306deg" shape="pill" />
-    <platedhole  portHints={["pin4"]} pcbX="7.098665mm" pcbY="-9.799066mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="306deg" shape="pill" />
-    <platedhole  portHints={["pin3"]} pcbX="11.502517mm" pcbY="-3.755136mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="342deg" shape="pill" />
-    <platedhole  portHints={["pin8"]} pcbX="-11.502517mm" pcbY="3.755136mm" holeWidth="1.5000224mm" holeHeight="4.4999656mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="342deg" shape="pill" />
-    <platedhole  portHints={["pin7"]} pcbX="-11.512931mm" pcbY="-3.723132mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="18deg" shape="pill" />
-    <platedhole  portHints={["pin2"]} pcbX="11.512931mm" pcbY="3.723132mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="18deg" shape="pill" />
-    <platedhole  portHints={["pin6"]} pcbX="-7.125843mm" pcbY="-9.779254mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="54deg" shape="pill" />
-    <platedhole  portHints={["pin1"]} pcbX="7.125335mm" pcbY="9.779mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="54deg" shape="pill" />
-    <platedhole  portHints={["pin10"]} pcbX="-1.425829mm" pcbY="0mm" holeWidth="1.5000224mm" holeHeight="3.999992mm" outerWidth="2.1999956mm" outerHeight="4.99999mm" rectPad={true} pcbRotation="0deg" shape="pill" />
-    <silkscreenpath route={[{"x":-2.8999942000000374,"y":-4.099991799999998},{"x":2.89999419999981,"y":-4.099991799999998}]} />
-    <silkscreenpath route={[{"x":2.224227199999973,"y":12.100001199999951},{"x":-2.275789199999963,"y":12.100001199999951}]} />
-    <silkscreenpath route={[{"x":-2.275789199999963,"y":-12.099950400000012},{"x":2.224227199999973,"y":-12.099950400000012}]} />
-    <silkscreencircle pcbX="-0.025781mm" pcbY="0mm" radius="15.999968mm" />
-    <silkscreencircle pcbX="-10.999851mm" pcbY="0mm" radius="2.050034mm" />
-    <silkscreencircle pcbX="11.000105mm" pcbY="0mm" radius="2.050034mm" />
-    <silkscreencircle pcbX="-0.025781mm" pcbY="0mm" radius="12.199874mm" />
-    <silkscreencircle pcbX="0.000127mm" pcbY="0mm" radius="4.99999mm" />
-    <silkscreencircle pcbX="0.000127mm" pcbY="14.732mm" radius="0.359156mm" />
-    <silkscreentext text="{NAME}" pcbX="-0.000381mm" pcbY="17.0274mm" anchorAlignment="center" fontSize="1mm" />
-    <fabricationnotepath route={[{"x":-2.6670000000001437,"y":-4.0639999999999645},{"x":2.793999999999869,"y":-4.0639999999999645},{"x":2.7637080595710586,"y":-4.294090131096141},{"x":2.674896583964369,"y":-4.508499999999913},{"x":2.5336179284748823,"y":-4.6926179284747604},{"x":2.349499999999921,"y":-4.833896583964361},{"x":2.1350901310962627,"y":-4.922708059570937},{"x":1.904999999999859,"y":-4.9529999999999745},{"x":-1.1368683772161603e-13,"y":-4.9529999999999745},{"x":-1.7780000000001337,"y":-4.9529999999999745},{"x":-2.00809013109631,"y":-4.922708059570937},{"x":-2.222500000000082,"y":-4.833896583964361},{"x":-2.4066179284749296,"y":-4.6926179284747604},{"x":-2.547896583964416,"y":-4.508499999999913},{"x":-2.636708059571106,"y":-4.294090131096141},{"x":-2.6670000000001437,"y":-4.0639999999999645}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <courtyardoutline outline={[{"x":-16.275977600000147,"y":16.09495179999999},{"x":16.22395840000013,"y":16.09495179999999},{"x":16.22395840000013,"y":-16.094977200000017},{"x":-16.275977600000147,"y":-16.094977200000017},{"x":-16.275977600000147,"y":16.09495179999999}]} />
+            <platedhole  portHints={["pin5"]} pcbX="12.100052mm" pcbY="-0.016891mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="0deg" shape="pill" />
+    <platedhole  portHints={["pin11"]} pcbX="-12.100052mm" pcbY="0.016891mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="0deg" shape="pill" />
+    <platedhole  portHints={["pin9"]} pcbX="-9.798812mm" pcbY="-7.098919mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="36deg" shape="pill" />
+    <platedhole  portHints={["pin4"]} pcbX="9.799066mm" pcbY="7.098665mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="36deg" shape="pill" />
+    <platedhole  portHints={["pin3"]} pcbX="3.755136mm" pcbY="11.502517mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="72deg" shape="pill" />
+    <platedhole  portHints={["pin8"]} pcbX="-3.755136mm" pcbY="-11.502517mm" holeWidth="1.5000224mm" holeHeight="4.4999656mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="72deg" shape="pill" />
+    <platedhole  portHints={["pin7"]} pcbX="3.723132mm" pcbY="-11.512931mm" holeWidth="1.5000224mm" holeHeight="4.5000164mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="108deg" shape="pill" />
+    <platedhole  portHints={["pin2"]} pcbX="-3.723132mm" pcbY="11.512931mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="108deg" shape="pill" />
+    <platedhole  portHints={["pin6"]} pcbX="9.779254mm" pcbY="-7.125843mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="144deg" shape="pill" />
+    <platedhole  portHints={["pin1"]} pcbX="-9.779mm" pcbY="7.125335mm" holeWidth="1.5000224mm" holeHeight="4.499991mm" outerWidth="2.1999956mm" outerHeight="5.1999896mm" rectPad={true} pcbRotation="144deg" shape="pill" />
+    <platedhole  portHints={["pin10"]} pcbX="0mm" pcbY="-1.425829mm" holeWidth="1.5000224mm" holeHeight="3.999992mm" outerWidth="2.1999956mm" outerHeight="4.99999mm" rectPad={true} pcbRotation="90deg" shape="pill" />
+    <silkscreenpath route={[{"x":4.099992,"y":-2.899994},{"x":4.099992,"y":2.899994}]} />
+    <silkscreenpath route={[{"x":-12.100001,"y":2.224227},{"x":-12.100001,"y":-2.275789}]} />
+    <silkscreenpath route={[{"x":12.09995,"y":-2.275789},{"x":12.09995,"y":2.224227}]} />
+    <silkscreencircle pcbX="0mm" pcbY="-0.025781mm" radius="15.999968mm" />
+    <silkscreencircle pcbX="0mm" pcbY="-10.999851mm" radius="2.050034mm" />
+    <silkscreencircle pcbX="0mm" pcbY="11.000105mm" radius="2.050034mm" />
+    <silkscreencircle pcbX="0mm" pcbY="-0.025781mm" radius="12.199874mm" />
+    <silkscreencircle pcbX="0mm" pcbY="0.000127mm" radius="4.99999mm" />
+    <silkscreencircle pcbX="-14.732mm" pcbY="0.000127mm" radius="0.359156mm" />
+    <silkscreentext text="{NAME}" pcbX="-17.0274mm" pcbY="-0.000381mm" anchorAlignment="center" pcbRotation="90deg" fontSize="1mm" />
+    <fabricationnotepath route={[{"x":4.064,"y":-2.667},{"x":4.064,"y":2.794},{"x":4.29409,"y":2.763708},{"x":4.5085,"y":2.674897},{"x":4.692618,"y":2.533618},{"x":4.833897,"y":2.3495},{"x":4.922708,"y":2.13509},{"x":4.953,"y":1.905},{"x":4.953,"y":0},{"x":4.953,"y":-1.778},{"x":4.922708,"y":-2.00809},{"x":4.833897,"y":-2.2225},{"x":4.692618,"y":-2.406618},{"x":4.5085,"y":-2.547897},{"x":4.29409,"y":-2.636708},{"x":4.064,"y":-2.667}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <courtyardoutline outline={[{"x":-16.094952,"y":-16.275978},{"x":-16.094952,"y":16.223958},{"x":16.094977,"y":16.223958},{"x":16.094977,"y":-16.275978},{"x":-16.094952,"y":-16.275978}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C19076967.obj?uuid=b6d9880015ca4fcf86b410816d650f7b",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C19076967.step?uuid=b6d9880015ca4fcf86b410816d650f7b",
-            pcbRotationOffset: 0,
-            modelOriginPosition: { x: 0.02600960000017949, y: 0.000012699999956566899, z: -0.000009000000000369823 },
+            pcbRotationOffset: 90,
+            modelOriginPosition: { x: -0.000013, y: 0.02601, z: -0.000009000000000369823 },
           }}
           {...props}
         />

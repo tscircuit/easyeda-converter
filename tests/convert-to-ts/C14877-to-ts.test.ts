@@ -77,51 +77,51 @@ it("should convert C14877 into typescript file", async () => {
     }}
           manufacturerPartNumber="ATMEGA328P-AU"
           footprint={<footprint>
-            <smtpad portHints={["pin32"]} pcbX="-4.3815mm" pcbY="-2.7999944mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin31"]} pcbX="-4.3815mm" pcbY="-1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin30"]} pcbX="-4.3815mm" pcbY="-1.1999976mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin29"]} pcbX="-4.3815mm" pcbY="-0.3999992mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin28"]} pcbX="-4.3815mm" pcbY="0.3999992mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin27"]} pcbX="-4.3815mm" pcbY="1.1999976mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin26"]} pcbX="-4.3815mm" pcbY="1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin25"]} pcbX="-4.3815mm" pcbY="2.7999944mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin24"]} pcbX="-2.7999944mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin23"]} pcbX="-1.999996mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin22"]} pcbX="-1.1999976mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin21"]} pcbX="-0.3999992mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin20"]} pcbX="0.3999992mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin19"]} pcbX="1.1999976mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin18"]} pcbX="1.999996mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin17"]} pcbX="2.7999944mm" pcbY="4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin16"]} pcbX="4.3815mm" pcbY="2.7999944mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin15"]} pcbX="4.3815mm" pcbY="1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin14"]} pcbX="4.3815mm" pcbY="1.1999976mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin13"]} pcbX="4.3815mm" pcbY="0.3999992mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin12"]} pcbX="4.3815mm" pcbY="-0.3999992mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin11"]} pcbX="4.3815mm" pcbY="-1.1999976mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin10"]} pcbX="4.3815mm" pcbY="-1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin9"]} pcbX="4.3815mm" pcbY="-2.7999944mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin8"]} pcbX="2.7999944mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin7"]} pcbX="1.999996mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin6"]} pcbX="1.1999976mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin5"]} pcbX="0.3999992mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin4"]} pcbX="-0.3999992mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin3"]} pcbX="-1.1999976mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin2"]} pcbX="-1.999996mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <smtpad portHints={["pin1"]} pcbX="-2.7999944mm" pcbY="-4.3688mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
-    <silkscreenpath route={[{"x":-2.967482000000004,"y":-4.825999999999993},{"x":-2.819400000000016,"y":-4.677917989294684},{"x":-2.6713180000000136,"y":-4.825999999999993}]} />
-    <silkscreenpath route={[{"x":-2.6713180000000136,"y":-4.825999999999993},{"x":-2.819400000000016,"y":-4.9740820107053025},{"x":-2.967482000000004,"y":-4.825999999999993}]} />
-    <silkscreenpath route={[{"x":-2.9626559999999813,"y":2.9499560000000145},{"x":-2.9626559999999813,"y":-2.949955999999986},{"x":2.937256000000019,"y":-2.949955999999986},{"x":2.937256000000019,"y":2.9499560000000145},{"x":-2.9626559999999813,"y":2.9499560000000145}]} />
-    <silkscreenpath route={[{"x":-3.7591999999999928,"y":-4.063999999999993},{"x":-3.907941055997668,"y":-4.214642029703938},{"x":-3.7579300000000018,"y":-4.364019424014728},{"x":-3.6079189440023356,"y":-4.214642029703938},{"x":-3.7566599999999966,"y":-4.063999999999993}]} />
-    <silkscreenpath route={[{"x":-2.2123399999999975,"y":-1.998980000000003},{"x":-2.4015150142161303,"y":-2.137897449194128},{"x":-2.3284212288967012,"y":-2.3609278108984313},{"x":-2.0937187711032834,"y":-2.3609278108984313},{"x":-2.0206249857838543,"y":-2.137897449194128},{"x":-2.209799999999987,"y":-1.998980000000003}]} />
-    <silkscreentext text="{NAME}" pcbX="0mm" pcbY="5.9657mm" anchorAlignment="center" fontSize="1mm" />
-    <courtyardoutline outline={[{"x":-5.456504699999996,"y":5.443804700000001},{"x":5.456504699999996,"y":5.443804700000001},{"x":5.456504699999996,"y":-5.443804699999987},{"x":-5.456504699999996,"y":-5.443804699999987},{"x":-5.456504699999996,"y":5.443804700000001}]} />
+            <smtpad portHints={["pin32"]} pcbX="-2.799994mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin31"]} pcbX="-1.999996mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin30"]} pcbX="-1.199998mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin29"]} pcbX="-0.399999mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin28"]} pcbX="0.399999mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin27"]} pcbX="1.199998mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin26"]} pcbX="1.999996mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin25"]} pcbX="2.799994mm" pcbY="4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin24"]} pcbX="4.3688mm" pcbY="2.799994mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin23"]} pcbX="4.3688mm" pcbY="1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin22"]} pcbX="4.3688mm" pcbY="1.199998mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin21"]} pcbX="4.3688mm" pcbY="0.399999mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin20"]} pcbX="4.3688mm" pcbY="-0.399999mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin19"]} pcbX="4.3688mm" pcbY="-1.199998mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin18"]} pcbX="4.3688mm" pcbY="-1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin17"]} pcbX="4.3688mm" pcbY="-2.799994mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin16"]} pcbX="2.799994mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin15"]} pcbX="1.999996mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin14"]} pcbX="1.199998mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin13"]} pcbX="0.399999mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin12"]} pcbX="-0.399999mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin11"]} pcbX="-1.199998mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin10"]} pcbX="-1.999996mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin9"]} pcbX="-2.799994mm" pcbY="-4.3815mm" width="0.4500118mm" height="1.6500094mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin8"]} pcbX="-4.3688mm" pcbY="-2.799994mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin7"]} pcbX="-4.3688mm" pcbY="-1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin6"]} pcbX="-4.3688mm" pcbY="-1.199998mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin5"]} pcbX="-4.3688mm" pcbY="-0.399999mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin4"]} pcbX="-4.3688mm" pcbY="0.399999mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin3"]} pcbX="-4.3688mm" pcbY="1.199998mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin2"]} pcbX="-4.3688mm" pcbY="1.999996mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <smtpad portHints={["pin1"]} pcbX="-4.3688mm" pcbY="2.799994mm" width="1.6500094mm" height="0.4500118mm" radius="0.2250059mm" shape="pill" />
+    <silkscreenpath route={[{"x":-4.826,"y":2.967482},{"x":-4.677918,"y":2.8194},{"x":-4.826,"y":2.671318}]} />
+    <silkscreenpath route={[{"x":-4.826,"y":2.671318},{"x":-4.974082,"y":2.8194},{"x":-4.826,"y":2.967482}]} />
+    <silkscreenpath route={[{"x":2.949956,"y":2.962656},{"x":-2.949956,"y":2.962656},{"x":-2.949956,"y":-2.937256},{"x":2.949956,"y":-2.937256},{"x":2.949956,"y":2.962656}]} />
+    <silkscreenpath route={[{"x":-4.064,"y":3.7592},{"x":-4.214642,"y":3.907941},{"x":-4.364019,"y":3.75793},{"x":-4.214642,"y":3.607919},{"x":-4.064,"y":3.75666}]} />
+    <silkscreenpath route={[{"x":-1.99898,"y":2.21234},{"x":-2.137897,"y":2.401515},{"x":-2.360928,"y":2.328421},{"x":-2.360928,"y":2.093719},{"x":-2.137897,"y":2.020625},{"x":-1.99898,"y":2.2098}]} />
+    <silkscreentext text="{NAME}" pcbX="5.9657mm" pcbY="0mm" anchorAlignment="center" pcbRotation="270deg" fontSize="1mm" />
+    <courtyardoutline outline={[{"x":5.443805,"y":5.456505},{"x":5.443805,"y":-5.456505},{"x":-5.443805,"y":-5.456505},{"x":-5.443805,"y":5.456505},{"x":5.443805,"y":5.456505}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C14877.obj?uuid=4d9f6c3430024506b87ce44b53201fc5",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C14877.step?uuid=4d9f6c3430024506b87ce44b53201fc5",
-            pcbRotationOffset: 90,
-            modelOriginPosition: { x: -0.0012984000000164642, y: -0.0030292999999934622, z: 0.000917 },
+            pcbRotationOffset: 0,
+            modelOriginPosition: { x: -0.003029, y: 0.001298, z: 0.000917 },
           }}
           {...props}
         />
