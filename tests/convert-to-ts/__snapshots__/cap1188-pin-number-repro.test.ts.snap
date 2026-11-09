@@ -82,7 +82,12 @@ export const CAP1188_1_CP_TR = (props: ChipProps<typeof pinLabels>) => {
 <silkscreentext text="{NAME}" pcbX="3.288921mm" pcbY="0.007493mm" anchorAlignment="center" pcbRotation="270deg" fontSize="1mm" />
 <courtyardoutline outline={[{"x":2.550084,"y":2.550084},{"x":2.550084,"y":-2.550084},{"x":-2.550084,"y":-2.550084},{"x":-2.550084,"y":2.550084},{"x":2.550084,"y":2.550084}]} />
       </footprint>}
-
+      cadModel={{
+        objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2652057.obj?uuid=a7b12dde0a7d4771a602d6847f242e5d",
+        stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C2652057.step?uuid=a7b12dde0a7d4771a602d6847f242e5d",
+        pcbRotationOffset: 0,
+        modelOriginPosition: { x: 0.000013, y: 0.000013, z: -0.01 },
+      }}
       {...props}
     />
   )

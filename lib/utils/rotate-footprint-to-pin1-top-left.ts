@@ -279,14 +279,13 @@ export const rotateFootprintToPin1TopLeft = (
       case "pcb_fabrication_note_rect":
       case "pcb_courtyard_rect": {
         element.center = rotatePoint(element.center, center, degreesCcw)
-        if (isQuarterTurn) {
-          ;[element.width, element.height] = [element.height, element.width]
-        }
         if ("ccw_rotation" in element && element.ccw_rotation !== undefined) {
           element.ccw_rotation = rotateCcwRotation(
             element.ccw_rotation,
             degreesCcw,
           )
+        } else if (isQuarterTurn) {
+          ;[element.width, element.height] = [element.height, element.width]
         }
         break
       }
@@ -333,6 +332,7 @@ export const rotateFootprintToPin1TopLeft = (
         break
       }
       case "pcb_component": {
+        element.center = rotatePoint(element.center, center, degreesCcw)
         if (isQuarterTurn) {
           ;[element.width, element.height] = [element.height, element.width]
         }

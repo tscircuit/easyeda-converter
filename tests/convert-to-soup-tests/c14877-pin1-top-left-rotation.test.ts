@@ -59,3 +59,89 @@ it("leaves the footprint untouched when pin 1 is already at the top left", () =>
   expect(rotatedAgain).toEqual(JSON.parse(JSON.stringify(once)))
   expect(getPin1TopLeftRotationDegrees(once)).toBe(0)
 })
+
+it("rotates silkscreen/courtyard rects by their ccw_rotation without swapping dimensions", () => {
+  const elements = [
+    {
+      type: "pcb_smtpad",
+      shape: "rect",
+      x: -2,
+      y: -1,
+      width: 0.5,
+      height: 0.5,
+      port_hints: ["pin1"],
+    },
+    {
+      type: "pcb_smtpad",
+      shape: "rect",
+      x: 2,
+      y: 1,
+      width: 0.5,
+      height: 0.5,
+      port_hints: ["pin2"],
+    },
+    {
+      type: "pcb_silkscreen_rect",
+      center: { x: 1, y: 0.5 },
+      width: 4,
+      height: 2,
+      ccw_rotation: 0,
+    },
+  ] as any[]
+
+  rotateFootprintToPin1TopLeft(elements)
+
+  const rect = elements.find((e) => e.type === "pcb_silkscreen_rect")!
+  // 270 CCW: center (1, 0.5) -> (0.5, -1); dimensions stay 4x2 and the
+  // orientation is carried by ccw_rotation (0 + 270).
+  expect(rect.center).toEqual({ x: 0.5, y: -1 })
+  expect(rect.width).toBe(4)
+  expect(rect.height).toBe(2)
+  expect(rect.ccw_rotation).toBe(270)
+})
+
+it("rotates pcb_component center around the pad bounds center", () => {
+  const elements = [
+    {
+      type: "pcb_smtpad",
+      shape: "rect",
+      x: -2,
+      y: -1,
+      width: 0.5,
+      height: 0.5,
+      port_hints: ["pin1"],
+    },
+    {
+      type: "pcb_smtpad",
+      shape: "rect",
+      x: 2,
+      y: 1,
+      width: 0.5,
+      height: 0.5,
+      port_hints: ["pin2"],
+    },
+    // Asymmetric artwork shifts the all-elements bounds center away from the
+    // pad bounds center, so pcb_component.center is not at the pad center.
+    {
+      type: "pcb_silkscreen_path",
+      route: [
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+      ],
+    },
+    {
+      type: "pcb_component",
+      center: { x: 2.5, y: 0 },
+      width: 5,
+      height: 3,
+    },
+  ] as any[]
+
+  rotateFootprintToPin1TopLeft(elements)
+
+  const component = elements.find((e) => e.type === "pcb_component")!
+  // 270 CCW around the pad bounds center (0, 0): (2.5, 0) -> (0, -2.5)
+  expect(component.center).toEqual({ x: 0, y: -2.5 })
+  expect(component.width).toBe(3)
+  expect(component.height).toBe(5)
+})

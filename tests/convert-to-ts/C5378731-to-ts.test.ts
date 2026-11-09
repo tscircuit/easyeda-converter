@@ -32,7 +32,6 @@ it("emits the C5378731 non-plated through-hole slot as a pcb_cutout", async () =
 
   // The source path spans x 4036.0634..4050.2365 and y 3017.8274..3030.4278 in
   // 10 mil units, i.e. 3.6mm x 3.2mm once multiplied by 0.254mm per unit.
-  // The pin-1 top-left rotation swaps the axes for this footprint.
   const xs = npthCutout.points.map((point) => point.x)
   const ys = npthCutout.points.map((point) => point.y)
   const width = Math.max(...xs) - Math.min(...xs)
