@@ -55,6 +55,7 @@ import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
 import { parseEasyEdaPathCommands } from "./utils/parse-easyeda-path-commands"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
+import { rotateFootprintToPin1TopLeft } from "./utils/rotate-footprint-to-pin1-top-left"
 import {
   type PackageArc,
   type PackageTrack,
@@ -430,6 +431,7 @@ interface Options {
   pinAttributes?: NonNullable<CommonComponentProps["pinAttributes"]>
   useModelCdn?: boolean
   shouldRecenter?: boolean
+  shouldRotateToPin1TopLeft?: boolean
   cadPositionXMm?: number
   cadPositionYMm?: number
   cadPositionZMm?: number
@@ -462,6 +464,7 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
   {
     useModelCdn,
     shouldRecenter = true,
+    shouldRotateToPin1TopLeft = true,
     cadPositionXMm,
     cadPositionYMm,
     cadPositionZMm,
@@ -1156,8 +1159,17 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     pcb_component.center = { x: 0, y: 0 }
   }
 
+  const convertedElements = convertEasyEdaNpthCutoutsToHoles(
+    circuitElements,
+    npthRegions,
+  )
+
+  if (shouldRotateToPin1TopLeft) {
+    rotateFootprintToPin1TopLeft(convertedElements)
+  }
+
   return {
-    circuitJson: convertEasyEdaNpthCutoutsToHoles(circuitElements, npthRegions),
+    circuitJson: convertedElements,
     resolvedPinAttributes,
   }
 }

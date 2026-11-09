@@ -57,25 +57,25 @@ it("should convert C12084 into typescript file", async () => {
     }}
           manufacturerPartNumber="SN65HVD230DR"
           footprint={<footprint>
-            <smtpad portHints={["pin5"]} pcbX="1.905mm" pcbY="2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <smtpad portHints={["pin6"]} pcbX="0.635mm" pcbY="2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <smtpad portHints={["pin7"]} pcbX="-0.635mm" pcbY="2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <smtpad portHints={["pin8"]} pcbX="-1.905mm" pcbY="2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <smtpad portHints={["pin4"]} pcbX="1.905mm" pcbY="-2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <smtpad portHints={["pin3"]} pcbX="0.635mm" pcbY="-2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <smtpad portHints={["pin2"]} pcbX="-0.635mm" pcbY="-2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <smtpad portHints={["pin1"]} pcbX="-1.905mm" pcbY="-2.569972mm" width="0.58801mm" height="2.0450048mm" radius="0.294005mm" shape="pill" />
-    <silkscreenpath route={[{"x":-2.5262078000000656,"y":-1.5214091999999937},{"x":-2.5262078000000656,"y":1.5214092000001074},{"x":2.526207799999952,"y":1.5214092000001074},{"x":2.526207799999952,"y":-1.5214091999999937},{"x":-2.5262078000000656,"y":-1.5214091999999937}]} />
-    <silkscreencircle pcbX="-1.905mm" pcbY="-0.769112mm" radius="0.150114mm" />
-    <silkscreencircle pcbX="-2.651506mm" pcbY="-2.77241mm" radius="0.150114mm" />
-    <silkscreentext text="{NAME}" pcbX="-0.127mm" pcbY="4.302mm" anchorAlignment="center" fontSize="1mm" />
-    <courtyardoutline outline={[{"x":-2.699982400000067,"y":3.8424744000000146},{"x":2.7000077999998666,"y":3.8424744000000146},{"x":2.7000077999998666,"y":-3.8424744000000146},{"x":-2.699982400000067,"y":-3.8424744000000146},{"x":-2.699982400000067,"y":3.8424744000000146}]} />
+            <smtpad portHints={["pin5"]} pcbX="2.569972mm" pcbY="-1.905mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <smtpad portHints={["pin6"]} pcbX="2.569972mm" pcbY="-0.635mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <smtpad portHints={["pin7"]} pcbX="2.569972mm" pcbY="0.635mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <smtpad portHints={["pin8"]} pcbX="2.569972mm" pcbY="1.905mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <smtpad portHints={["pin4"]} pcbX="-2.569972mm" pcbY="-1.905mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <smtpad portHints={["pin3"]} pcbX="-2.569972mm" pcbY="-0.635mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <smtpad portHints={["pin2"]} pcbX="-2.569972mm" pcbY="0.635mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <smtpad portHints={["pin1"]} pcbX="-2.569972mm" pcbY="1.905mm" width="2.0450048mm" height="0.58801mm" radius="0.294005mm" shape="pill" />
+    <silkscreenpath route={[{"x":-1.521409,"y":2.526208},{"x":1.521409,"y":2.526208},{"x":1.521409,"y":-2.526208},{"x":-1.521409,"y":-2.526208},{"x":-1.521409,"y":2.526208}]} />
+    <silkscreencircle pcbX="-0.769112mm" pcbY="1.905mm" radius="0.150114mm" />
+    <silkscreencircle pcbX="-2.77241mm" pcbY="2.651506mm" radius="0.150114mm" />
+    <silkscreentext text="{NAME}" pcbX="4.302mm" pcbY="0.127mm" anchorAlignment="center" pcbRotation="270deg" fontSize="1mm" />
+    <courtyardoutline outline={[{"x":3.842474,"y":2.699982},{"x":3.842474,"y":-2.700008},{"x":-3.842474,"y":-2.700008},{"x":-3.842474,"y":2.699982},{"x":3.842474,"y":2.699982}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C12084.obj?uuid=ec3b9f9b31a74655be3e55848dbee9c1",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C12084.step?uuid=ec3b9f9b31a74655be3e55848dbee9c1",
-            pcbRotationOffset: 0,
-            modelOriginPosition: { x: -0.000012700000070253736, y: 0, z: 0 },
+            pcbRotationOffset: 270,
+            modelOriginPosition: { x: 0, y: 0.000013, z: 0 },
           }}
           {...props}
         />
