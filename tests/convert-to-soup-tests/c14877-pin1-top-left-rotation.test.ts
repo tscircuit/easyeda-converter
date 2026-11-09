@@ -1,4 +1,5 @@
 import { expect, it } from "bun:test"
+import { type CadComponent, type PcbComponent } from "circuit-json"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import {
@@ -40,13 +41,16 @@ it("rotates the C14877 footprint so pin 1 lands at the top left", () => {
   expect(pin9.x).toBeLessThan(0)
 
   const pcbComponent = circuitJson.find(
-    (element) => element.type === "pcb_component",
+    (element): element is PcbComponent => element.type === "pcb_component",
   )
+  if (!pcbComponent) throw new Error("expected a pcb_component in the output")
   expect(pcbComponent.width).toBeCloseTo(pcbComponent.height, 1)
 
   const cadComponent = circuitJson.find(
-    (element) => element.type === "cad_component",
+    (element): element is CadComponent => element.type === "cad_component",
   )
+  if (!cadComponent?.rotation)
+    throw new Error("expected a cad_component rotation in the output")
   expect(cadComponent.rotation.z).toBe(0)
 })
 
