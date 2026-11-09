@@ -19,7 +19,8 @@ const rotatePoint = (
 ): Point => {
   const dx = point.x - center.x
   const dy = point.y - center.y
-  if (degreesCcw === 90) return { x: round(center.x - dy), y: round(center.y + dx) }
+  if (degreesCcw === 90)
+    return { x: round(center.x - dy), y: round(center.y + dx) }
   if (degreesCcw === 180)
     return { x: round(center.x - dx), y: round(center.y - dy) }
   if (degreesCcw === 270)
@@ -61,8 +62,7 @@ const getFootprintPadGeometry = (
   const pin1Positions = circuitJson
     .filter(
       (element) =>
-        (element.type === "pcb_smtpad" ||
-          element.type === "pcb_plated_hole") &&
+        (element.type === "pcb_smtpad" || element.type === "pcb_plated_hole") &&
         element.port_hints?.includes("pin1"),
     )
     .map(getPadPosition)
@@ -103,7 +103,7 @@ export const getPin1TopLeftRotationDegrees = (
 const rotateCcwRotation = (
   ccwRotation: number | undefined,
   degreesCcw: RotationDegreesCcw,
-): number => (((ccwRotation ?? 0) + degreesCcw) % 360 + 360) % 360
+): number => ((((ccwRotation ?? 0) + degreesCcw) % 360) + 360) % 360
 
 export const rotateFootprintToPin1TopLeft = (
   circuitJson: AnyCircuitElement[],
@@ -126,12 +126,18 @@ export const rotateFootprintToPin1TopLeft = (
           const rotated = rotatePoint(element, center, degreesCcw)
           element.x = rotated.x
           element.y = rotated.y
-          if (element.shape === "rotated_rect" || element.shape === "rotated_pill") {
+          if (
+            element.shape === "rotated_rect" ||
+            element.shape === "rotated_pill"
+          ) {
             element.ccw_rotation = rotateCcwRotation(
               element.ccw_rotation,
               degreesCcw,
             )
-          } else if (isQuarterTurn && (element.shape === "rect" || element.shape === "pill")) {
+          } else if (
+            isQuarterTurn &&
+            (element.shape === "rect" || element.shape === "pill")
+          ) {
             ;[element.width, element.height] = [element.height, element.width]
           }
         }

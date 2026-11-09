@@ -38,34 +38,34 @@ import type {
   TrackSchema,
   ViaSchema,
 } from "./schemas/package-detail-shape-schema"
-import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { convertEasyEdaNpthCutoutsToHoles } from "./utils/convert-easyeda-npth-cutouts-to-holes"
+import {
+  EASYEDA_PATH_LIMIT_MESSAGE,
+  INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
+} from "./utils/easyeda-path-limits"
+import { mil10ToMm } from "./utils/easyeda-unit-to-mm"
 import { expandEasyEdaPathData } from "./utils/expand-easyeda-path-data"
 import {
   BEZIER_SUBDIVISION_LIMIT_MESSAGE,
   INVALID_BEZIER_GEOMETRY_MESSAGE,
 } from "./utils/flatten-bezier-curve"
-import {
-  EASYEDA_PATH_LIMIT_MESSAGE,
-  INVALID_EASYEDA_PATH_GEOMETRY_MESSAGE,
-} from "./utils/easyeda-path-limits"
 import { getBoardOutlinePolygons } from "./utils/get-board-outline-polygons"
 import { getEasyEdaNpthSlotGeometry } from "./utils/get-easyeda-npth-slot-geometry"
 import { getEasyEdaPinAliases } from "./utils/get-easyeda-pin-aliases"
 import { getEasyEdaPlatedHoleGeometry } from "./utils/get-easyeda-plated-hole-geometry"
-import { parseEasyEdaPathCommands } from "./utils/parse-easyeda-path-commands"
 import { getPolarizedPinMetadata } from "./utils/get-polarized-pin-metadata"
-import { rotateFootprintToPin1TopLeft } from "./utils/rotate-footprint-to-pin1-top-left"
 import {
   type PackageArc,
   type PackageTrack,
   getSilkscreenArcPath,
 } from "./utils/get-silkscreen-arc-path"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
+import { parseEasyEdaPathCommands } from "./utils/parse-easyeda-path-commands"
 import {
   type SuppliedPinAttributes,
   resolvePinAttributes,
 } from "./utils/resolve-pin-attributes"
+import { rotateFootprintToPin1TopLeft } from "./utils/rotate-footprint-to-pin1-top-left"
 import { toSourcePinAttributes } from "./utils/to-source-pin-attributes"
 import { isDiodeCategoryComponent } from "./websafe/convert-to-typescript-component/is-diode-category-component"
 import { isLedCategoryComponent } from "./websafe/convert-to-typescript-component/is-led-category-component"

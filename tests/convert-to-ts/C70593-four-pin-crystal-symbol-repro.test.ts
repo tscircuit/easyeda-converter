@@ -34,21 +34,21 @@ test("C70593 imports as a native four-pin crystal", async () => {
     }}
           manufacturerPartNumber="X322525MRB4SI"
           footprint={<footprint>
-            <smtpad portHints={["pin3"]} pcbX="1.100074mm" pcbY="0.9499854mm" width="1.3999972mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin1"]} pcbX="-1.100074mm" pcbY="-0.9499854mm" width="1.3999972mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin4"]} pcbX="-1.100074mm" pcbY="0.9499854mm" width="1.3999972mm" height="1.1999976mm" shape="rect" />
-    <smtpad portHints={["pin2"]} pcbX="1.100074mm" pcbY="-0.9499854mm" width="1.3999972mm" height="1.1999976mm" shape="rect" />
-    <silkscreenpath route={[{"x":-2.5397460000000365,"y":-1.270126999999988},{"x":-2.5397460000000365,"y":-1.270126999999988},{"x":-2.5397460000000365,"y":-2.2861270000000076},{"x":-2.5397460000000365,"y":-2.2861270000000076},{"x":-1.523746000000017,"y":-2.2861270000000076},{"x":-1.523746000000017,"y":-2.2861270000000076}]} />
-    <silkscreenpath route={[{"x":-2.1003260000000523,"y":-1.699894999999998},{"x":2.1008339999999635,"y":-1.699894999999998},{"x":2.1008339999999635,"y":1.7001490000000103},{"x":-2.1003260000000523,"y":1.7001490000000103},{"x":-2.1003260000000523,"y":-1.699894999999998}]} />
-    <silkscreenpath route={[{"x":-1.0160000000000196,"y":-1.7779999999999916},{"x":-1.1647410559976379,"y":-1.9286420297039513},{"x":-1.014729999999986,"y":-2.078019424014741},{"x":-0.8647189440023908,"y":-1.9286420297038944},{"x":-1.013460000000066,"y":-1.7779999999999916}]} />
-    <silkscreentext text="{NAME}" pcbX="-0.220726mm" pcbY="2.697101mm" anchorAlignment="center" fontSize="1mm" />
-    <courtyardoutline outline={[{"x":-2.0500726000000213,"y":1.7999842000000115},{"x":2.0500726000000213,"y":1.7999842000000115},{"x":2.0500726000000213,"y":-1.7999841999999973},{"x":-2.0500726000000213,"y":-1.7999841999999973},{"x":-2.0500726000000213,"y":1.7999842000000115}]} />
+            <smtpad portHints={["pin3"]} pcbX="0.949985mm" pcbY="-1.100074mm" width="1.1999976mm" height="1.3999972mm" shape="rect" />
+    <smtpad portHints={["pin1"]} pcbX="-0.949985mm" pcbY="1.100074mm" width="1.1999976mm" height="1.3999972mm" shape="rect" />
+    <smtpad portHints={["pin4"]} pcbX="0.949985mm" pcbY="1.100074mm" width="1.1999976mm" height="1.3999972mm" shape="rect" />
+    <smtpad portHints={["pin2"]} pcbX="-0.949985mm" pcbY="-1.100074mm" width="1.1999976mm" height="1.3999972mm" shape="rect" />
+    <silkscreenpath route={[{"x":-1.270127,"y":2.539746},{"x":-1.270127,"y":2.539746},{"x":-2.286127,"y":2.539746},{"x":-2.286127,"y":2.539746},{"x":-2.286127,"y":1.523746},{"x":-2.286127,"y":1.523746}]} />
+    <silkscreenpath route={[{"x":-1.699895,"y":2.100326},{"x":-1.699895,"y":-2.100834},{"x":1.700149,"y":-2.100834},{"x":1.700149,"y":2.100326},{"x":-1.699895,"y":2.100326}]} />
+    <silkscreenpath route={[{"x":-1.778,"y":1.016},{"x":-1.928642,"y":1.164741},{"x":-2.078019,"y":1.01473},{"x":-1.928642,"y":0.864719},{"x":-1.778,"y":1.01346}]} />
+    <silkscreentext text="{NAME}" pcbX="2.697101mm" pcbY="0.220726mm" anchorAlignment="center" pcbRotation="270deg" fontSize="1mm" />
+    <courtyardoutline outline={[{"x":1.799984,"y":2.050073},{"x":1.799984,"y":-2.050073},{"x":-1.799984,"y":-2.050073},{"x":-1.799984,"y":2.050073},{"x":1.799984,"y":2.050073}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C70593.obj?uuid=3d8e5f33629249f9a4089449c02742d4",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C70593.step?uuid=3d8e5f33629249f9a4089449c02742d4",
-            pcbRotationOffset: 0,
-            modelOriginPosition: { x: 0, y: 0.000012699999984988608, z: -0.01 },
+            pcbRotationOffset: 270,
+            modelOriginPosition: { x: 0.000013, y: 0, z: -0.01 },
           }}
           {...restProps}
         />

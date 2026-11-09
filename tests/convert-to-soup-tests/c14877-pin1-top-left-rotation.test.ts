@@ -53,7 +53,9 @@ it("rotates the C14877 footprint so pin 1 lands at the top left", () => {
 it("leaves the footprint untouched when pin 1 is already at the top left", () => {
   const betterEasy = EasyEdaJsonSchema.parse(chipRawEasy)
   const once = convertEasyEdaJsonToCircuitJson(betterEasy)
-  const rotatedAgain = rotateFootprintToPin1TopLeft(JSON.parse(JSON.stringify(once)))
+  const rotatedAgain = rotateFootprintToPin1TopLeft(
+    JSON.parse(JSON.stringify(once)),
+  )
   expect(rotatedAgain).toEqual(JSON.parse(JSON.stringify(once)))
   expect(getPin1TopLeftRotationDegrees(once)).toBe(0)
 })

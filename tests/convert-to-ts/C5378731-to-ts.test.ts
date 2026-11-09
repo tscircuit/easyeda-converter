@@ -32,12 +32,13 @@ it("emits the C5378731 non-plated through-hole slot as a pcb_cutout", async () =
 
   // The source path spans x 4036.0634..4050.2365 and y 3017.8274..3030.4278 in
   // 10 mil units, i.e. 3.6mm x 3.2mm once multiplied by 0.254mm per unit.
+  // The pin-1 top-left rotation swaps the axes for this footprint.
   const xs = npthCutout.points.map((point) => point.x)
   const ys = npthCutout.points.map((point) => point.y)
   const width = Math.max(...xs) - Math.min(...xs)
   const height = Math.max(...ys) - Math.min(...ys)
-  expect(width).toBeCloseTo(3.6, 3)
-  expect(height).toBeCloseTo(3.2005, 3)
+  expect(width).toBeCloseTo(3.2005, 3)
+  expect(height).toBeCloseTo(3.6, 3)
 
   // The corner fillets come from A commands the schema does not capture, so the
   // expanded outline must be richer than the 9 M/L points alone.
@@ -111,23 +112,23 @@ it("imports C5378731 supplier fabrication notes into its footprint string", asyn
     }}
           manufacturerPartNumber="SK6812MINI-EA"
           footprint={<footprint>
-            <cutout shape="polygon" points={[{"x":1.7998439999998936,"y":1.2002516000000014},{"x":1.7462585022180974,"y":1.4002438679476654},{"x":1.5998590647502624,"y":1.546652602388349},{"x":1.3998701999998957,"y":1.6002507999999125},{"x":1.3998701999998957,"y":1.6000476000001527},{"x":-1.400124200000164,"y":1.6000476000001527},{"x":-1.403286198698197,"y":1.600136304025682},{"x":-1.4064488000001347,"y":1.6002000000000862},{"x":-1.4064488000001347,"y":1.6002000000000862},{"x":-1.6037640535419087,"y":1.54453291216646},{"x":-1.747582733090212,"y":1.3984222645010504},{"x":-1.800123400000075,"y":1.2002516000000014},{"x":-1.8001233927420799,"y":1.2003277999999682},{"x":-1.800123400000075,"y":1.2004040000000487},{"x":-1.800123400000075,"y":1.1999722000000475},{"x":-1.800123400000075,"y":-1.200073800000041},{"x":-1.7465252023885114,"y":-1.4000626647504077},{"x":-1.600116467947828,"y":-1.5464621022180154},{"x":-1.400124200000164,"y":-1.600047600000039},{"x":1.3998701999998957,"y":-1.600047600000039},{"x":1.3998701999998957,"y":-1.6002507999999125},{"x":1.5998590647502624,"y":-1.546652602388349},{"x":1.7462585022180974,"y":-1.4002438679475517},{"x":1.7998439999998936,"y":-1.2002515999998877},{"x":1.7998439999998936,"y":1.2002516000000014}]} />
-    <smtpad portHints={["pin4"]} pcbX="2.499995mm" pcbY="-0.7501636mm" width="1.1999976mm" height="0.8199882mm" shape="rect" />
-    <smtpad portHints={["pin3"]} pcbX="2.499995mm" pcbY="0.7499604mm" width="1.1999976mm" height="0.8199882mm" shape="rect" />
-    <smtpad portHints={["pin2"]} pcbX="-2.499995mm" pcbY="0.7499604mm" width="1.1999976mm" height="0.8199882mm" shape="rect" />
-    <smtpad portHints={["pin1"]} pcbX="-2.499995mm" pcbY="-0.7501636mm" width="1.1999976mm" height="0.8199882mm" shape="rect" />
-    <silkscreenpath route={[{"x":-1.6001492000000326,"y":1.3999718000001167},{"x":1.5998951999999917,"y":1.3999718000001167}]} />
-    <silkscreenpath route={[{"x":-1.600123799999892,"y":-1.3999972000000298},{"x":1.5999205999999049,"y":-1.3999972000000298}]} />
-    <silkscreencircle pcbX="-0.000127mm" pcbY="0.0001524mm" radius="0.99187mm" />
-    <silkscreentext text="{NAME}" pcbX="-0.012827mm" pcbY="3.0390104mm" anchorAlignment="center" fontSize="1mm" />
-    <fabricationnotepath route={[{"x":1.0158729999998286,"y":2.0319746000000123},{"x":2.031872999999905,"y":2.0319746000000123},{"x":2.031872999999905,"y":1.3969746000000214},{"x":1.0158729999998286,"y":2.0319746000000123}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <courtyardoutline outline={[{"x":-3.3499938000001066,"y":1.6500480000000834},{"x":3.349993799999993,"y":1.6500480000000834},{"x":3.349993799999993,"y":-1.6499463999999762},{"x":-3.3499938000001066,"y":-1.6499463999999762},{"x":-3.3499938000001066,"y":1.6500480000000834}]} />
+            <cutout shape="polygon" points={[{"x":1.200353,"y":-1.799946},{"x":1.400345,"y":-1.74636},{"x":1.546754,"y":-1.599961},{"x":1.600352,"y":-1.399972},{"x":1.600149,"y":-1.399972},{"x":1.600149,"y":1.400023},{"x":1.600238,"y":1.403185},{"x":1.600302,"y":1.406347},{"x":1.600302,"y":1.406347},{"x":1.544635,"y":1.603662},{"x":1.398524,"y":1.747481},{"x":1.200353,"y":1.800022},{"x":1.200429,"y":1.800022},{"x":1.200506,"y":1.800022},{"x":1.200074,"y":1.800022},{"x":-1.199972,"y":1.800022},{"x":-1.399961,"y":1.746424},{"x":-1.546361,"y":1.600015},{"x":-1.599946,"y":1.400023},{"x":-1.599946,"y":-1.399972},{"x":-1.600149,"y":-1.399972},{"x":-1.546551,"y":-1.599961},{"x":-1.400142,"y":-1.74636},{"x":-1.20015,"y":-1.799946},{"x":1.200353,"y":-1.799946}]} />
+    <smtpad portHints={["pin4"]} pcbX="-0.750062mm" pcbY="-2.500097mm" width="0.8199882mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin3"]} pcbX="0.750062mm" pcbY="-2.500097mm" width="0.8199882mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin2"]} pcbX="0.750062mm" pcbY="2.499893mm" width="0.8199882mm" height="1.1999976mm" shape="rect" />
+    <smtpad portHints={["pin1"]} pcbX="-0.750062mm" pcbY="2.499893mm" width="0.8199882mm" height="1.1999976mm" shape="rect" />
+    <silkscreenpath route={[{"x":1.400073,"y":1.600048},{"x":1.400073,"y":-1.599997}]} />
+    <silkscreenpath route={[{"x":-1.399896,"y":1.600022},{"x":-1.399896,"y":-1.600022}]} />
+    <silkscreencircle pcbX="0.000254mm" pcbY="0.000025mm" radius="0.99187mm" />
+    <silkscreentext text="{NAME}" pcbX="3.039112mm" pcbY="0.012725mm" anchorAlignment="center" pcbRotation="270deg" fontSize="1mm" />
+    <fabricationnotepath route={[{"x":2.032076,"y":-1.015975},{"x":2.032076,"y":-2.031975},{"x":1.397076,"y":-2.031975},{"x":2.032076,"y":-1.015975}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <courtyardoutline outline={[{"x":1.65015,"y":3.349892},{"x":1.65015,"y":-3.350095},{"x":-1.649845,"y":-3.350095},{"x":-1.649845,"y":3.349892},{"x":1.65015,"y":3.349892}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C5378731.obj?uuid=24821b1a65784664819cc38487bec84f",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C5378731.step?uuid=24821b1a65784664819cc38487bec84f",
-            pcbRotationOffset: 0,
-            modelOriginPosition: { x: 0, y: -0.00005079999993995443, z: -0.5900006 },
+            pcbRotationOffset: 270,
+            modelOriginPosition: { x: 0.000051, y: -0.000102, z: -0.5900006 },
           }}
           {...props}
         />
