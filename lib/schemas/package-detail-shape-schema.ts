@@ -62,15 +62,7 @@ export const PadSchema = BaseShapeSchema.extend({
   height: tenthmil,
   layermask: z.number(),
   net: z.union([z.string(), z.number()]).optional(),
-  number: z.union([z.string(), z.number()]).transform((padNumber) => {
-    if (
-      typeof padNumber === "string" &&
-      /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(padNumber.trim())
-    ) {
-      return Number(padNumber)
-    }
-    return padNumber
-  }),
+  number: z.union([z.string(), z.number()]),
   holeRadius: tenthmil,
   holeLength: tenthmil.optional(),
   holePoints: z.array(PointSchema).length(2).optional(),
@@ -210,10 +202,14 @@ export const ShapeItemSchema = z
           height,
           layermask,
           net,
-          ,
+          numericPadNumber,
           holeRadius,
           ...rest
         ] = params.map((p) => (Number.isNaN(Number(p)) ? p : Number(p)))
+        let padNumber: string | number = rawPadNumber
+        if (/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(rawPadNumber?.trim() ?? "")) {
+          padNumber = numericPadNumber
+        }
         const center = { x: centerX, y: centerY }
         let points: number[][] | undefined
 
@@ -233,7 +229,7 @@ export const ShapeItemSchema = z
           height,
           layermask,
           net,
-          number: rawPadNumber,
+          number: padNumber,
           holeRadius,
           holeLength:
             rest[3] === undefined || rest[3] === "" ? undefined : rest[3],
