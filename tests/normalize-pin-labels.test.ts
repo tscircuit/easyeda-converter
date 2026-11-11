@@ -6,7 +6,7 @@ test("reserves physical pad numbers before assigning numeric aliases", () => {
   expect(
     normalizePins([
       { aliases: ["OUT", "2", "A1"] },
-      { physicalPinNumber: 2, aliases: ["IN"] },
+      { padNumber: 2, aliases: ["IN"] },
     ]),
   ).toEqual([
     { pinNumber: 3, aliases: ["pin2_alt1", "OUT", "A1"] },

@@ -10,7 +10,7 @@ export const normalizeActiveLowPinLabel = (label: string): string => {
 }
 
 type PinAliases = {
-  physicalPinNumber?: number
+  padNumber?: number
   aliases: readonly string[]
 }
 
@@ -21,13 +21,13 @@ export const normalizePins = (pins: readonly PinAliases[]) => {
   const result: Array<{ pinNumber?: number; aliases: string[] }> = pins.map(
     () => ({ aliases: [] }),
   )
-  const physicalPinNumbers = new Set(pins.map((pin) => pin.physicalPinNumber))
+  const reservedPadNumbers = new Set(pins.map((pin) => pin.padNumber))
   const duplicatePins: typeof result = []
   let highestPinNumber = 0
   const assignedPinNumbers = new Set<number>()
 
-  for (const [index, { physicalPinNumber }] of pins.entries()) {
-    let desiredPinNumber = physicalPinNumber
+  for (const [index, { padNumber }] of pins.entries()) {
+    let desiredPinNumber = padNumber
     if (desiredPinNumber === undefined) {
       const numericAlias = uniqueInputPinLabels[index].find((label) =>
         /^\d+$/.test(label),
@@ -39,8 +39,7 @@ export const normalizePins = (pins: readonly PinAliases[]) => {
     const normalizedPin = result[index]
     if (
       assignedPinNumbers.has(desiredPinNumber) ||
-      (physicalPinNumber === undefined &&
-        physicalPinNumbers.has(desiredPinNumber))
+      (padNumber === undefined && reservedPadNumbers.has(desiredPinNumber))
     ) {
       normalizedPin.aliases.push(`pin${desiredPinNumber}_alt1`)
       duplicatePins.push(normalizedPin)

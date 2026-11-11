@@ -517,7 +517,7 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       Number.isInteger(pad.number) &&
       pad.number > 0
     ) {
-      return { physicalPinNumber: pad.number, aliases }
+      return { padNumber: pad.number, aliases }
     }
 
     if (pad.number) {
