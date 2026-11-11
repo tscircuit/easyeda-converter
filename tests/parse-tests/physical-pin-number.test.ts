@@ -1,5 +1,14 @@
 import { expect, test } from "bun:test"
+import { ShapeItemSchema } from "lib/schemas/package-detail-shape-schema"
 import { PinShapeSchema } from "lib/schemas/single-letter-shape-schema"
+
+test("parses a whitespace-padded numeric footprint pad identifier", () => {
+  const pad = ShapeItemSchema.parse({
+    type: "PAD",
+    data: "OVAL~0~0~2~4~1~~ 6 ~0~~0~pad6~0~~Y",
+  })
+  expect(pad).toMatchObject({ type: "PAD", number: 6 })
+})
 
 const pin = (number?: string, visible = "1", spice = "23") => {
   const header = `P~show~0~${spice}~505~235~0~gge290~0^^505~235^^M 505 235 h -10~#000000^^1~491.3~239~0~GND~end~~~#000000`
