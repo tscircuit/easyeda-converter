@@ -60,7 +60,7 @@ import {
   type PackageTrack,
   getSilkscreenArcPath,
 } from "./utils/get-silkscreen-arc-path"
-import { normalizePinLabels } from "./utils/normalize-pin-labels"
+import { normalizePins } from "./utils/normalize-pin-labels"
 import {
   type SuppliedPinAttributes,
   resolvePinAttributes,
@@ -507,51 +507,48 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
   const physicalPinNumbers = pads.map((pad) => String(pad.number ?? "").trim())
 
-  // Prepare pin labels for normalization
-  const pinLabelSets = pads.map((pad) => {
-    const padAliases = pad.number
-      ? getEasyEdaPinAliases(pad.number.toString())
-      : []
+  const pinsWithAliases = pads.map((pad) => {
     const pin = pins.find((p) => p.pinNumber === pad.number)
-    const schematicAliases = pin ? getEasyEdaPinAliases(pin.label) : []
+    const aliases: string[] = []
+    if (pin) aliases.push(...getEasyEdaPinAliases(pin.label))
 
-    // Prefer the schematic pin name for display while retaining the footprint
-    // pad identifier as a connection alias. Numeric schematic labels continue
-    // to use the footprint pad number first so canonical numbering is stable.
-    const hasNamedSchematicAlias = schematicAliases.some(
-      (alias) => !/^\d+$/.test(alias),
-    )
+    if (
+      typeof pad.number === "number" &&
+      Number.isInteger(pad.number) &&
+      pad.number > 0
+    ) {
+      return { padNumber: pad.number, aliases }
+    }
 
-    return hasNamedSchematicAlias
-      ? [...schematicAliases, ...padAliases]
-      : [...padAliases, ...schematicAliases]
+    if (pad.number) {
+      const padAliases = getEasyEdaPinAliases(String(pad.number))
+      if (aliases.some((alias) => !/^\d+$/.test(alias))) {
+        aliases.push(...padAliases)
+      } else {
+        aliases.unshift(...padAliases)
+      }
+    }
+    return { aliases }
   })
 
   // Repeated EasyEDA pad numbers are multiple copper geometries for one
   // logical pin. Unnumbered pads remain independent.
-  const padNumberKeys = pads.map((pad, index) => {
-    const padNumber = String(pad.number ?? "").trim()
-    return padNumber ? `number:${padNumber}` : `index:${index}`
-  })
-  const uniquePinLabelSets: string[][] = []
-  const uniquePinIndexByKey = new Map<string, number>()
-  const uniquePinIndexByPad = padNumberKeys.map((key, padIndex) => {
-    const existingIndex = uniquePinIndexByKey.get(key)
+  const uniquePins: typeof pinsWithAliases = []
+  const uniquePinIndexByNumber = new Map<string, number>()
+  const uniquePinIndexByPad = physicalPinNumbers.map((padNumber, padIndex) => {
+    const existingIndex = uniquePinIndexByNumber.get(padNumber)
     if (existingIndex !== undefined) return existingIndex
 
-    const uniquePinIndex = uniquePinLabelSets.length
-    uniquePinIndexByKey.set(key, uniquePinIndex)
-    uniquePinLabelSets.push(pinLabelSets[padIndex])
+    const uniquePinIndex = uniquePins.length
+    if (padNumber) uniquePinIndexByNumber.set(padNumber, uniquePinIndex)
+    uniquePins.push(pinsWithAliases[padIndex])
     return uniquePinIndex
   })
-  const normalizedUniquePinLabels = normalizePinLabels(uniquePinLabelSets)
-  const normalizedPinLabels = uniquePinIndexByPad.map(
-    (uniquePinIndex) => normalizedUniquePinLabels[uniquePinIndex],
-  )
+  const normalizedPins = normalizePins(uniquePins)
   const normalizedPinLabelsByPin = Object.fromEntries(
-    normalizedUniquePinLabels.map((labels) => {
-      const pin = labels.find((label) => /^pin\d+$/i.test(label))!
-      return [pin, labels.filter((label) => label !== pin)]
+    normalizedPins.map(({ pinNumber, aliases }) => {
+      const pinName = `pin${pinNumber}`
+      return [pinName, aliases.filter((alias) => alias !== pinName)]
     }),
   )
   const polarizedPinMetadata =
@@ -565,21 +562,18 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
 
   // Add source ports and pcb_smtpads
   pads.forEach((pad, index) => {
-    const portHints = normalizedPinLabels[index]
-    const pinNumber = Number.parseInt(
-      portHints.find((hint) => hint.match(/pin\d+/))!.replace("pin", ""),
-    )
+    const uniquePinIndex = uniquePinIndexByPad[index]
+    const { pinNumber, aliases } = normalizedPins[uniquePinIndex]
     const canonicalPinName = `pin${pinNumber}`
     const pcbPortHints = polarizedPinMetadata?.portHintsMap[
       canonicalPinName
     ] ?? [canonicalPinName]
 
-    const uniquePinIndex = uniquePinIndexByPad[index]
     if (!emittedSourcePinIndexes.has(uniquePinIndex)) {
       emittedSourcePinIndexes.add(uniquePinIndex)
       const attributes = resolvePinAttributes(pinAttributes, {
         physicalPinNumber: pad.number,
-        aliases: [...pinLabelSets[index], ...portHints].filter(
+        aliases: [...pinsWithAliases[index].aliases, ...aliases].filter(
           (alias) => alias !== canonicalPinName,
         ),
         physicalPinNumbers,
@@ -590,9 +584,9 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
         type: "source_port",
         source_port_id: `source_port_${index + 1}`,
         source_component_id: "source_component_1",
-        name: `pin${pinNumber}`,
+        name: canonicalPinName,
         pin_number: pinNumber,
-        port_hints: portHints.filter((hint) => hint !== `pin${pinNumber}`),
+        port_hints: aliases.filter((alias) => alias !== canonicalPinName),
         ...toSourcePinAttributes(attributes),
       })
     }

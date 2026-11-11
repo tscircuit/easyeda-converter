@@ -1,5 +1,18 @@
 import { describe, expect, test } from "bun:test"
 import { normalizePinLabels } from "lib"
+import { normalizePins } from "lib/utils/normalize-pin-labels"
+
+test("reserves physical pad numbers before assigning numeric aliases", () => {
+  expect(
+    normalizePins([
+      { aliases: ["OUT", "2", "A1"] },
+      { padNumber: 2, aliases: ["IN"] },
+    ]),
+  ).toEqual([
+    { pinNumber: 3, aliases: ["pin2_alt1", "OUT", "A1"] },
+    { pinNumber: 2, aliases: ["IN"] },
+  ])
+})
 
 describe("normalizePinLabels", () => {
   test("handles the documentation example correctly", () => {
