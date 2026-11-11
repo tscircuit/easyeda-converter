@@ -507,17 +507,19 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
   const pins = easyEdaJson.dataStr.shape.filter((shape) => shape.type === "PIN")
   const physicalPinNumbers = pads.map((pad) => String(pad.number ?? "").trim())
 
-  // Prepare pin labels for normalization
-  const pinLabelSets = pads.map((pad) => {
-    const padAliases = pad.number
-      ? getEasyEdaPinAliases(pad.number.toString())
-      : []
+  const pinLabelSets = pads.map((pad, padIndex) => {
+    const physicalPinNumber = physicalPinNumbers[padIndex]
     const pin = pins.find((p) => p.pinNumber === pad.number)
     const schematicAliases = pin ? getEasyEdaPinAliases(pin.label) : []
 
-    // Prefer the schematic pin name for display while retaining the footprint
-    // pad identifier as a connection alias. Numeric schematic labels continue
-    // to use the footprint pad number first so canonical numbering is stable.
+    // A schematic alias such as IN/B/2 cannot override a numbered pad.
+    if (/^\d+$/.test(physicalPinNumber) && Number(physicalPinNumber) > 0) {
+      return [physicalPinNumber, ...schematicAliases]
+    }
+
+    const padAliases = pad.number
+      ? getEasyEdaPinAliases(pad.number.toString())
+      : []
     const hasNamedSchematicAlias = schematicAliases.some(
       (alias) => !/^\d+$/.test(alias),
     )
