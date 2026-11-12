@@ -8,16 +8,15 @@ type GeneratedPinLabels = Record<string, string | readonly string[]>
 // power. VCC/VIN/VBUS/VDDA keep accepting a suffix.
 const POWER_PIN_LABEL = /^(?:VCC|VIN|VBUS|VDDA)\d*$|^VDD$/
 const GROUND_PIN_LABEL = /^(?:GND|VSS|PGND|AGND)\d*$/
-const NO_CONNECT_PIN_LABEL = /^NC\d*$/
 
-const getAttributeKind = (
-  label: string,
-): "power" | "ground" | "no-connect" | undefined => {
+// NC labels are ambiguous: some reserved NC pins must be grounded (for
+// example INA241A2 pin 4). Only explicit pin metadata may prohibit connection.
+
+const getAttributeKind = (label: string): "power" | "ground" | undefined => {
   const normalizedLabel = label.trim().toUpperCase()
 
   if (POWER_PIN_LABEL.test(normalizedLabel)) return "power"
   if (GROUND_PIN_LABEL.test(normalizedLabel)) return "ground"
-  if (NO_CONNECT_PIN_LABEL.test(normalizedLabel)) return "no-connect"
 
   return undefined
 }
@@ -44,8 +43,6 @@ export const inferPinAttributes = (
       pinAttributes[pinName] = { requiresPower: true }
     } else if (attributeKind === "ground") {
       pinAttributes[pinName] = { requiresGround: true }
-    } else if (attributeKind === "no-connect") {
-      pinAttributes[pinName] = { doNotConnect: true }
     }
   }
 
