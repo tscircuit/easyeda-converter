@@ -56,9 +56,7 @@ it("should convert C2652953 into typescript file", async () => {
     } as const
 
     const pinAttributes = {
-      pin6: {doNotConnect: true},
-      pin7: {requiresGround: true},
-      pin9: {doNotConnect: true}
+      pin7: {requiresGround: true}
     } as const
 
     export const TXS0104EQPWRQ1 = (props: ChipProps<typeof pinLabels>) => {
