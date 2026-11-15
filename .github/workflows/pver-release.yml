@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 env:
-  UPSTREAM_REPOS: "cli"
+  UPSTREAM_REPOS: "core"
   PACKAGE_NAMES: "easyeda"
 
 jobs:
