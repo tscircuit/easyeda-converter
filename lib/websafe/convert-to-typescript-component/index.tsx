@@ -202,6 +202,12 @@ export const convertBetterEasyToTsx = async ({
     componentType === "crystal"
       ? betterEasy.dataStr.head.c_para.Value?.trim()
       : undefined
+  let crystalLoadCapacitance: string | undefined
+  if (componentType === "crystal") {
+    crystalLoadCapacitance = normalizeCapacitanceValue(
+      betterEasy.dataStr.head.c_para["Load Capacitance"],
+    )
+  }
   const crystalPinVariant =
     componentType !== "crystal"
       ? undefined
@@ -216,8 +222,11 @@ export const convertBetterEasyToTsx = async ({
     isInductorComponent(betterEasy) && sourcePorts.length !== 2
   const isPassiveWithCustomSymbol =
     componentType === "capacitor" && sourcePorts.length !== 2
+  const isCrystalWithoutLoadCapacitance =
+    componentType === "crystal" && crystalLoadCapacitance === undefined
   const symbolTsx =
     isPassiveWithCustomSymbol ||
+    isCrystalWithoutLoadCapacitance ||
     (componentType === "chip" &&
       !isMultiPinDiode &&
       !isMultiPinInductor &&
@@ -248,6 +257,7 @@ export const convertBetterEasyToTsx = async ({
     resistance,
     inductance,
     crystalFrequency,
+    crystalLoadCapacitance,
     crystalPinVariant,
     symbolTsx,
     schPinArrangement,

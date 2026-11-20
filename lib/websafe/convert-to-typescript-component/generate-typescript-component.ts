@@ -31,6 +31,7 @@ export type GenerateTypescriptComponentParams = {
   resistance?: string
   inductance?: string
   crystalFrequency?: string
+  crystalLoadCapacitance?: string
   crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
   schPinArrangement?: ChipProps["schPinArrangement"]
@@ -58,6 +59,7 @@ export const generateTypescriptComponent = ({
   resistance,
   inductance,
   crystalFrequency,
+  crystalLoadCapacitance,
   crystalPinVariant,
   symbolTsx,
   schPinArrangement,
@@ -448,20 +450,50 @@ ${cadModelLines}
       throw new Error("Crystal frequency and pin variant are required")
     }
 
+    let elementName = "crystal"
+    let loadCapacitanceDefault = ""
+    let chipPinLabels = ""
+    let crystalWithoutLoadCapacitance = ""
+    if (crystalLoadCapacitance !== undefined) {
+      loadCapacitanceDefault = ` = ${JSON.stringify(crystalLoadCapacitance)}`
+    } else {
+      elementName = "CrystalWithOptionalLoadCapacitance"
+      chipPinLabels = `const pinLabels = {\n${pinLabelsString}\n} as const\n\n`
+      crystalWithoutLoadCapacitance = `
+
+function CrystalWithOptionalLoadCapacitance({ loadCapacitance, ...crystalProps }: CrystalWithOptionalLoadCapacitanceProps) {
+  if (loadCapacitance !== undefined) {
+    return <crystal {...crystalProps} loadCapacitance={loadCapacitance} />
+  }
+
+  // EasyEDA did not provide a load capacitance. Keep its original symbol and footprint.
+  const { frequency, pinVariant, ...chipProps } = crystalProps
+  return (
+    <chip
+      pinLabels={pinLabels}
+${internallyConnectedPinsProp}${symbolProp}${schPinArrangementProp}      {...chipProps}
+    />
+  )
+}`
+    }
+
     return `
 import type { CrystalProps } from "@tscircuit/props"
 
-type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
+type CrystalWithOptionalLoadCapacitanceProps = Omit<CrystalProps, "loadCapacitance"> & Partial<Pick<CrystalProps, "loadCapacitance">>
+type ImportedCrystalProps = Omit<CrystalWithOptionalLoadCapacitanceProps, "frequency" | "pinVariant">
 
+${chipPinLabels}\
 ${pinAttributesBlock}\
 export const ${componentName} = (props: ImportedCrystalProps) => {
-  const { name = "X1", ...restProps } = props
+  const { name = "X1", loadCapacitance${loadCapacitanceDefault}, ...restProps } = props
 
   return (
-    <crystal
+    <${elementName}
       name={name}
       frequency=${JSON.stringify(crystalFrequency)}
       pinVariant=${JSON.stringify(crystalPinVariant)}
+      loadCapacitance={loadCapacitance}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
@@ -476,7 +508,7 @@ ${cadModelLines}
       {...restProps}
     />
   )
-}
+}${crystalWithoutLoadCapacitance}
 `.trim()
   }
 
