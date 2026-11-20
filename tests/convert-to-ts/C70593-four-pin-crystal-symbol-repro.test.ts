@@ -5,9 +5,9 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { runTscircuitCode } from "tscircuit"
 import crystalRawEasy from "../assets/C70593.raweasy.json"
 
-test("C70593 uses the catalog load capacitance for a native four-pin crystal", async () => {
+test("C70593 normalizes the catalog load capacitance for a native four-pin crystal", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(crystalRawEasy)
-  betterEasy.dataStr.head.c_para["Load Capacitance"] = "18 pF"
+  betterEasy.dataStr.head.c_para["Load Capacitance"] = "18 PF"
   const result = await convertBetterEasyToTsx({ betterEasy })
 
   expect(result).toContain("<crystal")

@@ -1,4 +1,8 @@
-import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
+import type {
+  ChipProps,
+  CrystalProps,
+  SupplierPartNumbers,
+} from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
@@ -32,7 +36,7 @@ export type GenerateTypescriptComponentParams = {
   inductance?: string
   crystalFrequency?: string
   crystalLoadCapacitance?: string
-  crystalPinVariant?: "two_pin" | "four_pin"
+  crystalPinVariant?: CrystalProps["pinVariant"]
   symbolTsx?: string
   schPinArrangement?: ChipProps["schPinArrangement"]
   useSymbolPortsOnly?: boolean

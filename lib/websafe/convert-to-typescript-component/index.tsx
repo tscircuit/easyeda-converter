@@ -1,5 +1,5 @@
 import { su } from "@tscircuit/circuit-json-util"
-import type { ChipProps } from "@tscircuit/props"
+import type { ChipProps, CrystalProps } from "@tscircuit/props"
 import { convertEasyEdaJsonToCircuitJsonWithPinAttributes } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import {
   type BetterEasyEdaJson,
@@ -198,24 +198,17 @@ export const convertBetterEasyToTsx = async ({
     componentType === "resistor"
       ? normalizeResistorValue(betterEasy.dataStr.head.c_para.Value)
       : undefined
-  const crystalFrequency =
-    componentType === "crystal"
-      ? betterEasy.dataStr.head.c_para.Value?.trim()
-      : undefined
+  let crystalFrequency: string | undefined
   let crystalLoadCapacitance: string | undefined
+  let crystalPinVariant: CrystalProps["pinVariant"]
   if (componentType === "crystal") {
-    crystalLoadCapacitance = normalizeCapacitanceValue(
-      betterEasy.dataStr.head.c_para["Load Capacitance"],
-    )
+    const { Value: frequency, "Load Capacitance": loadCapacitance } =
+      betterEasy.dataStr.head.c_para
+    crystalFrequency = frequency?.trim()
+    crystalLoadCapacitance = normalizeCapacitanceValue(loadCapacitance)
+    crystalPinVariant = "two_pin"
+    if (sourcePorts.length === 4) crystalPinVariant = "four_pin"
   }
-  const crystalPinVariant =
-    componentType !== "crystal"
-      ? undefined
-      : sourcePorts.length === 4
-        ? "four_pin"
-        : sourcePorts.length === 2
-          ? "two_pin"
-          : undefined
   const isMultiPinDiode =
     isDiodeCategoryComponent(betterEasy) && sourcePorts.length !== 2
   const isMultiPinInductor =
