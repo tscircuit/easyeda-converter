@@ -1,9 +1,14 @@
 import { su } from "@tscircuit/circuit-json-util"
 import { mmStr } from "@tscircuit/mm"
-import type { AnyCircuitElement, LayerRef } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  InsertionDirection,
+  LayerRef,
+} from "circuit-json"
 
 interface GenerateFootprintTsxOptions {
   portHintsMap?: Record<string, string[]>
+  insertionDirection?: InsertionDirection
 }
 
 const mapPortHints = (
@@ -251,8 +256,13 @@ export const generateFootprintTsx = (
     )
   }
 
+  const insertionDirection =
+    options.insertionDirection ??
+    su(circuitJson).pcb_component.list()[0]?.insertion_direction
+  const footprintAttrs = getStringAttr("insertionDirection", insertionDirection)
+
   return `
-      <footprint>
+      <footprint${footprintAttrs}>
         ${elementStrings.join("\n")}
       </footprint>
   `.trim()
