@@ -15,19 +15,19 @@
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/alphabet": "^0.0.25",
     "@tscircuit/circuit-json-util": "^0.0.128",
-    "@tscircuit/core": "^0.0.2217",
+    "@tscircuit/core": "^0.0.2463",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/mm": "^0.0.9",
-    "@tscircuit/props": "^0.0.713",
+    "@tscircuit/props": "https://pkg.pr.new/tscircuit/props/@tscircuit/props@0efc802b17cb2c0446f42ce4a0c1c0128237f86f",
     "@types/bun": "latest",
     "bun-match-svg": "^0.0.13",
-    "circuit-json": "^0.0.534",
+    "circuit-json": "^0.0.560",
     "circuit-json-to-3d-png": "^0.0.7",
-    "circuit-json-to-gltf": "^0.0.106",
+    "circuit-json-to-gltf": "^0.0.164",
     "circuit-to-svg": "^0.0.453",
     "looks-same": "^9.0.1",
     "transformation-matrix": "^2.16.1",
-    "tscircuit": "^0.0.3033",
+    "tscircuit": "^0.0.3285",
     "tsup": "^8.5.0"
   },
   "peerDependencies": {
@@ -59,7 +59,7 @@
   },
   "types": "./dist/index.d.ts",
   "overrides": {
-    "@tscircuit/core": "^0.0.2217",
-    "@tscircuit/props": "^0.0.713"
+    "@tscircuit/core": "^0.0.2463",
+    "@tscircuit/props": "https://pkg.pr.new/tscircuit/props/@tscircuit/props@0efc802b17cb2c0446f42ce4a0c1c0128237f86f"
   }
 }

@@ -18,8 +18,7 @@ test("C70593 normalizes the catalog load capacitance for a native four-pin cryst
   expect(result).toMatchInlineSnapshot(`
     "import type { CrystalProps } from "@tscircuit/props"
 
-    type CrystalWithOptionalLoadCapacitanceProps = Omit<CrystalProps, "loadCapacitance"> & Partial<Pick<CrystalProps, "loadCapacitance">>
-    type ImportedCrystalProps = Omit<CrystalWithOptionalLoadCapacitanceProps, "frequency" | "pinVariant">
+    type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
 
     export const X322525MRB4SI = (props: ImportedCrystalProps) => {
       const { name = "X1", loadCapacitance = "18pF", ...restProps } = props

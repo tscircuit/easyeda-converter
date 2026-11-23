@@ -454,50 +454,29 @@ ${cadModelLines}
       throw new Error("Crystal frequency and pin variant are required")
     }
 
-    let elementName = "crystal"
-    let loadCapacitanceDefault = ""
-    let chipPinLabels = ""
-    let crystalWithoutLoadCapacitance = ""
-    if (crystalLoadCapacitance !== undefined) {
-      loadCapacitanceDefault = ` = ${JSON.stringify(crystalLoadCapacitance)}`
-    } else {
-      elementName = "CrystalWithOptionalLoadCapacitance"
-      chipPinLabels = `const pinLabels = {\n${pinLabelsString}\n} as const\n\n`
-      crystalWithoutLoadCapacitance = `
-
-function CrystalWithOptionalLoadCapacitance({ loadCapacitance, ...crystalProps }: CrystalWithOptionalLoadCapacitanceProps) {
-  if (loadCapacitance !== undefined) {
-    return <crystal {...crystalProps} loadCapacitance={loadCapacitance} />
-  }
-
-  // EasyEDA did not provide a load capacitance. Keep its original symbol and footprint.
-  const { frequency, pinVariant, ...chipProps } = crystalProps
-  return (
-    <chip
-      pinLabels={pinLabels}
-${internallyConnectedPinsProp}${symbolProp}${schPinArrangementProp}      {...chipProps}
-    />
-  )
-}`
-    }
+    const loadCapacitanceDefault =
+      crystalLoadCapacitance === undefined
+        ? ""
+        : `, loadCapacitance = ${JSON.stringify(crystalLoadCapacitance)}`
+    const loadCapacitanceProp = loadCapacitanceDefault
+      ? "      loadCapacitance={loadCapacitance}\n"
+      : ""
 
     return `
 import type { CrystalProps } from "@tscircuit/props"
 
-type CrystalWithOptionalLoadCapacitanceProps = Omit<CrystalProps, "loadCapacitance"> & Partial<Pick<CrystalProps, "loadCapacitance">>
-type ImportedCrystalProps = Omit<CrystalWithOptionalLoadCapacitanceProps, "frequency" | "pinVariant">
+type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
 
-${chipPinLabels}\
 ${pinAttributesBlock}\
 export const ${componentName} = (props: ImportedCrystalProps) => {
-  const { name = "X1", loadCapacitance${loadCapacitanceDefault}, ...restProps } = props
+  const { name = "X1"${loadCapacitanceDefault}, ...restProps } = props
 
   return (
-    <${elementName}
+    <crystal
       name={name}
       frequency=${JSON.stringify(crystalFrequency)}
       pinVariant=${JSON.stringify(crystalPinVariant)}
-      loadCapacitance={loadCapacitance}
+${loadCapacitanceProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\
@@ -512,7 +491,7 @@ ${cadModelLines}
       {...restProps}
     />
   )
-}${crystalWithoutLoadCapacitance}
+}
 `.trim()
   }
 

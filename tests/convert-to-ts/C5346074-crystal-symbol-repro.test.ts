@@ -10,6 +10,8 @@ test("C5346074 imports as a native crystal component", async () => {
   const result = await convertBetterEasyToTsx({ betterEasy })
 
   expect(result).toContain("<crystal")
+  expect(result).not.toContain("<chip")
+  expect(result).not.toContain("symbol={")
 
   const componentName = result.match(/export const (\w+)/)?.[1]
   expect(componentName).toBeDefined()
