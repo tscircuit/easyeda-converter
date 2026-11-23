@@ -20,12 +20,13 @@ test("C70593 imports as a native four-pin crystal", async () => {
     type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
 
     export const X322525MRB4SI = (props: ImportedCrystalProps) => {
-      const { name = "X1", ...restProps } = props
+      const { name = "X1", loadCapacitance, ...restProps } = props
 
       return (
         <crystal
           name={name}
           frequency="25MHz"
+          loadCapacitance={loadCapacitance}
           pinVariant="four_pin"
           supplierPartNumbers={{
       "jlcpcb": [
@@ -56,14 +57,11 @@ test("C70593 imports as a native four-pin crystal", async () => {
     }"
   `)
 
-  const componentName = result.match(/export const (\w+)/)?.[1]
-  expect(componentName).toBeDefined()
-
   const circuitJson = await runTscircuitCode(`
     ${result}
     export default () => (
       <board>
-        <${componentName} name="X1" loadCapacitance="18pF" />
+        <X322525MRB4SI name="X1" loadCapacitance="18pF" />
       </board>
     )
   `)
