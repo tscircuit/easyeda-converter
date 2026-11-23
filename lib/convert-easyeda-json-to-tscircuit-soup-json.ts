@@ -60,6 +60,7 @@ import {
   type PackageTrack,
   getSilkscreenArcPath,
 } from "./utils/get-silkscreen-arc-path"
+import { inferEasyEdaInsertionDirection } from "./utils/infer-insertion-direction"
 import { normalizePinLabels } from "./utils/normalize-pin-labels"
 import {
   type SuppliedPinAttributes,
@@ -1154,6 +1155,14 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
 
     // finalize pcb center after recentering
     pcb_component.center = { x: 0, y: 0 }
+  }
+
+  // Assign insertion_direction in final board space (+Z = "from_above") after
+  // recentering so the EasyEDA Y-down -> Y-up `scale(1, -1)` transform does
+  // not treat the coordinate-axis conversion as a top/bottom layer flip.
+  const insertionDirection = inferEasyEdaInsertionDirection(easyEdaJson)
+  if (insertionDirection) {
+    pcb_component.insertion_direction = insertionDirection
   }
 
   return {
