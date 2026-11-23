@@ -1,0 +1,24 @@
+diff --git a/dist/index.js b/dist/index.js
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -18017,7 +18017,7 @@
+ ];
+ var crystalProps = commonComponentProps.extend({
+   frequency,
+-  loadCapacitance: capacitance,
++  loadCapacitance: capacitance.optional(),
+   maxTraceLength: distance17.optional(),
+   manufacturerPartNumber: z79.string().optional(),
+   pinVariant: z79.enum(["two_pin", "four_pin"]).optional(),
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -134316,7 +134316,7 @@
+ type CrystalPinLabels = (typeof crystalPins)[number];
+ interface CrystalProps<PinLabel extends string = string> extends CommonComponentProps<PinLabel> {
+     frequency: number | string;
+-    loadCapacitance: number | string;
++    loadCapacitance?: number | string;
+     /** Maximum allowed PCB trace length between the crystal and its connected component */
+     maxTraceLength?: number | string;
+     manufacturerPartNumber?: string;
