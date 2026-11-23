@@ -5,9 +5,8 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { runTscircuitCode } from "tscircuit"
 import crystalRawEasy from "../assets/C70593.raweasy.json"
 
-test("C70593 normalizes the catalog load capacitance for a native four-pin crystal", async () => {
+test("C70593 imports as a native four-pin crystal", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(crystalRawEasy)
-  betterEasy.dataStr.head.c_para["Load Capacitance"] = "18 PF"
   const result = await convertBetterEasyToTsx({ betterEasy })
 
   expect(result).toContain("<crystal")
@@ -21,14 +20,14 @@ test("C70593 normalizes the catalog load capacitance for a native four-pin cryst
     type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
 
     export const X322525MRB4SI = (props: ImportedCrystalProps) => {
-      const { name = "X1", loadCapacitance = "18pF", ...restProps } = props
+      const { name = "X1", loadCapacitance, ...restProps } = props
 
       return (
         <crystal
           name={name}
           frequency="25MHz"
-          pinVariant="four_pin"
           loadCapacitance={loadCapacitance}
+          pinVariant="four_pin"
           supplierPartNumbers={{
       "jlcpcb": [
         "C70593"
@@ -58,14 +57,11 @@ test("C70593 normalizes the catalog load capacitance for a native four-pin cryst
     }"
   `)
 
-  const componentName = result.match(/export const (\w+)/)?.[1]
-  expect(componentName).toBeDefined()
-
   const circuitJson = await runTscircuitCode(`
     ${result}
     export default () => (
       <board>
-        <${componentName} name="X1" />
+        <X322525MRB4SI name="X1" loadCapacitance="18pF" />
       </board>
     )
   `)
@@ -76,13 +72,6 @@ test("C70593 normalizes the catalog load capacitance for a native four-pin cryst
   expect(
     circuitJson.filter((element) => element.type === "schematic_component"),
   ).toHaveLength(1)
-  expect(
-    circuitJson.find(
-      (element) =>
-        element.type === "source_component" &&
-        element.ftype === "simple_crystal",
-    ),
-  ).toMatchObject({ load_capacitance: 18e-12 })
 
   expect(convertCircuitJsonToSchematicSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,

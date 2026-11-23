@@ -1,8 +1,4 @@
-import type {
-  ChipProps,
-  CrystalProps,
-  SupplierPartNumbers,
-} from "@tscircuit/props"
+import type { ChipProps, SupplierPartNumbers } from "@tscircuit/props"
 import type { AnyCircuitElement } from "circuit-json"
 import { getPolarizedPinMetadata } from "../../utils/get-polarized-pin-metadata"
 import { generateFootprintTsx } from "../generate-footprint-tsx"
@@ -35,8 +31,7 @@ export type GenerateTypescriptComponentParams = {
   resistance?: string
   inductance?: string
   crystalFrequency?: string
-  crystalLoadCapacitance?: string
-  crystalPinVariant?: CrystalProps["pinVariant"]
+  crystalPinVariant?: "two_pin" | "four_pin"
   symbolTsx?: string
   schPinArrangement?: ChipProps["schPinArrangement"]
   useSymbolPortsOnly?: boolean
@@ -63,7 +58,6 @@ export const generateTypescriptComponent = ({
   resistance,
   inductance,
   crystalFrequency,
-  crystalLoadCapacitance,
   crystalPinVariant,
   symbolTsx,
   schPinArrangement,
@@ -454,14 +448,6 @@ ${cadModelLines}
       throw new Error("Crystal frequency and pin variant are required")
     }
 
-    const loadCapacitanceDefault =
-      crystalLoadCapacitance === undefined
-        ? ""
-        : `, loadCapacitance = ${JSON.stringify(crystalLoadCapacitance)}`
-    const loadCapacitanceProp = loadCapacitanceDefault
-      ? "      loadCapacitance={loadCapacitance}\n"
-      : ""
-
     return `
 import type { CrystalProps } from "@tscircuit/props"
 
@@ -469,14 +455,14 @@ type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
 
 ${pinAttributesBlock}\
 export const ${componentName} = (props: ImportedCrystalProps) => {
-  const { name = "X1"${loadCapacitanceDefault}, ...restProps } = props
+  const { name = "X1", loadCapacitance, ...restProps } = props
 
   return (
     <crystal
       name={name}
       frequency=${JSON.stringify(crystalFrequency)}
+      loadCapacitance={loadCapacitance}
       pinVariant=${JSON.stringify(crystalPinVariant)}
-${loadCapacitanceProp}\
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}
 ${pinAttributesProp}\

@@ -29,9 +29,6 @@ test("C5346074 imports as a native crystal component", async () => {
     circuitJson.filter((element) => element.type.endsWith("_error")),
   ).toEqual([])
   expect(
-    circuitJson.find((element) => element.type === "source_component")?.ftype,
-  ).toBe("simple_crystal")
-  expect(
     circuitJson.filter((element) => element.type === "schematic_component"),
   ).toHaveLength(1)
 

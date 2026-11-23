@@ -10,11 +10,7 @@ export const normalizeCapacitanceValue = (
   const trimmedValue = value.trim()
   if (!capacitancePattern.test(trimmedValue)) return undefined
 
-  return trimmedValue
-    .replace(/\s+/g, "")
-    .toLowerCase()
-    .replace(/[µμ]/g, "u")
-    .replace(/f$/, "F")
+  return trimmedValue.replace(/\s+/g, "").replace(/[µμ]/g, "u")
 }
 
 export const isCapacitorComponent = (

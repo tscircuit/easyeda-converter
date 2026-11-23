@@ -4,10 +4,8 @@ import { convertRawEasyToTsx } from "lib/websafe/convert-to-typescript-component
 import { runTscircuitCode } from "tscircuit"
 import crystalRawEasy from "../assets/C518155.raweasy.json"
 
-test("C518155 renders its footprint with or without an explicit load capacitance", async () => {
+test("C518155 requires load capacitance and renders a native crystal with 12 pF", async () => {
   const crystalTsx = await convertRawEasyToTsx({ rawEasy: crystalRawEasy })
-  expect(crystalTsx).toContain("<crystal")
-  expect(crystalTsx).not.toContain("<chip")
 
   // LCSC specifies 12 pF for C518155: https://www.lcsc.com/product-detail/C518155.html
   const circuitJson = await runTscircuitCode(`
@@ -22,31 +20,23 @@ test("C518155 renders its footprint with or without an explicit load capacitance
     )
   `)
 
-  expect(
-    circuitJson.filter(
-      (element) => element.type === "source_failed_to_create_component_error",
-    ),
-  ).toHaveLength(0)
-  const crystals = circuitJson.filter(
-    (element) =>
-      element.type === "source_component" && element.ftype === "simple_crystal",
+  const creationErrors = circuitJson.filter(
+    (element) => element.type === "source_failed_to_create_component_error",
   )
-  expect(crystals).toMatchObject([
-    { name: "Y1" },
-    { name: "Y2", load_capacitance: 12e-12 },
+  expect(creationErrors).toMatchObject([{ component_name: "Y1" }])
+  expect(creationErrors[0]?.message).toContain("loadCapacitance")
+  expect(
+    circuitJson.filter((element) => element.type === "source_component"),
+  ).toMatchObject([
+    { name: "Y2", ftype: "simple_crystal", load_capacitance: 12e-12 },
   ])
-  expect(crystals[0]?.load_capacitance).toBeUndefined()
   expect(
     circuitJson.filter((element) => element.type === "schematic_component"),
-  ).toHaveLength(2)
+  ).toHaveLength(1)
 
   const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
-  expect(pads.filter((pad) => pad.shape === "rect" && pad.x < 0)).toHaveLength(
-    4,
-  )
-  expect(pads.filter((pad) => pad.shape === "rect" && pad.x > 0)).toHaveLength(
-    4,
-  )
+  expect(pads).toHaveLength(4)
+  expect(pads.every((pad) => pad.shape === "rect" && pad.x > 0)).toBe(true)
 
   await expect(
     convertCircuitJsonToPcbSvg(circuitJson, {

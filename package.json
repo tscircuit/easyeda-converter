@@ -61,8 +61,5 @@
   "overrides": {
     "@tscircuit/core": "^0.0.2217",
     "@tscircuit/props": "^0.0.713"
-  },
-  "patchedDependencies": {
-    "@tscircuit/props@0.0.713": "patches/@tscircuit%2Fprops@0.0.713.patch"
   }
 }
