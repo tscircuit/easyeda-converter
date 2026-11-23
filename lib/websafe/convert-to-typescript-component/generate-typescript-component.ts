@@ -455,12 +455,13 @@ type ImportedCrystalProps = Omit<CrystalProps, "frequency" | "pinVariant">
 
 ${pinAttributesBlock}\
 export const ${componentName} = (props: ImportedCrystalProps) => {
-  const { name = "X1", ...restProps } = props
+  const { name = "X1", loadCapacitance, ...restProps } = props
 
   return (
     <crystal
       name={name}
       frequency=${JSON.stringify(crystalFrequency)}
+      loadCapacitance={loadCapacitance}
       pinVariant=${JSON.stringify(crystalPinVariant)}
       supplierPartNumbers={${JSON.stringify(supplierPartNumbers, null, "  ")}}
       manufacturerPartNumber=${manufacturerPartNumberTsx}

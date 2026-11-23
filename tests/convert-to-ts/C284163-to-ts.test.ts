@@ -16,5 +16,5 @@ it("converts C284163 to a four-pin crystal", async () => {
   expect(result).toContain("<crystal")
   expect(result).toContain('frequency="24MHz"')
   expect(result).toContain('pinVariant="four_pin"')
-  expect(result).not.toContain("loadCapacitance=")
+  expect(result).toContain("loadCapacitance={loadCapacitance}")
 })
