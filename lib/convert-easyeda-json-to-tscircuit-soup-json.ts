@@ -404,14 +404,39 @@ const handleCutout = (
   solidRegion: z.infer<typeof SolidRegionSchema>,
   index: number,
 ) => {
+  // The raw `points` field only captures literal M/L vertices, silently
+  // dropping H, V, relative and arc commands, so expand the path the same
+  // way NPTH regions do. Fall back to the parsed points for path data the
+  // expander cannot handle rather than losing the cutout entirely.
+  let points: Array<{ x: number; y: number }>
+  try {
+    points = expandEasyEdaPathData(solidRegion.pathData).map((p) => ({
+      x: milx10(p.x),
+      y: milx10(p.y),
+    }))
+    const firstPoint = points[0]
+    const lastPoint = points.at(-1)
+    if (
+      firstPoint &&
+      lastPoint &&
+      (firstPoint.x !== lastPoint.x || firstPoint.y !== lastPoint.y)
+    ) {
+      points.push({ ...firstPoint })
+    }
+  } catch {
+    console.warn(
+      `Falling back to literal vertices for EasyEDA cutout ${solidRegion.id ?? index + 1}`,
+    )
+    points = solidRegion.points.map((p) => ({
+      x: milx10(p.x),
+      y: milx10(p.y),
+    }))
+  }
   return Soup.pcb_cutout.parse({
     type: "pcb_cutout",
     pcb_cutout_id: `pcb_cutout_${index + 1}`,
     shape: "polygon",
-    points: solidRegion.points.map((p) => ({
-      x: milx10(p.x),
-      y: milx10(p.y),
-    })),
+    points,
   } as Soup.PcbCutoutPolygonInput)
 }
 
