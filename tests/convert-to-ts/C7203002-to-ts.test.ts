@@ -99,120 +99,120 @@ it("should convert C7203002 into typescript file", async () => {
     }}
           manufacturerPartNumber="PICO"
           footprint={<footprint>
-            <smtpad portHints={["pin21"]} pcbX="23.38987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin20"]} pcbX="23.38987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin22"]} pcbX="20.84987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin19"]} pcbX="20.84987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin23"]} pcbX="18.30987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin18"]} pcbX="18.30987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin24"]} pcbX="15.76987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin17"]} pcbX="15.76987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin25"]} pcbX="13.22987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin16"]} pcbX="13.22987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin26"]} pcbX="10.68987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin15"]} pcbX="10.68987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin27"]} pcbX="8.14987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin14"]} pcbX="8.14987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin28"]} pcbX="5.60987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin13"]} pcbX="5.60987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin29"]} pcbX="3.06987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin12"]} pcbX="3.06987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin30"]} pcbX="0.52987575mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin11"]} pcbX="0.52987575mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin31"]} pcbX="-2.01012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin10"]} pcbX="-2.01012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin32"]} pcbX="-4.55012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin9"]} pcbX="-4.55012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin33"]} pcbX="-7.09012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin8"]} pcbX="-7.09012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin34"]} pcbX="-9.63012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin7"]} pcbX="-9.63012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin35"]} pcbX="-12.17012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin6"]} pcbX="-12.17012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin36"]} pcbX="-14.71012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin5"]} pcbX="-14.71012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin37"]} pcbX="-17.25012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin4"]} pcbX="-17.25012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin38"]} pcbX="-19.79012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin3"]} pcbX="-19.79012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin39"]} pcbX="-22.33012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin2"]} pcbX="-22.33012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin40"]} pcbX="-24.87012425mm" pcbY="10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin1"]} pcbX="-24.87012425mm" pcbY="-10.087356mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
-    <smtpad portHints={["pin41"]} pcbX="24.18997575mm" pcbY="-2.54mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
-    <smtpad portHints={["pin42"]} pcbX="24.18997575mm" pcbY="0mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
-    <smtpad portHints={["pin43"]} pcbX="24.18997575mm" pcbY="2.54mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
-    <smtpad portHints={["pin44"]} pcbX="-21.73998065mm" pcbY="-0.0000508mm" width="1.499997mm" height="1.499997mm" shape="rect" />
-    <smtpad portHints={["pin45"]} pcbX="-25.03997405mm" pcbY="0.999998mm" width="1.499997mm" height="1.499997mm" shape="rect" />
-    <smtpad portHints={["pin46"]} pcbX="-25.03997405mm" pcbY="-0.999998mm" width="1.499997mm" height="1.499997mm" shape="rect" />
-    <smtpad portHints={["pin47"]} pcbX="-18.23998765mm" pcbY="-2.499995mm" width="1.499997mm" height="1.499997mm" shape="rect" />
-    <smtpad portHints={["pin48"]} pcbX="-15.61296725mm" pcbY="-2.499995mm" width="1.499997mm" height="1.499997mm" shape="rect" />
-    <smtpad portHints={["pin49"]} pcbX="-13.23999765mm" pcbY="-2.499995mm" width="1.499997mm" height="1.499997mm" shape="rect" />
-    <silkscreenpath route={[{"x":24.4210903500001,"y":-10.49997899999994},{"x":24.759926350000114,"y":-10.49997899999994},{"x":24.759926350000114,"y":-3.571163800000022}]} />
-    <silkscreenpath route={[{"x":24.759926350000114,"y":3.5710368000000017},{"x":24.759926350000114,"y":10.499979000000053},{"x":24.4210903500001,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":24.759926350000114,"y":1.0310368000001517},{"x":24.759926350000114,"y":1.5088362000001325}]} />
-    <silkscreenpath route={[{"x":24.759926350000114,"y":-1.5089631999999256},{"x":24.759926350000114,"y":-1.0311637999999448}]} />
-    <silkscreenpath route={[{"x":-25.901059449999934,"y":10.499852000000033},{"x":-26.23981924999987,"y":10.499852000000033}]} />
-    <silkscreenpath route={[{"x":-26.239997049999943,"y":10.499979000000053},{"x":-26.239997049999943,"y":-10.49997899999994},{"x":-25.901161049999814,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-27.539842049999834,"y":3.999534799999992},{"x":-27.139665049999962,"y":3.999534799999992},{"x":-27.139665049999962,"y":-4.000347599999941},{"x":-27.539842049999834,"y":-4.000347599999941}]} />
-    <silkscreenpath route={[{"x":-27.139665049999962,"y":-3.8090347999998357},{"x":-26.26529544999994,"y":-3.8090347999998357},{"x":-26.23981924999987,"y":-3.834460199999967}]} />
-    <silkscreenpath route={[{"x":-27.139665049999962,"y":3.802405399999998},{"x":-26.23981924999987,"y":3.802405399999998}]} />
-    <silkscreenpath route={[{"x":-27.539842049999834,"y":3.999534799999992},{"x":-27.539842049999834,"y":-4.000347599999941}]} />
-    <silkscreenpath route={[{"x":-23.361161049999964,"y":10.499979000000053},{"x":-23.838909649999778,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-20.821161049999887,"y":10.499979000000053},{"x":-21.298909649999928,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-18.28116104999981,"y":10.499979000000053},{"x":-18.75890964999985,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-15.74116104999996,"y":10.499979000000053},{"x":-16.218909649999887,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-13.201161049999882,"y":10.499979000000053},{"x":-13.678909649999923,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-10.661161049999805,"y":10.499979000000053},{"x":-11.138909649999846,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-8.121161049999955,"y":10.499979000000053},{"x":-8.598909649999996,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-5.581161049999878,"y":10.499979000000053},{"x":-6.058909649999919,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-3.0411610499998005,"y":10.499979000000053},{"x":-3.5189096499998413,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":-0.5011610499999506,"y":10.499979000000053},{"x":-0.9789096499999914,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":2.0388389500001267,"y":10.499979000000053},{"x":1.561090350000086,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":4.578838950000204,"y":10.499979000000053},{"x":4.101090350000163,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":7.118838950000054,"y":10.499979000000053},{"x":6.641090350000013,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":9.658838950000131,"y":10.499979000000053},{"x":9.18109035000009,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":12.198838950000209,"y":10.499979000000053},{"x":11.721090350000168,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":14.738838950000059,"y":10.499979000000053},{"x":14.261090350000018,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":17.278838950000136,"y":10.499979000000053},{"x":16.801090350000095,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":19.818838950000213,"y":10.499979000000053},{"x":19.341090350000172,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":22.358838950000063,"y":10.499979000000053},{"x":21.881090350000022,"y":10.499979000000053}]} />
-    <silkscreenpath route={[{"x":21.881090350000022,"y":-10.49997899999994},{"x":22.358838950000063,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":19.341090350000172,"y":-10.49997899999994},{"x":19.818838950000213,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":16.801090350000095,"y":-10.49997899999994},{"x":17.278838950000136,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":14.261090350000018,"y":-10.49997899999994},{"x":14.738838950000059,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":11.721090350000168,"y":-10.49997899999994},{"x":12.198838950000209,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":9.18109035000009,"y":-10.49997899999994},{"x":9.658838950000131,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":6.641090350000013,"y":-10.49997899999994},{"x":7.118838950000054,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":4.101090350000163,"y":-10.49997899999994},{"x":4.578838950000204,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":1.561090350000086,"y":-10.49997899999994},{"x":2.0388389500001267,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-0.9789096499999914,"y":-10.49997899999994},{"x":-0.5011610499999506,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-3.5189096499998413,"y":-10.49997899999994},{"x":-3.0411610499998005,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-6.058909649999919,"y":-10.49997899999994},{"x":-5.581161049999878,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-8.598909649999996,"y":-10.49997899999994},{"x":-8.121161049999955,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-11.138909649999846,"y":-10.49997899999994},{"x":-10.661161049999805,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-13.678909649999923,"y":-10.49997899999994},{"x":-13.201161049999882,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-16.218909649999887,"y":-10.49997899999994},{"x":-15.74116104999996,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-18.75890964999985,"y":-10.49997899999994},{"x":-18.28116104999981,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-21.298909649999928,"y":-10.49997899999994},{"x":-20.821161049999887,"y":-10.49997899999994}]} />
-    <silkscreenpath route={[{"x":-23.838909649999778,"y":-10.49997899999994},{"x":-23.361161049999964,"y":-10.49997899999994}]} />
-    <silkscreencircle pcbX="-24.88993625mm" pcbY="-12.500102mm" radius="0.249936mm" />
-    <silkscreencircle pcbX="22.60984175mm" pcbY="5.499862mm" radius="0.8001mm" />
-    <silkscreencircle pcbX="22.60984175mm" pcbY="5.499862mm" radius="1.400048mm" />
-    <silkscreencircle pcbX="22.60984175mm" pcbY="-5.500116mm" radius="0.8001mm" />
-    <silkscreencircle pcbX="22.60984175mm" pcbY="-5.500116mm" radius="1.400048mm" />
-    <silkscreencircle pcbX="-24.09009025mm" pcbY="5.499862mm" radius="1.400048mm" />
-    <silkscreencircle pcbX="-24.09009025mm" pcbY="5.499862mm" radius="0.8001mm" />
-    <silkscreencircle pcbX="-24.09009025mm" pcbY="-5.500116mm" radius="1.400048mm" />
-    <silkscreencircle pcbX="-24.09009025mm" pcbY="-5.500116mm" radius="0.8001mm" />
-    <silkscreentext text="{NAME}" pcbX="-0.93773625mm" pcbY="12.687048mm" anchorAlignment="center" fontSize="1mm" />
-    <fabricationnotepath route={[{"x":-25.901186449999955,"y":10.372928200000047},{"x":-26.239997049999943,"y":10.372928200000047},{"x":-26.36699705000001,"y":10.4999282},{"x":-26.239997049999943,"y":10.626928200000066},{"x":-25.901186449999955,"y":10.626928200000066},{"x":-25.774186450000002,"y":10.4999282},{"x":-25.901186449999955,"y":10.372928200000047}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <fabricationnotepath route={[{"x":-26.239997049999943,"y":-3.961129999999912},{"x":-26.28017330257751,"y":-3.954603834750401},{"x":-26.316222449999827,"y":-3.935704600000008},{"x":-27.139995249999856,"y":-3.935704600000008},{"x":-27.229797811210574,"y":-3.8985071612106594},{"x":-27.266995249999923,"y":-3.8087046000000555},{"x":-27.229797811210574,"y":-3.718902038789338},{"x":-27.139995249999856,"y":-3.681704599999989},{"x":-26.265371649999906,"y":-3.681704599999989},{"x":-26.21677951467143,"y":-3.6913690250778473},{"x":-26.17558264999991,"y":-3.7188902000000326},{"x":-26.15018264999992,"y":-3.744290200000023},{"x":-26.122644301969558,"y":-3.785496432136597},{"x":-26.11297164999985,"y":-3.8341045999999324},{"x":-26.150174296201953,"y":-3.923927353797808},{"x":-26.239997049999943,"y":-3.9611300000000256},{"x":-26.239997049999943,"y":-3.961129999999912}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <fabricationnotepath route={[{"x":-26.11281925000003,"y":10.499572599999965},{"x":-26.11281925000003,"y":-10.373461600000041},{"x":-25.901034049999907,"y":-10.373461600000041},{"x":-25.774034049999955,"y":-10.500461599999994},{"x":-25.901034049999907,"y":-10.627461599999947},{"x":-26.239819249999982,"y":-10.627461599999947},{"x":-26.3296218112107,"y":-10.590264161210598},{"x":-26.36681925000005,"y":-10.500461599999994},{"x":-26.36681925000005,"y":10.499572599999965},{"x":-26.239819249999982,"y":10.626572599999918},{"x":-26.11281925000003,"y":10.499572599999965}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <fabricationnotepath route={[{"x":-27.139995249999856,"y":3.929735599999958},{"x":-26.239997049999943,"y":3.929735599999958},{"x":-26.11299704999999,"y":3.8027356000000054},{"x":-26.239997049999943,"y":3.675735599999939},{"x":-27.139995249999856,"y":3.675735599999939},{"x":-27.266995249999923,"y":3.8027356000000054},{"x":-27.139995249999856,"y":3.929735599999958}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <fabricationnotepath route={[{"x":-27.41299444999993,"y":3.9999412000000802},{"x":-27.41299444999993,"y":-4.00004279999996},{"x":-27.53999444999988,"y":-4.127042799999913},{"x":-27.666994449999834,"y":-4.00004279999996},{"x":-27.666994449999834,"y":3.9999412000000802},{"x":-27.53999444999988,"y":4.126941200000033},{"x":-27.41299444999993,"y":3.9999412000000802}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <fabricationnotepath route={[{"x":-27.53999444999988,"y":4.126941200000033},{"x":-27.139995249999856,"y":4.126941200000033},{"x":-27.050192688789252,"y":4.089743761210798},{"x":-27.012995249999904,"y":3.9999412000000802},{"x":-27.012995249999904,"y":-4.00004279999996},{"x":-27.050192688789252,"y":-4.089845361210678},{"x":-27.139995249999856,"y":-4.127042799999913},{"x":-27.53999444999988,"y":-4.127042799999913},{"x":-27.666994449999834,"y":-4.00004279999996},{"x":-27.53999444999988,"y":-3.8730427999998938},{"x":-27.266995249999923,"y":-3.8730427999998938},{"x":-27.266995249999923,"y":3.872941200000014},{"x":-27.53999444999988,"y":3.872941200000014},{"x":-27.666994449999834,"y":3.9999412000000802},{"x":-27.53999444999988,"y":4.126941200000033}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <courtyardoutline outline={[{"x":-27.92123624999988,"y":11.937048000000118},{"x":26.045763750000106,"y":11.937048000000118},{"x":26.045763750000106,"y":-12.997751999999764},{"x":-27.92123624999988,"y":-12.997751999999764},{"x":-27.92123624999988,"y":11.937048000000118}]} />
+            <smtpad portHints={["pin21"]} pcbX="9.662357mm" pcbY="-23.814875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin20"]} pcbX="-10.512355mm" pcbY="-23.814875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin22"]} pcbX="9.662357mm" pcbY="-21.274875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin19"]} pcbX="-10.512355mm" pcbY="-21.274875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin23"]} pcbX="9.662357mm" pcbY="-18.734875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin18"]} pcbX="-10.512355mm" pcbY="-18.734875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin24"]} pcbX="9.662357mm" pcbY="-16.194875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin17"]} pcbX="-10.512355mm" pcbY="-16.194875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin25"]} pcbX="9.662357mm" pcbY="-13.654875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin16"]} pcbX="-10.512355mm" pcbY="-13.654875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin26"]} pcbX="9.662357mm" pcbY="-11.114875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin15"]} pcbX="-10.512355mm" pcbY="-11.114875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin27"]} pcbX="9.662357mm" pcbY="-8.574875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin14"]} pcbX="-10.512355mm" pcbY="-8.574875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin28"]} pcbX="9.662357mm" pcbY="-6.034875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin13"]} pcbX="-10.512355mm" pcbY="-6.034875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin29"]} pcbX="9.662357mm" pcbY="-3.494875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin12"]} pcbX="-10.512355mm" pcbY="-3.494875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin30"]} pcbX="9.662357mm" pcbY="-0.954875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin11"]} pcbX="-10.512355mm" pcbY="-0.954875mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin31"]} pcbX="9.662357mm" pcbY="1.585125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin10"]} pcbX="-10.512355mm" pcbY="1.585125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin32"]} pcbX="9.662357mm" pcbY="4.125125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin9"]} pcbX="-10.512355mm" pcbY="4.125125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin33"]} pcbX="9.662357mm" pcbY="6.665125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin8"]} pcbX="-10.512355mm" pcbY="6.665125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin34"]} pcbX="9.662357mm" pcbY="9.205125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin7"]} pcbX="-10.512355mm" pcbY="9.205125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin35"]} pcbX="9.662357mm" pcbY="11.745125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin6"]} pcbX="-10.512355mm" pcbY="11.745125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin36"]} pcbX="9.662357mm" pcbY="14.285125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin5"]} pcbX="-10.512355mm" pcbY="14.285125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin37"]} pcbX="9.662357mm" pcbY="16.825125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin4"]} pcbX="-10.512355mm" pcbY="16.825125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin38"]} pcbX="9.662357mm" pcbY="19.365125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin3"]} pcbX="-10.512355mm" pcbY="19.365125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin39"]} pcbX="9.662357mm" pcbY="21.905125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin2"]} pcbX="-10.512355mm" pcbY="21.905125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin40"]} pcbX="9.662357mm" pcbY="24.445125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin1"]} pcbX="-10.512355mm" pcbY="24.445125mm" width="3.1999936mm" height="1.5999968mm" shape="rect" />
+    <smtpad portHints={["pin41"]} pcbX="-2.964999mm" pcbY="-24.614975mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
+    <smtpad portHints={["pin42"]} pcbX="-0.424999mm" pcbY="-24.614975mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
+    <smtpad portHints={["pin43"]} pcbX="2.115001mm" pcbY="-24.614975mm" width="1.5999968mm" height="3.1999936mm" shape="rect" />
+    <smtpad portHints={["pin44"]} pcbX="-0.42505mm" pcbY="21.314981mm" width="1.499997mm" height="1.499997mm" shape="rect" />
+    <smtpad portHints={["pin45"]} pcbX="0.574999mm" pcbY="24.614975mm" width="1.499997mm" height="1.499997mm" shape="rect" />
+    <smtpad portHints={["pin46"]} pcbX="-1.424997mm" pcbY="24.614975mm" width="1.499997mm" height="1.499997mm" shape="rect" />
+    <smtpad portHints={["pin47"]} pcbX="-2.924994mm" pcbY="17.814988mm" width="1.499997mm" height="1.499997mm" shape="rect" />
+    <smtpad portHints={["pin48"]} pcbX="-2.924994mm" pcbY="15.187968mm" width="1.499997mm" height="1.499997mm" shape="rect" />
+    <smtpad portHints={["pin49"]} pcbX="-2.924994mm" pcbY="12.814999mm" width="1.499997mm" height="1.499997mm" shape="rect" />
+    <silkscreenpath route={[{"x":-10.924978,"y":-24.84609},{"x":-10.924978,"y":-25.184926},{"x":-3.996163,"y":-25.184926}]} />
+    <silkscreenpath route={[{"x":3.146038,"y":-25.184926},{"x":10.07498,"y":-25.184926},{"x":10.07498,"y":-24.84609}]} />
+    <silkscreenpath route={[{"x":0.606038,"y":-25.184926},{"x":1.083837,"y":-25.184926}]} />
+    <silkscreenpath route={[{"x":-1.933962,"y":-25.184926},{"x":-1.456163,"y":-25.184926}]} />
+    <silkscreenpath route={[{"x":10.074853,"y":25.47606},{"x":10.074853,"y":25.81482}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":25.814998},{"x":-10.924978,"y":25.814998},{"x":-10.924978,"y":25.476162}]} />
+    <silkscreenpath route={[{"x":3.574536,"y":27.114843},{"x":3.574536,"y":26.714666},{"x":-4.425347,"y":26.714666},{"x":-4.425347,"y":27.114843}]} />
+    <silkscreenpath route={[{"x":-4.234034,"y":26.714666},{"x":-4.234034,"y":25.840296},{"x":-4.259459,"y":25.81482}]} />
+    <silkscreenpath route={[{"x":3.377406,"y":26.714666},{"x":3.377406,"y":25.81482}]} />
+    <silkscreenpath route={[{"x":3.574536,"y":27.114843},{"x":-4.425347,"y":27.114843}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":22.936162},{"x":10.07498,"y":23.41391}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":20.396162},{"x":10.07498,"y":20.873911}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":17.856162},{"x":10.07498,"y":18.33391}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":15.316162},{"x":10.07498,"y":15.79391}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":12.776162},{"x":10.07498,"y":13.253911}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":10.236162},{"x":10.07498,"y":10.71391}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":7.696162},{"x":10.07498,"y":8.173911}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":5.156162},{"x":10.07498,"y":5.633911}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":2.616162},{"x":10.07498,"y":3.09391}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":0.076162},{"x":10.07498,"y":0.553911}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-2.463838},{"x":10.07498,"y":-1.986089}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-5.003838},{"x":10.07498,"y":-4.52609}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-7.543838},{"x":10.07498,"y":-7.066089}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-10.083838},{"x":10.07498,"y":-9.606089}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-12.623838},{"x":10.07498,"y":-12.14609}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-15.163838},{"x":10.07498,"y":-14.686089}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-17.703838},{"x":10.07498,"y":-17.22609}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-20.243838},{"x":10.07498,"y":-19.76609}]} />
+    <silkscreenpath route={[{"x":10.07498,"y":-22.783838},{"x":10.07498,"y":-22.306089}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-22.306089},{"x":-10.924978,"y":-22.783838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-19.76609},{"x":-10.924978,"y":-20.243838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-17.22609},{"x":-10.924978,"y":-17.703838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-14.686089},{"x":-10.924978,"y":-15.163838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-12.14609},{"x":-10.924978,"y":-12.623838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-9.606089},{"x":-10.924978,"y":-10.083838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-7.066089},{"x":-10.924978,"y":-7.543838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-4.52609},{"x":-10.924978,"y":-5.003838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":-1.986089},{"x":-10.924978,"y":-2.463838}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":0.553911},{"x":-10.924978,"y":0.076162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":3.09391},{"x":-10.924978,"y":2.616162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":5.633911},{"x":-10.924978,"y":5.156162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":8.173911},{"x":-10.924978,"y":7.696162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":10.71391},{"x":-10.924978,"y":10.236162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":13.253911},{"x":-10.924978,"y":12.776162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":15.79391},{"x":-10.924978,"y":15.316162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":18.33391},{"x":-10.924978,"y":17.856162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":20.873911},{"x":-10.924978,"y":20.396162}]} />
+    <silkscreenpath route={[{"x":-10.924978,"y":23.41391},{"x":-10.924978,"y":22.936162}]} />
+    <silkscreencircle pcbX="-12.925101mm" pcbY="24.464937mm" radius="0.249936mm" />
+    <silkscreencircle pcbX="5.074863mm" pcbY="-23.034841mm" radius="0.8001mm" />
+    <silkscreencircle pcbX="5.074863mm" pcbY="-23.034841mm" radius="1.400048mm" />
+    <silkscreencircle pcbX="-5.925115mm" pcbY="-23.034841mm" radius="0.8001mm" />
+    <silkscreencircle pcbX="-5.925115mm" pcbY="-23.034841mm" radius="1.400048mm" />
+    <silkscreencircle pcbX="5.074863mm" pcbY="23.665091mm" radius="1.400048mm" />
+    <silkscreencircle pcbX="5.074863mm" pcbY="23.665091mm" radius="0.8001mm" />
+    <silkscreencircle pcbX="-5.925115mm" pcbY="23.665091mm" radius="1.400048mm" />
+    <silkscreencircle pcbX="-5.925115mm" pcbY="23.665091mm" radius="0.8001mm" />
+    <silkscreentext text="{NAME}" pcbX="12.262049mm" pcbY="0.512737mm" anchorAlignment="center" pcbRotation="270deg" fontSize="1mm" />
+    <fabricationnotepath route={[{"x":9.947929,"y":25.476187},{"x":9.947929,"y":25.814998},{"x":10.074929,"y":25.941998},{"x":10.201929,"y":25.814998},{"x":10.201929,"y":25.476187},{"x":10.074929,"y":25.349187},{"x":9.947929,"y":25.476187}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <fabricationnotepath route={[{"x":-4.386129,"y":25.814998},{"x":-4.379603,"y":25.855174},{"x":-4.360704,"y":25.891223},{"x":-4.360704,"y":26.714996},{"x":-4.323506,"y":26.804799},{"x":-4.233704,"y":26.841996},{"x":-4.143901,"y":26.804799},{"x":-4.106704,"y":26.714996},{"x":-4.106704,"y":25.840373},{"x":-4.116368,"y":25.79178},{"x":-4.143889,"y":25.750584},{"x":-4.169289,"y":25.725184},{"x":-4.210496,"y":25.697645},{"x":-4.259104,"y":25.687972},{"x":-4.348927,"y":25.725175},{"x":-4.386129,"y":25.814998},{"x":-4.386129,"y":25.814998}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <fabricationnotepath route={[{"x":10.074573,"y":25.68782},{"x":-10.798461,"y":25.68782},{"x":-10.798461,"y":25.476035},{"x":-10.925461,"y":25.349035},{"x":-11.052461,"y":25.476035},{"x":-11.052461,"y":25.81482},{"x":-11.015263,"y":25.904623},{"x":-10.925461,"y":25.94182},{"x":10.074573,"y":25.94182},{"x":10.201573,"y":25.81482},{"x":10.074573,"y":25.68782}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <fabricationnotepath route={[{"x":3.504736,"y":26.714996},{"x":3.504736,"y":25.814998},{"x":3.377736,"y":25.687998},{"x":3.250736,"y":25.814998},{"x":3.250736,"y":26.714996},{"x":3.377736,"y":26.841996},{"x":3.504736,"y":26.714996}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <fabricationnotepath route={[{"x":3.574942,"y":26.987995},{"x":-4.425042,"y":26.987995},{"x":-4.552042,"y":27.114995},{"x":-4.425042,"y":27.241995},{"x":3.574942,"y":27.241995},{"x":3.701942,"y":27.114995},{"x":3.574942,"y":26.987995}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <fabricationnotepath route={[{"x":3.701942,"y":27.114995},{"x":3.701942,"y":26.714996},{"x":3.664745,"y":26.625194},{"x":3.574942,"y":26.587996},{"x":-4.425042,"y":26.587996},{"x":-4.514845,"y":26.625194},{"x":-4.552042,"y":26.714996},{"x":-4.552042,"y":27.114995},{"x":-4.425042,"y":27.241995},{"x":-4.298042,"y":27.114995},{"x":-4.298042,"y":26.841996},{"x":3.447942,"y":26.841996},{"x":3.447942,"y":27.114995},{"x":3.574942,"y":27.241995},{"x":3.701942,"y":27.114995}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <courtyardoutline outline={[{"x":11.512049,"y":27.496237},{"x":11.512049,"y":-26.470763},{"x":-13.422751,"y":-26.470763},{"x":-13.422751,"y":27.496237},{"x":11.512049,"y":27.496237}]} />
           </footprint>}
           
           {...props}

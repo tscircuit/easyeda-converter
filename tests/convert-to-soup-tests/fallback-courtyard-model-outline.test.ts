@@ -37,8 +37,8 @@ test("uses the FS3000 physical body for its fallback courtyard", () => {
 test("excludes the VCNL4040 silkscreen marker from its fallback courtyard", () => {
   const bounds = getCourtyardBounds(vcnl4040Raw)
 
-  expect(bounds.minX).toBeCloseTo(-2.25, 3)
-  expect(bounds.maxX).toBeCloseTo(2.25, 3)
-  expect(bounds.minY).toBeCloseTo(-1.851, 3)
-  expect(bounds.maxY).toBeCloseTo(1.851, 3)
+  expect(bounds.minX).toBeCloseTo(-1.851, 3)
+  expect(bounds.maxX).toBeCloseTo(1.851, 3)
+  expect(bounds.minY).toBeCloseTo(-2.25, 3)
+  expect(bounds.maxY).toBeCloseTo(2.25, 3)
 })

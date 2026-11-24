@@ -61,33 +61,33 @@ it("should convert C18185602 into typescript file", async () => {
     }}
           manufacturerPartNumber="PJ-320A-4P DIP"
           footprint={<footprint>
-            <hole pcbX="2.4249824mm" pcbY="0mm" diameter="1.1999976mm" />
-    <hole pcbX="-4.5750036mm" pcbY="0mm" diameter="1.1999976mm" />
-    <platedhole  portHints={["pin1"]} pcbX="4.0249284mm" pcbY="2.29997mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="90deg" shape="pill" />
-    <platedhole  portHints={["pin2"]} pcbX="0.0249364mm" pcbY="2.29997mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="90deg" shape="pill" />
-    <platedhole  portHints={["pin3"]} pcbX="-2.9750576mm" pcbY="2.29997mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="90deg" shape="pill" />
-    <platedhole  portHints={["pin4"]} pcbX="5.1250024mm" pcbY="-2.29997mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="90deg" shape="pill" />
-    <silkscreenpath route={[{"x":-6.174975000000018,"y":-2.4595836000000872},{"x":-6.1749496000001045,"y":3.0558485999999903}]} />
-    <silkscreenpath route={[{"x":-8.158943600000043,"y":-2.5000204000000394},{"x":-6.174975000000018,"y":-2.5000204000000394}]} />
-    <silkscreenpath route={[{"x":-8.158943600000043,"y":2.499969599999986},{"x":-6.158947600000147,"y":2.499969599999986}]} />
-    <silkscreenpath route={[{"x":-8.158943600000043,"y":2.499969599999986},{"x":-8.158943600000043,"y":-2.5000204000000394}]} />
-    <silkscreenpath route={[{"x":5.941028200000005,"y":-3.175025400000095},{"x":-6.174975000000018,"y":-3.175025400000095},{"x":-6.174975000000018,"y":-2.300096999999937}]} />
-    <silkscreenpath route={[{"x":5.941028200000005,"y":-3.0925516000000925},{"x":5.941028200000005,"y":-3.175025400000095}]} />
-    <silkscreenpath route={[{"x":5.941028200000005,"y":3.0558485999999903},{"x":5.941028200000005,"y":-1.5074899999999616}]} />
-    <silkscreenpath route={[{"x":4.933003799999824,"y":3.0558485999999903},{"x":5.941028200000005,"y":3.0558485999999903}]} />
-    <silkscreenpath route={[{"x":0.9330117999999175,"y":3.0558485999999903},{"x":3.349034399999823,"y":3.0558485999999903}]} />
-    <silkscreenpath route={[{"x":-2.066982199999984,"y":3.0558485999999903},{"x":-0.6509575999999697,"y":3.0558485999999903}]} />
-    <silkscreenpath route={[{"x":-6.158947600000147,"y":3.0558485999999903},{"x":-3.650951599999985,"y":3.0558485999999903}]} />
-    <silkscreenpath route={[{"x":5.941028200000005,"y":-2.7312365999999884},{"x":5.941028200000005,"y":-2.848101999999926}]} />
-    <silkscreentext text="{NAME}" pcbX="-1.1063796mm" pcbY="4.06197mm" anchorAlignment="center" fontSize="1mm" />
-    <fabricationnotepath route={[{"x":-8.195951400000013,"y":2.5399999999999636},{"x":-6.163951400000087,"y":2.5399999999999636},{"x":-6.163951400000087,"y":-2.5399999999999636},{"x":-8.195951400000013,"y":-2.5399999999999636},{"x":-8.195951400000013,"y":2.5399999999999636}]} strokeWidth="0mm" isFilled hasStroke={false} />
-    <courtyardoutline outline={[{"x":-8.408943600000043,"y":3.304984999999988},{"x":6.425000299999965,"y":3.304984999999988},{"x":6.425000299999965,"y":-3.304984999999988},{"x":-8.408943600000043,"y":-3.304984999999988},{"x":-8.408943600000043,"y":3.304984999999988}]} />
+            <hole pcbX="1.074972mm" pcbY="1.35001mm" diameter="1.1999976mm" />
+    <hole pcbX="1.074972mm" pcbY="-5.649976mm" diameter="1.1999976mm" />
+    <platedhole  portHints={["pin1"]} pcbX="-1.224998mm" pcbY="2.949956mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="180deg" shape="pill" />
+    <platedhole  portHints={["pin2"]} pcbX="-1.224998mm" pcbY="-1.050036mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="180deg" shape="pill" />
+    <platedhole  portHints={["pin3"]} pcbX="-1.224998mm" pcbY="-4.05003mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="180deg" shape="pill" />
+    <platedhole  portHints={["pin4"]} pcbX="3.374942mm" pcbY="4.05003mm" holeWidth="0.5999988mm" holeHeight="1.499997mm" outerWidth="1.1999976mm" outerHeight="2.0999958mm" pcbRotation="180deg" shape="pill" />
+    <silkscreenpath route={[{"x":3.534556,"y":-7.249947},{"x":-1.980876,"y":-7.249922}]} />
+    <silkscreenpath route={[{"x":3.574993,"y":-9.233916},{"x":3.574993,"y":-7.249947}]} />
+    <silkscreenpath route={[{"x":-1.424997,"y":-9.233916},{"x":-1.424997,"y":-7.23392}]} />
+    <silkscreenpath route={[{"x":-1.424997,"y":-9.233916},{"x":3.574993,"y":-9.233916}]} />
+    <silkscreenpath route={[{"x":4.249998,"y":4.866056},{"x":4.249998,"y":-7.249947},{"x":3.375069,"y":-7.249947}]} />
+    <silkscreenpath route={[{"x":4.167524,"y":4.866056},{"x":4.249998,"y":4.866056}]} />
+    <silkscreenpath route={[{"x":-1.980876,"y":4.866056},{"x":2.582462,"y":4.866056}]} />
+    <silkscreenpath route={[{"x":-1.980876,"y":3.858031},{"x":-1.980876,"y":4.866056}]} />
+    <silkscreenpath route={[{"x":-1.980876,"y":-0.141961},{"x":-1.980876,"y":2.274062}]} />
+    <silkscreenpath route={[{"x":-1.980876,"y":-3.141955},{"x":-1.980876,"y":-1.72593}]} />
+    <silkscreenpath route={[{"x":-1.980876,"y":-7.23392},{"x":-1.980876,"y":-4.725924}]} />
+    <silkscreenpath route={[{"x":3.806209,"y":4.866056},{"x":3.923074,"y":4.866056}]} />
+    <silkscreentext text="{NAME}" pcbX="-2.986998mm" pcbY="-2.181352mm" anchorAlignment="center" pcbRotation="90deg" fontSize="1mm" />
+    <fabricationnotepath route={[{"x":-1.465028,"y":-9.270924},{"x":-1.465028,"y":-7.238924},{"x":3.614972,"y":-7.238924},{"x":3.614972,"y":-9.270924},{"x":-1.465028,"y":-9.270924}]} strokeWidth="0mm" isFilled hasStroke={false} />
+    <courtyardoutline outline={[{"x":-2.230013,"y":-9.483916},{"x":-2.230013,"y":5.350028},{"x":4.379957,"y":5.350028},{"x":4.379957,"y":-9.483916},{"x":-2.230013,"y":-9.483916}]} />
           </footprint>}
           cadModel={{
             objUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C18185602.obj?uuid=f90b68db56444592a325e6a33e48bfdb",
             stepUrl: "https://modelcdn.tscircuit.com/easyeda_models/assets/C18185602.step?uuid=f90b68db56444592a325e6a33e48bfdb",
-            pcbRotationOffset: 0,
-            modelOriginPosition: { x: 1.108957700000019, y: -0.0050000000000001155, z: -2.5000069999999996 },
+            pcbRotationOffset: 90,
+            modelOriginPosition: { x: 1.079972, y: 0.033985, z: -2.5000069999999996 },
           }}
           {...props}
         />
