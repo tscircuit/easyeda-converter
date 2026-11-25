@@ -206,9 +206,10 @@ export const ShapeItemSchema = z
           holeRadius,
           ...rest
         ] = params.map((p) => (Number.isNaN(Number(p)) ? p : Number(p)))
-        const padNumber = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(rawPadNumber)
-          ? numericPadNumber
-          : rawPadNumber
+        let padNumber: string | number = rawPadNumber
+        if (/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(rawPadNumber?.trim() ?? "")) {
+          padNumber = numericPadNumber
+        }
         const center = { x: centerX, y: centerY }
         let points: number[][] | undefined
 

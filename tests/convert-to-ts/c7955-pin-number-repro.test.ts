@@ -5,7 +5,7 @@ import { convertBetterEasyToTsx } from "lib/websafe/convert-to-typescript-compon
 import { runTscircuitCode } from "tscircuit"
 import raw from "../assets/C7955.raweasy.json"
 
-test("repro: C7955 imports physical pad 6 as pin 9", async () => {
+test("preserves C7955 physical pad 6 with a numeric schematic alias", async () => {
   const betterEasy = EasyEdaJsonSchema.parse(raw)
   const padNumbers = betterEasy.packageDetail.dataStr.shape
     .filter((shape) => shape.type === "PAD")
@@ -31,13 +31,14 @@ test("repro: C7955 imports physical pad 6 as pin 9", async () => {
     (element) => element.type === "source_port",
   )
   expect(sourcePorts.map((port) => port.pin_number).sort()).toEqual([
-    1, 2, 3, 4, 5, 7, 8, 9,
+    1, 2, 3, 4, 5, 6, 7, 8,
   ])
 
-  const pin9 = sourcePorts.find((port) => port.pin_number === 9)!
+  const pin6 = sourcePorts.find((port) => port.pin_number === 6)!
+  expect(pin6.port_hints).toEqual(expect.arrayContaining(["IN3", "B2"]))
   const pcbPort = circuitJson
     .filter((element) => element.type === "pcb_port")
-    .find((port) => port.source_port_id === pin9.source_port_id)!
+    .find((port) => port.source_port_id === pin6.source_port_id)!
   const pad = circuitJson
     .filter((element) => element.type === "pcb_smtpad")
     .find((pad) => pad.pcb_port_id === pcbPort.pcb_port_id)

@@ -9,61 +9,49 @@ export const normalizeActiveLowPinLabel = (label: string): string => {
   return `N_${activeLowLabel}`
 }
 
-export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
-  const normalizedInputPinLabels = inputPinLabels.map((labels) =>
-    labels.map(normalizeActiveLowPinLabel),
-  )
-  const uniqueInputPinLabels = normalizedInputPinLabels.map((labels) => [
-    ...new Set(labels),
+type PinAliases = {
+  padNumber?: number
+  aliases: readonly string[]
+}
+
+export const normalizePins = (pins: readonly PinAliases[]) => {
+  const uniqueInputPinLabels = pins.map(({ aliases }) => [
+    ...new Set(aliases.map(normalizeActiveLowPinLabel)),
   ])
-  const result = uniqueInputPinLabels.map(() => [] as string[])
-  const desiredNumbers = uniqueInputPinLabels.map(() => null as number | null)
-
-  for (let i = 0; i < uniqueInputPinLabels.length; i++) {
-    for (const label of uniqueInputPinLabels[i]) {
-      if (/^\d+$/.test(label)) {
-        desiredNumbers[i] = Number.parseInt(label)
-        break
-      }
-    }
-  }
-
+  const result: Array<{ pinNumber?: number; aliases: string[] }> = pins.map(
+    () => ({ aliases: [] }),
+  )
+  const reservedPadNumbers = new Set(pins.map((pin) => pin.padNumber))
+  const duplicatePins: typeof result = []
   let highestPinNumber = 0
-  const acceptedDesiredNumbers = new Set<number>()
+  const assignedPinNumbers = new Set<number>()
 
-  for (let i = 0; i < desiredNumbers.length; i++) {
-    const desiredNumber = desiredNumbers[i]
-    if (desiredNumber === null || desiredNumber < 1) continue
+  for (const [index, { padNumber }] of pins.entries()) {
+    let desiredPinNumber = padNumber
+    if (desiredPinNumber === undefined) {
+      const numericAlias = uniqueInputPinLabels[index].find((label) =>
+        /^\d+$/.test(label),
+      )
+      if (numericAlias !== undefined) desiredPinNumber = Number(numericAlias)
+    }
+    if (desiredPinNumber === undefined || desiredPinNumber < 1) continue
 
-    if (!acceptedDesiredNumbers.has(desiredNumber)) {
-      acceptedDesiredNumbers.add(desiredNumber)
-      result[i].push(`pin${desiredNumber}`)
-      highestPinNumber = Math.max(highestPinNumber, desiredNumber)
+    const normalizedPin = result[index]
+    if (
+      assignedPinNumbers.has(desiredPinNumber) ||
+      (padNumber === undefined && reservedPadNumbers.has(desiredPinNumber))
+    ) {
+      normalizedPin.aliases.push(`pin${desiredPinNumber}_alt1`)
+      duplicatePins.push(normalizedPin)
       continue
     }
-
-    let existingAltCount = 0
-    for (const label of result[i]) {
-      if (label.startsWith(`pin${desiredNumber}_alt`)) {
-        existingAltCount += 1
-      }
-    }
-    result[i].push(`pin${desiredNumber}_alt${existingAltCount + 1}`)
+    normalizedPin.pinNumber = desiredPinNumber
+    assignedPinNumbers.add(desiredPinNumber)
+    highestPinNumber = Math.max(highestPinNumber, desiredPinNumber)
   }
 
-  for (let i = 0; i < result.length; i++) {
-    const firstLabel = result[i][0]
-    if (firstLabel?.includes("_alt")) {
-      highestPinNumber += 1
-      result[i].unshift(`pin${highestPinNumber}`)
-    }
-  }
-
-  for (let i = 0; i < result.length; i++) {
-    if (result[i].length === 0) {
-      highestPinNumber += 1
-      result[i].push(`pin${highestPinNumber}`)
-    }
+  for (const pin of duplicatePins) {
+    pin.pinNumber = ++highestPinNumber
   }
 
   const totalLabelCounts: Record<string, number> = {}
@@ -80,13 +68,21 @@ export const normalizePinLabels = (inputPinLabels: string[][]): string[][] => {
       if (/^\d+$/.test(label)) continue
 
       if (totalLabelCounts[label] === 1) {
-        result[i].push(label)
+        result[i].aliases.push(label)
       } else {
         incrementalLabelCounts[label] = (incrementalLabelCounts[label] ?? 0) + 1
-        result[i].push(`${label}${incrementalLabelCounts[label]}`)
+        result[i].aliases.push(`${label}${incrementalLabelCounts[label]}`)
       }
     }
   }
 
-  return result
+  return result.map(({ pinNumber, aliases }) => ({
+    pinNumber: pinNumber ?? ++highestPinNumber,
+    aliases,
+  }))
 }
+
+export const normalizePinLabels = (inputPinLabels: string[][]): string[][] =>
+  normalizePins(inputPinLabels.map((aliases) => ({ aliases }))).map(
+    ({ pinNumber, aliases }) => [`pin${pinNumber}`, ...aliases],
+  )
