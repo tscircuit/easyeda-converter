@@ -68,9 +68,6 @@ easyeda convert -i C46749 -t tsx
 # More info: https://docs.tscircuit.com/api-reference/advanced/soup
 easyeda convert -i C46749 -o C46749.soup.json
 
-# Convert a footprint for JLCPCB part number C46749 (NE555) to KiCad footprint
-easyeda convert -i C46749 -o C46749.kicad_mod
-
 # Download the C46749 footprint and schematic and convert to readable JSON
 easyeda convert -i C46749 -o C46749.bettereasy.json
 
@@ -90,7 +87,6 @@ easyeda download -i C46749 -o C46749.raweasy.json
 | `*.raweasy.json`    | The raw JSON from the EasyEDA API                                                           |
 | `*.bettereasy.json` | The raw JSON from the EasyEDA API, but with the footprint and schematic data decoded        |
 | `*.circuit.json`    | The tscircuit's easy-to-use JSON format [(docs)](https://github.com/tscircuit/circuit-json) |
-| `*.kicad_mod`       | A KiCad footprint file                                                                      |
 | `*.tsx`             | A TypeScript React component file                                                           |
 
 ## Advanced Usage
