@@ -19,7 +19,7 @@ program
   .option("-i, --input <jlcpcbPartNumber>", "JLCPCB part number")
   .option("-o, --output <filename>", "Output filename")
   .option(
-    "--output-format <format>",
+    "-t, --output-format <format>",
     "Output format (can be inferred from filename)",
   )
   .action(async (options) => {
@@ -51,5 +51,7 @@ program
     }
   })
 
-program.parse(process.argv)
-// perfectCli(program, process.argv)
+program.parseAsync(process.argv).catch((error: Error) => {
+  console.error(error.message)
+  process.exitCode = 1
+})
