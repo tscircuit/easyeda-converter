@@ -1,4 +1,6 @@
 import { expect, test } from "bun:test"
+import { mil2mm } from "@tscircuit/mm"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import raw from "./assets/C39731285-center-pad.raweasy.json"
@@ -26,6 +28,44 @@ test("C39731285 pin 33 has a smaller supplier paste opening than its copper pad"
     width: expect.closeTo(3.7, 4),
     height: expect.closeTo(3.7, 4),
   })
+  const sourcePad = footprint.packageDetail.dataStr.shape.find(
+    (s) => s.type === "PAD",
+  )
+  if (sourcePad?.type !== "PAD") throw new Error("Missing supplier pad")
+  const supplierPaste = {
+    type: "pcb_solder_paste" as const,
+    pcb_solder_paste_id: "pin33-paste",
+    shape: "polygon" as const,
+    layer: "top" as const,
+    points: region.points.map((p) => ({
+      x: p.x * 0.254 - mil2mm(sourcePad.center.x),
+      y: mil2mm(sourcePad.center.y) - p.y * 0.254,
+    })),
+  }
+  const board = {
+    type: "pcb_board",
+    pcb_board_id: "board",
+    center: { x: 0, y: 0 },
+    width: 5,
+    height: 5,
+    num_layers: 2,
+    thickness: 1.6,
+    material: "fr4",
+  } as const
+  const outputPaste = converted.filter((e) => e.type === "pcb_solder_paste")
+  const options = { width: 240, height: 200, showSolderPaste: true }
+  const sourceSvg = convertCircuitJsonToPcbSvg([board, supplierPaste], options)
+  const outputSvg = convertCircuitJsonToPcbSvg([board, ...outputPaste], options)
+  const comparison = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="236">
+    <rect width="500" height="236" fill="white"/>
+    <g font-family="sans-serif" font-size="16" fill="#202830" text-anchor="middle">
+      <text x="120" y="23">Supplier paste · 2.96 mm</text>
+      <text x="380" y="23">Converted paste · ${outputPaste.length} openings</text>
+    </g>
+    <g transform="translate(0 36)">${sourceSvg}</g>
+    <g transform="translate(260 36)">${outputSvg}</g>
+  </svg>`
+  expect(comparison).toMatchSvgSnapshot(import.meta.path)
 })
 
 test.failing(
