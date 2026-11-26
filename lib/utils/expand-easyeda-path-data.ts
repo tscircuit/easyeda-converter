@@ -1,4 +1,4 @@
-import { generateArcFromSweep } from "../math/arc-utils"
+import { generateEllipticalArcFromSweep } from "../math/elliptical-arc-utils"
 import { appendEasyEdaPathPoint } from "./append-easyeda-path-point"
 import { MAX_EASYEDA_PATH_POINTS } from "./easyeda-path-limits"
 import { expandEasyEdaBezierCommand } from "./expand-easyeda-bezier-command"
@@ -6,7 +6,7 @@ import { parseEasyEdaPathCommands } from "./parse-easyeda-path-commands"
 
 /**
  * Expand a single EasyEDA SOLIDREGION outline, including relative commands,
- * axis-aligned lines, circular arcs, and Bezier curves. Reject unsupported
+ * axis-aligned lines, elliptical arcs, and Bezier curves. Reject unsupported
  * geometry rather than returning a partial outline.
  */
 export const expandEasyEdaPathData = (pathData: string) => {
@@ -92,14 +92,23 @@ export const expandEasyEdaPathData = (pathData: string) => {
       commandArguments.length >= 7
     ) {
       for (let offset = 0; offset + 6 < commandArguments.length; offset += 7) {
-        const [radiusX, , , largeArcFlag, sweepFlag, endpointX, endpointY] =
-          commandArguments.slice(offset, offset + 7)
+        const [
+          radiusX,
+          radiusY,
+          xAxisRotation,
+          largeArcFlag,
+          sweepFlag,
+          endpointX,
+          endpointY,
+        ] = commandArguments.slice(offset, offset + 7)
         const endX: number = endpointX! + (relative ? currentPoint.x : 0)
         const endY: number = endpointY! + (relative ? currentPoint.y : 0)
-        const arcRoute = generateArcFromSweep({
+        const arcRoute = generateEllipticalArcFromSweep({
           start: currentPoint,
           end: { x: endX, y: endY },
-          radius: radiusX!,
+          radiusX: radiusX!,
+          radiusY: radiusY!,
+          xAxisRotation: xAxisRotation!,
           largeArcFlag: largeArcFlag === 1,
           sweepFlag: sweepFlag === 1,
           maxSegments: 16,
