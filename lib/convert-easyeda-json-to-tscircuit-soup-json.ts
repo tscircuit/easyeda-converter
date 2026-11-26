@@ -688,6 +688,67 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       circuitElements.push(handleHole(h, index))
     })
 
+  for (const [
+    index,
+    region,
+  ] of easyEdaJson.packageDetail.dataStr.shape.entries()) {
+    if (
+      region.type !== "SOLIDREGION" ||
+      region.fillStyle !== "solid" ||
+      (region.layermask !== 5 && region.layermask !== 6)
+    )
+      continue
+
+    const commands = parseEasyEdaPathCommands(region.pathData)
+    if (
+      !commands ||
+      commands.slice(1).some(({ command }) => !/^[LHVZ]$/i.test(command))
+    )
+      continue
+    const points = expandEasyEdaPathData(region.pathData)
+    const first = points[0]
+    const last = points.at(-1)
+    if (first && last && first.x === last.x && first.y === last.y) points.pop()
+    if (points.length !== 4) continue
+    const [a, b, c, d] = points
+    if (!a || !b || !c || !d || a.x === c.x || a.y === c.y) continue
+    const horizontalFirst =
+      a.y === b.y && b.x === c.x && c.y === d.y && d.x === a.x
+    const verticalFirst =
+      a.x === b.x && b.y === c.y && c.x === d.x && d.y === a.y
+    if (!horizontalFirst && !verticalFirst) continue
+    const left = mil10ToMm(Math.min(a.x, c.x))
+    const right = mil10ToMm(Math.max(a.x, c.x))
+    const top = mil10ToMm(Math.min(a.y, c.y))
+    const bottom = mil10ToMm(Math.max(a.y, c.y))
+    const layer = region.layermask === 5 ? "top" : "bottom"
+    const pad = circuitElements.find(
+      (e) =>
+        e.type === "pcb_smtpad" &&
+        e.shape === "rect" &&
+        e.layer === layer &&
+        left >= e.x - e.width / 2 &&
+        right <= e.x + e.width / 2 &&
+        top >= e.y - e.height / 2 &&
+        bottom <= e.y + e.height / 2,
+    )
+    circuitElements.push(
+      Soup.pcb_solder_paste.parse({
+        type: "pcb_solder_paste",
+        pcb_solder_paste_id: `pcb_solder_paste_${index + 1}`,
+        pcb_component_id: "pcb_component_1",
+        pcb_smtpad_id:
+          pad?.type === "pcb_smtpad" ? pad.pcb_smtpad_id : undefined,
+        shape: "rect",
+        layer,
+        x: (left + right) / 2,
+        y: (top + bottom) / 2,
+        width: right - left,
+        height: bottom - top,
+      }),
+    )
+  }
+
   // Add vias
   easyEdaJson.packageDetail.dataStr.shape
     .filter((shape): shape is z.infer<typeof ViaSchema> => shape.type === "VIA")
@@ -973,6 +1034,7 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       (e) =>
         e.type !== "pcb_component" &&
         e.type !== "cad_component" &&
+        e.type !== "pcb_solder_paste" &&
         e.type !== "pcb_silkscreen_circle",
     )
 

@@ -3,6 +3,8 @@ import { mil2mm } from "@tscircuit/mm"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tscircuit-soup-json"
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
+import { generateFootprintTsx } from "lib/websafe/generate-footprint-tsx"
+import { runTscircuitCode } from "tscircuit"
 import raw from "./assets/C39731285-center-pad.raweasy.json"
 
 const footprint = EasyEdaJsonSchema.parse(raw)
@@ -60,7 +62,7 @@ test("C39731285 pin 33 has a smaller supplier paste opening than its copper pad"
     <rect width="500" height="236" fill="white"/>
     <g font-family="sans-serif" font-size="16" fill="#202830" text-anchor="middle">
       <text x="120" y="23">Supplier paste · 2.96 mm</text>
-      <text x="380" y="23">Converted paste · ${outputPaste.length} openings</text>
+      <text x="380" y="23">Converted paste · ${outputPaste.length} opening</text>
     </g>
     <g transform="translate(0 36)">${sourceSvg}</g>
     <g transform="translate(260 36)">${outputSvg}</g>
@@ -68,24 +70,38 @@ test("C39731285 pin 33 has a smaller supplier paste opening than its copper pad"
   expect(comparison).toMatchSvgSnapshot(import.meta.path)
 })
 
-test.failing(
-  "C39731285 conversion preserves the 2.96 mm top paste aperture",
-  () => {
-    const apertures = converted.filter((e) => e.type === "pcb_solder_paste")
-    expect(apertures).toHaveLength(1)
-    const aperture = apertures[0]
-    expect(aperture.layer).toBe("top")
-    for (const axis of ["x", "y"] as const) {
-      let size: number
-      if (aperture.shape === "polygon") {
-        const coordinates = aperture.points.map((p) => p[axis])
-        size = Math.max(...coordinates) - Math.min(...coordinates)
-      } else if ("width" in aperture) {
-        size = axis === "x" ? aperture.width : aperture.height
-      } else {
-        throw new Error("Expected a square paste opening")
-      }
-      expect(size).toBeCloseTo(2.96, 4)
+test("C39731285 conversion preserves the 2.96 mm top paste aperture", () => {
+  const apertures = converted.filter((e) => e.type === "pcb_solder_paste")
+  expect(apertures).toHaveLength(1)
+  const aperture = apertures[0]
+  expect(aperture.layer).toBe("top")
+  for (const axis of ["x", "y"] as const) {
+    let size: number
+    if (aperture.shape === "polygon") {
+      const coordinates = aperture.points.map((p) => p[axis])
+      size = Math.max(...coordinates) - Math.min(...coordinates)
+    } else if ("width" in aperture) {
+      size = axis === "x" ? aperture.width : aperture.height
+    } else {
+      throw new Error("Expected a square paste opening")
     }
-  },
-)
+    expect(size).toBeCloseTo(2.96, 4)
+  }
+})
+
+test("native footprint renders the supplier opening once over pin 33", async () => {
+  const footprintTsx = generateFootprintTsx(
+    convertEasyEdaJsonToCircuitJson(footprint),
+  )
+  const rendered = await runTscircuitCode(
+    `export default () => <board width="8mm" height="8mm"><chip name="U30" footprint={${footprintTsx}} /></board>`,
+  )
+  const paste = rendered.filter((e) => e.type === "pcb_solder_paste")
+  expect(paste).toHaveLength(1)
+  expect(paste[0]).toMatchObject({
+    shape: "rect",
+    layer: "top",
+    width: expect.closeTo(2.96, 4),
+    height: expect.closeTo(2.96, 4),
+  })
+})
