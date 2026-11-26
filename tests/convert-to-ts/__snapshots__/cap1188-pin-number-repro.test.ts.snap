@@ -48,7 +48,32 @@ export const CAP1188_1_CP_TR = (props: ChipProps<typeof pinLabels>) => {
 }}
       manufacturerPartNumber="CAP1188-1-CP-TR"
       footprint={<footprint>
-        <smtpad portHints={["pin1"]} pcbX="-1.250061mm" pcbY="-1.950085mm" width="0.2800096mm" height="0.6999986mm" shape="rect" />
+        <solderpaste shape="rect" pcbX="-0.0000889mm" pcbY="-0.0000889mm" width="2.0000214mm" height="2.0000214mm" />
+<solderpaste shape="rect" pcbX="-1.95007865mm" pcbY="1.249807mm" width="0.7000113mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="-1.9500723mm" pcbY="0.749935mm" width="0.6999986mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="-1.9500723mm" pcbY="0.2497582mm" width="0.6999986mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="-1.9500723mm" pcbY="-0.250063mm" width="0.6999986mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="-1.9500723mm" pcbY="-0.750189mm" width="0.6999986mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="-1.9500723mm" pcbY="-1.250061mm" width="0.6999986mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="1.9501358mm" pcbY="-1.250061mm" width="0.700024mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="1.9501358mm" pcbY="-0.750189mm" width="0.700024mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="1.9501358mm" pcbY="-0.250063mm" width="0.700024mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="1.9501358mm" pcbY="0.2497582mm" width="0.700024mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="1.9501358mm" pcbY="0.749935mm" width="0.700024mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="1.9501358mm" pcbY="1.249807mm" width="0.700024mm" height="0.2800096mm" />
+<solderpaste shape="rect" pcbX="1.2499467mm" pcbY="-1.9500215mm" width="0.280035mm" height="0.6999986mm" />
+<solderpaste shape="rect" pcbX="0.7500874mm" pcbY="-1.9500215mm" width="0.2800096mm" height="0.6999986mm" />
+<solderpaste shape="rect" pcbX="0.2499487mm" pcbY="-1.9500215mm" width="0.280035mm" height="0.6999986mm" />
+<solderpaste shape="rect" pcbX="-0.2498725mm" pcbY="-1.9500215mm" width="0.2799842mm" height="0.6999986mm" />
+<solderpaste shape="rect" pcbX="-0.7500493mm" pcbY="-1.9500215mm" width="0.2799842mm" height="0.6999986mm" />
+<solderpaste shape="rect" pcbX="-1.2499213mm" pcbY="-1.9500215mm" width="0.2799842mm" height="0.6999986mm" />
+<solderpaste shape="rect" pcbX="1.2499213mm" pcbY="1.9500342mm" width="0.2799842mm" height="0.6999732mm" />
+<solderpaste shape="rect" pcbX="0.7500493mm" pcbY="1.9500342mm" width="0.280035mm" height="0.6999732mm" />
+<solderpaste shape="rect" pcbX="0.2499233mm" pcbY="1.9500342mm" width="0.280035mm" height="0.6999732mm" />
+<solderpaste shape="rect" pcbX="-0.2498979mm" pcbY="1.9500342mm" width="0.280035mm" height="0.6999732mm" />
+<solderpaste shape="rect" pcbX="-0.7500747mm" pcbY="1.9500342mm" width="0.280035mm" height="0.6999732mm" />
+<solderpaste shape="rect" pcbX="-1.2499467mm" pcbY="1.9500342mm" width="0.2799842mm" height="0.6999732mm" />
+<smtpad portHints={["pin1"]} pcbX="-1.250061mm" pcbY="-1.950085mm" width="0.2800096mm" height="0.6999986mm" shape="rect" />
 <smtpad portHints={["pin2"]} pcbX="-0.749935mm" pcbY="-1.950085mm" width="0.2800096mm" height="0.6999986mm" shape="rect" />
 <smtpad portHints={["pin3"]} pcbX="-0.250063mm" pcbY="-1.950085mm" width="0.2800096mm" height="0.6999986mm" shape="rect" />
 <smtpad portHints={["pin4"]} pcbX="0.250063mm" pcbY="-1.950085mm" width="0.2800096mm" height="0.6999986mm" shape="rect" />
@@ -72,7 +97,7 @@ export const CAP1188_1_CP_TR = (props: ChipProps<typeof pinLabels>) => {
 <smtpad portHints={["pin22"]} pcbX="-1.950085mm" pcbY="-0.250063mm" width="0.6999986mm" height="0.2800096mm" shape="rect" />
 <smtpad portHints={["pin23"]} pcbX="-1.950085mm" pcbY="-0.750189mm" width="0.6999986mm" height="0.2800096mm" shape="rect" />
 <smtpad portHints={["pin24"]} pcbX="-1.950085mm" pcbY="-1.250061mm" width="0.6999986mm" height="0.2800096mm" shape="rect" />
-<smtpad portHints={["pin25"]} pcbX="-0.000127mm" pcbY="-0.000127mm" width="2.499995mm" height="2.499995mm" shape="rect" />
+<smtpad portHints={["pin25"]} pcbX="-0.000127mm" pcbY="-0.000127mm" width="2.499995mm" height="2.499995mm" noSolderPaste shape="rect" />
 <silkscreenpath route={[{"x":1.6212057999999843,"y":2.031898399999932},{"x":2.032050799999979,"y":2.031898399999932}]} />
 <silkscreenpath route={[{"x":-2.031949200000099,"y":1.6209517999999434},{"x":-2.031949200000099,"y":2.031898399999932},{"x":-1.6212057999999843,"y":2.031898399999932}]} />
 <silkscreenpath route={[{"x":-1.6212057999999843,"y":-2.0321016000001464},{"x":-2.031949200000099,"y":-2.0321016000001464},{"x":-2.031949200000099,"y":-1.621205800000098}]} />

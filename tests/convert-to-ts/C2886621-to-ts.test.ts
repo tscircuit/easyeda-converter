@@ -74,7 +74,8 @@ it("should convert C2886621 into typescript file", async () => {
     }}
           manufacturerPartNumber="SSI2130"
           footprint={<footprint>
-            <smtpad portHints={["pin9"]} pcbX="-1.400048mm" pcbY="-1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
+            <solderpaste shape="rect" pcbX="0mm" pcbY="0mm" width="2.1999956mm" height="2.1999956mm" />
+    <smtpad portHints={["pin9"]} pcbX="-1.400048mm" pcbY="-1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
     <smtpad portHints={["pin10"]} pcbX="-0.999998mm" pcbY="-1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
     <smtpad portHints={["pin11"]} pcbX="-0.599948mm" pcbY="-1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
     <smtpad portHints={["pin12"]} pcbX="-0.199898mm" pcbY="-1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
@@ -90,7 +91,7 @@ it("should convert C2886621 into typescript file", async () => {
     <smtpad portHints={["pin30"]} pcbX="-0.599948mm" pcbY="1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
     <smtpad portHints={["pin31"]} pcbX="-0.999998mm" pcbY="1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
     <smtpad portHints={["pin32"]} pcbX="-1.400048mm" pcbY="1.999996mm" width="0.1999996mm" height="0.6999986mm" radius="0.0999998mm" shape="pill" />
-    <smtpad portHints={["pin33"]} pcbX="-0mm" pcbY="0mm" width="2.5999948mm" height="2.5999948mm" shape="rect" />
+    <smtpad portHints={["pin33"]} pcbX="-0mm" pcbY="0mm" width="2.5999948mm" height="2.5999948mm" noSolderPaste shape="rect" />
     <smtpad portHints={["pin1"]} pcbX="-1.999996mm" pcbY="1.400048mm" width="0.6999986mm" height="0.1999996mm" radius="0.0999998mm" shape="pill" />
     <smtpad portHints={["pin2"]} pcbX="-1.999996mm" pcbY="0.999998mm" width="0.6999986mm" height="0.1999996mm" radius="0.0999998mm" shape="pill" />
     <smtpad portHints={["pin3"]} pcbX="-1.999996mm" pcbY="0.599948mm" width="0.6999986mm" height="0.1999996mm" radius="0.0999998mm" shape="pill" />
