@@ -162,3 +162,106 @@ it("preserves fabrication and user notes in generated footprints", async () => {
     circuitJson.find((element) => element.type === "pcb_fabrication_note_text"),
   ).toMatchObject({ text: "+" })
 })
+
+it("escapes quotes, entities, and control characters in footprint text attributes", async () => {
+  const footprint = generateFootprintTsx([
+    {
+      type: "pcb_silkscreen_text",
+      pcb_silkscreen_text_id: "text_refdes",
+      pcb_component_id: "component_1",
+      text: "{NAME}",
+      anchor_position: { x: 0, y: 0 },
+      anchor_alignment: "center",
+      layer: "top",
+      font: "tscircuit2024",
+      font_size: 1,
+    } as never,
+    {
+      type: "pcb_silkscreen_text",
+      pcb_silkscreen_text_id: "text_quote",
+      pcb_component_id: "component_1",
+      text: 'Connector 1/4"',
+      anchor_position: { x: 0, y: 1 },
+      anchor_alignment: "center",
+      layer: "top",
+      font: "tscircuit2024",
+      font_size: 1,
+    } as never,
+    {
+      type: "pcb_fabrication_note_text",
+      text: "A &amp; B &#65;",
+      anchor_position: { x: 0, y: 2 },
+      anchor_alignment: "center",
+      font: "tscircuit2024",
+      font_size: 0.8,
+      layer: "top",
+    } as never,
+    {
+      type: "pcb_fabrication_note_dimension",
+      from: { x: -2, y: 2 },
+      to: { x: 2, y: 2 },
+      text: 'Dim "X" &amp; Y',
+      font: "tscircuit2024",
+      font_size: 0.5,
+      arrow_size: 0.4,
+      offset_distance: 0.75,
+      layer: "top",
+    } as never,
+    {
+      type: "pcb_note_text",
+      text: "Line1\nLine2\t\\Path",
+      anchor_position: { x: 0, y: 3 },
+      anchor_alignment: "center",
+      font: "tscircuit2024",
+      font_size: 0.6,
+      layer: "top",
+    } as never,
+    {
+      type: "pcb_note_dimension",
+      from: { x: -2, y: -3 },
+      to: { x: 2, y: -3 },
+      text: '1/2" &#65;',
+      font: "tscircuit2024",
+      font_size: 0.5,
+      arrow_size: 0.4,
+      offset_distance: 0.5,
+      layer: "top",
+    } as never,
+  ])
+
+  expect(footprint).toContain('<silkscreentext text="{NAME}"')
+  expect(footprint).toContain('<silkscreentext text={"Connector 1/4\\""}')
+  expect(footprint).toContain('<fabricationnotetext text={"A &amp; B &#65;"}')
+  expect(footprint).toContain('text={"Dim \\"X\\" &amp; Y"}')
+  expect(footprint).toContain('<pcbnotetext text={"Line1\\nLine2\\t\\\\Path"}')
+  expect(footprint).toContain('text={"1/2\\" &#65;"}')
+
+  const circuitJson = await runTscircuitCode(`
+    export default () => (
+      <board width="10mm" height="10mm">
+        <chip name="U1" footprint={${footprint}} />
+      </board>
+    )
+  `)
+
+  const silkscreenTexts = circuitJson
+    .filter((el) => el.type === "pcb_silkscreen_text")
+    .map((el: any) => el.text)
+  expect(silkscreenTexts).toContain('Connector 1/4"')
+
+  expect(
+    circuitJson.find((el) => el.type === "pcb_fabrication_note_text"),
+  ).toMatchObject({ text: "A &amp; B &#65;" })
+
+  expect(
+    circuitJson.find((el) => el.type === "pcb_fabrication_note_dimension"),
+  ).toMatchObject({ text: 'Dim "X" &amp; Y' })
+
+  expect(circuitJson.find((el) => el.type === "pcb_note_text")).toMatchObject({
+    text: "Line1\nLine2\t\\Path",
+  })
+
+  expect(
+    circuitJson.find((el) => el.type === "pcb_note_dimension"),
+  ).toMatchObject({ text: '1/2" &#65;' })
+})

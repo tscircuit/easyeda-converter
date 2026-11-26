@@ -21,8 +21,15 @@ const getLayerAttr = (layer: LayerRef | undefined) =>
 const getRotationAttr = (rotation: number | undefined) =>
   rotation ? ` pcbRotation="${rotation}deg"` : ""
 
+const formatJsxStringValue = (value: string) => {
+  const jsonValue = JSON.stringify(value)
+  return value.includes("&") || jsonValue !== `"${value}"`
+    ? `{${jsonValue}}`
+    : jsonValue
+}
+
 const getStringAttr = (name: string, value: string | undefined) =>
-  value === undefined ? "" : ` ${name}=${JSON.stringify(value)}`
+  value === undefined ? "" : ` ${name}=${formatJsxStringValue(value)}`
 
 export const generateFootprintTsx = (
   circuitJson: AnyCircuitElement[],
@@ -174,7 +181,7 @@ export const generateFootprintTsx = (
     const isRefDes = silkscreenText.text === "{NAME}"
     const textValue = isRefDes
       ? JSON.stringify("{NAME}")
-      : JSON.stringify(silkscreenText.text)
+      : formatJsxStringValue(silkscreenText.text)
     const rotation = silkscreenText.ccw_rotation || 0
     const rotationAttr = rotation ? ` pcbRotation="${rotation}deg"` : ""
 
@@ -194,7 +201,7 @@ export const generateFootprintTsx = (
 
   for (const fabricationNoteText of fabricationNoteTexts) {
     elementStrings.push(
-      `<fabricationnotetext text=${JSON.stringify(fabricationNoteText.text)} pcbX="${mmStr(fabricationNoteText.anchor_position.x)}" pcbY="${mmStr(fabricationNoteText.anchor_position.y)}" anchorAlignment="${fabricationNoteText.anchor_alignment}"${getStringAttr("font", fabricationNoteText.font)}${fabricationNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(fabricationNoteText.font_size)}"`}${getStringAttr("color", fabricationNoteText.color)}${getRotationAttr(fabricationNoteText.ccw_rotation)}${getLayerAttr(fabricationNoteText.layer)} />`,
+      `<fabricationnotetext${getStringAttr("text", fabricationNoteText.text)} pcbX="${mmStr(fabricationNoteText.anchor_position.x)}" pcbY="${mmStr(fabricationNoteText.anchor_position.y)}" anchorAlignment="${fabricationNoteText.anchor_alignment}"${getStringAttr("font", fabricationNoteText.font)}${fabricationNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(fabricationNoteText.font_size)}"`}${getStringAttr("color", fabricationNoteText.color)}${getRotationAttr(fabricationNoteText.ccw_rotation)}${getLayerAttr(fabricationNoteText.layer)} />`,
     )
   }
 
@@ -216,7 +223,7 @@ export const generateFootprintTsx = (
 
   for (const pcbNoteText of pcbNoteTexts) {
     elementStrings.push(
-      `<pcbnotetext text=${JSON.stringify(pcbNoteText.text ?? "")} pcbX="${mmStr(pcbNoteText.anchor_position.x)}" pcbY="${mmStr(pcbNoteText.anchor_position.y)}" anchorAlignment="${pcbNoteText.anchor_alignment}"${getStringAttr("font", pcbNoteText.font)}${pcbNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(pcbNoteText.font_size)}"`}${getStringAttr("color", pcbNoteText.color)}${getLayerAttr(pcbNoteText.layer)} />`,
+      `<pcbnotetext${getStringAttr("text", pcbNoteText.text ?? "")} pcbX="${mmStr(pcbNoteText.anchor_position.x)}" pcbY="${mmStr(pcbNoteText.anchor_position.y)}" anchorAlignment="${pcbNoteText.anchor_alignment}"${getStringAttr("font", pcbNoteText.font)}${pcbNoteText.font_size === undefined ? "" : ` fontSize="${mmStr(pcbNoteText.font_size)}"`}${getStringAttr("color", pcbNoteText.color)}${getLayerAttr(pcbNoteText.layer)} />`,
     )
   }
 
