@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { mil10ToMm } from "../utils/easyeda-unit-to-mm"
 
 // Helper function to safely convert values to numbers with a default
 const safeNumber = (defaultValue = 0) =>
@@ -352,16 +353,17 @@ export const ShapeItemSchema = z
         })
       }
       case "TEXT": {
+        // TEXT~type~x~y~strokeWidth~rotation~mirror~layer~net~fontSize~text~...
         const [
           textAnchor,
           x,
           y,
-          size,
+          _strokeWidth,
           rotation,
           _mirror,
           layer,
           _net,
-          font,
+          fontSize,
           text,
         ] = shape.data.split("~")
         const r = rotation ? Number(rotation) : undefined
@@ -370,11 +372,11 @@ export const ShapeItemSchema = z
           text,
           x,
           y,
-          size_mm: Number(size) * 2.54, // empirically this seems to match, C5248081 is a good test case
+          // fontSize is in 10 mil units like other EasyEDA PCB dimensions
+          size_mm: mil10ToMm(Number(fontSize)),
           layer: layer ? Number(layer) : undefined,
           rotation: Number.isNaN(r as number) ? undefined : r,
           textAnchor: textAnchor as "L" | "C" | "R" | undefined,
-          font: font || undefined,
         })
       }
 
