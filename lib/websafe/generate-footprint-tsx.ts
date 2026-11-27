@@ -120,6 +120,9 @@ export const generateFootprintTsx = (
   }
 
   for (const smtPad of smtPads) {
+    const pasteAttr = padsWithExplicitPaste.has(smtPad.pcb_smtpad_id)
+      ? " noSolderPaste"
+      : ""
     if (smtPad.shape === "circle") {
       elementStrings.push(
         `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle" />`,
@@ -132,7 +135,7 @@ export const generateFootprintTsx = (
           ? ` cornerRadius="${mmStr(cornerRadius)}"`
           : ""
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}"${cornerRadiusAttr}${getLayerAttr(smtPad.layer)}${padsWithExplicitPaste.has(smtPad.pcb_smtpad_id) ? " noSolderPaste" : ""} shape="rect" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}"${cornerRadiusAttr}${getLayerAttr(smtPad.layer)}${pasteAttr} shape="rect" />`,
       )
     } else if (smtPad.shape === "pill") {
       elementStrings.push(
@@ -143,7 +146,7 @@ export const generateFootprintTsx = (
         .map((p) => `{x: "${mmStr(p.x)}", y: "${mmStr(p.y)}"}`)
         .join(", ")
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} points={[${pointsStr}]} shape="polygon" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} points={[${pointsStr}]}${pasteAttr} shape="polygon" />`,
       )
     }
   }

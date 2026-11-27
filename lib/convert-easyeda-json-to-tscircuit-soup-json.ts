@@ -1,3 +1,4 @@
+import { getAxisAlignedRectangle } from "./utils/get-axis-aligned-rectangle"
 import {
   findBoundsAndCenter,
   getBoundsOfPcbElements,
@@ -705,36 +706,45 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       commands.slice(1).some(({ command }) => !/^[LHVZ]$/i.test(command))
     )
       continue
-    const points = expandEasyEdaPathData(region.pathData)
-    const first = points[0]
-    const last = points.at(-1)
-    if (first && last && first.x === last.x && first.y === last.y) points.pop()
-    if (points.length !== 4) continue
-    const [a, b, c, d] = points
-    if (!a || !b || !c || !d || a.x === c.x || a.y === c.y) continue
-    const horizontalFirst =
-      a.y === b.y && b.x === c.x && c.y === d.y && d.x === a.x
-    const verticalFirst =
-      a.x === b.x && b.y === c.y && c.x === d.x && d.y === a.y
-    if (!horizontalFirst && !verticalFirst) continue
-    const left = mil10ToMm(Math.min(a.x, c.x))
-    const right = mil10ToMm(Math.max(a.x, c.x))
-    const top = mil10ToMm(Math.min(a.y, c.y))
-    const bottom = mil10ToMm(Math.max(a.y, c.y))
+    const rect = getAxisAlignedRectangle(expandEasyEdaPathData(region.pathData))
+    if (!rect) continue
+    const left = mil10ToMm(rect.left)
+    const right = mil10ToMm(rect.right)
+    const top = mil10ToMm(rect.top)
+    const bottom = mil10ToMm(rect.bottom)
+    const x = (left + right) / 2
+    const y = (top + bottom) / 2
     const layer = region.layermask === 5 ? "top" : "bottom"
     // Pad centers and region vertices can be rounded independently in EasyEDA.
     // Allow one unit in the third decimal place of an EasyEDA coordinate.
     const padEdgeTolerance = mil10ToMm(0.001)
-    const pad = circuitElements.find(
-      (e) =>
-        e.type === "pcb_smtpad" &&
-        e.shape === "rect" &&
-        e.layer === layer &&
-        left >= e.x - e.width / 2 - padEdgeTolerance &&
-        right <= e.x + e.width / 2 + padEdgeTolerance &&
-        top >= e.y - e.height / 2 - padEdgeTolerance &&
-        bottom <= e.y + e.height / 2 + padEdgeTolerance,
-    )
+    const matches = circuitElements.filter((e) => {
+      if (e.type !== "pcb_smtpad" || e.layer !== layer) return false
+      const bounds =
+        e.shape === "polygon"
+          ? getAxisAlignedRectangle(e.points)
+          : e.shape === "rect"
+            ? {
+                left: e.x - e.width / 2,
+                right: e.x + e.width / 2,
+                top: e.y - e.height / 2,
+                bottom: e.y + e.height / 2,
+              }
+            : undefined
+      if (!bounds) return false
+      // Supplier paste can extend beyond the copper on a centered pad.
+      const centered =
+        Math.abs(x - (bounds.left + bounds.right) / 2) <= padEdgeTolerance &&
+        Math.abs(y - (bounds.top + bounds.bottom) / 2) <= padEdgeTolerance
+      return (
+        centered ||
+        (left >= bounds.left - padEdgeTolerance &&
+          right <= bounds.right + padEdgeTolerance &&
+          top >= bounds.top - padEdgeTolerance &&
+          bottom <= bounds.bottom + padEdgeTolerance)
+      )
+    })
+    const pad = matches.length === 1 ? matches[0] : undefined
     circuitElements.push(
       Soup.pcb_solder_paste.parse({
         type: "pcb_solder_paste",
@@ -744,8 +754,8 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
           pad?.type === "pcb_smtpad" ? pad.pcb_smtpad_id : undefined,
         shape: "rect",
         layer,
-        x: (left + right) / 2,
-        y: (top + bottom) / 2,
+        x,
+        y,
         width: right - left,
         height: bottom - top,
       }),
