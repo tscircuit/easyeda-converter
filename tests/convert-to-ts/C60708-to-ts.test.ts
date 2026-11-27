@@ -40,9 +40,7 @@ it("should convert C60708 into typescript file", async () => {
     } as const
 
     const pinAttributes = {
-      pin6: {doNotConnect: true},
-      pin7: {requiresGround: true},
-      pin9: {doNotConnect: true}
+      pin7: {requiresGround: true}
     } as const
 
     export const TXB0104PWR = (props: ChipProps<typeof pinLabels>) => {

@@ -70,8 +70,6 @@ it("should convert C51950748 into typescript file", async () => {
 
     const pinAttributes = {
       pin1: {requiresGround: true},
-      pin20: {doNotConnect: true},
-      pin22: {doNotConnect: true},
       pin28: {requiresGround: true},
       pin30: {requiresGround: true},
       pin32: {requiresGround: true}

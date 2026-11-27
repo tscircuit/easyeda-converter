@@ -1,7 +1,7 @@
 import { expect, it } from "bun:test"
 import { inferPinAttributes } from "lib/websafe/convert-to-typescript-component/infer-pin-attributes"
 
-it("infers only unambiguous IC power, ground, and no-connect attributes", () => {
+it("infers only unambiguous IC power and ground attributes", () => {
   expect(
     inferPinAttributes({
       pin1: ["GND"],
@@ -23,7 +23,6 @@ it("infers only unambiguous IC power, ground, and no-connect attributes", () => 
   ).toEqual({
     pin1: { requiresGround: true },
     pin2: { requiresPower: true },
-    pin3: { doNotConnect: true },
     pin7: { requiresGround: true },
     // VDD2 names a supply rail, and the label alone does not say whether the
     // pin sources or sinks it, so no power attribute is inferred.

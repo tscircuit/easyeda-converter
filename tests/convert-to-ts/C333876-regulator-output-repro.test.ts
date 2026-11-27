@@ -21,9 +21,8 @@ it("does not infer a rail-named VDD pin as a power input for C333876", async () 
   expect(result).toContain('pin13: ["VDD18"]')
   expect(result).not.toContain("pin13: {requiresPower: true}")
 
-  // Every other label in this part is either an NC or a bare data/signal name,
-  // so the only attributes inferred anywhere are the no-connects.
-  expect(result).toContain("pin12: {doNotConnect: true}")
+  // Neither rail names nor NC labels justify restrictive pin semantics.
+  expect(result).not.toContain("doNotConnect")
   expect(result).not.toContain("requiresPower")
 
   const circuitJson = await runTscircuitCode(
