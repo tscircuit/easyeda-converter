@@ -1,3 +1,4 @@
+import { getAxisAlignedRectangle } from "./utils/get-axis-aligned-rectangle"
 import {
   findBoundsAndCenter,
   getBoundsOfPcbElements,
@@ -688,6 +689,79 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       circuitElements.push(handleHole(h, index))
     })
 
+  for (const [
+    index,
+    region,
+  ] of easyEdaJson.packageDetail.dataStr.shape.entries()) {
+    if (
+      region.type !== "SOLIDREGION" ||
+      region.fillStyle !== "solid" ||
+      (region.layermask !== 5 && region.layermask !== 6)
+    )
+      continue
+
+    const commands = parseEasyEdaPathCommands(region.pathData)
+    if (
+      !commands ||
+      commands.slice(1).some(({ command }) => !/^[LHVZ]$/i.test(command))
+    )
+      continue
+    const rect = getAxisAlignedRectangle(expandEasyEdaPathData(region.pathData))
+    if (!rect) continue
+    const left = mil10ToMm(rect.left)
+    const right = mil10ToMm(rect.right)
+    const top = mil10ToMm(rect.top)
+    const bottom = mil10ToMm(rect.bottom)
+    const x = (left + right) / 2
+    const y = (top + bottom) / 2
+    const layer = region.layermask === 5 ? "top" : "bottom"
+    // Pad centers and region vertices can be rounded independently in EasyEDA.
+    // Allow one unit in the third decimal place of an EasyEDA coordinate.
+    const padEdgeTolerance = mil10ToMm(0.001)
+    const matches = circuitElements.filter((e) => {
+      if (e.type !== "pcb_smtpad" || e.layer !== layer) return false
+      const bounds =
+        e.shape === "polygon"
+          ? getAxisAlignedRectangle(e.points)
+          : e.shape === "rect"
+            ? {
+                left: e.x - e.width / 2,
+                right: e.x + e.width / 2,
+                top: e.y - e.height / 2,
+                bottom: e.y + e.height / 2,
+              }
+            : undefined
+      if (!bounds) return false
+      // Supplier paste can extend beyond the copper on a centered pad.
+      const centered =
+        Math.abs(x - (bounds.left + bounds.right) / 2) <= padEdgeTolerance &&
+        Math.abs(y - (bounds.top + bounds.bottom) / 2) <= padEdgeTolerance
+      return (
+        centered ||
+        (left >= bounds.left - padEdgeTolerance &&
+          right <= bounds.right + padEdgeTolerance &&
+          top >= bounds.top - padEdgeTolerance &&
+          bottom <= bounds.bottom + padEdgeTolerance)
+      )
+    })
+    const pad = matches.length === 1 ? matches[0] : undefined
+    circuitElements.push(
+      Soup.pcb_solder_paste.parse({
+        type: "pcb_solder_paste",
+        pcb_solder_paste_id: `pcb_solder_paste_${index + 1}`,
+        pcb_component_id: "pcb_component_1",
+        pcb_smtpad_id:
+          pad?.type === "pcb_smtpad" ? pad.pcb_smtpad_id : undefined,
+        shape: "rect",
+        layer,
+        x,
+        y,
+        width: right - left,
+        height: bottom - top,
+      }),
+    )
+  }
+
   // Add vias
   easyEdaJson.packageDetail.dataStr.shape
     .filter((shape): shape is z.infer<typeof ViaSchema> => shape.type === "VIA")
@@ -973,6 +1047,7 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
       (e) =>
         e.type !== "pcb_component" &&
         e.type !== "cad_component" &&
+        e.type !== "pcb_solder_paste" &&
         e.type !== "pcb_silkscreen_circle",
     )
 

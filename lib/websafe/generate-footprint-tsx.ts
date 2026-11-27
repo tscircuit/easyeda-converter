@@ -110,7 +110,19 @@ export const generateFootprintTsx = (
     }
   }
 
+  const padsWithExplicitPaste = new Set<string>()
+  for (const paste of su(circuitJson).pcb_solder_paste.list()) {
+    if (paste.shape !== "rect") continue
+    if (paste.pcb_smtpad_id) padsWithExplicitPaste.add(paste.pcb_smtpad_id)
+    elementStrings.push(
+      `<solderpaste shape="rect" pcbX="${mmStr(paste.x)}" pcbY="${mmStr(paste.y)}" width="${mmStr(paste.width)}" height="${mmStr(paste.height)}"${getLayerAttr(paste.layer)} />`,
+    )
+  }
+
   for (const smtPad of smtPads) {
+    const pasteAttr = padsWithExplicitPaste.has(smtPad.pcb_smtpad_id)
+      ? " noSolderPaste"
+      : ""
     if (smtPad.shape === "circle") {
       elementStrings.push(
         `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" radius="${mmStr(smtPad.radius)}" shape="circle" />`,
@@ -123,7 +135,7 @@ export const generateFootprintTsx = (
           ? ` cornerRadius="${mmStr(cornerRadius)}"`
           : ""
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}"${cornerRadiusAttr} shape="rect" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} pcbX="${mmStr(smtPad.x)}" pcbY="${mmStr(smtPad.y)}" width="${mmStr(smtPad.width)}" height="${mmStr(smtPad.height)}"${cornerRadiusAttr}${getLayerAttr(smtPad.layer)}${pasteAttr} shape="rect" />`,
       )
     } else if (smtPad.shape === "pill") {
       elementStrings.push(
@@ -134,7 +146,7 @@ export const generateFootprintTsx = (
         .map((p) => `{x: "${mmStr(p.x)}", y: "${mmStr(p.y)}"}`)
         .join(", ")
       elementStrings.push(
-        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} points={[${pointsStr}]} shape="polygon" />`,
+        `<smtpad portHints={${JSON.stringify(mapPortHints(smtPad.port_hints, options.portHintsMap))}} points={[${pointsStr}]}${pasteAttr} shape="polygon" />`,
       )
     }
   }
