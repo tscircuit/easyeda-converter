@@ -5,6 +5,7 @@ import { convertEasyEdaJsonToCircuitJson } from "lib/convert-easyeda-json-to-tsc
 import { EasyEdaJsonSchema } from "lib/schemas/easy-eda-json-schema"
 import { generateFootprintTsx } from "lib/websafe/generate-footprint-tsx"
 import { runTscircuitCode } from "tscircuit"
+import padsAndPaste from "./assets/C39731285-pads-and-paste.json"
 import raw from "./assets/C39731285-center-pad.raweasy.json"
 
 const footprint = EasyEdaJsonSchema.parse(raw)
@@ -104,4 +105,52 @@ test("native footprint renders the supplier opening once over pin 33", async () 
     width: expect.closeTo(2.96, 4),
     height: expect.closeTo(2.96, 4),
   })
+})
+
+test("renders each of the 33 supplier openings at its specified position and size", async () => {
+  const input = structuredClone(raw)
+  input.packageDetail.dataStr.shape = padsAndPaste
+  const parsed = EasyEdaJsonSchema.parse(input)
+  const shapes = parsed.packageDetail.dataStr.shape
+  const pin33 = shapes.find(
+    (s) => s.type === "PAD" && String(s.number) === "33",
+  )
+  if (pin33?.type !== "PAD") throw new Error("Missing pin 33")
+  const tsx = generateFootprintTsx(convertEasyEdaJsonToCircuitJson(parsed))
+  const rendered = await runTscircuitCode(
+    `export default () => <board width="12mm" height="12mm"><chip name="U30" footprint={${tsx}} /></board>`,
+  )
+  const centerPad = rendered.find(
+    (e) => e.type === "pcb_smtpad" && e.port_hints?.includes("pin33"),
+  )
+  if (centerPad?.type !== "pcb_smtpad" || centerPad.shape !== "rect")
+    throw new Error("Missing rendered pin 33")
+  const openings = rendered.filter((e) => e.type === "pcb_solder_paste")
+  const regions = shapes.filter((s) => s.type === "SOLIDREGION")
+  expect(regions).toHaveLength(33)
+  expect(openings).toHaveLength(33)
+  for (const region of regions) {
+    const xs = region.points.map((p) => p.x * 0.254)
+    const ys = region.points.map((p) => p.y * 0.254)
+    const x =
+      (Math.min(...xs) + Math.max(...xs)) / 2 -
+      mil2mm(pin33.center.x) +
+      centerPad.x
+    const y =
+      mil2mm(pin33.center.y) -
+      (Math.min(...ys) + Math.max(...ys)) / 2 +
+      centerPad.y
+    const matches = openings.filter(
+      (e) =>
+        e.shape === "rect" &&
+        e.layer === "top" &&
+        Math.abs(e.x - x) < 1e-6 &&
+        Math.abs(e.y - y) < 1e-6,
+    )
+    expect(matches).toHaveLength(1)
+    expect(matches[0]).toMatchObject({
+      width: expect.closeTo(Math.max(...xs) - Math.min(...xs), 6),
+      height: expect.closeTo(Math.max(...ys) - Math.min(...ys), 6),
+    })
+  }
 })

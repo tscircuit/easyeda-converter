@@ -722,15 +722,18 @@ export const convertEasyEdaJsonToCircuitJsonWithPinAttributes = (
     const top = mil10ToMm(Math.min(a.y, c.y))
     const bottom = mil10ToMm(Math.max(a.y, c.y))
     const layer = region.layermask === 5 ? "top" : "bottom"
+    // Pad centers and region vertices can be rounded independently in EasyEDA.
+    // Allow one unit in the third decimal place of an EasyEDA coordinate.
+    const padEdgeTolerance = mil10ToMm(0.001)
     const pad = circuitElements.find(
       (e) =>
         e.type === "pcb_smtpad" &&
         e.shape === "rect" &&
         e.layer === layer &&
-        left >= e.x - e.width / 2 &&
-        right <= e.x + e.width / 2 &&
-        top >= e.y - e.height / 2 &&
-        bottom <= e.y + e.height / 2,
+        left >= e.x - e.width / 2 - padEdgeTolerance &&
+        right <= e.x + e.width / 2 + padEdgeTolerance &&
+        top >= e.y - e.height / 2 - padEdgeTolerance &&
+        bottom <= e.y + e.height / 2 + padEdgeTolerance,
     )
     circuitElements.push(
       Soup.pcb_solder_paste.parse({
